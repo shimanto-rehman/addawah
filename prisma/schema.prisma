@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  avatarColor  String   @default("#d4af37")
+  themeColor   String   @default("gold")
+  themeMode    String   @default("dark")
+  city         String?
+  country      String   @default("Bangladesh")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions     Session[]
+  salahRecords SalahRecord[]
+  sentFriends  Friendship[] @relation("SentFriendships")
+  recvFriends  Friendship[] @relation("RecvFriendships")
+  sentPokes    Poke[]       @relation("SentPokes")
+  recvPokes    Poke[]       @relation("RecvPokes")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model SalahRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  prayer    Prayer
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date, prayer])
+  @@index([userId, date])
+}
+
+model Friendship {
+  id        String           @id @default(cuid())
+  userId    String
+  friendId  String
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation("SentFriendships", fields: [userId], references: [id], onDelete: Cascade)
+  friend    User             @relation("RecvFriendships", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@index([friendId])
+}
+
+model Poke {
+  id         String    @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  message    String    @default("Don't forget your salah today 🤲")
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+  fromUser   User      @relation("SentPokes", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User      @relation("RecvPokes", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@index([toUserId, readAt])
+}
+
+enum Prayer {
+  FAJR
+  DHUHR
+  ASR
+  MAGHRIB
+  ISHA
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+}

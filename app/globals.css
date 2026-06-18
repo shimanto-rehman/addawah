@@ -1,0 +1,11 @@
+@import '../assets/css/fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../assets/css/dawa.css';
+
+html, body { height: 100%; }
+
+@keyframes spin { to { transform: rotate(360deg); } }

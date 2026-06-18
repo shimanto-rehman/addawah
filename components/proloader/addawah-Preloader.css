@@ -1,0 +1,139 @@
+.dawa-preloader-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  transition:
+    opacity 0.8s ease-out,
+    visibility 0.8s ease-out,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dawa-preloader-root.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.dawa-preloader-root *,
+.dawa-preloader-root *::before,
+.dawa-preloader-root *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dawa-preloader-root {
+  --dawa-greeting-max: min(22rem, 92vw);
+}
+
+@media (min-width: 480px) {
+  .dawa-preloader-root {
+    --dawa-greeting-max: min(28rem, 88vw);
+  }
+}
+
+@media (min-width: 768px) {
+  .dawa-preloader-root {
+    --dawa-greeting-max: min(36rem, 82vw);
+  }
+}
+
+@media (min-width: 1100px) {
+  .dawa-preloader-root {
+    --dawa-greeting-max: min(42rem, 72vw);
+  }
+}
+
+.dawa-preloader-root .dawa-preloader-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  overflow: hidden;
+  color: inherit;
+}
+
+.dawa-preloader-root .center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.dawa-preloader-root .dawa-greeting-carousel {
+  width: min(100%, var(--dawa-greeting-max));
+  aspect-ratio: 150 / 98;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  contain: layout;
+}
+
+.dawa-preloader-root .dawa-greeting-slide {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  opacity: 0;
+}
+
+.dawa-preloader-root .dawa-preloader-slide-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
+.dawa-preloader-root .dawa-preloader-slide-svg path {
+  fill: currentColor;
+}
+
+.dawa-preloader-root .dawa-preloader-slide-svg defs clipPath path {
+  fill: #000000;
+}
+
+.dawa-preloader-root .dawa-greeting-slide.active {
+  animation: dawaPreloaderFadeIn 0.25s ease forwards;
+}
+
+.dawa-preloader-root .dawa-greeting-slide.exit {
+  animation: dawaPreloaderFadeOut 0.2s ease forwards;
+}
+
+@keyframes dawaPreloaderFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dawaPreloaderFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dawa-preloader-root .dawa-greeting-slide.active,
+  .dawa-preloader-root .dawa-greeting-slide.exit {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+}
