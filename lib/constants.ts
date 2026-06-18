@@ -37,6 +37,14 @@ export const SITE_LOGO_SRC = '/assets/images/Logo.webp';
 export const LANDING_HERO_SRC = '/assets/images/landing.webp';
 export const GATE_ARCH_SRC = '/assets/images/Gate.webp';
 
+export const DEVELOPER = {
+  name: 'S.M. Obaydur Rahman',
+  role: 'Lead Developer & Product Owner',
+  bio: 'Designed and built Addawah for salah tracking, brotherhood, and spiritual growth in the ummah.',
+  photoSrc: '/assets/images/shimanto.jpg',
+  portfolioUrl: 'https://www.shimanto.online',
+} as const;
+
 export const DAILY_INSPIRATIONS = [
   {
     text: 'Verily, with hardship comes ease.',

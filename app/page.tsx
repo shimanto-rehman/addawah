@@ -7,6 +7,7 @@ import { IslamicBackdrop } from '@/components/layout/IslamicBackdrop';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
+import { DeveloperCredit } from '@/components/landing/DeveloperCredit';
 import { SITE_TAGLINE } from '@/lib/constants';
 
 const FEATURES = [
@@ -158,8 +159,12 @@ export default function LandingPage() {
           <Link href="/login" className="dawa-btn dawa-btn--primary">Create Free Account</Link>
         </section>
 
+        <DeveloperCredit />
+
         <footer className="dawa-landing-footer">
-          © {new Date().getFullYear()} Addawah — {SITE_TAGLINE}
+          <p className="dawa-landing-footer__copy">
+            © {new Date().getFullYear()} Addawah — {SITE_TAGLINE}
+          </p>
         </footer>
       </div>
     </>
