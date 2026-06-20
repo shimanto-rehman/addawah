@@ -36,17 +36,22 @@ async function uploadCloudinary(file: File, userId: string): Promise<string> {
   return data.secure_url;
 }
 
-async function uploadVercelBlob(userId: string, file: File): Promise<string> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    throw new Error('Blob storage is not configured');
-  }
+function canUseVercelBlob() {
+  if (process.env.BLOB_READ_WRITE_TOKEN) return true;
+  // Connected Blob store on Vercel (OIDC auth at runtime)
+  if (process.env.VERCEL && process.env.BLOB_STORE_ID) return true;
+  return false;
+}
 
+async function uploadVercelBlob(userId: string, file: File): Promise<string> {
   const ext = extForMime(file.type);
   const blob = await put(`avatars/${userId}.${ext}`, file, {
     access: 'public',
     addRandomSuffix: false,
     allowOverwrite: true,
-    token: process.env.BLOB_READ_WRITE_TOKEN,
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? { token: process.env.BLOB_READ_WRITE_TOKEN }
+      : {}),
   });
 
   return blob.url;
@@ -80,13 +85,13 @@ export async function saveAvatar(userId: string, file: File): Promise<string> {
     return uploadCloudinary(file, userId);
   }
 
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (canUseVercelBlob()) {
     return uploadVercelBlob(userId, file);
   }
 
   if (process.env.VERCEL) {
     throw new Error(
-      'Profile photos require Cloudinary or Vercel Blob in production. Add CLOUDINARY_* or BLOB_READ_WRITE_TOKEN to your environment.',
+      'Profile photos need a connected Vercel Blob store or Cloudinary. In Vercel → Storage, open your existing Blob store (do not create a second connection).',
     );
   }
 
@@ -99,7 +104,12 @@ export async function deleteStoredAvatar(_userId: string, avatarUrl: string | nu
   if (avatarUrl.includes('cloudinary.com')) return;
 
   if (avatarUrl.includes('blob.vercel-storage.com')) {
-    await del(avatarUrl, { token: process.env.BLOB_READ_WRITE_TOKEN }).catch(() => {});
+    await del(
+      avatarUrl,
+      process.env.BLOB_READ_WRITE_TOKEN
+        ? { token: process.env.BLOB_READ_WRITE_TOKEN }
+        : undefined,
+    ).catch(() => {});
     return;
   }
 

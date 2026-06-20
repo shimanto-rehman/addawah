@@ -3402,7 +3402,14 @@ canvas[data-confetti] {
 }
 
 /* ── Profile privacy toggles ── */
-.dawa-profile__privacy { margin-top: 0; }
+.dawa-profile__privacy {
+  margin-top: 0;
+  grid-column: 1 / -1;
+}
+.dawa-privacy-item__text {
+  flex: 1;
+  min-width: 0;
+}
 .dawa-profile__preview-link { margin: 0 0 16px; font-size: 13px; }
 .dawa-link {
   color: var(--accent-bright);
@@ -3414,19 +3421,20 @@ canvas[data-confetti] {
   list-style: none;
   margin: 0 0 18px;
   padding: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 .dawa-privacy-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  padding: 12px 14px;
+  gap: 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--surface) 55%, transparent);
   border: 1px solid var(--border-soft);
+  min-height: 0;
 }
 .dawa-privacy-item__label {
   margin: 0;
@@ -3436,8 +3444,8 @@ canvas[data-confetti] {
 }
 .dawa-privacy-item__desc {
   margin: 4px 0 0;
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 11px;
+  line-height: 1.4;
   color: var(--text-soft);
 }
 .dawa-privacy-toggle {
@@ -3446,6 +3454,7 @@ canvas[data-confetti] {
   width: 44px;
   height: 26px;
   cursor: pointer;
+  margin-top: 2px;
 }
 .dawa-privacy-toggle input {
   position: absolute;
@@ -3484,6 +3493,11 @@ canvas[data-confetti] {
 .dawa-privacy-toggle input:focus-visible + .dawa-privacy-toggle__track {
   outline: 2px solid var(--accent-bright);
   outline-offset: 2px;
+}
+@media (max-width: 640px) {
+  .dawa-privacy-list {
+    grid-template-columns: 1fr;
+  }
 }
 .sr-only {
   position: absolute;
