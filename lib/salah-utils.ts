@@ -1,4 +1,4 @@
-import { PrayerName, PRAYERS } from './constants';
+import { PrayerName, PRAYERS, SUNNAH_SLOTS } from './constants';
 
 export function startOfDay(d: Date) {
   const x = new Date(d);
@@ -21,7 +21,10 @@ export function addDays(d: Date, n: number) {
 }
 
 export function formatDateKey(d: Date) {
-  return d.toISOString().slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 export function getWeekDays(weekStart: Date) {
@@ -35,17 +38,56 @@ export function formatWeekLabel(weekStart: Date) {
   return `${weekStart.toLocaleDateString('en-US', { ...opts, year: y ? 'numeric' : undefined })} – ${end.toLocaleDateString('en-US', { ...opts, year: 'numeric' })}`;
 }
 
-export type SalahGrid = Record<string, Partial<Record<PrayerName, boolean>>>;
+export type SalahCell = {
+  fard: boolean;
+  sunnahBefore: boolean[];
+  sunnahAfter: boolean[];
+};
+
+export type SalahGrid = Record<string, Partial<Record<PrayerName, SalahCell>>>;
+
+export function emptySalahCell(prayer: PrayerName): SalahCell {
+  const slots = SUNNAH_SLOTS[prayer];
+  return {
+    fard: false,
+    sunnahBefore: Array.from({ length: slots.before }, () => false),
+    sunnahAfter: Array.from({ length: slots.after }, () => false),
+  };
+}
+
+export function getSalahCell(
+  grid: SalahGrid,
+  dateKey: string,
+  prayer: PrayerName,
+): SalahCell {
+  return grid[dateKey]?.[prayer] ?? emptySalahCell(prayer);
+}
+
+export function isFardRecord(record: { kind?: string }) {
+  return !record.kind || record.kind === 'FARD';
+}
 
 export function buildSalahGrid(
-  records: { date: Date; prayer: string; completed: boolean }[]
+  records: { date: Date; prayer: string; kind?: string; unit?: number; completed: boolean }[],
 ): SalahGrid {
   const grid: SalahGrid = {};
   for (const r of records) {
     const key = formatDateKey(r.date);
+    const prayer = r.prayer as PrayerName;
+    if (!PRAYERS.includes(prayer)) continue;
+
     if (!grid[key]) grid[key] = {};
-    if (PRAYERS.includes(r.prayer as PrayerName)) {
-      grid[key][r.prayer as PrayerName] = r.completed;
+    if (!grid[key][prayer]) grid[key][prayer] = emptySalahCell(prayer);
+
+    const cell = grid[key][prayer]!;
+    const unit = r.unit ?? 0;
+
+    if (isFardRecord(r)) {
+      cell.fard = r.completed;
+    } else if (r.kind === 'SUNNAH_BEFORE' && unit < cell.sunnahBefore.length) {
+      cell.sunnahBefore[unit] = r.completed;
+    } else if (r.kind === 'SUNNAH_AFTER' && unit < cell.sunnahAfter.length) {
+      cell.sunnahAfter[unit] = r.completed;
     }
   }
   return grid;
@@ -55,9 +97,10 @@ export function countCompleted(records: { completed: boolean }[]) {
   return records.filter((r) => r.completed).length;
 }
 
-export function computeStreak(records: { date: Date; completed: boolean }[]) {
+export function computeStreak(records: { date: Date; completed: boolean; kind?: string }[]) {
+  const fardRecords = records.filter(isFardRecord);
   const byDay = new Map<string, { total: number; done: number }>();
-  for (const r of records) {
+  for (const r of fardRecords) {
     const key = formatDateKey(r.date);
     const cur = byDay.get(key) ?? { total: 0, done: 0 };
     cur.total += 1;
@@ -81,11 +124,12 @@ export function computeStreak(records: { date: Date; completed: boolean }[]) {
   return streak;
 }
 
-export function computeLifetimeStats(records: { completed: boolean; prayer: string }[]) {
-  const total = records.length;
-  const completed = countCompleted(records);
+export function computeLifetimeStats(records: { completed: boolean; prayer: string; kind?: string }[]) {
+  const fardRecords = records.filter(isFardRecord);
+  const total = fardRecords.length;
+  const completed = countCompleted(fardRecords);
   const byPrayer = PRAYERS.map((p) => {
-    const subset = records.filter((r) => r.prayer === p);
+    const subset = fardRecords.filter((r) => r.prayer === p);
     const done = countCompleted(subset);
     return {
       prayer: p,
@@ -99,6 +143,82 @@ export function computeLifetimeStats(records: { completed: boolean; prayer: stri
     completed,
     rate: total ? Math.round((completed / total) * 100) : 0,
     byPrayer,
+  };
+}
+
+export function computeLifetimeSinceJoin(
+  joinedAt: Date,
+  records: { date: Date; prayer: string; completed: boolean; kind?: string }[],
+) {
+  const fardRecords = records.filter(isFardRecord);
+  const today = startOfDay(new Date());
+  const start =
+    fardRecords.length > 0
+      ? startOfDay(
+          fardRecords.reduce((earliest, r) => (r.date < earliest ? r.date : earliest), fardRecords[0].date)
+        )
+      : startOfDay(joinedAt);
+
+  const recordMap = new Map<string, boolean>();
+  for (const r of fardRecords) {
+    recordMap.set(`${formatDateKey(r.date)}:${r.prayer}`, r.completed);
+  }
+
+  let expected = 0;
+  let prayed = 0;
+  let missed = 0;
+  let activeDays = 0;
+  let perfectDays = 0;
+  const missedByPrayer = Object.fromEntries(PRAYERS.map((p) => [p, 0])) as Record<PrayerName, number>;
+
+  for (let d = new Date(start); d <= today; d = addDays(d, 1)) {
+    const key = formatDateKey(d);
+    let dayDone = 0;
+
+    for (const prayer of PRAYERS) {
+      const slotKey = `${key}:${prayer}`;
+      const logged = recordMap.get(slotKey);
+
+      expected += 1;
+      if (logged === true) {
+        prayed += 1;
+        dayDone += 1;
+      } else {
+        missed += 1;
+        missedByPrayer[prayer] += 1;
+      }
+    }
+
+    if (dayDone > 0) activeDays += 1;
+    if (dayDone === PRAYERS.length) perfectDays += 1;
+  }
+
+  const daysOnApp = Math.max(1, Math.floor((today.getTime() - start.getTime()) / 86400000) + 1);
+  const byPrayer = PRAYERS.map((prayer) => {
+    const subset = fardRecords.filter((r) => r.prayer === prayer);
+    const done = countCompleted(subset);
+    return {
+      prayer,
+      completed: done,
+      total: subset.length,
+      rate: subset.length ? Math.round((done / subset.length) * 100) : 0,
+    };
+  });
+  const bestPrayer = byPrayer.reduce(
+    (best, cur) => (cur.total > 0 && cur.rate > (best?.rate ?? -1) ? cur : best),
+    null as (typeof byPrayer)[number] | null
+  );
+
+  return {
+    lifetimePrayed: prayed,
+    lifetimeMissed: missed,
+    lifetimeExpected: expected,
+    lifetimeRate: expected ? Math.round((prayed / expected) * 100) : 0,
+    activeDays,
+    perfectDays,
+    daysOnApp,
+    missedByPrayer,
+    bestPrayer,
   };
 }
 

@@ -1,33 +1,37 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useTheme } from '@/components/providers/ThemeProvider';
-import { useApp } from '@/components/providers/AppProvider';
 import { THEME_COLORS, THEME_COLOR_LABELS, type ThemeColor } from '@/lib/constants';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 export default function SettingsPage() {
   const { mode, color, toggleMode, setColor } = useTheme();
-  const { user, refresh } = useApp();
-  const [city, setCity] = useState(user?.city ?? '');
   const [saved, setSaved] = useState(false);
 
-  async function saveProfile(e: React.FormEvent) {
-    e.preventDefault();
+  async function saveTheme() {
     await fetch('/api/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city, themeColor: color, themeMode: mode }),
+      body: JSON.stringify({ themeColor: color, themeMode: mode }),
     });
     setSaved(true);
-    refresh();
     setTimeout(() => setSaved(false), 2000);
   }
 
   return (
     <>
-      <h1 className="dawa-page-title">Settings</h1>
-      <p className="dawa-page-sub">Personalise your sanctuary.</p>
+      <PageHeader title="Settings" subtitle="Personalise your sanctuary." arabicLabel="الإعدادات" />
+
+      <div className="dawa-panel">
+        <h2 className="dawa-panel__title">Profile</h2>
+        <p className="dawa-panel__sub">Update your photo, contact details, city, and country.</p>
+        <Link href="/profile" className="dawa-btn dawa-btn--outline">
+          Edit profile
+        </Link>
+      </div>
 
       <div className="dawa-panel">
         <h2 className="dawa-panel__title">Theme & appearance</h2>
@@ -59,17 +63,10 @@ export default function SettingsPage() {
         <button type="button" className="dawa-btn dawa-btn--outline" style={{ marginTop: 16 }} onClick={toggleMode}>
           Switch to {mode === 'dark' ? 'Light' : 'Dark'} mode
         </button>
+        <button type="button" className="dawa-btn dawa-btn--primary" style={{ marginTop: 12 }} onClick={saveTheme}>
+          {saved ? 'Theme saved ✓' : 'Save theme preferences'}
+        </button>
       </div>
-
-      <form className="dawa-panel" onSubmit={saveProfile}>
-        <h2 className="dawa-panel__title">Profile</h2>
-        <p className="dawa-panel__sub">Your city for future prayer time features</p>
-        <div className="dawa-field">
-          <label className="dawa-label" htmlFor="city">City</label>
-          <input id="city" className="dawa-input" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Dhaka" />
-        </div>
-        <button type="submit" className="dawa-btn dawa-btn--primary">{saved ? 'Saved ✓' : 'Save profile'}</button>
-      </form>
     </>
   );
 }

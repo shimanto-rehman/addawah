@@ -11,9 +11,12 @@ datasource db {
 model User {
   id           String   @id @default(cuid())
   name         String
+  username     String?  @unique
   email        String   @unique
+  mobile       String?  @unique
   passwordHash String
   avatarColor  String   @default("#d4af37")
+  avatarUrl    String?
   themeColor   String   @default("gold")
   themeMode    String   @default("dark")
   city         String?
@@ -42,16 +45,18 @@ model Session {
 }
 
 model SalahRecord {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  date      DateTime @db.Date
+  date      DateTime  @db.Date
   prayer    Prayer
-  completed Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      SalahKind @default(FARD)
+  unit      Int       @default(0)
+  completed Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, date, prayer])
+  @@unique([userId, date, prayer, kind, unit])
   @@index([userId, date])
 }
 
@@ -88,6 +93,12 @@ enum Prayer {
   ASR
   MAGHRIB
   ISHA
+}
+
+enum SalahKind {
+  FARD
+  SUNNAH_BEFORE
+  SUNNAH_AFTER
 }
 
 enum FriendshipStatus {

@@ -23,7 +23,21 @@ const CAROUSEL_MS = 350;
 const FADE_OUT_MS = 800;
 const RESOURCE_SETTLE_MS = 1500;
 
-export default function Preloader({ onLoadComplete }: { onLoadComplete?: () => void }) {
+type PreloaderProps = {
+  /** Fired once images, fonts, and page load have settled */
+  onResourcesReady?: () => void;
+  /** When true, begins fade-out (parent gates this on app readiness) */
+  dismiss?: boolean;
+  /** Fired after fade-out animation completes — safe to unmount */
+  onDismissComplete?: () => void;
+};
+
+export default function Preloader({
+  onResourcesReady,
+  dismiss = false,
+  onDismissComplete,
+}: PreloaderProps) {
+  const [resourcesReady, setResourcesReady] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
@@ -118,24 +132,13 @@ export default function Preloader({ onLoadComplete }: { onLoadComplete?: () => v
       return Promise.all([imagesPromise, fontsLoaded]).then(() => {});
     };
 
-    const finish = () => {
-      if (cancelled) return;
-      setFadeOut(true);
-      window.setTimeout(() => {
-        if (cancelled) return;
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('preloaderComplete'));
-        }
-        onLoadComplete?.();
-      }, FADE_OUT_MS);
-    };
-
     const checkPageLoad = () => {
       const handleComplete = () => {
         if (cancelled) return;
         window.setTimeout(() => {
           if (cancelled) return;
-          finish();
+          setResourcesReady(true);
+          onResourcesReady?.();
         }, RESOURCE_SETTLE_MS);
       };
 
@@ -162,7 +165,20 @@ export default function Preloader({ onLoadComplete }: { onLoadComplete?: () => v
       if (carouselIntervalId) window.clearInterval(carouselIntervalId);
       if (carouselExitTimerId) window.clearTimeout(carouselExitTimerId);
     };
-  }, [onLoadComplete]);
+  }, [onResourcesReady]);
+
+  useEffect(() => {
+    if (resourcesReady && dismiss && !fadeOut) {
+      setFadeOut(true);
+      const id = window.setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('preloaderComplete'));
+        }
+        onDismissComplete?.();
+      }, FADE_OUT_MS);
+      return () => window.clearTimeout(id);
+    }
+  }, [resourcesReady, dismiss, fadeOut, onDismissComplete]);
 
   return (
     <div className={`dawa-preloader-root ${fadeOut ? 'fade-out' : ''}`}>

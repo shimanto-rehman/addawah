@@ -27,6 +27,19 @@ function applyTheme(mode: ThemeMode, color: ThemeColor) {
   document.documentElement.setAttribute('data-color', color);
 }
 
+function readStoredMode(fallback: ThemeMode): ThemeMode {
+  if (typeof window === 'undefined') return fallback;
+  const mode = localStorage.getItem('addawah-mode');
+  return mode === 'light' || mode === 'dark' ? mode : fallback;
+}
+
+function readStoredColor(fallback: ThemeColor): ThemeColor {
+  if (typeof window === 'undefined') return fallback;
+  const color = localStorage.getItem('addawah-color');
+  const allowed: ThemeColor[] = ['green', 'blue', 'gold', 'purple', 'silver', 'pink'];
+  return allowed.includes(color as ThemeColor) ? (color as ThemeColor) : fallback;
+}
+
 export function ThemeProvider({
   children,
   initialMode = 'dark',
@@ -36,16 +49,12 @@ export function ThemeProvider({
   initialMode?: ThemeMode;
   initialColor?: ThemeColor;
 }) {
-  const [mode, setModeState] = useState<ThemeMode>(initialMode);
-  const [color, setColorState] = useState<ThemeColor>(initialColor);
+  const [mode, setModeState] = useState<ThemeMode>(() => readStoredMode(initialMode));
+  const [color, setColorState] = useState<ThemeColor>(() => readStoredColor(initialColor));
 
   useEffect(() => {
-    const savedMode = (localStorage.getItem('addawah-mode') as ThemeMode) || initialMode;
-    const savedColor = (localStorage.getItem('addawah-color') as ThemeColor) || initialColor;
-    setModeState(savedMode);
-    setColorState(savedColor);
-    applyTheme(savedMode, savedColor);
-  }, [initialMode, initialColor]);
+    applyTheme(mode, color);
+  }, [mode, color]);
 
   const setMode = useCallback((m: ThemeMode) => {
     setModeState(m);

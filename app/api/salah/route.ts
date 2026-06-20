@@ -6,8 +6,8 @@ import {
   addDays,
   buildSalahGrid,
   startOfWeek,
-  formatDateKey,
 } from '@/lib/salah-utils';
+
 export async function GET(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
@@ -29,6 +29,8 @@ export async function GET(req: NextRequest) {
 const postSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   prayer: z.enum(['FAJR', 'DHUHR', 'ASR', 'MAGHRIB', 'ISHA']),
+  kind: z.enum(['FARD', 'SUNNAH_BEFORE', 'SUNNAH_AFTER']).default('FARD'),
+  unit: z.number().int().min(0).max(3).default(0),
   completed: z.boolean(),
 });
 
@@ -39,24 +41,37 @@ export async function POST(req: NextRequest) {
   try {
     const body = postSchema.parse(await req.json());
     const date = new Date(body.date + 'T12:00:00');
-    if (date > new Date()) return jsonError('Cannot log future prayers');
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    if (date > today) return jsonError('Cannot log future prayers');
 
-    await prisma.salahRecord.upsert({
+    const existing = await prisma.salahRecord.findFirst({
       where: {
-        userId_date_prayer: {
-          userId: user!.id,
-          date,
-          prayer: body.prayer,
-        },
-      },
-      create: {
         userId: user!.id,
         date,
         prayer: body.prayer,
-        completed: body.completed,
+        kind: body.kind,
+        unit: body.unit,
       },
-      update: { completed: body.completed },
     });
+
+    if (existing) {
+      await prisma.salahRecord.update({
+        where: { id: existing.id },
+        data: { completed: body.completed },
+      });
+    } else {
+      await prisma.salahRecord.create({
+        data: {
+          userId: user!.id,
+          date,
+          prayer: body.prayer,
+          kind: body.kind,
+          unit: body.unit,
+          completed: body.completed,
+        },
+      });
+    }
 
     return jsonOk({ ok: true });
   } catch (e) {

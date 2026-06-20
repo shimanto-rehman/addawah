@@ -1,12 +1,16 @@
 'use client';
 
 import { AnalyticsCharts } from '@/components/analytics/AnalyticsCharts';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 export default function AnalyticsPage() {
   return (
     <>
-      <h1 className="dawa-page-title">Worship Analytics</h1>
-      <p className="dawa-page-sub">Reflect on your journey — every prayer counts.</p>
+      <PageHeader
+        title="Worship Analytics"
+        subtitle="Reflect on your journey — every prayer counts."
+        arabicLabel="الإحصاء"
+      />
       <AnalyticsCharts />
     </>
   );

@@ -14,8 +14,11 @@ function getSecret() {
 export type SessionUser = {
   id: string;
   name: string;
+  username: string | null;
   email: string;
+  mobile: string | null;
   avatarColor: string;
+  avatarUrl: string | null;
   themeColor: string;
   themeMode: string;
   city: string | null;
@@ -71,8 +74,11 @@ export async function getSessionUser(): Promise<SessionUser | null> {
           select: {
             id: true,
             name: true,
+            username: true,
             email: true,
+            mobile: true,
             avatarColor: true,
+            avatarUrl: true,
             themeColor: true,
             themeMode: true,
             city: true,

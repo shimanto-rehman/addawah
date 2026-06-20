@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import { motion } from 'framer-motion';
-import { getInitials } from '@/lib/constants';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { UserAvatar } from '@/components/profile/UserAvatar';
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 type Friend = {
@@ -11,6 +12,7 @@ type Friend = {
   name: string;
   email: string;
   avatarColor: string;
+  avatarUrl?: string | null;
   weekRate: number;
   friendshipId: string;
 };
@@ -61,8 +63,11 @@ export default function FriendsPage() {
 
   return (
     <>
-      <h1 className="dawa-page-title">Brotherhood</h1>
-      <p className="dawa-page-sub">Hold one another accountable with kindness and mercy.</p>
+      <PageHeader
+        title="Brotherhood"
+        subtitle="Hold one another accountable with kindness and mercy."
+        arabicLabel="الأصدقاء"
+      />
 
       <div className="dawa-panel">
         <h2 className="dawa-panel__title">Add a friend</h2>
@@ -79,7 +84,7 @@ export default function FriendsPage() {
           <h2 className="dawa-panel__title">Pending invitations</h2>
           {data?.requests.map((r) => (
             <div key={r.friendshipId} className="dawa-friend">
-              <div className="dawa-friend__avatar" style={{ background: r.avatarColor }}>{getInitials(r.name)}</div>
+              <UserAvatar name={r.name} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={44} />
               <div style={{ flex: 1 }}>
                 <div className="dawa-friend__name">{r.name}</div>
                 <div className="dawa-friend__meta">{r.email}</div>
@@ -97,7 +102,7 @@ export default function FriendsPage() {
         )}
         {data?.friends.map((f, i) => (
           <motion.div key={f.id} className="dawa-friend" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-            <div className="dawa-friend__avatar" style={{ background: f.avatarColor }}>{getInitials(f.name)}</div>
+            <UserAvatar name={f.name} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={44} />
             <div style={{ flex: 1 }}>
               <div className="dawa-friend__name">{f.name}</div>
               <div className="dawa-friend__meta">This week: {f.weekRate}% salah</div>

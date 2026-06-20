@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:clean": "rm -rf .next && next dev",
+    "clean": "rm -rf .next",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
@@ -19,6 +21,7 @@
     "framer-motion": "^11.11.17",
     "jose": "^5.9.6",
     "next": "^14.2.18",
+    "nodemailer": "^9.0.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.17.6",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",

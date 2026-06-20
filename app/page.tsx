@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IslamicBackdrop } from '@/components/layout/IslamicBackdrop';
+import { LandingBackdrop } from '@/components/landing/LandingBackdrop';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
+import { PeopleFeedback } from '@/components/landing/PeopleFeedback';
 import { DeveloperCredit } from '@/components/landing/DeveloperCredit';
 import { SITE_TAGLINE } from '@/lib/constants';
 
@@ -33,7 +34,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <IslamicBackdrop />
+      <LandingBackdrop />
       <div className="dawa-landing">
         <header className="dawa-landing-nav">
           <div className="dawa-landing-nav__inner">
@@ -158,6 +159,8 @@ export default function LandingPage() {
           <p className="dawa-section__sub dawa-section__sub--center">Free forever. No ads. No limits. For the sake of Allah.</p>
           <Link href="/login" className="dawa-btn dawa-btn--primary">Create Free Account</Link>
         </section>
+
+        <PeopleFeedback />
 
         <DeveloperCredit />
 

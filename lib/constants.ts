@@ -21,6 +21,17 @@ export const PRAYER_ARABIC: Record<PrayerName, string> = {
   ISHA: 'العشاء',
 };
 
+/** Sunnah units per fard — each tiny checkbox is one unit (typically 2 rakʿah) */
+export const SUNNAH_SLOTS: Record<PrayerName, { before: number; after: number }> = {
+  FAJR: { before: 1, after: 0 },
+  DHUHR: { before: 2, after: 1 },
+  ASR: { before: 0, after: 0 },
+  MAGHRIB: { before: 0, after: 1 },
+  ISHA: { before: 0, after: 1 },
+};
+
+export type SalahKind = 'FARD' | 'SUNNAH_BEFORE' | 'SUNNAH_AFTER';
+
 export const THEME_COLORS = ['green', 'blue', 'gold', 'purple', 'silver', 'pink'] as const;
 export type ThemeColor = (typeof THEME_COLORS)[number];
 
@@ -35,7 +46,11 @@ export const THEME_COLOR_LABELS: Record<ThemeColor, string> = {
 
 export const SITE_LOGO_SRC = '/assets/images/Logo.webp';
 export const LANDING_HERO_SRC = '/assets/images/landing.webp';
+export const LANDING_VIDEO_SRC = '/assets/videos/landing.webm';
+export const LANDING_VIDEO_MOBILE_SRC = '/assets/videos/landing-mobile.webm';
 export const GATE_ARCH_SRC = '/assets/images/Gate.webp';
+export const TRACKER_CARD_SRC = '/assets/images/tracker-card.svg';
+export const CONFETTI_SCRIPT_SRC = '/assets/scripts/confetti.js';
 
 export const DEVELOPER = {
   name: 'S.M. Obaydur Rahman',
@@ -82,6 +97,17 @@ export function getDailyInspiration(date = new Date()) {
   );
   return DAILY_INSPIRATIONS[dayOfYear % DAILY_INSPIRATIONS.length];
 }
+
+export const AVATAR_COLORS = [
+  '#d4af37',
+  '#2eb88a',
+  '#3b9eff',
+  '#9b7bf7',
+  '#b8c5d6',
+  '#f06bab',
+  '#e85d5d',
+  '#3ecf8e',
+] as const;
 
 export function getInitials(name: string) {
   return name
