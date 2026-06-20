@@ -17,14 +17,10 @@ function AppShell({ children }: { children: React.ReactNode }) {
   }, [loading, user, router]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && user) {
       window.dispatchEvent(new CustomEvent('appAuthReady'));
     }
-  }, [loading]);
-
-  if (loading || !user) {
-    return null;
-  }
+  }, [loading, user]);
 
   return (
     <>
@@ -32,7 +28,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
       <IslamicBackdrop />
       <div className="dawa-shell">
         <AppHeader />
-        <main className="dawa-main">{children}</main>
+        <main className="dawa-main">
+          {loading ? (
+            <p className="dawa-page-loading">Loading your sanctuary…</p>
+          ) : user ? (
+            children
+          ) : null}
+        </main>
         <MobileTabBar />
       </div>
     </>

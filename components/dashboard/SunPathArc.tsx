@@ -117,8 +117,18 @@ export function SunPathArc() {
   const compact = useCompactArc();
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
+    const sync = () => setNow(new Date());
+    sync();
+    const msUntilNextMinute = (60 - new Date().getSeconds()) * 1000;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+    const timeoutId = setTimeout(() => {
+      sync();
+      intervalId = setInterval(sync, 60_000);
+    }, msUntilNextMinute);
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, []);
 
   const { data: times } = useSWR<PrayerTimesPayload>('/api/prayer-times', fetcher, {

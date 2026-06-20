@@ -1,8 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { StarRating } from '@/components/ui/StarRating';
-import { VIEWPORT_EAGER } from '@/lib/motion-presets';
 
 const TESTIMONIALS = [
   {
@@ -48,14 +46,10 @@ export function PeopleFeedback() {
       </div>
 
       <div className="dawa-feedback__grid">
-        {TESTIMONIALS.map((item, i) => (
-          <motion.blockquote
+        {TESTIMONIALS.map((item) => (
+          <blockquote
             key={item.name}
             className="dawa-feedback__card"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VIEWPORT_EAGER}
-            transition={{ delay: i * 0.08 }}
             cite={`${item.name}, ${item.location}`}
           >
             <StarRating rating={item.rating} size="sm" />
@@ -64,7 +58,7 @@ export function PeopleFeedback() {
               <span className="dawa-feedback__name">{item.name}</span>
               <span className="dawa-feedback__location">{item.location}</span>
             </footer>
-          </motion.blockquote>
+          </blockquote>
         ))}
       </div>
     </section>

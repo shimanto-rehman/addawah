@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
@@ -90,13 +89,6 @@ export function AppHeader() {
                 href={item.href}
                 className={`dawa-nav-link${active ? ' is-active' : ''}`}
               >
-                {active && (
-                  <motion.span
-                    layoutId="dawa-nav-pill"
-                    className="dawa-nav-link__pill"
-                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                  />
-                )}
                 <span className="dawa-nav-link__icon">
                   <NavIcon name={item.icon} />
                 </span>

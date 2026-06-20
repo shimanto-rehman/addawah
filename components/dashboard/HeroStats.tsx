@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import useSWR from 'swr';
 import type { PrayerName } from '@/lib/constants';
 
@@ -32,6 +31,7 @@ export function HeroStats() {
   const { data } = useSWR<Stats>('/api/stats', fetcher, {
     refreshInterval: 60_000,
     revalidateOnFocus: false,
+    revalidateIfStale: false,
   });
 
   const weekPct = data ? Math.round((data.weekCompleted / data.weekTotal) * 100) : 0;
@@ -107,11 +107,9 @@ export function HeroStats() {
           aria-valuemax={100}
           aria-label="Lifetime fard prayed since you started tracking"
         >
-          <motion.span
+          <span
             className="dawa-metrics__bar-prayed"
-            initial={{ width: 0 }}
-            animate={{ width: `${prayedShare}%` }}
-            transition={{ delay: 0.2, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            style={{ width: `${prayedShare}%` }}
           />
         </div>
         <div className="dawa-metrics__progress-foot">

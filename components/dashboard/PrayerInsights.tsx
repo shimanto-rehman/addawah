@@ -155,6 +155,7 @@ export function PrayerInsights() {
   const { data, isLoading } = useSWR<PrayerInsightsPayload>('/api/insights', fetcher, {
     refreshInterval: 300_000,
     revalidateOnFocus: false,
+    revalidateIfStale: false,
   });
 
   const theme = chartTheme();

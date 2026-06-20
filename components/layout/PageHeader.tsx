@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
 import { SunPathArc } from '@/components/dashboard/SunPathArc';
 import { getGregorianLabel, toHijri } from '@/lib/salah-utils';
 import { UserAvatar } from '@/components/profile/UserAvatar';
@@ -29,15 +28,9 @@ function HijriBlock({ compact = false }: { compact?: boolean }) {
 
 function HomeHeader({ greeting, title }: { greeting?: string; title: string }) {
   const { user } = useApp();
-  const reduceMotion = useReducedMotion();
 
   return (
-    <motion.header
-      className="dawa-sky"
-      initial={reduceMotion ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.45 }}
-    >
+    <header className="dawa-sky">
       <div className="dawa-sky__top">
         <Link href="/profile" className="dawa-sky__who">
           {user && (
@@ -57,7 +50,7 @@ function HomeHeader({ greeting, title }: { greeting?: string; title: string }) {
       </div>
 
       <SunPathArc />
-    </motion.header>
+    </header>
   );
 }
 
@@ -69,19 +62,13 @@ export function PageHeader({
   variant = 'page',
 }: PageHeaderProps) {
   const gregorian = getGregorianLabel();
-  const reduceMotion = useReducedMotion();
 
   if (variant === 'home') {
     return <HomeHeader greeting={greeting} title={title} />;
   }
 
   return (
-    <motion.header
-      className="dawa-intro dawa-intro--page"
-      initial={reduceMotion ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.45 }}
-    >
+    <header className="dawa-intro dawa-intro--page">
       <div className="dawa-intro__sheet dawa-intro__sheet--page">
         <div className="dawa-intro__copy">
           {arabicLabel && <p className="dawa-intro__ar dawa-intro__ar--ghost">{arabicLabel}</p>}
@@ -91,6 +78,6 @@ export function PageHeader({
         </div>
         <HijriBlock compact />
       </div>
-    </motion.header>
+    </header>
   );
 }

@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic';
 import useSWR from 'swr';
-import { LazyWhenVisible } from '@/components/ui/LazyWhenVisible';
 import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
 import type { CoachingTip } from '@/lib/analytics-coaching';
 import type { PrayerName } from '@/lib/constants';
@@ -10,18 +9,12 @@ import type { AnalyticsChartsData } from '@/components/analytics/AnalyticsCharts
 
 const PrayerInsights = dynamic(
   () => import('@/components/dashboard/PrayerInsights').then((m) => ({ default: m.PrayerInsights })),
-  {
-    ssr: false,
-    loading: () => <p className="dawa-analytics__loading">Loading prayer insights…</p>,
-  },
+  { ssr: false, loading: () => <p className="dawa-analytics__loading">Loading prayer insights…</p> },
 );
 
 const AnalyticsChartsGrid = dynamic(
   () => import('@/components/analytics/AnalyticsChartsGrid').then((m) => ({ default: m.AnalyticsChartsGrid })),
-  {
-    ssr: false,
-    loading: () => <p className="dawa-analytics__loading">Loading charts…</p>,
-  },
+  { ssr: false, loading: () => <p className="dawa-analytics__loading">Loading charts…</p> },
 );
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -44,6 +37,7 @@ type AnalyticsPayload = AnalyticsChartsData & {
 const swrOpts = {
   refreshInterval: 300_000,
   revalidateOnFocus: false,
+  revalidateIfStale: false,
 };
 
 export function AnalyticsHub() {
@@ -115,23 +109,11 @@ export function AnalyticsHub() {
         </section>
       )}
 
-      <LazyWhenVisible
-        minHeight={320}
-        fallback={<p className="dawa-analytics__loading">Loading prayer insights…</p>}
-      >
-        <div className="dawa-analytics__insights-wrap">
-          <PrayerInsights />
-        </div>
-      </LazyWhenVisible>
+      <div className="dawa-analytics__insights-wrap">
+        <PrayerInsights />
+      </div>
 
-      {chartsData && (
-        <LazyWhenVisible
-          minHeight={400}
-          fallback={<p className="dawa-analytics__loading">Loading charts…</p>}
-        >
-          <AnalyticsChartsGrid data={chartsData} />
-        </LazyWhenVisible>
-      )}
+      {chartsData && <AnalyticsChartsGrid data={chartsData} />}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Preloader from '@/components/proloader/addawah-Preloader';
 
 const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings', '/u'];
@@ -14,21 +14,25 @@ function isAppRoute(pathname: string) {
 
 export function PreloaderGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const authReadyRef = useRef(!isAppRoute(pathname));
   const [showPreloader, setShowPreloader] = useState(true);
   const [resourcesReady, setResourcesReady] = useState(false);
-  const [authReady, setAuthReady] = useState(() => !isAppRoute(pathname));
+  const [authReady, setAuthReady] = useState(authReadyRef.current);
 
   const onAppAuthReady = useCallback(() => {
+    authReadyRef.current = true;
     setAuthReady(true);
   }, []);
 
   useEffect(() => {
     if (!isAppRoute(pathname)) {
+      authReadyRef.current = true;
       setAuthReady(true);
       return;
     }
 
-    setAuthReady(false);
+    if (authReadyRef.current) return;
+
     window.addEventListener('appAuthReady', onAppAuthReady);
     return () => window.removeEventListener('appAuthReady', onAppAuthReady);
   }, [pathname, onAppAuthReady]);

@@ -10,7 +10,6 @@ import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { PeopleFeedback } from '@/components/landing/PeopleFeedback';
 import { DeveloperCredit } from '@/components/landing/DeveloperCredit';
 import { SITE_TAGLINE } from '@/lib/constants';
-import { VIEWPORT_EAGER } from '@/lib/motion-presets';
 
 const FEATURES = [
   { icon: '🕌', title: 'Salah Tracker', desc: 'A weekly mihrab-style tracker framed by an ornate golden arch — mark all five prayers with one tap.' },
@@ -104,12 +103,7 @@ export default function LandingPage() {
 
         <section className="dawa-hero">
           <div className="dawa-hero__grid">
-            <motion.div
-              className="dawa-hero__content"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="dawa-hero__content">
               <p className="dawa-hero__bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
               <h1 className="dawa-hero__title">
                 Pray <em>Together.</em><br />
@@ -120,15 +114,10 @@ export default function LandingPage() {
                 <Link href="/login" className="dawa-btn dawa-btn--primary">Start Your Journey</Link>
                 <a href="#features" className="dawa-btn dawa-btn--outline">Explore Features</a>
               </div>
-            </motion.div>
-            <motion.div
-              className="dawa-hero__visual"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.2 }}
-            >
+            </div>
+            <div className="dawa-hero__visual">
               <div className="dawa-hero__arch-frame" aria-hidden />
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -138,19 +127,12 @@ export default function LandingPage() {
             <p className="dawa-section__sub">Every pixel honours the beauty of Islamic tradition while staying modern and effortless.</p>
           </div>
           <div className="dawa-features">
-            {FEATURES.map((f, i) => (
-              <motion.article
-                key={f.title}
-                className="dawa-feature"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={VIEWPORT_EAGER}
-                transition={{ delay: i * 0.07 }}
-              >
+            {FEATURES.map((f) => (
+              <article key={f.title} className="dawa-feature">
                 <div className="dawa-feature__icon">{f.icon}</div>
                 <h3 className="dawa-feature__title">{f.title}</h3>
                 <p className="dawa-feature__desc">{f.desc}</p>
-              </motion.article>
+              </article>
             ))}
           </div>
         </section>
