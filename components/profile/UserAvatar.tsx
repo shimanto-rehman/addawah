@@ -6,7 +6,22 @@ type UserAvatarProps = {
   avatarUrl?: string | null;
   size?: number;
   className?: string;
+  variant?: 'silhouette' | 'initials';
 };
+
+function SilhouetteIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size * 0.52}
+      height={size * 0.52}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.87 0-7 2.13-7 4.75V21h14v-2.25C19 16.13 15.87 14 12 14z" />
+    </svg>
+  );
+}
 
 export function UserAvatar({
   name,
@@ -14,6 +29,7 @@ export function UserAvatar({
   avatarUrl,
   size = 36,
   className = '',
+  variant = 'silhouette',
 }: UserAvatarProps) {
   const style = { width: size, height: size, fontSize: Math.max(10, Math.round(size * 0.32)) };
 
@@ -28,13 +44,26 @@ export function UserAvatar({
     );
   }
 
+  if (variant === 'initials') {
+    return (
+      <span
+        className={`dawa-avatar dawa-avatar--initials${className ? ` ${className}` : ''}`}
+        style={{ ...style, background: avatarColor }}
+        aria-hidden
+      >
+        {getInitials(name)}
+      </span>
+    );
+  }
+
   return (
     <span
-      className={`dawa-avatar dawa-avatar--initials${className ? ` ${className}` : ''}`}
-      style={{ ...style, background: avatarColor }}
+      className={`dawa-avatar dawa-avatar--silhouette${className ? ` ${className}` : ''}`}
+      style={style}
       aria-hidden
+      title={name}
     >
-      {getInitials(name)}
+      <SilhouetteIcon size={size} />
     </span>
   );
 }

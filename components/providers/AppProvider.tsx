@@ -22,7 +22,7 @@ const AppContext = createContext<AppContextValue>({
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, mutate } = useSWR<{ user: SessionUser | null }>('/api/auth/me', fetcher, {
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
   const refresh = useCallback(() => mutate(), [mutate]);

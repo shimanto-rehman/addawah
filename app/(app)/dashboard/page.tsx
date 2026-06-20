@@ -1,7 +1,7 @@
 'use client';
 
 import { HeroStats } from '@/components/dashboard/HeroStats';
-import { PrayerInsights } from '@/components/dashboard/PrayerInsights';
+import { MoodCheckIn } from '@/components/dashboard/MoodCheckIn';
 import { SalahTracker } from '@/components/dashboard/SalahTracker';
 import { HijriCalendar } from '@/components/dashboard/HijriCalendar';
 import { InspirationCard } from '@/components/dashboard/InspirationCard';
@@ -20,7 +20,7 @@ export default function DashboardPage() {
       />
 
       <HeroStats />
-      <PrayerInsights />
+      <MoodCheckIn />
       <SalahTracker />
 
       <div className="dawa-duo">

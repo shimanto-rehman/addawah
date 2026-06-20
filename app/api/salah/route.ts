@@ -7,6 +7,8 @@ import {
   buildSalahGrid,
   startOfWeek,
 } from '@/lib/salah-utils';
+import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
+import type { PrayerName } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
@@ -73,7 +75,20 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return jsonOk({ ok: true });
+    let coinsEarned = 0;
+    if (body.completed && body.kind === 'FARD' && body.unit === 0) {
+      const reward = await computePrayerReward(
+        user!.city,
+        user!.country,
+        body.prayer as PrayerName,
+      );
+      if (reward) {
+        await awardGoldCoins(user!.id, reward.amount);
+        coinsEarned = reward.amount;
+      }
+    }
+
+    return jsonOk({ ok: true, coinsEarned });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError('Invalid input');
     console.error(e);

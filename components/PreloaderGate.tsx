@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import Preloader from '@/components/proloader/addawah-Preloader';
 
-const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings'];
+const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings', '/u'];
 
 function isAppRoute(pathname: string) {
   return APP_ROUTE_PREFIXES.some(

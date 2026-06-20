@@ -3,7 +3,21 @@ import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { normalizeMobile } from '@/lib/phone-countries';
+import {
+  DEFAULT_PROFILE_PRIVACY,
+  mergeProfilePrivacy,
+  parseProfilePrivacy,
+  privacyPatchSchema,
+  PROFILE_PRIVACY_KEYS,
+} from '@/lib/profile-privacy';
 import { isValidEmail, sanitizeEmail, sanitizeName } from '@/lib/validation';
+
+const privacySchema = z.object(
+  Object.fromEntries(PROFILE_PRIVACY_KEYS.map((k) => [k, z.boolean().optional()])) as Record<
+    (typeof PROFILE_PRIVACY_KEYS)[number],
+    z.ZodOptional<z.ZodBoolean>
+  >,
+);
 
 const patchSchema = z.object({
   name: z.string().min(2).max(80).optional(),
@@ -14,7 +28,35 @@ const patchSchema = z.object({
   avatarColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
   themeColor: z.enum(['green', 'blue', 'gold', 'purple', 'silver', 'pink']).optional(),
   themeMode: z.enum(['dark', 'light']).optional(),
+  profilePrivacy: privacySchema.optional(),
 });
+
+const profileSelect = {
+  id: true,
+  name: true,
+  username: true,
+  email: true,
+  mobile: true,
+  avatarColor: true,
+  avatarUrl: true,
+  city: true,
+  country: true,
+  themeColor: true,
+  themeMode: true,
+  profilePrivacy: true,
+  createdAt: true,
+} as const;
+
+function formatProfile(profile: {
+  profilePrivacy: unknown;
+  createdAt: Date;
+  [key: string]: unknown;
+}) {
+  return {
+    ...profile,
+    profilePrivacy: parseProfilePrivacy(profile.profilePrivacy),
+  };
+}
 
 export async function GET() {
   const { user, error } = await apiRequireAuth();
@@ -22,24 +64,11 @@ export async function GET() {
 
   const profile = await prisma.user.findUnique({
     where: { id: user!.id },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      mobile: true,
-      avatarColor: true,
-      avatarUrl: true,
-      city: true,
-      country: true,
-      themeColor: true,
-      themeMode: true,
-      createdAt: true,
-    },
+    select: profileSelect,
   });
 
   if (!profile) return jsonError('User not found', 404);
-  return jsonOk({ profile });
+  return jsonOk({ profile: formatProfile(profile) });
 }
 
 export async function PATCH(req: NextRequest) {
@@ -48,7 +77,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = patchSchema.parse(await req.json());
-    const data: Record<string, string | null> = {};
+    const data: Record<string, string | null | object> = {};
 
     if (body.name !== undefined) {
       data.name = sanitizeName(body.name);
@@ -96,26 +125,25 @@ export async function PATCH(req: NextRequest) {
       data.themeMode = body.themeMode;
     }
 
+    if (body.profilePrivacy !== undefined) {
+      const current = await prisma.user.findUnique({
+        where: { id: user!.id },
+        select: { profilePrivacy: true },
+      });
+      const merged = mergeProfilePrivacy(
+        parseProfilePrivacy(current?.profilePrivacy ?? DEFAULT_PROFILE_PRIVACY),
+        privacyPatchSchema(body.profilePrivacy),
+      );
+      data.profilePrivacy = merged;
+    }
+
     const profile = await prisma.user.update({
       where: { id: user!.id },
       data,
-      select: {
-        id: true,
-        name: true,
-        username: true,
-        email: true,
-        mobile: true,
-        avatarColor: true,
-        avatarUrl: true,
-        city: true,
-        country: true,
-        themeColor: true,
-        themeMode: true,
-        createdAt: true,
-      },
+      select: profileSelect,
     });
 
-    return jsonOk({ profile });
+    return jsonOk({ profile: formatProfile(profile) });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0]?.message ?? 'Invalid input', 400);
     console.error(e);

@@ -130,12 +130,7 @@ export function SalahTracker() {
   }
 
   return (
-    <motion.section
-      className="dawa-salah"
-      initial={{ opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <section className="dawa-salah">
       <div className="dawa-salah__card">
         <div className="dawa-salah__banner">
           <div className="dawa-salah__banner-bg" aria-hidden />
@@ -248,6 +243,6 @@ export function SalahTracker() {
           )}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

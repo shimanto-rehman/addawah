@@ -2,8 +2,16 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
+import { PRAYERS, type PrayerName } from '@/lib/constants';
+import {
+  awardGoldCoins,
+  computeDawahReward,
+} from '@/lib/rewards';
 
-const schema = z.object({ friendId: z.string() });
+const schema = z.object({
+  friendId: z.string(),
+  prayer: z.enum(['FAJR', 'DHUHR', 'ASR', 'MAGHRIB', 'ISHA']).optional(),
+});
 
 export async function POST(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
@@ -23,15 +31,29 @@ export async function POST(req: NextRequest) {
     });
     if (!friendship) return jsonError('Not friends with this user', 403);
 
+    const prayer = body.prayer as PrayerName | undefined;
+
     await prisma.poke.create({
       data: {
         fromUserId: user!.id,
         toUserId: body.friendId,
-        message: 'Assalamu Alaikum — a gentle reminder to keep up with your salah today 🤲',
+        prayer: prayer ?? null,
+        message: prayer
+          ? `Assalamu Alaikum — ${prayer} wakt is active. May Allah make it easy for you 🤲`
+          : 'Assalamu Alaikum — a gentle reminder to keep up with your salah today 🤲',
       },
     });
 
-    return jsonOk({ ok: true });
+    let coinsEarned = 0;
+    if (prayer) {
+      const reward = await computeDawahReward(user!.city, user!.country, prayer);
+      if (reward) {
+        await awardGoldCoins(user!.id, reward.amount);
+        coinsEarned = reward.amount;
+      }
+    }
+
+    return jsonOk({ ok: true, coinsEarned });
   } catch {
     return jsonError('Failed to send reminder', 500);
   }

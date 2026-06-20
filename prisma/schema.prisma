@@ -21,6 +21,8 @@ model User {
   themeMode    String   @default("dark")
   city         String?
   country      String   @default("Bangladesh")
+  goldCoins    Int      @default(0)
+  profilePrivacy Json   @default("{}")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -30,6 +32,35 @@ model User {
   recvFriends  Friendship[] @relation("RecvFriendships")
   sentPokes    Poke[]       @relation("SentPokes")
   recvPokes    Poke[]       @relation("RecvPokes")
+  deletionOtp  AccountDeletionOtp?
+  moodCheckIns MoodCheckIn[]
+}
+
+model MoodCheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  moodId    String
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model AccountDeletionOtp {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int      @default(0)
+  sendCount  Int      @default(1)
+  lastSentAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }
 
 model Session {
@@ -79,6 +110,7 @@ model Poke {
   fromUserId String
   toUserId   String
   message    String    @default("Don't forget your salah today 🤲")
+  prayer     Prayer?
   readAt     DateTime?
   createdAt  DateTime  @default(now())
   fromUser   User      @relation("SentPokes", fields: [fromUserId], references: [id], onDelete: Cascade)

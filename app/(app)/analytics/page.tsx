@@ -1,6 +1,6 @@
 'use client';
 
-import { AnalyticsCharts } from '@/components/analytics/AnalyticsCharts';
+import { AnalyticsHub } from '@/components/analytics/AnalyticsHub';
 import { PageHeader } from '@/components/layout/PageHeader';
 
 export default function AnalyticsPage() {
@@ -8,10 +8,10 @@ export default function AnalyticsPage() {
     <>
       <PageHeader
         title="Worship Analytics"
-        subtitle="Reflect on your journey — every prayer counts."
+        subtitle="Reflect deeply — every prayer shapes your journey."
         arabicLabel="الإحصاء"
       />
-      <AnalyticsCharts />
+      <AnalyticsHub />
     </>
   );
 }

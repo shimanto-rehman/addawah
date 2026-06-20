@@ -29,7 +29,10 @@ function fmt(n: number | undefined) {
 }
 
 export function HeroStats() {
-  const { data } = useSWR<Stats>('/api/stats', fetcher, { refreshInterval: 30000 });
+  const { data } = useSWR<Stats>('/api/stats', fetcher, {
+    refreshInterval: 60_000,
+    revalidateOnFocus: false,
+  });
 
   const weekPct = data ? Math.round((data.weekCompleted / data.weekTotal) * 100) : 0;
   const expected = data?.lifetimeExpected ?? 0;
@@ -46,11 +49,8 @@ export function HeroStats() {
   ];
 
   return (
-    <motion.section
+    <section
       className="dawa-metrics"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-label="Prayer journey statistics"
     >
       <div className="dawa-metrics__lead">
@@ -66,17 +66,14 @@ export function HeroStats() {
       </div>
 
       <ul className="dawa-metrics__stream">
-        {stream.map((item, i) => (
-          <motion.li
+        {stream.map((item) => (
+          <li
             key={item.label}
             className="dawa-metrics__stream-item"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.06 + i * 0.04, duration: 0.4 }}
           >
             <span className="dawa-metrics__stream-val">{item.value}</span>
             {item.label}
-          </motion.li>
+          </li>
         ))}
       </ul>
 
@@ -130,6 +127,6 @@ export function HeroStats() {
           : 'Log prayers to unlock insights'}
         {data ? ` · ${data.activeDays} active days` : ''}
       </p>
-    </motion.section>
+    </section>
   );
 }

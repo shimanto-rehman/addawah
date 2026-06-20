@@ -6,6 +6,7 @@ import { useTheme } from '@/components/providers/ThemeProvider';
 import { THEME_COLORS, THEME_COLOR_LABELS, type ThemeColor } from '@/lib/constants';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection';
 
 export default function SettingsPage() {
   const { mode, color, toggleMode, setColor } = useTheme();
@@ -67,6 +68,8 @@ export default function SettingsPage() {
           {saved ? 'Theme saved ✓' : 'Save theme preferences'}
         </button>
       </div>
+
+      <DeleteAccountSection />
     </>
   );
 }

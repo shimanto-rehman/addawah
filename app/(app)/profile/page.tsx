@@ -10,7 +10,16 @@ import { useApp } from '@/components/providers/AppProvider';
 import { useFieldAvailability } from '@/hooks/useFieldAvailability';
 import { AVATAR_COLORS } from '@/lib/constants';
 import { PHONE_COUNTRIES } from '@/lib/phone-countries';
+import {
+  DEFAULT_PROFILE_PRIVACY,
+  PROFILE_PRIVACY_KEYS,
+  PROFILE_PRIVACY_META,
+  type ProfilePrivacy,
+} from '@/lib/profile-privacy';
+import { userProfilePath } from '@/lib/user-public-stats';
 import { isValidEmail, sanitizeEmail, sanitizeName } from '@/lib/validation';
+import Link from 'next/link';
+import { ProfilePrayerCharts } from '@/components/profile/ProfilePrayerCharts';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -24,6 +33,7 @@ type Profile = {
   avatarUrl: string | null;
   city: string | null;
   country: string;
+  profilePrivacy: ProfilePrivacy;
 };
 
 export default function ProfilePage() {
@@ -39,6 +49,7 @@ export default function ProfilePage() {
   const [country, setCountry] = useState('');
   const [avatarColor, setAvatarColor] = useState('#d4af37');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [profilePrivacy, setProfilePrivacy] = useState<ProfilePrivacy>(DEFAULT_PROFILE_PRIVACY);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -52,6 +63,7 @@ export default function ProfilePage() {
     setCountry(profile.country);
     setAvatarColor(profile.avatarColor);
     setAvatarUrl(profile.avatarUrl);
+    setProfilePrivacy(profile.profilePrivacy ?? DEFAULT_PROFILE_PRIVACY);
   }, [profile]);
 
   const cleanEmail = sanitizeEmail(email);
@@ -117,6 +129,7 @@ export default function ProfilePage() {
         city,
         country,
         avatarColor,
+        profilePrivacy,
       }),
     });
     const json = await res.json();
@@ -134,7 +147,7 @@ export default function ProfilePage() {
     <>
       <PageHeader
         title="Profile"
-        subtitle="Your photo and account details."
+        subtitle="Your photo, account details, and what others can see."
         arabicLabel="الملف الشخصي"
       />
 
@@ -296,13 +309,54 @@ export default function ProfilePage() {
               </select>
             </div>
 
-            {error && <p className="dawa-profile__error">{error}</p>}
+          </section>
 
+          <section className="dawa-panel dawa-profile__privacy">
+            <h2 className="dawa-panel__title">Public profile visibility</h2>
+            <p className="dawa-panel__sub">
+              Choose what connections and visitors see on your public profile and the Wakt board.
+              Your name and username are always visible.
+            </p>
+            {profile?.username && (
+              <p className="dawa-profile__preview-link">
+                <Link href={userProfilePath(profile.username)} className="dawa-link">
+                  Preview your public profile →
+                </Link>
+              </p>
+            )}
+            <ul className="dawa-privacy-list">
+              {PROFILE_PRIVACY_KEYS.map((key) => (
+                <li key={key} className="dawa-privacy-item">
+                  <div className="dawa-privacy-item__text">
+                    <p className="dawa-privacy-item__label">{PROFILE_PRIVACY_META[key].label}</p>
+                    <p className="dawa-privacy-item__desc">{PROFILE_PRIVACY_META[key].description}</p>
+                  </div>
+                  <label className="dawa-privacy-toggle">
+                    <input
+                      type="checkbox"
+                      checked={profilePrivacy[key]}
+                      onChange={(e) =>
+                        setProfilePrivacy((prev) => ({ ...prev, [key]: e.target.checked }))
+                      }
+                    />
+                    <span className="dawa-privacy-toggle__track" aria-hidden />
+                    <span className="sr-only">
+                      {profilePrivacy[key] ? 'Public' : 'Private'}: {PROFILE_PRIVACY_META[key].label}
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            {error && <p className="dawa-profile__error">{error}</p>}
             <button type="submit" className="dawa-btn dawa-btn--primary" disabled={!canSave}>
               {saved ? 'Saved ✓' : 'Save profile'}
             </button>
           </section>
         </form>
+      )}
+
+      {!isLoading && profile?.username && (
+        <ProfilePrayerCharts insightsUrl="/api/insights" title="Your prayer charts" />
       )}
     </>
   );

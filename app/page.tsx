@@ -10,6 +10,7 @@ import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { PeopleFeedback } from '@/components/landing/PeopleFeedback';
 import { DeveloperCredit } from '@/components/landing/DeveloperCredit';
 import { SITE_TAGLINE } from '@/lib/constants';
+import { VIEWPORT_EAGER } from '@/lib/motion-presets';
 
 const FEATURES = [
   { icon: '🕌', title: 'Salah Tracker', desc: 'A weekly mihrab-style tracker framed by an ornate golden arch — mark all five prayers with one tap.' },
@@ -143,7 +144,7 @@ export default function LandingPage() {
                 className="dawa-feature"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={VIEWPORT_EAGER}
                 transition={{ delay: i * 0.07 }}
               >
                 <div className="dawa-feature__icon">{f.icon}</div>

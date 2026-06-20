@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AuthAside } from '@/components/auth/AuthAside';
 import { AuthFrame } from '@/components/auth/AuthFrame';
 import { PhoneInput } from '@/components/auth/PhoneInput';
@@ -22,6 +23,7 @@ type AuthMode = 'signin' | 'register';
 type SignInMethod = 'email' | 'mobile';
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState<AuthMode>('signin');
   const [signInMethod, setSignInMethod] = useState<SignInMethod>('email');
   const [name, setName] = useState('');
@@ -33,6 +35,12 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('deleted') === '1') {
+      setInfo('Your account has been permanently deleted.');
+    }
+  }, [searchParams]);
 
   const cleanEmail = sanitizeEmail(email);
   const cleanUsername = sanitizeUsername(username);

@@ -2,6 +2,27 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { deleteStoredAvatar, saveAvatar } from '@/lib/avatar-storage';
+import { parseProfilePrivacy } from '@/lib/profile-privacy';
+
+const profileSelect = {
+  id: true,
+  name: true,
+  username: true,
+  email: true,
+  mobile: true,
+  avatarColor: true,
+  avatarUrl: true,
+  city: true,
+  country: true,
+  themeColor: true,
+  themeMode: true,
+  profilePrivacy: true,
+  createdAt: true,
+} as const;
+
+function formatProfile(profile: { profilePrivacy: unknown; [key: string]: unknown }) {
+  return { ...profile, profilePrivacy: parseProfilePrivacy(profile.profilePrivacy) };
+}
 
 export async function POST(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
@@ -26,23 +47,10 @@ export async function POST(req: NextRequest) {
     const profile = await prisma.user.update({
       where: { id: user!.id },
       data: { avatarUrl },
-      select: {
-        id: true,
-        name: true,
-        username: true,
-        email: true,
-        mobile: true,
-        avatarColor: true,
-        avatarUrl: true,
-        city: true,
-        country: true,
-        themeColor: true,
-        themeMode: true,
-        createdAt: true,
-      },
+      select: profileSelect,
     });
 
-    return jsonOk({ profile });
+    return jsonOk({ profile: formatProfile(profile) });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Upload failed';
     return jsonError(message, 400);
@@ -63,21 +71,8 @@ export async function DELETE() {
   const profile = await prisma.user.update({
     where: { id: user!.id },
     data: { avatarUrl: null },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-      mobile: true,
-      avatarColor: true,
-      avatarUrl: true,
-      city: true,
-      country: true,
-      themeColor: true,
-      themeMode: true,
-      createdAt: true,
-    },
+    select: profileSelect,
   });
 
-  return jsonOk({ profile });
+  return jsonOk({ profile: formatProfile(profile) });
 }

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { StarRating } from '@/components/ui/StarRating';
+import { VIEWPORT_EAGER } from '@/lib/motion-presets';
 
 const TESTIMONIALS = [
   {
@@ -53,7 +54,7 @@ export function PeopleFeedback() {
             className="dawa-feedback__card"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={VIEWPORT_EAGER}
             transition={{ delay: i * 0.08 }}
             cite={`${item.name}, ${item.location}`}
           >

@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -154,7 +153,8 @@ function MissedAreaChart({
 
 export function PrayerInsights() {
   const { data, isLoading } = useSWR<PrayerInsightsPayload>('/api/insights', fetcher, {
-    refreshInterval: 120000,
+    refreshInterval: 300_000,
+    revalidateOnFocus: false,
   });
 
   const theme = chartTheme();
@@ -191,11 +191,8 @@ export function PrayerInsights() {
   };
 
   return (
-    <motion.section
+    <section
       className="dawa-insights"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-label="Prayer insights"
     >
       <div className="dawa-insights__grid">
@@ -297,6 +294,6 @@ export function PrayerInsights() {
           )}
         </article>
       </div>
-    </motion.section>
+    </section>
   );
 }
