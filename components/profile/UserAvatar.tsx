@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { getInitials } from '@/lib/constants';
 
 type UserAvatarProps = {
@@ -23,26 +26,14 @@ function SilhouetteIcon({ size }: { size: number }) {
   );
 }
 
-export function UserAvatar({
+function DefaultAvatar({
   name,
   avatarColor,
-  avatarUrl,
   size = 36,
-  className = '',
-  variant = 'silhouette',
-}: UserAvatarProps) {
+  className,
+  variant,
+}: Omit<UserAvatarProps, 'avatarUrl'>) {
   const style = { width: size, height: size, fontSize: Math.max(10, Math.round(size * 0.32)) };
-
-  if (avatarUrl) {
-    return (
-      <img
-        src={avatarUrl}
-        alt=""
-        className={`dawa-avatar dawa-avatar--photo${className ? ` ${className}` : ''}`}
-        style={style}
-      />
-    );
-  }
 
   if (variant === 'initials') {
     return (
@@ -59,11 +50,50 @@ export function UserAvatar({
   return (
     <span
       className={`dawa-avatar dawa-avatar--silhouette${className ? ` ${className}` : ''}`}
-      style={style}
+      style={{ ...style, background: `color-mix(in srgb, ${avatarColor} 28%, var(--surface-2))` }}
       aria-hidden
       title={name}
     >
       <SilhouetteIcon size={size} />
     </span>
+  );
+}
+
+export function UserAvatar({
+  name,
+  avatarColor,
+  avatarUrl,
+  size = 36,
+  className = '',
+  variant = 'silhouette',
+}: UserAvatarProps) {
+  const [photoFailed, setPhotoFailed] = useState(false);
+
+  useEffect(() => {
+    setPhotoFailed(false);
+  }, [avatarUrl]);
+
+  const style = { width: size, height: size, fontSize: Math.max(10, Math.round(size * 0.32)) };
+
+  if (!avatarUrl || photoFailed) {
+    return (
+      <DefaultAvatar
+        name={name}
+        avatarColor={avatarColor}
+        size={size}
+        className={className}
+        variant={variant}
+      />
+    );
+  }
+
+  return (
+    <img
+      src={avatarUrl}
+      alt=""
+      className={`dawa-avatar dawa-avatar--photo${className ? ` ${className}` : ''}`}
+      style={style}
+      onError={() => setPhotoFailed(true)}
+    />
   );
 }

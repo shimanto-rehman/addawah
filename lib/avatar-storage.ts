@@ -1,8 +1,7 @@
+import { del, put } from '@vercel/blob';
 import { mkdir, writeFile, unlink, readdir } from 'fs/promises';
 import path from 'path';
-
-const MAX_BYTES = 2 * 1024 * 1024;
-const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+import { validateAvatarFile } from './avatar-limits';
 
 function extForMime(type: string) {
   if (type === 'image/png') return 'png';
@@ -37,6 +36,22 @@ async function uploadCloudinary(file: File, userId: string): Promise<string> {
   return data.secure_url;
 }
 
+async function uploadVercelBlob(userId: string, file: File): Promise<string> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    throw new Error('Blob storage is not configured');
+  }
+
+  const ext = extForMime(file.type);
+  const blob = await put(`avatars/${userId}.${ext}`, file, {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
+
+  return blob.url;
+}
+
 async function saveLocalAvatar(userId: string, file: File): Promise<string> {
   const ext = extForMime(file.type);
   const dir = path.join(process.cwd(), 'public', 'uploads', 'avatars');
@@ -56,24 +71,37 @@ async function saveLocalAvatar(userId: string, file: File): Promise<string> {
 }
 
 export async function saveAvatar(userId: string, file: File): Promise<string> {
-  if (!ALLOWED_TYPES.has(file.type)) {
-    throw new Error('Use a JPG, PNG, or WebP image');
-  }
-  if (file.size > MAX_BYTES) {
-    throw new Error('Image must be 2MB or smaller');
+  const validationError = validateAvatarFile(file);
+  if (validationError) {
+    throw new Error(validationError);
   }
 
   if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_UPLOAD_PRESET) {
     return uploadCloudinary(file, userId);
   }
 
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    return uploadVercelBlob(userId, file);
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error(
+      'Profile photos require Cloudinary or Vercel Blob in production. Add CLOUDINARY_* or BLOB_READ_WRITE_TOKEN to your environment.',
+    );
+  }
+
   return saveLocalAvatar(userId, file);
 }
 
-export async function deleteStoredAvatar(userId: string, avatarUrl: string | null) {
+export async function deleteStoredAvatar(_userId: string, avatarUrl: string | null) {
   if (!avatarUrl) return;
 
   if (avatarUrl.includes('cloudinary.com')) return;
+
+  if (avatarUrl.includes('blob.vercel-storage.com')) {
+    await del(avatarUrl, { token: process.env.BLOB_READ_WRITE_TOKEN }).catch(() => {});
+    return;
+  }
 
   const base = avatarUrl.split('?')[0];
   const relative = base.replace(/^\//, '');

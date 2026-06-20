@@ -9,6 +9,7 @@ import { UserAvatar } from '@/components/profile/UserAvatar';
 import { useApp } from '@/components/providers/AppProvider';
 import { useFieldAvailability } from '@/hooks/useFieldAvailability';
 import { AVATAR_COLORS } from '@/lib/constants';
+import { MAX_AVATAR_LABEL, validateAvatarFile } from '@/lib/avatar-limits';
 import { PHONE_COUNTRIES } from '@/lib/phone-countries';
 import {
   DEFAULT_PROFILE_PRIVACY,
@@ -84,6 +85,12 @@ export default function ProfilePage() {
     mobile.length > 0;
 
   async function uploadAvatar(file: File) {
+    const validationError = validateAvatarFile(file);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setUploading(true);
     setError('');
     const form = new FormData();
@@ -195,7 +202,7 @@ export default function ProfilePage() {
                   e.target.value = '';
                 }}
               />
-              <p className="dawa-profile__photo-hint">JPG, PNG, or WebP · max 2MB</p>
+              <p className="dawa-profile__photo-hint">JPG, PNG, or WebP · max {MAX_AVATAR_LABEL}</p>
             </div>
 
             <div className="dawa-profile__colors">
