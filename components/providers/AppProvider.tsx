@@ -1,10 +1,11 @@
 'use client';
 
-import { createContext, useContext, useCallback, useMemo, ReactNode } from 'react';
+import { createContext, useContext, useCallback, useEffect, useMemo, ReactNode } from 'react';
 import useSWR from 'swr';
 import type { SessionUser } from '@/lib/auth';
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = (url: string) =>
+  fetch(url, { cache: 'no-store' }).then((r) => r.json());
 
 type AppContextValue = {
   user: SessionUser | null;
@@ -23,15 +24,39 @@ const AppContext = createContext<AppContextValue>({
 export function AppProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, mutate } = useSWR<{ user: SessionUser | null }>('/api/auth/me', fetcher, {
     revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+    dedupingInterval: 0,
   });
 
   const refresh = useCallback(() => mutate(), [mutate]);
 
-  const logout = useCallback(async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    await mutate({ user: null }, false);
-    window.location.href = '/login';
+  const verifySession = useCallback(async () => {
+    const res = await fetch('/api/auth/me', { cache: 'no-store' });
+    const next = (await res.json()) as { user: SessionUser | null };
+    await mutate(next, false);
+    return next.user;
   }, [mutate]);
+
+  const logout = useCallback(async () => {
+    await fetch('/api/auth/logout', { method: 'POST', cache: 'no-store' });
+    await mutate({ user: null }, false);
+    // replace (not href) so the dashboard is not kept in history for Back.
+    window.location.replace('/login');
+  }, [mutate]);
+
+  // Bfcache can restore a pre-logout React tree; re-check the session cookie.
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) return;
+      void (async () => {
+        const user = await verifySession();
+        if (!user) window.location.replace('/login');
+      })();
+    };
+
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, [verifySession]);
 
   const value = useMemo(
     () => ({

@@ -13,6 +13,7 @@ import {
 import {
   addDays,
   formatDateKey,
+  formatDateKeyLocal,
   formatWeekLabel,
   getSalahCell,
   getWeekDays,
@@ -102,7 +103,7 @@ export function SalahTracker() {
 
     try {
       await mutate(
-        async (currentData) => {
+        async () => {
           const res = await fetch('/api/salah', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -116,7 +117,9 @@ export function SalahTracker() {
           });
           if (!res.ok) throw new Error('Failed to save salah');
           if (markingComplete && kind === 'FARD') fireCelebrationConfetti();
-          return currentData;
+          const weekRes = await fetch(`/api/salah?week=${weekKey}`);
+          if (!weekRes.ok) throw new Error('Failed to refresh salah');
+          return weekRes.json();
         },
         {
           optimisticData: { grid: optimistic },

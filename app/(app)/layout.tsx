@@ -10,11 +10,19 @@ import { ThemeSync } from '@/components/providers/ThemeSync';
 
 function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { user, loading } = useApp();
+  const { user, loading, refresh } = useApp();
 
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
   }, [loading, user, router]);
+
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) refresh();
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, [refresh]);
 
   useEffect(() => {
     if (!loading && user) {

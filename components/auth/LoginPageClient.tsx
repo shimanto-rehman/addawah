@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { AuthAside } from '@/components/auth/AuthAside';
 import { AuthFrame } from '@/components/auth/AuthFrame';
@@ -40,6 +41,9 @@ export function LoginPageClient() {
     if (searchParams.get('deleted') === '1') {
       setInfo('Your account has been permanently deleted.');
     }
+    if (searchParams.get('reset') === '1') {
+      setInfo('Your password was updated. Sign in with your new password.');
+    }
   }, [searchParams]);
 
   const cleanEmail = sanitizeEmail(email);
@@ -78,11 +82,6 @@ export function LoginPageClient() {
     if (next === 'signin') setConfirmPassword('');
   }
 
-  function handleForgotPassword(e: React.MouseEvent) {
-    e.preventDefault();
-    setError('');
-    setInfo('Password reset is not available yet. Please contact support if you need help recovering your account.');
-  }
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -330,9 +329,9 @@ export function LoginPageClient() {
                 minLength={6}
                 labelAside={
                   mode === 'signin' ? (
-                    <button type="button" className="dawa-auth__forgot" onClick={handleForgotPassword}>
+                    <Link href="/reset-password" className="dawa-auth__forgot">
                       Forgot password?
-                    </button>
+                    </Link>
                   ) : undefined
                 }
               />

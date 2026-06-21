@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import useSWR from 'swr';
 import { MoodIcon } from '@/components/dashboard/MoodIcon';
 import { MOOD_OPTIONS } from '@/lib/moods';
@@ -35,18 +35,21 @@ export function MoodCheckIn() {
             <button
               type="button"
               className={`dawa-mood__btn${selected === m.id ? ' is-selected' : ''}`}
+              style={{ '--mood-color': m.color } as CSSProperties}
               title={m.label}
               aria-label={m.label}
               aria-pressed={selected === m.id}
               disabled={saving !== null}
               onClick={() => pick(m.id)}
             >
-              <MoodIcon
-                variant={m.variant}
-                color={m.color}
-                size={34}
-                className="dawa-mood__icon"
-              />
+              <span className="dawa-mood__icon-wrap">
+                <MoodIcon
+                  variant={m.variant}
+                  color={m.color}
+                  size={34}
+                  className="dawa-mood__icon"
+                />
+              </span>
               <span className="dawa-mood__label">{m.label}</span>
             </button>
           </li>

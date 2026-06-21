@@ -8,6 +8,7 @@ import { UserAvatar } from '@/components/profile/UserAvatar';
 import { GoldCoin, GoldCoinAmount } from '@/components/ui/GoldCoin';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { UserProfileLink } from '@/components/friends/UserProfileLink';
+import { UsernameSearch } from '@/components/friends/UsernameSearch';
 import { PageHeader } from '@/components/layout/PageHeader';
 import type { PrayerName } from '@/lib/constants';
 import type { FriendWaktPhase } from '@/lib/friends-wakt';
@@ -155,11 +156,6 @@ export function FriendsHub() {
     setTimeout(() => setToast(''), 3200);
   }
 
-  async function addFriend(e: React.FormEvent) {
-    e.preventDefault();
-    setConnectConfirm(true);
-  }
-
   async function sendConnectRequest() {
     setError('');
     setLoading(true);
@@ -246,28 +242,22 @@ export function FriendsHub() {
         </div>
       </div>
 
-      <section className="dawa-glass dawa-social__section">
-        <h2 className="dawa-social__title">Connect</h2>
-        <p className="dawa-social__sub">Search by username to invite a brother or sister in faith</p>
-        <form className="dawa-social__add-form" onSubmit={addFriend}>
-          <div className="dawa-social__field">
-            <span className="dawa-social__at" aria-hidden>@</span>
-            <input
-              className="dawa-input dawa-social__input"
-              type="text"
-              placeholder="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="off"
-              required
-              minLength={2}
-            />
-          </div>
-          <button type="submit" className="dawa-btn dawa-btn--primary dawa-social__submit" disabled={loading}>
-            {loading ? 'Sending…' : 'Connect'}
-          </button>
-        </form>
-        {error && <p className="dawa-error dawa-social__error">{error}</p>}
+      <section className="dawa-glass dawa-social__section dawa-social__section--connect">
+        <div className="dawa-social__connect-head">
+          <h2 className="dawa-social__title dawa-social__title--center">Connect</h2>
+          <p className="dawa-social__sub dawa-social__sub--center">
+            Search by username to find and invite someone
+          </p>
+        </div>
+        <UsernameSearch
+          connectBusy={loading}
+          onRequestConnect={(name) => {
+            setError('');
+            setUsername(name);
+            setConnectConfirm(true);
+          }}
+        />
+        {error && <p className="dawa-error dawa-social__error dawa-social__error--center">{error}</p>}
       </section>
 
       {(data?.requests?.length ?? 0) > 0 && (

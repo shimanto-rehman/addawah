@@ -5,7 +5,7 @@ import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { countCompleted, startOfWeek, addDays } from '@/lib/salah-utils';
 import { getBadgeForCoins } from '@/lib/rewards';
 import { removeFriendship } from '@/lib/friendship';
-import { parseProfilePrivacy } from '@/lib/profile-privacy';
+import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, maskWeekRate } from '@/lib/profile-privacy-apply';
 
 const userSelect = {
@@ -44,10 +44,12 @@ function mapFriend(
   },
   friendshipId: string,
   weekRate: number,
+  connected: boolean,
 ) {
   const privacy = parseProfilePrivacy(u.profilePrivacy);
-  const showBadge = privacy.showBadge;
-  const showPhoto = privacy.showAvatarPhoto;
+  const viewer = connected ? ('connection' as const) : ('public' as const);
+  const showBadge = canView(privacy, 'showBadge', viewer);
+  const showPhoto = canView(privacy, 'showAvatarPhoto', viewer);
   return {
     id: u.id,
     name: u.name,
@@ -55,11 +57,11 @@ function mapFriend(
     email: u.email,
     avatarColor: u.avatarColor,
     avatarUrl: showPhoto ? u.avatarUrl : null,
-    goldCoins: maskGoldCoins(u.goldCoins, privacy, false) ?? 0,
-    goldCoinsHidden: !privacy.showGoldCoins,
+    goldCoins: maskGoldCoins(u.goldCoins, privacy, viewer) ?? 0,
+    goldCoinsHidden: !canView(privacy, 'showGoldCoins', viewer),
     friendshipId,
-    weekRate: maskWeekRate(weekRate, privacy, false),
-    weekRateHidden: !privacy.showSalahStats,
+    weekRate: maskWeekRate(weekRate, privacy, viewer),
+    weekRateHidden: !canView(privacy, 'showSalahStats', viewer),
     badge: showBadge ? getBadgeForCoins(u.goldCoins) : null,
   };
 }
@@ -87,17 +89,17 @@ export async function GET() {
 
   for (const f of sent) {
     const weekRate = await friendWeekRate(f.friend.id);
-    friendMap.set(f.friend.id, mapFriend(f.friend, f.id, weekRate));
+    friendMap.set(f.friend.id, mapFriend(f.friend, f.id, weekRate, true));
   }
   for (const f of recvAccepted) {
     if (friendMap.has(f.user.id)) continue;
     const weekRate = await friendWeekRate(f.user.id);
-    friendMap.set(f.user.id, mapFriend(f.user, f.id, weekRate));
+    friendMap.set(f.user.id, mapFriend(f.user, f.id, weekRate, true));
   }
 
   const friends = Array.from(friendMap.values());
   const requests = received.map((r) => ({
-    ...mapFriend(r.user, r.id, 0),
+    ...mapFriend(r.user, r.id, 0, false),
     status: r.status,
   }));
 

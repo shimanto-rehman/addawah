@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Preloader from '@/components/proloader/addawah-Preloader';
+import { LANDING_BACKDROP_READY_EVENT } from '@/lib/constants';
 
 const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings', '/u'];
 
@@ -12,12 +13,17 @@ function isAppRoute(pathname: string) {
   );
 }
 
+function isLandingRoute(pathname: string) {
+  return pathname === '/';
+}
+
 export function PreloaderGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const authReadyRef = useRef(!isAppRoute(pathname));
   const [showPreloader, setShowPreloader] = useState(true);
   const [resourcesReady, setResourcesReady] = useState(false);
   const [authReady, setAuthReady] = useState(authReadyRef.current);
+  const [landingBackdropReady, setLandingBackdropReady] = useState(!isLandingRoute(pathname));
 
   const onAppAuthReady = useCallback(() => {
     authReadyRef.current = true;
@@ -37,7 +43,20 @@ export function PreloaderGate({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('appAuthReady', onAppAuthReady);
   }, [pathname, onAppAuthReady]);
 
-  const dismiss = resourcesReady && authReady;
+  useEffect(() => {
+    if (!isLandingRoute(pathname)) {
+      setLandingBackdropReady(true);
+      return;
+    }
+
+    setLandingBackdropReady(false);
+
+    const onBackdropReady = () => setLandingBackdropReady(true);
+    window.addEventListener(LANDING_BACKDROP_READY_EVENT, onBackdropReady);
+    return () => window.removeEventListener(LANDING_BACKDROP_READY_EVENT, onBackdropReady);
+  }, [pathname]);
+
+  const dismiss = resourcesReady && authReady && landingBackdropReady;
 
   return (
     <>

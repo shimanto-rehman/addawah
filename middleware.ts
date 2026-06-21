@@ -12,7 +12,12 @@ export function middleware(req: NextRequest) {
   if (!token) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
-  return NextResponse.next();
+
+  const response = NextResponse.next();
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Expires', '0');
+  return response;
 }
 
 export const config = {

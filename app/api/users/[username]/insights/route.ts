@@ -1,6 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
-import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
+import { getConnectionBetween } from '@/lib/friendship';
+import {
+  canView,
+  parseProfilePrivacy,
+  profileViewerFromConnection,
+} from '@/lib/profile-privacy';
 import { computePrayerInsights } from '@/lib/prayer-insights';
 import { addDays, startOfDay } from '@/lib/salah-utils';
 
@@ -26,8 +31,10 @@ export async function GET(_req: Request, { params }: RouteParams) {
   if (!profileUser) return jsonError('User not found', 404);
 
   const privacy = parseProfilePrivacy(profileUser.profilePrivacy);
-  const viewerIsSelf = profileUser.id === user!.id;
-  if (!canView(privacy, 'showSalahStats', viewerIsSelf)) {
+  const connection = await getConnectionBetween(user!.id, profileUser.id);
+  const viewer = profileViewerFromConnection(connection.status);
+
+  if (!canView(privacy, 'showSalahStats', viewer)) {
     return jsonError('Salah statistics are private', 403);
   }
 

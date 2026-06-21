@@ -3,7 +3,7 @@ import { apiRequireAuth, jsonOk } from '@/lib/api-helpers';
 import { startOfDay } from '@/lib/salah-utils';
 import { getBadgeForCoins } from '@/lib/rewards';
 import { buildFriendWaktRow } from '@/lib/friends-wakt';
-import { parseProfilePrivacy } from '@/lib/profile-privacy';
+import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, privateWaktRow } from '@/lib/profile-privacy-apply';
 
 const userSelect = {
@@ -44,10 +44,11 @@ export async function GET() {
   const board = await Promise.all(
     uniqueFriends.map(async (friend) => {
       const privacy = parseProfilePrivacy(friend.profilePrivacy);
-      const showWakt = privacy.showWaktStatus;
-      const showPhoto = privacy.showAvatarPhoto;
-      const showCoins = privacy.showGoldCoins;
-      const showBadge = privacy.showBadge;
+      const viewer = 'connection' as const;
+      const showWakt = canView(privacy, 'showWaktStatus', viewer);
+      const showPhoto = canView(privacy, 'showAvatarPhoto', viewer);
+      const showCoins = canView(privacy, 'showGoldCoins', viewer);
+      const showBadge = canView(privacy, 'showBadge', viewer);
 
       let wakt;
       if (!showWakt) {
@@ -76,7 +77,7 @@ export async function GET() {
         username: friend.username,
         avatarColor: friend.avatarColor,
         avatarUrl: showPhoto ? friend.avatarUrl : null,
-        goldCoins: maskGoldCoins(goldCoins, privacy, false) ?? 0,
+        goldCoins: maskGoldCoins(goldCoins, privacy, viewer) ?? 0,
         goldCoinsHidden: !showCoins,
         badge: showBadge ? getBadgeForCoins(goldCoins) : null,
         wakt,

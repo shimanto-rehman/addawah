@@ -7,24 +7,29 @@ type MoodIconProps = {
   className?: string;
 };
 
+const CX = 24;
+const EYE_Y = 20;
+const EYE_L = 18;
+const EYE_R = 30;
+const SW = 2.15;
+
 /** Minimal circular line-art face — green (positive) → red (negative). */
 export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIconProps) {
-  const sw = 2.2;
-  const dot = (cx: number, cy: number, r = 2.4) => (
+  const dot = (cx: number, cy: number, r = 2.15) => (
     <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} fill={color} />
   );
 
-  const eyes = (y = 19) => (
+  const eyes = () => (
     <>
-      {dot(17, y)}
-      {dot(31, y)}
+      {dot(EYE_L, EYE_Y)}
+      {dot(EYE_R, EYE_Y)}
     </>
   );
 
   const heartEye = (cx: number, cy: number) => (
     <path
       key={`h-${cx}`}
-      d={`M${cx} ${cy + 2.5} C${cx - 3.5} ${cy - 1.5} ${cx - 5} ${cy + 1} ${cx} ${cy + 5.5} C${cx + 5} ${cy + 1} ${cx + 3.5} ${cy - 1.5} ${cx} ${cy + 2.5} Z`}
+      d={`M${cx} ${cy + 2.2} C${cx - 3.2} ${cy - 1.2} ${cx - 4.6} ${cy + 0.8} ${cx} ${cy + 5} C${cx + 4.6} ${cy + 0.8} ${cx + 3.2} ${cy - 1.2} ${cx} ${cy + 2.2} Z`}
       fill={color}
     />
   );
@@ -34,10 +39,10 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
       case 'ecstatic':
         return (
           <>
-            {heartEye(17, 17)}
-            {heartEye(31, 17)}
+            {heartEye(EYE_L, EYE_Y - 1)}
+            {heartEye(EYE_R, EYE_Y - 1)}
             <path
-              d="M13 27 C13 34 39 34 39 27 Z"
+              d={`M${CX - 11} 28 C${CX - 11} 35 ${CX + 11} 35 ${CX + 11} 28 Z`}
               fill={color}
             />
           </>
@@ -46,7 +51,7 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
         return (
           <>
             {eyes()}
-            <path d="M13 27 C13 34 39 34 39 27 Z" fill={color} />
+            <path d={`M${CX - 11} 28 C${CX - 11} 35 ${CX + 11} 35 ${CX + 11} 28 Z`} fill={color} />
           </>
         );
       case 'good':
@@ -54,10 +59,10 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
           <>
             {eyes()}
             <path
-              d="M15 27 Q24 34 33 27"
+              d={`M${CX - 8} 28 Q${CX} 33 ${CX + 8} 28`}
               fill="none"
               stroke={color}
-              strokeWidth={sw}
+              strokeWidth={SW}
               strokeLinecap="round"
             />
           </>
@@ -67,12 +72,12 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
           <>
             {eyes()}
             <line
-              x1={15}
-              y1={29}
-              x2={33}
-              y2={29}
+              x1={CX - 8}
+              y1={30}
+              x2={CX + 8}
+              y2={30}
               stroke={color}
-              strokeWidth={sw}
+              strokeWidth={SW}
               strokeLinecap="round"
             />
           </>
@@ -82,10 +87,10 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
           <>
             {eyes()}
             <path
-              d="M16 30 Q24 26 32 30"
+              d={`M${CX - 7} 31 Q${CX} 27 ${CX + 7} 31`}
               fill="none"
               stroke={color}
-              strokeWidth={sw}
+              strokeWidth={SW}
               strokeLinecap="round"
             />
           </>
@@ -93,14 +98,30 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
       case 'angry':
         return (
           <>
-            {eyes(20)}
-            <line x1={13} y1={16} x2={20} y2={19} stroke={color} strokeWidth={sw} strokeLinecap="round" />
-            <line x1={35} y1={16} x2={28} y2={19} stroke={color} strokeWidth={sw} strokeLinecap="round" />
+            {eyes()}
+            <line
+              x1={CX - 10}
+              y1={16}
+              x2={EYE_L + 1}
+              y2={EYE_Y - 1}
+              stroke={color}
+              strokeWidth={SW}
+              strokeLinecap="round"
+            />
+            <line
+              x1={CX + 10}
+              y1={16}
+              x2={EYE_R - 1}
+              y2={EYE_Y - 1}
+              stroke={color}
+              strokeWidth={SW}
+              strokeLinecap="round"
+            />
             <path
-              d="M14 33 Q24 26 34 33"
+              d={`M${CX - 9} 32 Q${CX} 26 ${CX + 9} 32`}
               fill="none"
               stroke={color}
-              strokeWidth={sw}
+              strokeWidth={SW}
               strokeLinecap="round"
             />
           </>
@@ -118,14 +139,7 @@ export function MoodIcon({ variant, color, size = 48, className = '' }: MoodIcon
       className={className}
       aria-hidden
     >
-      <circle
-        cx={24}
-        cy={24}
-        r={21}
-        fill="none"
-        stroke={color}
-        strokeWidth={sw}
-      />
+      <circle cx={CX} cy={CX} r={20.5} fill="none" stroke={color} strokeWidth={SW} />
       {mouth()}
     </svg>
   );

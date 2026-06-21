@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonOk } from '@/lib/api-helpers';
 import { countCompleted, startOfWeek, addDays } from '@/lib/salah-utils';
 import { getBadgeForCoins } from '@/lib/rewards';
-import { parseProfilePrivacy } from '@/lib/profile-privacy';
+import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, maskWeekRate } from '@/lib/profile-privacy-apply';
 
 const userSelect = {
@@ -46,8 +46,9 @@ function mapConnection(
   role: 'friend' | 'incoming' | 'outgoing',
 ) {
   const privacy = parseProfilePrivacy(u.profilePrivacy);
-  const showBadge = privacy.showBadge;
-  const showPhoto = privacy.showAvatarPhoto;
+  const viewer = role === 'friend' ? ('connection' as const) : ('public' as const);
+  const showBadge = canView(privacy, 'showBadge', viewer);
+  const showPhoto = canView(privacy, 'showAvatarPhoto', viewer);
   return {
     id: u.id,
     name: u.name,
@@ -55,13 +56,13 @@ function mapConnection(
     email: u.email,
     avatarColor: u.avatarColor,
     avatarUrl: showPhoto ? u.avatarUrl : null,
-    goldCoins: maskGoldCoins(u.goldCoins, privacy, false) ?? 0,
-    goldCoinsHidden: !privacy.showGoldCoins,
+    goldCoins: maskGoldCoins(u.goldCoins, privacy, viewer) ?? 0,
+    goldCoinsHidden: !canView(privacy, 'showGoldCoins', viewer),
     city: u.city,
     country: u.country,
     friendshipId,
-    weekRate: maskWeekRate(weekRate, privacy, false),
-    weekRateHidden: !privacy.showSalahStats,
+    weekRate: maskWeekRate(weekRate, privacy, viewer),
+    weekRateHidden: !canView(privacy, 'showSalahStats', viewer),
     role,
     badge: showBadge ? getBadgeForCoins(u.goldCoins) : null,
   };

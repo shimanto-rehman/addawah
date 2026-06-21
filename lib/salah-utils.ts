@@ -21,10 +21,38 @@ export function addDays(d: Date, n: number) {
 }
 
 export function formatDateKey(d: Date) {
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Calendar date in the user's local timezone (UI columns, week param). */
+export function formatDateKeyLocal(d: Date) {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
+}
+
+/** Parse YYYY-MM-DD to a UTC date-only value for @db.Date fields. */
+export function dateFromKey(key: string) {
+  const [y, m, day] = key.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, day));
+}
+
+export function addDaysToKey(key: string, days: number) {
+  const d = dateFromKey(key);
+  d.setUTCDate(d.getUTCDate() + days);
+  return formatDateKey(d);
+}
+
+/** Inclusive Mon–Sun range for Prisma DATE queries (fixes Sunday dropping off). */
+export function weekRangeFromStartKey(weekStartKey: string) {
+  return {
+    start: dateFromKey(weekStartKey),
+    end: dateFromKey(addDaysToKey(weekStartKey, 6)),
+  };
 }
 
 export function getWeekDays(weekStart: Date) {

@@ -12,12 +12,19 @@ import {
 } from '@/lib/profile-privacy';
 import { isValidEmail, sanitizeEmail, sanitizeName } from '@/lib/validation';
 
-const privacySchema = z.object(
+const privacyTierSchema = z.object(
   Object.fromEntries(PROFILE_PRIVACY_KEYS.map((k) => [k, z.boolean().optional()])) as Record<
     (typeof PROFILE_PRIVACY_KEYS)[number],
     z.ZodOptional<z.ZodBoolean>
   >,
 );
+
+const privacySchema = privacyTierSchema
+  .extend({
+    public: privacyTierSchema.optional(),
+    connections: privacyTierSchema.optional(),
+  })
+  .passthrough();
 
 const patchSchema = z.object({
   name: z.string().min(2).max(80).optional(),

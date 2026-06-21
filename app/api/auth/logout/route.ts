@@ -1,7 +1,17 @@
+import { NextResponse } from 'next/server';
 import { destroySession } from '@/lib/auth';
-import { jsonOk } from '@/lib/api-helpers';
+import { PRIVATE_CACHE_HEADERS } from '@/lib/api-helpers';
 
 export async function POST() {
   await destroySession();
-  return jsonOk({ ok: true });
+  return NextResponse.json(
+    { ok: true },
+    {
+      headers: {
+        ...PRIVATE_CACHE_HEADERS,
+        // Drop cached app pages so Back cannot resurrect a logged-in shell.
+        'Clear-Site-Data': '"cache"',
+      },
+    }
+  );
 }

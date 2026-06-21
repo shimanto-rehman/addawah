@@ -5,7 +5,10 @@ import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import {
   addDays,
   buildSalahGrid,
+  dateFromKey,
+  formatDateKeyLocal,
   startOfWeek,
+  weekRangeFromStartKey,
 } from '@/lib/salah-utils';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import type { PrayerName } from '@/lib/constants';
@@ -15,8 +18,11 @@ export async function GET(req: NextRequest) {
   if (error) return error;
 
   const weekParam = req.nextUrl.searchParams.get('week');
-  const weekStart = weekParam ? new Date(weekParam + 'T00:00:00') : startOfWeek(new Date());
-  const weekEnd = addDays(weekStart, 6);
+  const weekStartKey =
+    weekParam && /^\d{4}-\d{2}-\d{2}$/.test(weekParam)
+      ? weekParam
+      : formatDateKeyLocal(startOfWeek(new Date()));
+  const { start: weekStart, end: weekEnd } = weekRangeFromStartKey(weekStartKey);
 
   const records = await prisma.salahRecord.findMany({
     where: {
@@ -42,10 +48,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = postSchema.parse(await req.json());
-    const date = new Date(body.date + 'T12:00:00');
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
-    if (date > today) return jsonError('Cannot log future prayers');
+    const date = dateFromKey(body.date);
+    const todayLocal = formatDateKeyLocal(new Date());
+    if (body.date > todayLocal) return jsonError('Cannot log future prayers');
 
     const existing = await prisma.salahRecord.findFirst({
       where: {

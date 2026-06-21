@@ -33,7 +33,22 @@ model User {
   sentPokes    Poke[]       @relation("SentPokes")
   recvPokes    Poke[]       @relation("RecvPokes")
   deletionOtp  AccountDeletionOtp?
+  passwordResetOtp PasswordResetOtp?
   moodCheckIns MoodCheckIn[]
+}
+
+model PasswordResetOtp {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int      @default(0)
+  sendCount  Int      @default(1)
+  lastSentAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }
 
 model MoodCheckIn {

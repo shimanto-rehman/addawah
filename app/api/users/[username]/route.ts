@@ -1,7 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { getConnectionBetween } from '@/lib/friendship';
-import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
+import {
+  canView,
+  parseProfilePrivacy,
+  profileViewerFromConnection,
+} from '@/lib/profile-privacy';
 import { getBadgeForCoins } from '@/lib/rewards';
 import { seedProfileByUsername } from '@/lib/seed-users';
 import { buildPublicUserStats } from '@/lib/user-public-stats';
@@ -34,17 +38,18 @@ export async function GET(_req: Request, { params }: RouteParams) {
   if (!profileUser) return jsonError('User not found', 404);
 
   const privacy = parseProfilePrivacy(profileUser.profilePrivacy);
-  const viewerIsSelf = profileUser.id === user!.id;
+  const connection = await getConnectionBetween(user!.id, profileUser.id);
+  const viewer = profileViewerFromConnection(connection.status);
+  const viewerIsSelf = viewer === 'self';
 
-  const [connection, records] = await Promise.all([
-    getConnectionBetween(user!.id, profileUser.id),
-    viewerIsSelf || privacy.showSalahStats
-      ? prisma.salahRecord.findMany({
-          where: { userId: profileUser.id },
-          select: { date: true, prayer: true, completed: true, kind: true },
-        })
-      : Promise.resolve([]),
-  ]);
+  const showStats = canView(privacy, 'showSalahStats', viewer);
+
+  const records = showStats
+    ? await prisma.salahRecord.findMany({
+        where: { userId: profileUser.id },
+        select: { date: true, prayer: true, completed: true, kind: true },
+      })
+    : [];
 
   const seedBio = seedProfileByUsername(profileUser.username ?? '');
   const rawStats = buildPublicUserStats(
@@ -54,9 +59,8 @@ export async function GET(_req: Request, { params }: RouteParams) {
     records,
   );
 
-  const showStats = canView(privacy, 'showSalahStats', viewerIsSelf);
-  const showCoins = canView(privacy, 'showGoldCoins', viewerIsSelf);
-  const showBadge = canView(privacy, 'showBadge', viewerIsSelf);
+  const showCoins = canView(privacy, 'showGoldCoins', viewer);
+  const showBadge = canView(privacy, 'showBadge', viewer);
 
   return jsonOk({
     profile: {
@@ -64,11 +68,11 @@ export async function GET(_req: Request, { params }: RouteParams) {
       name: profileUser.name,
       username: profileUser.username,
       avatarColor: profileUser.avatarColor,
-      avatarUrl: canView(privacy, 'showAvatarPhoto', viewerIsSelf) ? profileUser.avatarUrl : null,
-      city: canView(privacy, 'showLocation', viewerIsSelf) ? profileUser.city : null,
-      country: canView(privacy, 'showLocation', viewerIsSelf) ? profileUser.country : null,
+      avatarUrl: canView(privacy, 'showAvatarPhoto', viewer) ? profileUser.avatarUrl : null,
+      city: canView(privacy, 'showLocation', viewer) ? profileUser.city : null,
+      country: canView(privacy, 'showLocation', viewer) ? profileUser.country : null,
       bio: seedBio?.bio ?? null,
-      memberSince: canView(privacy, 'showMemberSince', viewerIsSelf)
+      memberSince: canView(privacy, 'showMemberSince', viewer)
         ? profileUser.createdAt.toISOString()
         : null,
       badge: showBadge ? getBadgeForCoins(profileUser.goldCoins) : null,

@@ -13,10 +13,9 @@ import { MAX_AVATAR_LABEL, validateAvatarFile } from '@/lib/avatar-limits';
 import { PHONE_COUNTRIES } from '@/lib/phone-countries';
 import {
   DEFAULT_PROFILE_PRIVACY,
-  PROFILE_PRIVACY_KEYS,
-  PROFILE_PRIVACY_META,
   type ProfilePrivacy,
 } from '@/lib/profile-privacy';
+import { ProfilePrivacyMatrix } from '@/components/profile/ProfilePrivacyMatrix';
 import { userProfilePath } from '@/lib/user-public-stats';
 import { isValidEmail, sanitizeEmail, sanitizeName } from '@/lib/validation';
 import Link from 'next/link';
@@ -321,7 +320,7 @@ export default function ProfilePage() {
           <section className="dawa-panel dawa-profile__privacy">
             <h2 className="dawa-panel__title">Public profile visibility</h2>
             <p className="dawa-panel__sub">
-              Choose what connections and visitors see on your public profile and the Wakt board.
+              Control what visitors and connections see on your public profile and the Wakt board.
               Your name and username are always visible.
             </p>
             {profile?.username && (
@@ -331,29 +330,7 @@ export default function ProfilePage() {
                 </Link>
               </p>
             )}
-            <ul className="dawa-privacy-list">
-              {PROFILE_PRIVACY_KEYS.map((key) => (
-                <li key={key} className="dawa-privacy-item">
-                  <div className="dawa-privacy-item__text">
-                    <p className="dawa-privacy-item__label">{PROFILE_PRIVACY_META[key].label}</p>
-                    <p className="dawa-privacy-item__desc">{PROFILE_PRIVACY_META[key].description}</p>
-                  </div>
-                  <label className="dawa-privacy-toggle">
-                    <input
-                      type="checkbox"
-                      checked={profilePrivacy[key]}
-                      onChange={(e) =>
-                        setProfilePrivacy((prev) => ({ ...prev, [key]: e.target.checked }))
-                      }
-                    />
-                    <span className="dawa-privacy-toggle__track" aria-hidden />
-                    <span className="sr-only">
-                      {profilePrivacy[key] ? 'Public' : 'Private'}: {PROFILE_PRIVACY_META[key].label}
-                    </span>
-                  </label>
-                </li>
-              ))}
-            </ul>
+            <ProfilePrivacyMatrix value={profilePrivacy} onChange={setProfilePrivacy} />
             {error && <p className="dawa-profile__error">{error}</p>}
             <button type="submit" className="dawa-btn dawa-btn--primary" disabled={!canSave}>
               {saved ? 'Saved ✓' : 'Save profile'}

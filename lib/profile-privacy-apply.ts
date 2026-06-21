@@ -1,4 +1,4 @@
-import type { ProfilePrivacy } from './profile-privacy';
+import { canView, type ProfilePrivacy, type ProfileViewerContext } from './profile-privacy';
 
 export function privateWaktRow() {
   return {
@@ -18,17 +18,17 @@ export function privateWaktRow() {
 export function maskGoldCoins(
   goldCoins: number,
   privacy: ProfilePrivacy,
-  viewerIsSelf: boolean,
+  viewer: ProfileViewerContext,
 ): number | null {
-  if (viewerIsSelf || privacy.showGoldCoins) return goldCoins;
+  if (canView(privacy, 'showGoldCoins', viewer)) return goldCoins;
   return null;
 }
 
 export function maskWeekRate(
   weekRate: number,
   privacy: ProfilePrivacy,
-  viewerIsSelf: boolean,
+  viewer: ProfileViewerContext,
 ): number | null {
-  if (viewerIsSelf || privacy.showSalahStats) return weekRate;
+  if (canView(privacy, 'showSalahStats', viewer)) return weekRate;
   return null;
 }
