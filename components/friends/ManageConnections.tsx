@@ -73,7 +73,7 @@ export function ManageConnections() {
                 {data?.requests.map((r) => (
                   <li key={r.friendshipId} className="dawa-social__conn-item">
                     <UserProfileLink username={r.username} className="dawa-social__conn-profile">
-                      <UserAvatar name={r.name} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
+                      <UserAvatar name={r.name} userId={r.id} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
                       <div>
                         <p className="dawa-social__conn-name">{r.name}</p>
                         <p className="dawa-social__conn-meta">@{r.username ?? 'user'}</p>
@@ -101,7 +101,7 @@ export function ManageConnections() {
                 {data?.pending.map((r) => (
                   <li key={r.friendshipId} className="dawa-social__conn-item">
                     <UserProfileLink username={r.username} className="dawa-social__conn-profile">
-                      <UserAvatar name={r.name} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
+                      <UserAvatar name={r.name} userId={r.id} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
                       <div>
                         <p className="dawa-social__conn-name">{r.name}</p>
                         <p className="dawa-social__conn-meta">@{r.username ?? 'user'}</p>
@@ -131,7 +131,7 @@ export function ManageConnections() {
                 {data?.friends.map((f) => (
                   <li key={f.friendshipId} className="dawa-social__conn-item">
                     <UserProfileLink username={f.username} className="dawa-social__conn-profile">
-                      <UserAvatar name={f.name} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={48} />
+                      <UserAvatar name={f.name} userId={f.id} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={48} />
                       <div>
                         <p className="dawa-social__conn-name">{f.name}</p>
                         <p className="dawa-social__conn-meta">

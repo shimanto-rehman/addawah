@@ -218,6 +218,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
         aria-haspopup="menu"
       >
         <UserAvatar
+          userId={user.id}
           name={user.name}
           avatarColor={user.avatarColor}
           avatarUrl={user.avatarUrl}

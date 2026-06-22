@@ -1041,6 +1041,7 @@ canvas[data-confetti] {
 }
 .dawa-salah-prayer:hover:not(:disabled) { border-color: var(--accent); transform: scale(1.1); }
 .dawa-salah-prayer.is-done { background: linear-gradient(145deg, var(--accent-bright), var(--accent-dim)); border-color: var(--accent); color: var(--accent-text); box-shadow: 0 4px 16px var(--accent-glow); }
+.dawa-salah-prayer.is-locked:not(.is-done) { opacity: 0.35; cursor: not-allowed; }
 .dawa-salah-prayer:disabled { opacity: 0.3; cursor: not-allowed; }
 .dawa-salah-row-label { text-align: left !important; padding-right: 10px !important; padding-left: 2px !important; }
 .dawa-salah-row-en { font-size: 11px; font-weight: 700; color: var(--text-soft); display: block; }
@@ -3531,6 +3532,15 @@ canvas[data-confetti] {
 @media (max-width: 720px) {
   .dawa-sky__top {
     flex-wrap: wrap;
+    justify-content: center;
+  }
+  .dawa-sky__who {
+    width: 100%;
+    justify-content: center;
+  }
+  .dawa-sky__text {
+    align-items: center;
+    text-align: center;
   }
   .dawa-salah-cell__wing {
     display: none;

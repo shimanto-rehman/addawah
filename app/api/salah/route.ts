@@ -3,13 +3,14 @@ import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import {
-  addDays,
   buildSalahGrid,
   dateFromKey,
   formatDateKeyLocal,
   startOfWeek,
   weekRangeFromStartKey,
 } from '@/lib/salah-utils';
+import { fetchPrayerTimes } from '@/lib/prayer-times';
+import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import type { PrayerName } from '@/lib/constants';
 
@@ -52,6 +53,23 @@ export async function POST(req: NextRequest) {
     const todayLocal = formatDateKeyLocal(new Date());
     if (body.date > todayLocal) return jsonError('Cannot log future prayers');
 
+    const now = new Date();
+
+    if (body.completed) {
+      const times = await fetchPrayerTimes(
+        user!.city?.trim() || 'Dhaka',
+        user!.country?.trim() || 'Bangladesh',
+        now,
+      );
+      const markCheck = canMarkSalahCell(body.date, body.prayer as PrayerName, times, now);
+      if (!markCheck.allowed) {
+        if (markCheck.reason === 'wakt-not-started') {
+          return jsonError('This wakt has not started yet — wait until adhan time');
+        }
+        return jsonError('Cannot log future prayers');
+      }
+    }
+
     const existing = await prisma.salahRecord.findFirst({
       where: {
         userId: user!.id,
@@ -86,6 +104,8 @@ export async function POST(req: NextRequest) {
         user!.city,
         user!.country,
         body.prayer as PrayerName,
+        body.date,
+        now,
       );
       if (reward) {
         await awardGoldCoins(user!.id, reward.amount);

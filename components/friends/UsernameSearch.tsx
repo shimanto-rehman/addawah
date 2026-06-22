@@ -180,6 +180,7 @@ export function UsernameSearch({
                     <div className={`dawa-user-search__row${isActive ? ' is-active' : ''}`}>
                       <Link href={profileHref} className="dawa-user-search__profile">
                         <UserAvatar
+                          userId={person.id}
                           name={person.name}
                           avatarColor={person.avatarColor}
                           avatarUrl={person.avatarUrl}

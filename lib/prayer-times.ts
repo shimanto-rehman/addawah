@@ -96,6 +96,11 @@ export function getDatePartsInTimezone(date: Date, timeZone: string): ZonedParts
   };
 }
 
+export function formatDateKeyInTimezone(date: Date, timeZone: string) {
+  const p = getDatePartsInTimezone(date, timeZone);
+  return `${p.year}-${String(p.month).padStart(2, '0')}-${String(p.day).padStart(2, '0')}`;
+}
+
 export function getNowMinutesInTimezone(date: Date, timeZone: string) {
   const p = getDatePartsInTimezone(date, timeZone);
   return p.hour * 60 + p.minute;

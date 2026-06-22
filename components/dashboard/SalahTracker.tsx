@@ -12,18 +12,19 @@ import {
 } from '@/lib/constants';
 import {
   addDays,
-  formatDateKey,
   formatDateKeyLocal,
   formatWeekLabel,
   getSalahCell,
   getWeekDays,
-  startOfDay,
   startOfWeek,
   type SalahCell,
   type SalahGrid,
 } from '@/lib/salah-utils';
 import { fireCelebrationConfetti } from '@/lib/confetti';
 import { revalidateDashboardMetrics } from '@/lib/swr-revalidate';
+import { canMarkSalahCellLocal } from '@/lib/salah-mark-rules';
+import type { PrayerTimesPayload } from '@/lib/prayer-times';
+import { formatDateKeyInTimezone } from '@/lib/prayer-times';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -62,20 +63,32 @@ function SunnahToggle({
 
 export function SalahTracker() {
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
-  const weekKey = formatDateKey(weekStart);
+  const weekKey = formatDateKeyLocal(weekStart);
 
   const { data, mutate, isLoading } = useSWR<{ grid: SalahGrid }>(
     `/api/salah?week=${weekKey}`,
     fetcher,
   );
 
+  const { data: prayerTimes } = useSWR<PrayerTimesPayload>('/api/prayer-times', fetcher, {
+    refreshInterval: 60_000,
+    revalidateOnFocus: true,
+  });
+
   const grid = data?.grid ?? {};
   const days = getWeekDays(weekStart);
-  const todayKey = formatDateKey(new Date());
+  const todayKey = prayerTimes
+    ? formatDateKeyInTimezone(new Date(), prayerTimes.timeZone)
+    : formatDateKeyLocal(new Date());
   const maxWeek = startOfWeek(new Date());
 
+  function isCellDisabled(day: Date, prayer: PrayerName) {
+    const key = formatDateKeyLocal(day);
+    return !canMarkSalahCellLocal(key, todayKey, prayer, prayerTimes);
+  }
+
   async function toggle({ date, prayer, kind, unit = 0 }: ToggleArgs) {
-    const dateKey = formatDateKey(date);
+    const dateKey = formatDateKeyLocal(date);
     const cell = getSalahCell(grid, dateKey, prayer);
     const current =
       kind === 'FARD'
@@ -173,7 +186,7 @@ export function SalahTracker() {
                 <tr>
                   <th />
                   {days.map((d) => {
-                    const key = formatDateKey(d);
+                    const key = formatDateKeyLocal(d);
                     return (
                       <th key={key}>
                         <div className={`dawa-salah-day${key === todayKey ? ' is-today' : ''}`}>
@@ -194,9 +207,9 @@ export function SalahTracker() {
                         <span className="dawa-salah-row-ar">{PRAYER_ARABIC[prayer]}</span>
                       </td>
                       {days.map((d) => {
-                        const key = formatDateKey(d);
+                        const key = formatDateKeyLocal(d);
                         const cell = getSalahCell(grid, key, prayer);
-                        const isFuture = startOfDay(d) > startOfDay(new Date());
+                        const disabled = isCellDisabled(d, prayer);
                         return (
                           <td key={key}>
                             <div className="dawa-salah-cell">
@@ -205,7 +218,7 @@ export function SalahTracker() {
                                   <SunnahToggle
                                     key={`b-${unit}`}
                                     done={done}
-                                    disabled={isFuture}
+                                    disabled={disabled}
                                     label={`${PRAYER_LABELS[prayer]} sunnah before ${key}`}
                                     onClick={() =>
                                       toggle({ date: d, prayer, kind: 'SUNNAH_BEFORE', unit })
@@ -215,11 +228,18 @@ export function SalahTracker() {
                               </div>
                               <motion.button
                                 type="button"
-                                className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}`}
-                                disabled={isFuture}
+                                className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}`}
+                                disabled={disabled && !cell.fard}
                                 onClick={() => toggle({ date: d, prayer, kind: 'FARD' })}
                                 whileTap={{ scale: 0.88 }}
                                 aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
+                                title={
+                                  disabled && !cell.fard
+                                    ? key === todayKey
+                                      ? 'Wakt has not started yet'
+                                      : 'Future day'
+                                    : undefined
+                                }
                               >
                                 {cell.fard ? '✓' : '○'}
                               </motion.button>
@@ -228,7 +248,7 @@ export function SalahTracker() {
                                   <SunnahToggle
                                     key={`a-${unit}`}
                                     done={done}
-                                    disabled={isFuture}
+                                    disabled={disabled}
                                     label={`${PRAYER_LABELS[prayer]} sunnah after ${key}`}
                                     onClick={() =>
                                       toggle({ date: d, prayer, kind: 'SUNNAH_AFTER', unit })

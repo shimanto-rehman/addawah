@@ -10,6 +10,7 @@ import { useApp } from '@/components/providers/AppProvider';
 import { useFieldAvailability } from '@/hooks/useFieldAvailability';
 import { AVATAR_COLORS } from '@/lib/constants';
 import { MAX_AVATAR_LABEL, validateAvatarFile } from '@/lib/avatar-limits';
+import { prepareAvatarFile } from '@/lib/avatar-prepare';
 import { PHONE_COUNTRIES } from '@/lib/phone-countries';
 import {
   DEFAULT_PROFILE_PRIVACY,
@@ -84,16 +85,27 @@ export default function ProfilePage() {
     mobile.length > 0;
 
   async function uploadAvatar(file: File) {
-    const validationError = validateAvatarFile(file);
+    setUploading(true);
+    setError('');
+
+    let prepared: File;
+    try {
+      prepared = await prepareAvatarFile(file);
+    } catch (e) {
+      setUploading(false);
+      setError(e instanceof Error ? e.message : 'Could not prepare image');
+      return;
+    }
+
+    const validationError = validateAvatarFile(prepared);
     if (validationError) {
+      setUploading(false);
       setError(validationError);
       return;
     }
 
-    setUploading(true);
-    setError('');
     const form = new FormData();
-    form.append('avatar', file);
+    form.append('avatar', prepared);
     const res = await fetch('/api/profile/avatar', { method: 'POST', body: form });
     const json = await res.json();
     setUploading(false);
@@ -164,6 +176,7 @@ export default function ProfilePage() {
           <section className="dawa-profile__photo-panel">
             <div className="dawa-profile__photo-wrap">
               <UserAvatar
+                userId={user?.id}
                 name={name || profile?.name || 'User'}
                 avatarColor={avatarColor}
                 avatarUrl={avatarUrl}

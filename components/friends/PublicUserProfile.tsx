@@ -95,6 +95,7 @@ export function PublicUserProfile({ username }: { username: string }) {
 
       <section className="dawa-glass dawa-user-profile__hero">
         <UserAvatar
+          userId={profile.id}
           name={profile.name}
           avatarColor={profile.avatarColor}
           avatarUrl={profile.avatarUrl}

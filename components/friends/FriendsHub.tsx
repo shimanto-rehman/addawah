@@ -12,6 +12,7 @@ import { UsernameSearch } from '@/components/friends/UsernameSearch';
 import { PageHeader } from '@/components/layout/PageHeader';
 import type { PrayerName } from '@/lib/constants';
 import type { FriendWaktPhase } from '@/lib/friends-wakt';
+import { BADGE_TIERS, PRAYER_REWARD, REWARD_POINTS } from '@/lib/rewards';
 import { formatCountdownHms } from '@/lib/wakt-display';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -328,7 +329,7 @@ export function FriendsHub() {
             {data?.requests.map((r) => (
               <li key={r.friendshipId} className="dawa-social__request">
                 <UserProfileLink username={r.username} className="dawa-social__request-profile">
-                  <UserAvatar name={r.name} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
+                  <UserAvatar name={r.name} userId={r.id} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
                   <div className="dawa-social__request-text">
                     <strong>{r.name}</strong>
                     <span>@{r.username ?? r.email.split('@')[0]}</span>
@@ -369,6 +370,7 @@ export function FriendsHub() {
               >
                 <UserProfileLink username={row.username} className="dawa-social-board__friend dawa-social-board__friend-link">
                   <UserAvatar
+                    userId={row.id}
                     name={row.name}
                     avatarColor={row.avatarColor}
                     avatarUrl={row.avatarUrl}
@@ -437,7 +439,7 @@ export function FriendsHub() {
           {(data?.friends ?? []).map((f) => (
             <li key={f.id} className="dawa-social__circle-item">
               <UserProfileLink username={f.username} className="dawa-social__circle-link">
-                <UserAvatar name={f.name} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={44} />
+                <UserAvatar name={f.name} userId={f.id} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={44} />
                 <div>
                   <p className="dawa-social__circle-name">{f.name}</p>
                   <p className="dawa-social__circle-meta">
@@ -468,7 +470,7 @@ export function FriendsHub() {
               className="dawa-social__suggest-card"
             >
               <UserProfileLink username={p.username} className="dawa-social__suggest-link">
-                <UserAvatar name={p.name} avatarColor={p.avatarColor} avatarUrl={p.avatarUrl} size={56} />
+                <UserAvatar name={p.name} userId={p.id} avatarColor={p.avatarColor} avatarUrl={p.avatarUrl} size={56} />
                 <p className="dawa-social__suggest-name">{p.name}</p>
                 <p className="dawa-social__suggest-user">@{p.username ?? 'user'}</p>
                 <p className="dawa-social__suggest-bio">{p.bio}</p>
@@ -489,13 +491,19 @@ export function FriendsHub() {
       <section className="dawa-glass dawa-social__section dawa-social__rewards-info">
         <h2 className="dawa-social__title">Gold coins & badges</h2>
         <ul className="dawa-social__reward-list">
-          <li><GoldCoin size={16} /> <strong>+10</strong> — pray fard within wakt</li>
-          <li>⚡ <strong>+5 bonus</strong> — pray early in the wakt window</li>
-          <li>🤲 <strong>+5</strong> — send dawah (poke) while their wakt is active</li>
+          <li>
+            <GoldCoin size={16} /> <strong>up to +{PRAYER_REWARD.MAX}</strong> — mark fard in wakt
+            (decays to +{PRAYER_REWARD.MIN} near the end)
+          </li>
+          <li>⚡ Pray at adhan for peak gold — the sooner in wakt, the more you earn</li>
+          <li>🤲 <strong>+{REWARD_POINTS.DAWAH_IN_WAKT}</strong> — send dawah (poke) while their wakt is active</li>
         </ul>
         <div className="dawa-social__badge-grid">
-          {['🌱 Seedling', '🛡️ Wakt Guardian', '🕌 Lighthouse', '📿 Dawah Mentor', '🌙 Crescent Scholar', '✨ Golden Mu\'min'].map((b) => (
-            <span key={b} className="dawa-social__badge-chip">{b}</span>
+          {BADGE_TIERS.map((tier) => (
+            <span key={tier.id} className="dawa-social__badge-chip">
+              {tier.icon} {tier.name}
+              {tier.minCoins > 0 ? ` · ${tier.minCoins.toLocaleString()}g` : ''}
+            </span>
           ))}
         </div>
       </section>

@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { getInitials } from '@/lib/constants';
+import { resolveAvatarSrc } from '@/lib/avatar-url';
 
 type UserAvatarProps = {
+  userId?: string;
   name: string;
   avatarColor: string;
   avatarUrl?: string | null;
@@ -60,6 +62,7 @@ function DefaultAvatar({
 }
 
 export function UserAvatar({
+  userId,
   name,
   avatarColor,
   avatarUrl,
@@ -68,14 +71,15 @@ export function UserAvatar({
   variant = 'silhouette',
 }: UserAvatarProps) {
   const [photoFailed, setPhotoFailed] = useState(false);
+  const src = resolveAvatarSrc(userId, avatarUrl);
 
   useEffect(() => {
     setPhotoFailed(false);
-  }, [avatarUrl]);
+  }, [avatarUrl, src]);
 
   const style = { width: size, height: size, fontSize: Math.max(10, Math.round(size * 0.32)) };
 
-  if (!avatarUrl || photoFailed) {
+  if (!src || photoFailed) {
     return (
       <DefaultAvatar
         name={name}
@@ -89,7 +93,8 @@ export function UserAvatar({
 
   return (
     <img
-      src={avatarUrl}
+      key={src}
+      src={src}
       alt=""
       className={`dawa-avatar dawa-avatar--photo${className ? ` ${className}` : ''}`}
       style={style}

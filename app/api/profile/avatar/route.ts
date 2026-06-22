@@ -41,8 +41,10 @@ export async function POST(req: NextRequest) {
       select: { avatarUrl: true },
     });
 
-    const avatarUrl = await saveAvatar(user!.id, file);
+    // Remove the previous file first — save + delete in reverse deletes the new upload
+    // when local path or blob pathname is unchanged (replace photo).
     await deleteStoredAvatar(user!.id, current?.avatarUrl ?? null);
+    const avatarUrl = await saveAvatar(user!.id, file);
 
     const profile = await prisma.user.update({
       where: { id: user!.id },
@@ -53,6 +55,7 @@ export async function POST(req: NextRequest) {
     return jsonOk({ profile: formatProfile(profile) });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Upload failed';
+    console.error('[avatar upload]', e);
     return jsonError(message, 400);
   }
 }

@@ -2,6 +2,7 @@ import { PRAYER_LABELS, type PrayerName } from './constants';
 import { prisma } from './prisma';
 import {
   fetchPrayerTimes,
+  formatDateKeyInTimezone,
   getNowMinutesInTimezone,
   isForbiddenForPoke,
   prayerWaktWindow,
@@ -18,17 +19,25 @@ export type BadgeTier = {
 
 export const BADGE_TIERS: BadgeTier[] = [
   { id: 'seedling', name: 'Seedling', minCoins: 0, icon: '🌱', blurb: 'Beginning the journey' },
-  { id: 'guardian', name: 'Wakt Guardian', minCoins: 50, icon: '🛡️', blurb: 'Steady in prayer time' },
-  { id: 'lighthouse', name: 'Lighthouse', minCoins: 150, icon: '🕌', blurb: 'A light for others' },
-  { id: 'mentor', name: 'Dawah Mentor', minCoins: 350, icon: '📿', blurb: 'Uplifts the ummah' },
-  { id: 'crescent', name: 'Crescent Scholar', minCoins: 700, icon: '🌙', blurb: 'Discipline & mercy' },
-  { id: 'golden', name: 'Golden Mu\'min', minCoins: 1200, icon: '✨', blurb: 'Excellence in wakt' },
+  { id: 'guardian', name: 'Wakt Guardian', minCoins: 1000, icon: '🛡️', blurb: 'Steady in prayer time' },
+  { id: 'lighthouse', name: 'Lighthouse', minCoins: 5000, icon: '🕌', blurb: 'A light for others' },
+  { id: 'mentor', name: 'Dawah Mentor', minCoins: 10000, icon: '📿', blurb: 'Uplifts the ummah' },
+  { id: 'crescent', name: 'Crescent Scholar', minCoins: 20000, icon: '🌙', blurb: 'Discipline & mercy' },
+  { id: 'golden', name: 'Golden Mu\'min', minCoins: 50000, icon: '✨', blurb: 'Excellence in wakt' },
 ];
+
+/** Competitive wakt reward — highest at adhan, decays through the window. */
+export const PRAYER_REWARD = {
+  MAX: 25,
+  MIN: 5,
+  /** First slice of the wakt keeps full max (e.g. 10% ≈ first ~30 min of a 5h Fajr window). */
+  GRACE_RATIO: 0.1,
+  /** >1 = sharper drop after grace — rewards praying at the start. */
+  DECAY_POWER: 2.2,
+} as const;
 
 export const REWARD_POINTS = {
   DAWAH_IN_WAKT: 5,
-  PRAYER_IN_WAKT: 10,
-  PRAYER_EARLY_BONUS: 5,
 } as const;
 
 export function getBadgeForCoins(coins: number): BadgeTier {
@@ -61,12 +70,30 @@ export function isWithinWakt(now: Date, prayer: PrayerName, times: PrayerTimesPa
   return mins >= start && mins < end;
 }
 
-export function isEarlyInWakt(now: Date, prayer: PrayerName, times: PrayerTimesPayload) {
+/** Gold for marking fard during wakt — decays as the window progresses. */
+export function computeWaktPrayerCoins(
+  at: Date,
+  prayer: PrayerName,
+  times: PrayerTimesPayload,
+): number | null {
   const { start, end } = prayerWindow(prayer, times);
-  const mins = getNowMinutesInTimezone(now, times.timeZone);
+  const mins = getNowMinutesInTimezone(at, times.timeZone);
+  if (mins < start || mins >= end) return null;
+
   const span = end - start;
-  if (span <= 0) return false;
-  return mins >= start && mins < start + span * 0.25;
+  if (span <= 0) return PRAYER_REWARD.MIN;
+
+  const elapsed = mins - start;
+  const ratio = Math.min(1, Math.max(0, elapsed / span));
+
+  if (ratio <= PRAYER_REWARD.GRACE_RATIO) {
+    return PRAYER_REWARD.MAX;
+  }
+
+  const decayRatio = (ratio - PRAYER_REWARD.GRACE_RATIO) / (1 - PRAYER_REWARD.GRACE_RATIO);
+  const curved = Math.pow(decayRatio, PRAYER_REWARD.DECAY_POWER);
+  const amount = Math.round(PRAYER_REWARD.MAX - (PRAYER_REWARD.MAX - PRAYER_REWARD.MIN) * curved);
+  return Math.max(PRAYER_REWARD.MIN, amount);
 }
 
 export async function computeDawahReward(
@@ -90,6 +117,7 @@ export async function computePrayerReward(
   city: string | null | undefined,
   country: string | null | undefined,
   prayer: PrayerName,
+  prayerDateKey: string,
   loggedAt = new Date(),
 ) {
   try {
@@ -98,15 +126,19 @@ export async function computePrayerReward(
       country?.trim() || 'Bangladesh',
       loggedAt,
     );
-    if (!isWithinWakt(loggedAt, prayer, times)) return null;
 
-    const early = isEarlyInWakt(loggedAt, prayer, times);
-    const amount = REWARD_POINTS.PRAYER_IN_WAKT + (early ? REWARD_POINTS.PRAYER_EARLY_BONUS : 0);
-    const label = early
-      ? `Early ${PRAYER_LABELS[prayer]} in wakt`
-      : `${PRAYER_LABELS[prayer]} in wakt`;
+    const todayKey = formatDateKeyInTimezone(loggedAt, times.timeZone);
+    if (prayerDateKey !== todayKey) return null;
 
-    return { amount, label, early };
+    const amount = computeWaktPrayerCoins(loggedAt, prayer, times);
+    if (amount == null) return null;
+
+    const label =
+      amount >= PRAYER_REWARD.MAX
+        ? `${PRAYER_LABELS[prayer]} at wakt start`
+        : `${PRAYER_LABELS[prayer]} in wakt`;
+
+    return { amount, label, peak: amount >= PRAYER_REWARD.MAX };
   } catch {
     return null;
   }

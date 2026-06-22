@@ -37,6 +37,7 @@ function HomeHeader({ greeting, title }: { greeting?: string; title: string }) {
         <Link href="/profile" className="dawa-sky__who">
           {user && (
             <UserAvatar
+              userId={user.id}
               name={user.name}
               avatarColor={user.avatarColor}
               avatarUrl={user.avatarUrl}
