@@ -2934,7 +2934,11 @@ canvas[data-confetti] {
 }
 .dawa-social__hero-coin {
   flex-shrink: 0;
-  filter: drop-shadow(0 1px 2px rgba(40, 28, 0, 0.3));
+}
+[data-theme='light'] .dawa-social__hero-coin.dawa-gold-coin {
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95))
+    drop-shadow(0 2px 4px rgba(100, 75, 15, 0.15));
 }
 .dawa-social__hero-emoji {
   flex-shrink: 0;
@@ -2974,15 +2978,21 @@ canvas[data-confetti] {
   justify-content: center;
   flex-shrink: 0;
   line-height: 0;
+  overflow: visible;
   filter:
-    drop-shadow(0 1px 0 rgba(255, 240, 180, 0.35))
-    drop-shadow(0 2px 3px rgba(40, 28, 0, 0.5))
-    drop-shadow(0 4px 10px rgba(212, 160, 23, 0.42));
+    drop-shadow(0 1px 0 rgba(255, 235, 160, 0.4))
+    drop-shadow(0 2px 2px rgba(30, 20, 0, 0.35));
+}
+[data-theme='light'] .dawa-gold-coin {
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9))
+    drop-shadow(0 1px 2px rgba(100, 75, 15, 0.18));
 }
 .dawa-gold-coin svg {
   width: 100%;
   height: 100%;
   display: block;
+  overflow: visible;
 }
 .dawa-gold-coin-amount {
   display: inline-flex;
@@ -2990,6 +3000,12 @@ canvas[data-confetti] {
   gap: 4px;
   font-weight: 700;
   color: #d4a017;
+  overflow: visible;
+  line-height: 1.2;
+  padding: 1px 0;
+}
+[data-theme='light'] .dawa-gold-coin-amount {
+  color: #9a7209;
 }
 .dawa-gold-coin-amount span:last-child {
   font-size: inherit;
@@ -3303,6 +3319,67 @@ canvas[data-confetti] {
   color: var(--accent-bright);
 }
 
+[data-theme='light'] .dawa-user-search__bar {
+  background: var(--surface-2);
+  border-color: var(--border);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+[data-theme='light'] .dawa-user-search__bar:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 95%, transparent);
+}
+[data-theme='light'] .dawa-user-search--compact .dawa-user-search__bar {
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+[data-theme='light'] .dawa-user-search__panel {
+  background: var(--surface-2);
+  border-color: var(--border);
+  box-shadow: var(--popover-shadow);
+}
+[data-theme='light'] .dawa-user-search--compact .dawa-user-search__panel {
+  box-shadow: var(--popover-shadow);
+}
+[data-theme='light'] .dawa-user-search__row {
+  border-bottom-color: var(--border-soft);
+}
+[data-theme='light'] .dawa-user-search__row.is-active,
+[data-theme='light'] .dawa-user-search__row:hover {
+  background: var(--popover-item-hover);
+}
+[data-theme='light'] .dawa-user-search__mark {
+  padding: 0 3px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent-soft) 90%, var(--surface-2));
+  color: var(--accent-dim);
+}
+[data-theme='light'] .dawa-user-search__hint {
+  color: var(--accent-dim);
+}
+[data-theme='light'] .dawa-user-search__pill {
+  background: var(--bg-soft);
+  border-color: var(--border-soft);
+  color: var(--text-soft);
+}
+[data-theme='light'] .dawa-user-search__pill.is-connected {
+  background: color-mix(in srgb, #22c55e 14%, var(--surface-2));
+  color: #15803d;
+  border-color: color-mix(in srgb, #22c55e 32%, transparent);
+}
+[data-theme='light'] .dawa-user-search__pill.is-pending_sent,
+[data-theme='light'] .dawa-user-search__pill.is-pending_received {
+  background: color-mix(in srgb, var(--accent-soft) 100%, var(--surface-2));
+  color: var(--accent-dim);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+[data-theme='light'] .dawa-user-search__state {
+  color: var(--text-soft);
+}
+[data-theme='light'] .dawa-user-search__username {
+  color: var(--text-dim);
+}
+
 @media (max-width: 520px) {
   .dawa-user-search__row {
     flex-wrap: wrap;
@@ -3360,21 +3437,22 @@ canvas[data-confetti] {
 }
 .dawa-social__empty { margin: 0; font-size: 14px; color: var(--text-soft); text-align: center; padding: 24px 12px; }
 .dawa-social-board { display: flex; flex-direction: column; gap: 6px; overflow-x: auto; }
-.dawa-social-board__head, .dawa-social-board__row { display: grid; grid-template-columns: minmax(160px, 1.65fr) minmax(56px, 0.5fr) minmax(112px, 1fr) 92px; gap: 12px; align-items: center; min-width: 540px; }
-.dawa-social-board__head { padding: 0 12px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border-soft); }
+.dawa-social-board__head, .dawa-social-board__row { display: grid; grid-template-columns: minmax(160px, 1.65fr) minmax(56px, 0.5fr) minmax(112px, 1fr) 92px; gap: 12px; align-items: start; min-width: 540px; }
+.dawa-social-board__head { padding: 0 12px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border-soft); align-items: center; }
 .dawa-social-board__head span:nth-child(2) { text-align: center; }
 .dawa-social-board__head span:last-child,
 .dawa-social-board__action { text-align: center; }
-.dawa-social-board__row { padding: 12px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--surface-2) 48%, transparent); border: 1px solid var(--border-soft); }
+.dawa-social-board__row { padding: 12px 12px 14px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--surface-2) 48%, transparent); border: 1px solid var(--border-soft); overflow: visible; }
 .dawa-social-board__action {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 36px;
   min-width: 0;
+  align-self: center;
 }
-.dawa-social-board__friend { display: flex; align-items: flex-start; gap: 10px; min-width: 0; overflow: hidden; }
-.dawa-social-board__friend-info { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.dawa-social-board__friend { display: flex; align-items: flex-start; gap: 10px; min-width: 0; overflow: visible; }
+.dawa-social-board__friend-info { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; overflow: visible; }
 .dawa-social-board__name { margin: 0; font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dawa-social-board__meta {
   margin: 0;
@@ -3387,14 +3465,21 @@ canvas[data-confetti] {
   line-height: 1.35;
 }
 .dawa-social-board__badge { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
-.dawa-social-board__coins { margin-top: 2px; display: inline-flex; align-items: center; }
+.dawa-social-board__coins {
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  overflow: visible;
+  padding: 2px 0 3px;
+}
 .dawa-social-board__prayer {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 0;
-  padding: 0 2px;
+  padding: 2px 2px 0;
   text-align: center;
+  align-self: center;
 }
 .dawa-social-board__prayer-label {
   font-size: 11px;
@@ -3403,7 +3488,7 @@ canvas[data-confetti] {
   color: var(--accent-bright);
   word-break: break-word;
 }
-.dawa-social-board__status { display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; }
+.dawa-social-board__status { display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; align-self: center; }
 .dawa-social-board__status--ok { color: var(--success, #3ecf8e); }
 .dawa-social-board__status--missed { color: var(--danger); }
 .dawa-social-board__status--wait { color: var(--text-dim); }

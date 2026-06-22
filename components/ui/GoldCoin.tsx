@@ -25,7 +25,6 @@ export function GoldCoin({ size = 20, className = '' }: GoldCoinProps) {
   const rimId = `coin-rim-${uid}`;
   const rimInnerId = `coin-rim-inner-${uid}`;
   const shineId = `coin-shine-${uid}`;
-  const shadowId = `coin-shadow-${uid}`;
   const leafId = `coin-leaf-${uid}`;
 
   return (
@@ -36,10 +35,6 @@ export function GoldCoin({ size = 20, className = '' }: GoldCoinProps) {
     >
       <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id={shadowId} x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1.8" stdDeviation="1.2" floodColor="#5a3a08" floodOpacity="0.45" />
-            <feDropShadow dx="0" dy="0.4" stdDeviation="0.3" floodColor="#fff8d0" floodOpacity="0.35" />
-          </filter>
           <radialGradient id={faceId} cx="42%" cy="36%" r="62%">
             <stop offset="0%" stopColor="#fff9d4" />
             <stop offset="18%" stopColor="#ffe566" />
@@ -70,7 +65,7 @@ export function GoldCoin({ size = 20, className = '' }: GoldCoinProps) {
           </linearGradient>
         </defs>
 
-        <g filter={`url(#${shadowId})`}>
+        <g>
           <circle cx="16" cy="16" r="15.2" fill={`url(#${rimId})`} />
           <circle cx="16" cy="16" r="14.2" fill="none" stroke={`url(#${rimInnerId})`} strokeWidth="0.7" />
           <circle cx="16" cy="16" r="12.6" fill={`url(#${faceId})`} />
