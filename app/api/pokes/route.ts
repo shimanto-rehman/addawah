@@ -2,7 +2,9 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
-import { PRAYERS, type PrayerName } from '@/lib/constants';
+import { type PrayerName } from '@/lib/constants';
+import { buildFriendWaktRow } from '@/lib/friends-wakt';
+import { startOfDay } from '@/lib/salah-utils';
 import {
   awardGoldCoins,
   computeDawahReward,
@@ -31,7 +33,29 @@ export async function POST(req: NextRequest) {
     });
     if (!friendship) return jsonError('Not friends with this user', 403);
 
+    const friend = await prisma.user.findUnique({
+      where: { id: body.friendId },
+      select: { id: true, city: true, country: true },
+    });
+    if (!friend) return jsonError('User not found', 404);
+
     const prayer = body.prayer as PrayerName | undefined;
+    const today = startOfDay(new Date());
+
+    if (prayer) {
+      const records = await prisma.salahRecord.findMany({
+        where: { userId: friend.id, kind: 'FARD', date: today },
+        select: { prayer: true, completed: true, updatedAt: true },
+      });
+      const wakt = await buildFriendWaktRow(friend.id, friend.city, friend.country, records);
+
+      if (!wakt.canPoke || wakt.prayer !== prayer) {
+        const reason = wakt.forbiddenNow
+          ? 'Forbidden time — cannot send dawah reminder now'
+          : 'This friend cannot be reminded for this prayer right now';
+        return jsonError(reason, 400);
+      }
+    }
 
     await prisma.poke.create({
       data: {
@@ -46,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     let coinsEarned = 0;
     if (prayer) {
-      const reward = await computeDawahReward(user!.city, user!.country, prayer);
+      const reward = await computeDawahReward(friend.city, friend.country, prayer);
       if (reward) {
         await awardGoldCoins(user!.id, reward.amount);
         coinsEarned = reward.amount;

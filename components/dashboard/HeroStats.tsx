@@ -30,8 +30,8 @@ function fmt(n: number | undefined) {
 export function HeroStats() {
   const { data } = useSWR<Stats>('/api/stats', fetcher, {
     refreshInterval: 60_000,
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
+    revalidateOnFocus: true,
+    revalidateIfStale: true,
   });
 
   const weekPct = data ? Math.round((data.weekCompleted / data.weekTotal) * 100) : 0;

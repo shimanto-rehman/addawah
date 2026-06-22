@@ -1,10 +1,11 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { SunPathArc } from '@/components/dashboard/SunPathArc';
 import { getGregorianLabel, toHijri } from '@/lib/salah-utils';
 import { UserAvatar } from '@/components/profile/UserAvatar';
-import { LiveClock } from '@/components/layout/LiveClock';
+import { WaktCountdownClock } from '@/components/layout/WaktCountdownClock';
 import { useApp } from '@/components/providers/AppProvider';
 
 type PageHeaderProps = {
@@ -13,6 +14,7 @@ type PageHeaderProps = {
   greeting?: string;
   arabicLabel?: string;
   variant?: 'home' | 'page';
+  toolbar?: ReactNode;
 };
 
 function HijriBlock({ compact = false }: { compact?: boolean }) {
@@ -46,7 +48,7 @@ function HomeHeader({ greeting, title }: { greeting?: string; title: string }) {
             <span className="dawa-sky__name">{user?.name ?? title}</span>
           </span>
         </Link>
-        <LiveClock variant="greet" />
+        <WaktCountdownClock variant="greet" />
       </div>
 
       <SunPathArc />
@@ -60,6 +62,7 @@ export function PageHeader({
   greeting,
   arabicLabel,
   variant = 'page',
+  toolbar,
 }: PageHeaderProps) {
   const gregorian = getGregorianLabel();
 
@@ -69,13 +72,16 @@ export function PageHeader({
 
   return (
     <header className="dawa-intro dawa-intro--page">
-      <div className="dawa-intro__sheet dawa-intro__sheet--page">
+      <div
+        className={`dawa-intro__sheet dawa-intro__sheet--page${toolbar ? ' dawa-intro__sheet--with-toolbar' : ''}`}
+      >
         <div className="dawa-intro__copy">
           {arabicLabel && <p className="dawa-intro__ar dawa-intro__ar--ghost">{arabicLabel}</p>}
           <h1 className="dawa-intro__name dawa-intro__name--page">{title}</h1>
           {subtitle && <p className="dawa-intro__line">{subtitle}</p>}
           <time className="dawa-intro__greg">{gregorian}</time>
         </div>
+        {toolbar && <div className="dawa-intro__toolbar">{toolbar}</div>}
         <HijriBlock compact />
       </div>
     </header>

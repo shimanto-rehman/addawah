@@ -1,10 +1,14 @@
 import { PRAYER_LABELS, PRAYERS, type PrayerName } from './constants';
 import {
   fetchPrayerTimes,
-  timeToMinutes,
+  formatClockTime,
+  getNowMinutesInTimezone,
+  getNowSecondsInTimezone,
+  isForbiddenForPoke,
+  prayerWaktWindow,
+  zonedMinutesToDate,
   type PrayerTimesPayload,
 } from './prayer-times';
-import { formatDateKey, startOfDay } from './salah-utils';
 import { activePrayerForNow } from './rewards';
 
 export type FriendWaktPhase = 'upcoming' | 'active' | 'passed' | 'prayed';
@@ -17,9 +21,13 @@ export type FriendWaktRow = {
   salahStatus: 'pending' | 'on-time' | 'kaza' | 'missed' | 'none';
   waktStartedAt: string | null;
   waktEndsAt: string | null;
+  waktEndLabel: string | null;
   canPoke: boolean;
+  forbiddenNow: boolean;
   elapsedMinutes: number;
   remainingMinutes: number;
+  elapsedSeconds: number;
+  remainingSeconds: number;
 };
 
 type FardRecord = {
@@ -28,31 +36,6 @@ type FardRecord = {
   updatedAt: Date;
 };
 
-function prayerWindow(prayer: PrayerName, times: PrayerTimesPayload) {
-  const idx = PRAYERS.indexOf(prayer);
-  const start = times.prayers[idx].minutes;
-
-  if (prayer === 'FAJR') {
-    return { start, end: timeToMinutes(times.sunrise) };
-  }
-  if (prayer === 'ISHA') {
-    return { start, end: 24 * 60 };
-  }
-  return { start, end: times.prayers[idx + 1].minutes };
-}
-
-function windowStartDate(day: Date, startMinutes: number) {
-  const d = new Date(day);
-  d.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0, 0);
-  return d;
-}
-
-function windowEndDate(day: Date, endMinutes: number) {
-  const d = new Date(day);
-  d.setHours(Math.floor(endMinutes / 60), endMinutes % 60, 0, 0);
-  return d;
-}
-
 function classifyToday(
   prayer: PrayerName,
   completed: boolean,
@@ -60,25 +43,75 @@ function classifyToday(
   times: PrayerTimesPayload,
   now: Date,
 ): FriendWaktRow['salahStatus'] {
-  const today = startOfDay(now);
-  const { start, end } = prayerWindow(prayer, times);
-  const waktEnd = windowEndDate(today, end);
-  const mins = now.getHours() * 60 + now.getMinutes();
+  const { start, end } = prayerWaktWindow(prayer, times);
+  const mins = getNowMinutesInTimezone(now, times.timeZone);
+  const endsAt = zonedMinutesToDate(now, end, times.timeZone);
 
   if (!completed) {
-    if (now < waktEnd && mins >= start) return 'pending';
-    if (now >= waktEnd || mins >= end) return 'missed';
+    if (now < endsAt && mins >= start) return 'pending';
+    if (now >= endsAt || mins >= end) return 'missed';
     return 'none';
   }
 
   if (!loggedAt) return 'kaza';
 
-  const logMins = loggedAt.getHours() * 60 + loggedAt.getMinutes();
-  if (formatDateKey(loggedAt) === formatDateKey(today)) {
+  const logMins = getNowMinutesInTimezone(loggedAt, times.timeZone);
+
+  if (
+    getDateKeyInTimezone(loggedAt, times.timeZone) === getDateKeyInTimezone(now, times.timeZone)
+  ) {
     if (logMins >= start && logMins < end) return 'on-time';
     return 'kaza';
   }
   return 'kaza';
+}
+
+function getDateKeyInTimezone(date: Date, timeZone: string) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone }).format(date);
+}
+
+function emptyRow(userId: string): FriendWaktRow {
+  return {
+    userId,
+    prayer: null,
+    prayerLabel: '—',
+    phase: 'upcoming',
+    salahStatus: 'none',
+    waktStartedAt: null,
+    waktEndsAt: null,
+    waktEndLabel: null,
+    canPoke: false,
+    forbiddenNow: false,
+    elapsedMinutes: 0,
+    remainingMinutes: 0,
+    elapsedSeconds: 0,
+    remainingSeconds: 0,
+  };
+}
+
+function buildTimingFields(
+  start: number,
+  end: number,
+  now: Date,
+  timeZone: string,
+) {
+  const startedAt = zonedMinutesToDate(now, start, timeZone);
+  const endsAt = zonedMinutesToDate(now, end, timeZone);
+  const nowSec = getNowSecondsInTimezone(now, timeZone);
+  const startSec = start * 60;
+  const endSec = end * 60;
+  const elapsedSeconds = Math.max(0, nowSec - startSec);
+  const remainingSeconds = Math.max(0, endSec - nowSec);
+
+  return {
+    startedAt,
+    endsAt,
+    elapsedSeconds,
+    remainingSeconds,
+    elapsedMinutes: Math.floor(elapsedSeconds / 60),
+    remainingMinutes: Math.ceil(remainingSeconds / 60),
+    waktEndLabel: formatClockTime(endsAt, true),
+  };
 }
 
 export async function buildFriendWaktRow(
@@ -88,32 +121,23 @@ export async function buildFriendWaktRow(
   records: FardRecord[],
   now = new Date(),
 ): Promise<FriendWaktRow> {
-  const today = startOfDay(now);
   let times: PrayerTimesPayload;
 
   try {
-    times = await fetchPrayerTimes(city?.trim() || 'Dhaka', country?.trim() || 'Bangladesh', today);
+    times = await fetchPrayerTimes(city?.trim() || 'Dhaka', country?.trim() || 'Bangladesh', now);
   } catch {
-    return {
-      userId,
-      prayer: null,
-      prayerLabel: '—',
-      phase: 'upcoming',
-      salahStatus: 'none',
-      waktStartedAt: null,
-      waktEndsAt: null,
-      canPoke: false,
-      elapsedMinutes: 0,
-      remainingMinutes: 0,
-    };
+    return emptyRow(userId);
   }
 
+  const tz = times.timeZone;
+  const nowMins = getNowMinutesInTimezone(now, tz);
   const active = activePrayerForNow(times, now);
+
   if (!active) {
-    const mins = now.getHours() * 60 + now.getMinutes();
-    const next = PRAYERS.find((p) => prayerWindow(p, times).start > mins) ?? PRAYERS[0];
-    const { start } = prayerWindow(next, times);
-    const startedAt = windowStartDate(today, start);
+    const next = PRAYERS.find((p) => prayerWaktWindow(p, times).start > nowMins) ?? PRAYERS[0];
+    const { start } = prayerWaktWindow(next, times);
+    const startedAt = zonedMinutesToDate(now, start, tz);
+    const untilStartSec = Math.max(0, start * 60 - getNowSecondsInTimezone(now, tz));
 
     return {
       userId,
@@ -123,9 +147,13 @@ export async function buildFriendWaktRow(
       salahStatus: 'none',
       waktStartedAt: startedAt.toISOString(),
       waktEndsAt: null,
+      waktEndLabel: formatClockTime(startedAt, true),
       canPoke: false,
+      forbiddenNow: false,
       elapsedMinutes: 0,
-      remainingMinutes: Math.max(0, start - mins),
+      remainingMinutes: Math.ceil(untilStartSec / 60),
+      elapsedSeconds: 0,
+      remainingSeconds: untilStartSec,
     };
   }
 
@@ -133,17 +161,16 @@ export async function buildFriendWaktRow(
   const completed = rec?.completed ?? false;
   const loggedAt = completed && rec ? rec.updatedAt : null;
   const status = classifyToday(active, completed, loggedAt, times, now);
-  const { start, end } = prayerWindow(active, times);
-  const startedAt = windowStartDate(today, start);
-  const endsAt = windowEndDate(today, end);
-  const mins = now.getHours() * 60 + now.getMinutes();
-  const elapsed = Math.max(0, mins - start);
-  const remaining = Math.max(0, end - mins);
+  const { start, end } = prayerWaktWindow(active, times);
+  const timing = buildTimingFields(start, end, now, tz);
+  const forbiddenNow = isForbiddenForPoke(times, nowMins, active);
 
   let phase: FriendWaktPhase = 'active';
   if (status === 'on-time') phase = 'prayed';
   else if (status === 'missed' || status === 'kaza') phase = 'passed';
-  else if (now >= endsAt) phase = 'passed';
+  else if (now >= timing.endsAt) phase = 'passed';
+
+  const canPoke = phase === 'active' && status === 'pending' && !forbiddenNow;
 
   return {
     userId,
@@ -151,10 +178,14 @@ export async function buildFriendWaktRow(
     prayerLabel: PRAYER_LABELS[active],
     phase,
     salahStatus: status,
-    waktStartedAt: startedAt.toISOString(),
-    waktEndsAt: endsAt.toISOString(),
-    canPoke: phase === 'active' && status === 'pending',
-    elapsedMinutes: elapsed,
-    remainingMinutes: remaining,
+    waktStartedAt: timing.startedAt.toISOString(),
+    waktEndsAt: timing.endsAt.toISOString(),
+    waktEndLabel: timing.waktEndLabel,
+    canPoke,
+    forbiddenNow,
+    elapsedMinutes: timing.elapsedMinutes,
+    remainingMinutes: timing.remainingMinutes,
+    elapsedSeconds: timing.elapsedSeconds,
+    remainingSeconds: timing.remainingSeconds,
   };
 }

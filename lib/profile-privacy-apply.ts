@@ -9,9 +9,13 @@ export function privateWaktRow() {
     salahStatus: 'none',
     waktStartedAt: null,
     waktEndsAt: null,
+    waktEndLabel: null,
     canPoke: false,
+    forbiddenNow: false,
     elapsedMinutes: 0,
     remainingMinutes: 0,
+    elapsedSeconds: 0,
+    remainingSeconds: 0,
   };
 }
 

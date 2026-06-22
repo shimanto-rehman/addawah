@@ -1,29 +1,45 @@
 'use client';
 
-import { useState, type CSSProperties } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import useSWR from 'swr';
 import { MoodIcon } from '@/components/dashboard/MoodIcon';
 import { MOOD_OPTIONS } from '@/lib/moods';
+import { revalidateMoodAnalytics } from '@/lib/swr-revalidate';
+import { useMidnightRefresh } from '@/lib/use-midnight-refresh';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export function MoodCheckIn() {
   const { data, mutate } = useSWR<{
-    today: { moodId: string; label: string } | null;
-  }>('/api/mood', fetcher, { revalidateOnFocus: false });
+    today: { moodId: string; label: string; date?: string } | null;
+  }>('/api/mood', fetcher, { revalidateOnFocus: true });
 
   const [saving, setSaving] = useState<string | null>(null);
   const selected = data?.today?.moodId ?? null;
 
+  const refreshMood = useCallback(() => {
+    mutate();
+  }, [mutate]);
+
+  useMidnightRefresh(refreshMood);
+
   async function pick(moodId: string) {
     setSaving(moodId);
-    await fetch('/api/mood', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ moodId }),
-    });
-    setSaving(null);
-    mutate();
+    try {
+      const res = await fetch('/api/mood', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moodId }),
+      });
+      if (!res.ok) throw new Error('Failed to save mood');
+      const json = await res.json();
+      await mutate(json, { revalidate: false });
+      await revalidateMoodAnalytics();
+    } catch {
+      await mutate();
+    } finally {
+      setSaving(null);
+    }
   }
 
   return (

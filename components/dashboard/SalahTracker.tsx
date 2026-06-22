@@ -23,6 +23,7 @@ import {
   type SalahGrid,
 } from '@/lib/salah-utils';
 import { fireCelebrationConfetti } from '@/lib/confetti';
+import { revalidateDashboardMetrics } from '@/lib/swr-revalidate';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -117,6 +118,7 @@ export function SalahTracker() {
           });
           if (!res.ok) throw new Error('Failed to save salah');
           if (markingComplete && kind === 'FARD') fireCelebrationConfetti();
+          if (kind === 'FARD') await revalidateDashboardMetrics();
           const weekRes = await fetch(`/api/salah?week=${weekKey}`);
           if (!weekRes.ok) throw new Error('Failed to refresh salah');
           return weekRes.json();

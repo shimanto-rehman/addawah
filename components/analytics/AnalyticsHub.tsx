@@ -6,6 +6,7 @@ import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
 import type { CoachingTip } from '@/lib/analytics-coaching';
 import type { PrayerName } from '@/lib/constants';
 import type { AnalyticsChartsData } from '@/components/analytics/AnalyticsChartsGrid';
+import type { ImanMoodDay } from '@/lib/iman-mood-analytics';
 
 const PrayerInsights = dynamic(
   () => import('@/components/dashboard/PrayerInsights').then((m) => ({ default: m.PrayerInsights })),
@@ -32,12 +33,14 @@ type AnalyticsPayload = AnalyticsChartsData & {
   insights: PrayerInsightsPayload;
   coaching: CoachingTip[];
   trend: 'up' | 'down' | 'steady';
+  imanMoodSeries: ImanMoodDay[];
+  imanMoodCorrelation: number | null;
 };
 
 const swrOpts = {
   refreshInterval: 300_000,
-  revalidateOnFocus: false,
-  revalidateIfStale: false,
+  revalidateOnFocus: true,
+  revalidateIfStale: true,
 };
 
 export function AnalyticsHub() {
@@ -57,6 +60,8 @@ export function AnalyticsHub() {
         weekDays: data.weekDays,
         weekLabels: data.weekLabels,
         moodHistory: data.moodHistory,
+        imanMoodSeries: data.imanMoodSeries,
+        imanMoodCorrelation: data.imanMoodCorrelation,
       }
     : null;
 

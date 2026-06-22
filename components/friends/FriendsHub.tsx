@@ -12,6 +12,7 @@ import { UsernameSearch } from '@/components/friends/UsernameSearch';
 import { PageHeader } from '@/components/layout/PageHeader';
 import type { PrayerName } from '@/lib/constants';
 import type { FriendWaktPhase } from '@/lib/friends-wakt';
+import { formatCountdownHms } from '@/lib/wakt-display';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -58,31 +59,60 @@ type BoardRow = {
     salahStatus: string;
     waktStartedAt: string | null;
     waktEndsAt: string | null;
+    waktEndLabel: string | null;
     canPoke: boolean;
+    forbiddenNow: boolean;
     elapsedMinutes: number;
     remainingMinutes: number;
+    elapsedSeconds: number;
+    remainingSeconds: number;
     isPrivate?: boolean;
   };
 };
 
-function formatTimer(totalMinutes: number) {
-  const m = Math.max(0, totalMinutes);
-  const h = Math.floor(m / 60);
-  const mins = m % 60;
-  if (h > 0) return `${h}h ${mins}m`;
-  return `${mins}m`;
+function useWaktCountdown(wakt: BoardRow['wakt']) {
+  const [remainingSeconds, setRemainingSeconds] = useState(wakt.remainingSeconds);
+
+  useEffect(() => {
+    if (wakt.phase === 'upcoming') {
+      const startMs = wakt.waktStartedAt ? new Date(wakt.waktStartedAt).getTime() : null;
+      if (!startMs) {
+        setRemainingSeconds(wakt.remainingSeconds);
+        return;
+      }
+      const tick = () => setRemainingSeconds(Math.max(0, Math.floor((startMs - Date.now()) / 1000)));
+      tick();
+      const id = setInterval(tick, 1000);
+      return () => clearInterval(id);
+    }
+
+    if (wakt.phase !== 'active' || !wakt.waktEndsAt) {
+      setRemainingSeconds(wakt.remainingSeconds);
+      return;
+    }
+
+    const endMs = new Date(wakt.waktEndsAt).getTime();
+    const tick = () => setRemainingSeconds(Math.max(0, Math.floor((endMs - Date.now()) / 1000)));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [
+    wakt.phase,
+    wakt.waktEndsAt,
+    wakt.waktStartedAt,
+    wakt.remainingSeconds,
+  ]);
+
+  return remainingSeconds;
 }
 
 function WaktStatusCell({ row }: { row: BoardRow }) {
   const { wakt } = row;
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 30000);
-    return () => clearInterval(id);
-  }, []);
-
-  void tick;
+  const remainingSeconds = useWaktCountdown(wakt);
+  const isLowTime = remainingSeconds <= 5 * 60;
+  const countdownClass = `dawa-social-board__timer dawa-social-board__timer--countdown${
+    isLowTime ? ' dawa-social-board__timer--danger' : ''
+  }`;
 
   if (wakt.isPrivate) {
     return (
@@ -95,7 +125,7 @@ function WaktStatusCell({ row }: { row: BoardRow }) {
   if (wakt.phase === 'prayed' || wakt.salahStatus === 'on-time') {
     return (
       <span className="dawa-social-board__status dawa-social-board__status--ok">
-        ✓ In wakt
+        ✓ Prayed
       </span>
     );
   }
@@ -111,15 +141,35 @@ function WaktStatusCell({ row }: { row: BoardRow }) {
   if (wakt.phase === 'upcoming') {
     return (
       <span className="dawa-social-board__status dawa-social-board__status--wait">
-        Starts in {formatTimer(wakt.remainingMinutes)}
+        <span className={countdownClass}>
+          {formatCountdownHms(remainingSeconds)}
+        </span>
+        <span className="dawa-social-board__timer-sub">
+          until {wakt.waktEndLabel ?? 'start'}
+        </span>
+      </span>
+    );
+  }
+
+  if (wakt.forbiddenNow) {
+    return (
+      <span className="dawa-social-board__status dawa-social-board__status--forbidden">
+        <span className={countdownClass}>
+          {formatCountdownHms(remainingSeconds)}
+        </span>
+        <span className="dawa-social-board__timer-sub">Forbidden time</span>
       </span>
     );
   }
 
   return (
     <span className="dawa-social-board__status dawa-social-board__status--active">
-      <span className="dawa-social-board__timer">{formatTimer(wakt.elapsedMinutes)} in wakt</span>
-      <span className="dawa-social-board__timer-sub">{formatTimer(wakt.remainingMinutes)} left</span>
+      <span className={countdownClass}>
+        {formatCountdownHms(remainingSeconds)}
+      </span>
+      <span className="dawa-social-board__timer-sub">
+        left · ends {wakt.waktEndLabel ?? '—'}
+      </span>
     </span>
   );
 }
@@ -134,7 +184,7 @@ export function FriendsHub() {
   const { data: boardData, mutate: mutateBoard } = useSWR<{ board: BoardRow[] }>(
     '/api/friends/board',
     fetcher,
-    { refreshInterval: 60_000, revalidateOnFocus: false },
+    { refreshInterval: 120_000, revalidateOnFocus: true },
   );
 
   const { data: suggestData, mutate: mutateSuggestions } = useSWR<{ suggestions: SuggestedPerson[] }>(
@@ -223,42 +273,48 @@ export function FriendsHub() {
         title="Brotherhood"
         subtitle="Walk the path of salah together — remind, uplift, earn gold."
         arabicLabel="الأصدقاء"
+        toolbar={
+          <div className="dawa-intro__connect">
+            <UsernameSearch
+              variant="compact"
+              connectBusy={loading}
+              onRequestConnect={(name) => {
+                setError('');
+                setUsername(name);
+                setConnectConfirm(true);
+              }}
+            />
+            {error && <p className="dawa-error dawa-intro__connect-error">{error}</p>}
+          </div>
+        }
       />
 
       <div className="dawa-social__hero dawa-glass">
-        <div className="dawa-social__coins">
-          <GoldCoin size={36} className="dawa-social__coins-icon" />
-          <div>
-            <p className="dawa-social__coins-val">{data?.me?.goldCoins ?? '—'}</p>
-            <p className="dawa-social__coins-label">Gold coins</p>
+        <div className="dawa-social__hero-side dawa-social__hero-side--left">
+          <GoldCoin size={28} className="dawa-social__hero-coin" />
+          <div className="dawa-social__hero-copy">
+            <span className="dawa-social__hero-val dawa-social__hero-val--gold">
+              {data?.me?.goldCoins ?? '—'}
+            </span>
+            <span className="dawa-social__hero-lbl">Gold coins</span>
           </div>
         </div>
-        <div className="dawa-social__badge-pill">
-          <span className="dawa-social__badge-icon">{data?.me?.badge?.icon ?? '🌱'}</span>
-          <div>
-            <p className="dawa-social__badge-name">{data?.me?.badge?.name ?? 'Seedling'}</p>
-            <p className="dawa-social__badge-blurb">{data?.me?.badge?.blurb ?? ''}</p>
+
+        <div className="dawa-social__hero-bridge" aria-hidden />
+
+        <div
+          className="dawa-social__hero-side dawa-social__hero-side--right"
+          title={data?.me?.badge?.blurb ?? ''}
+        >
+          <div className="dawa-social__hero-copy">
+            <span className="dawa-social__hero-val">{data?.me?.badge?.name ?? 'Seedling'}</span>
+            <span className="dawa-social__hero-lbl">Badge</span>
           </div>
+          <span className="dawa-social__hero-emoji" aria-hidden>
+            {data?.me?.badge?.icon ?? '🌱'}
+          </span>
         </div>
       </div>
-
-      <section className="dawa-glass dawa-social__section dawa-social__section--connect">
-        <div className="dawa-social__connect-head">
-          <h2 className="dawa-social__title dawa-social__title--center">Connect</h2>
-          <p className="dawa-social__sub dawa-social__sub--center">
-            Search by username to find and invite someone
-          </p>
-        </div>
-        <UsernameSearch
-          connectBusy={loading}
-          onRequestConnect={(name) => {
-            setError('');
-            setUsername(name);
-            setConnectConfirm(true);
-          }}
-        />
-        {error && <p className="dawa-error dawa-social__error dawa-social__error--center">{error}</p>}
-      </section>
 
       {(data?.requests?.length ?? 0) > 0 && (
         <section className="dawa-glass dawa-social__section">
@@ -286,39 +342,6 @@ export function FriendsHub() {
           </ul>
         </section>
       )}
-
-      <section className="dawa-glass dawa-social__section">
-        <div className="dawa-social__section-head">
-          <h2 className="dawa-social__title">People you may know</h2>
-          <span className="dawa-social__chip">Suggested</span>
-        </div>
-        <div className="dawa-social__suggestions">
-          {(suggestData?.suggestions?.length ?? 0) === 0 ? (
-            <p className="dawa-social__empty">No new suggestions right now.</p>
-          ) : (
-          suggestData?.suggestions?.map((p) => (
-            <article
-              key={p.id}
-              className="dawa-social__suggest-card"
-            >
-              <UserProfileLink username={p.username} className="dawa-social__suggest-link">
-                <UserAvatar name={p.name} avatarColor={p.avatarColor} avatarUrl={p.avatarUrl} size={56} />
-                <p className="dawa-social__suggest-name">{p.name}</p>
-                <p className="dawa-social__suggest-user">@{p.username ?? 'user'}</p>
-                <p className="dawa-social__suggest-bio">{p.bio}</p>
-              </UserProfileLink>
-              <p className="dawa-social__suggest-mutual">{p.mutualFriends} mutual friends</p>
-              <Link
-                href={p.username ? userProfilePath(p.username) : '/friends'}
-                className="dawa-btn dawa-btn--ghost dawa-btn--sm dawa-social__suggest-btn"
-              >
-                View profile
-              </Link>
-            </article>
-          ))
-          )}
-        </div>
-      </section>
 
       <section className="dawa-glass dawa-social__section">
         <div className="dawa-social__section-head">
@@ -382,6 +405,12 @@ export function FriendsHub() {
                     >
                       {pokeBusy === row.id ? '…' : 'Poke 🤲'}
                     </button>
+                  ) : row.wakt.forbiddenNow &&
+                    row.wakt.phase === 'active' &&
+                    row.wakt.salahStatus === 'pending' ? (
+                    <span className="dawa-social-board__muted" title="Forbidden time">
+                      Wait
+                    </span>
                   ) : row.wakt.salahStatus === 'on-time' || row.wakt.phase === 'prayed' ? (
                     <span className="dawa-social-board__done">Prayed ✓</span>
                   ) : (
@@ -422,6 +451,39 @@ export function FriendsHub() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="dawa-glass dawa-social__section">
+        <div className="dawa-social__section-head">
+          <h2 className="dawa-social__title">People you may know</h2>
+          <span className="dawa-social__chip">Suggested</span>
+        </div>
+        <div className="dawa-social__suggestions">
+          {(suggestData?.suggestions?.length ?? 0) === 0 ? (
+            <p className="dawa-social__empty">No new suggestions right now.</p>
+          ) : (
+          suggestData?.suggestions?.map((p) => (
+            <article
+              key={p.id}
+              className="dawa-social__suggest-card"
+            >
+              <UserProfileLink username={p.username} className="dawa-social__suggest-link">
+                <UserAvatar name={p.name} avatarColor={p.avatarColor} avatarUrl={p.avatarUrl} size={56} />
+                <p className="dawa-social__suggest-name">{p.name}</p>
+                <p className="dawa-social__suggest-user">@{p.username ?? 'user'}</p>
+                <p className="dawa-social__suggest-bio">{p.bio}</p>
+              </UserProfileLink>
+              <p className="dawa-social__suggest-mutual">{p.mutualFriends} mutual friends</p>
+              <Link
+                href={p.username ? userProfilePath(p.username) : '/friends'}
+                className="dawa-btn dawa-btn--ghost dawa-btn--sm dawa-social__suggest-btn"
+              >
+                View profile
+              </Link>
+            </article>
+          ))
+          )}
+        </div>
       </section>
 
       <section className="dawa-glass dawa-social__section dawa-social__rewards-info">

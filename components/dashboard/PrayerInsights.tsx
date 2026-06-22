@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +14,7 @@ import { Line } from 'react-chartjs-2';
 import useSWR from 'swr';
 import { PRAYER_LABELS } from '@/lib/constants';
 import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
+import { useChartResize } from '@/lib/use-chart-resize';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -152,13 +153,15 @@ function MissedAreaChart({
 }
 
 export function PrayerInsights() {
+  const sectionRef = useRef<HTMLElement>(null);
   const { data, isLoading } = useSWR<PrayerInsightsPayload>('/api/insights', fetcher, {
     refreshInterval: 300_000,
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
+    revalidateOnFocus: true,
+    revalidateIfStale: true,
   });
 
   const theme = chartTheme();
+  useChartResize(sectionRef, [data, isLoading]);
   const labels = data?.days.map((d) => d.label) ?? [];
   const imanValues = data?.days.map((d) => d.iman) ?? [];
 
@@ -193,6 +196,7 @@ export function PrayerInsights() {
 
   return (
     <section
+      ref={sectionRef}
       className="dawa-insights"
       aria-label="Prayer insights"
     >

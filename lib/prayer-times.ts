@@ -22,6 +22,7 @@ export type PrayerTimesPayload = {
   prayers: PrayerSlot[];
   forbidden: ForbiddenWindow[];
   sunrise: string;
+  timeZone: string;
   fetchedAt: string;
 };
 
@@ -51,6 +52,109 @@ export function formatClockTime(date: Date, withSeconds = false) {
     second: withSeconds ? '2-digit' : undefined,
     hour12: true,
   });
+}
+
+export function formatCountdownHms(totalSeconds: number) {
+  const s = Math.max(0, Math.floor(totalSeconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+
+export type ZonedParts = {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+};
+
+export function getDatePartsInTimezone(date: Date, timeZone: string): ZonedParts {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(date);
+
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+  const hour = get('hour');
+
+  return {
+    year: get('year'),
+    month: get('month'),
+    day: get('day'),
+    hour: hour === 24 ? 0 : hour,
+    minute: get('minute'),
+    second: get('second'),
+  };
+}
+
+export function getNowMinutesInTimezone(date: Date, timeZone: string) {
+  const p = getDatePartsInTimezone(date, timeZone);
+  return p.hour * 60 + p.minute;
+}
+
+export function getNowSecondsInTimezone(date: Date, timeZone: string) {
+  const p = getDatePartsInTimezone(date, timeZone);
+  return p.hour * 3600 + p.minute * 60 + p.second;
+}
+
+/** Convert a local wall-clock time (minutes from midnight) on anchor's calendar day to UTC Date. */
+export function zonedMinutesToDate(anchor: Date, minutesFromMidnight: number, timeZone: string): Date {
+  const { year, month, day } = getDatePartsInTimezone(anchor, timeZone);
+  const hours = Math.floor(minutesFromMidnight / 60) % 24;
+  const mins = minutesFromMidnight % 60;
+
+  let candidate = new Date(Date.UTC(year, month - 1, day, hours, mins, 0));
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const local = getDatePartsInTimezone(candidate, timeZone);
+    const desired = hours * 3600 + mins * 60;
+    const actual = local.hour * 3600 + local.minute * 60 + local.second;
+    const dayDiff =
+      Date.UTC(year, month - 1, day) - Date.UTC(local.year, local.month - 1, local.day);
+    const deltaSec = desired - actual + Math.round(dayDiff / 86_400_000) * 86_400;
+    if (Math.abs(deltaSec) < 2) break;
+    candidate = new Date(candidate.getTime() + deltaSec * 1000);
+  }
+
+  return candidate;
+}
+
+/** Wakt window for a fard prayer — Fajr runs until Dhuhr; others until the next fard. */
+export function prayerWaktWindow(prayer: PrayerName, times: PrayerTimesPayload) {
+  const idx = PRAYERS.indexOf(prayer);
+  const start = times.prayers[idx].minutes;
+
+  if (prayer === 'FAJR') {
+    return { start, end: times.prayers[idx + 1].minutes };
+  }
+  if (prayer === 'ISHA') {
+    return { start, end: 24 * 60 };
+  }
+  return { start, end: times.prayers[idx + 1].minutes };
+}
+
+/** Karahah windows where poking for the active fard is not allowed. */
+export function isForbiddenForPoke(
+  times: PrayerTimesPayload,
+  nowMinutes: number,
+  prayer: PrayerName,
+) {
+  for (const w of times.forbidden) {
+    if (!isTimeInWindow(nowMinutes, w.start, w.end)) continue;
+    if (w.id === 'zawal') return true;
+    if (w.id === 'after-fajr' && prayer !== 'FAJR') return true;
+    if (w.id === 'after-asr' && prayer !== 'ASR') return true;
+  }
+  return false;
 }
 
 export function formatPrayerTime(time: string) {
@@ -144,6 +248,8 @@ export async function fetchPrayerTimes(city: string, country: string, onDate = n
   if (!timings?.Fajr) throw new Error('Invalid prayer times response');
 
   const prayers = buildPrayerSlots(timings);
+  const timeZone =
+    (json?.data?.meta?.timezone as string | undefined)?.trim() || 'Asia/Dhaka';
 
   return {
     city,
@@ -152,6 +258,7 @@ export async function fetchPrayerTimes(city: string, country: string, onDate = n
     prayers,
     forbidden: buildForbiddenWindows(timings),
     sunrise: timings.Sunrise,
+    timeZone,
     fetchedAt: new Date().toISOString(),
   };
 }

@@ -2,10 +2,11 @@ import { PRAYER_LABELS, type PrayerName } from './constants';
 import { prisma } from './prisma';
 import {
   fetchPrayerTimes,
-  timeToMinutes,
+  getNowMinutesInTimezone,
+  isForbiddenForPoke,
+  prayerWaktWindow,
   type PrayerTimesPayload,
 } from './prayer-times';
-import { formatDateKey, startOfDay } from './salah-utils';
 
 export type BadgeTier = {
   id: string;
@@ -50,31 +51,19 @@ export async function awardGoldCoins(userId: string, amount: number) {
   });
 }
 
-function prayerWindow(
-  prayer: PrayerName,
-  times: PrayerTimesPayload,
-): { start: number; end: number } {
-  const idx = times.prayers.findIndex((p) => p.prayer === prayer);
-  const start = times.prayers[idx].minutes;
-
-  if (prayer === 'FAJR') {
-    return { start, end: timeToMinutes(times.sunrise) };
-  }
-  if (prayer === 'ISHA') {
-    return { start, end: 24 * 60 };
-  }
-  return { start, end: times.prayers[idx + 1].minutes };
+function prayerWindow(prayer: PrayerName, times: PrayerTimesPayload) {
+  return prayerWaktWindow(prayer, times);
 }
 
 export function isWithinWakt(now: Date, prayer: PrayerName, times: PrayerTimesPayload) {
   const { start, end } = prayerWindow(prayer, times);
-  const mins = now.getHours() * 60 + now.getMinutes();
+  const mins = getNowMinutesInTimezone(now, times.timeZone);
   return mins >= start && mins < end;
 }
 
 export function isEarlyInWakt(now: Date, prayer: PrayerName, times: PrayerTimesPayload) {
   const { start, end } = prayerWindow(prayer, times);
-  const mins = now.getHours() * 60 + now.getMinutes();
+  const mins = getNowMinutesInTimezone(now, times.timeZone);
   const span = end - start;
   if (span <= 0) return false;
   return mins >= start && mins < start + span * 0.25;
@@ -89,6 +78,8 @@ export async function computeDawahReward(
   try {
     const times = await fetchPrayerTimes(city?.trim() || 'Dhaka', country?.trim() || 'Bangladesh', at);
     if (!isWithinWakt(at, prayer, times)) return null;
+    const mins = getNowMinutesInTimezone(at, times.timeZone);
+    if (isForbiddenForPoke(times, mins, prayer)) return null;
     return { amount: REWARD_POINTS.DAWAH_IN_WAKT, label: `Dawah in ${PRAYER_LABELS[prayer]} wakt` };
   } catch {
     return null;
@@ -122,10 +113,7 @@ export async function computePrayerReward(
 }
 
 export function activePrayerForNow(times: PrayerTimesPayload, now = new Date()): PrayerName | null {
-  const today = formatDateKey(now);
-  if (formatDateKey(startOfDay(now)) !== today) return null;
-
-  const mins = now.getHours() * 60 + now.getMinutes();
+  const mins = getNowMinutesInTimezone(now, times.timeZone);
 
   for (const prayer of [...times.prayers].reverse()) {
     const { start, end } = prayerWindow(prayer.prayer, times);

@@ -23,6 +23,7 @@ type SearchResult = {
 type UsernameSearchProps = {
   onRequestConnect: (username: string) => void;
   connectBusy?: boolean;
+  variant?: 'default' | 'compact';
 };
 
 function highlightMatch(text: string, query: string) {
@@ -51,7 +52,11 @@ function statusLabel(status: SearchResult['connectionStatus']) {
   }
 }
 
-export function UsernameSearch({ onRequestConnect, connectBusy = false }: UsernameSearchProps) {
+export function UsernameSearch({
+  onRequestConnect,
+  connectBusy = false,
+  variant = 'default',
+}: UsernameSearchProps) {
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
@@ -109,8 +114,11 @@ export function UsernameSearch({ onRequestConnect, connectBusy = false }: Userna
     }
   }
 
+  const compact = variant === 'compact';
+
   return (
-    <div className="dawa-user-search">
+    <div className={`dawa-user-search${compact ? ' dawa-user-search--compact' : ''}`}>
+      {compact && <span className="dawa-user-search__label">Connect</span>}
       <div className="dawa-user-search__bar">
         <span className="dawa-user-search__at" aria-hidden>@</span>
         <input
@@ -120,7 +128,7 @@ export function UsernameSearch({ onRequestConnect, connectBusy = false }: Userna
           inputMode="search"
           enterKeyHint="search"
           className="dawa-user-search__input"
-          placeholder="Search username"
+          placeholder={compact ? 'Find username' : 'Search username'}
           value={query}
           onChange={(e) => setQuery(e.target.value.replace(/\s/g, ''))}
           onFocus={() => setFocused(true)}
@@ -138,7 +146,7 @@ export function UsernameSearch({ onRequestConnect, connectBusy = false }: Userna
         )}
       </div>
 
-      {!hasQuery && (
+      {!compact && !hasQuery && (
         <p className="dawa-user-search__hints">
           Try{' '}
           {SEARCH_HINTS.map((name, i) => (

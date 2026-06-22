@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,13 +18,15 @@ import {
   BarController,
   LineController,
   DoughnutController,
-  ScatterController,
 } from 'chart.js';
-import { Bar, Doughnut, Radar, PolarArea, Line, Scatter } from 'react-chartjs-2';
+import { Bar, Chart, Doughnut, Radar, PolarArea, Line } from 'react-chartjs-2';
 import { chartTheme } from '@/lib/chart-theme';
-import { moodById, moodScore, MOOD_OPTIONS } from '@/lib/moods';
+import { describeImanMoodCorrelation } from '@/lib/iman-mood-analytics';
+import type { ImanMoodDay } from '@/lib/iman-mood-analytics';
+import { MOOD_OPTIONS } from '@/lib/moods';
 import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
 import type { PrayerName } from '@/lib/constants';
+import { useChartResize } from '@/lib/use-chart-resize';
 
 ChartJS.register(
   CategoryScale,
@@ -42,7 +44,6 @@ ChartJS.register(
   BarController,
   LineController,
   DoughnutController,
-  ScatterController,
 );
 
 export type AnalyticsChartsData = {
@@ -52,6 +53,8 @@ export type AnalyticsChartsData = {
   weekDays: number[];
   weekLabels: string[];
   moodHistory: { date: string; moodId: string; label: string; iman: number | null }[];
+  imanMoodSeries: ImanMoodDay[];
+  imanMoodCorrelation: number | null;
 };
 
 function chartOpts(theme: ReturnType<typeof chartTheme>, hideLegend = false) {
@@ -76,6 +79,8 @@ function chartOpts(theme: ReturnType<typeof chartTheme>, hideLegend = false) {
 
 export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
   const theme = chartTheme();
+  const sectionRef = useRef<HTMLElement>(null);
+  useChartResize(sectionRef, [data]);
 
   const radarData = useMemo(
     () => ({
@@ -92,41 +97,48 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
     [data.byPrayer, theme],
   );
 
-  const moodVsIman = useMemo(() => {
-    const points = data.moodHistory
-      .filter((m) => m.iman != null && moodScore(m.moodId) != null)
-      .map((m) => {
-        const mood = moodById(m.moodId);
-        return {
-          x: moodScore(m.moodId)!,
-          y: m.iman!,
-          color: mood?.color ?? theme.accent,
-          label: m.label,
-          date: m.date,
-        };
-      });
+  const imanMoodChart = useMemo(() => {
+    const series = data.imanMoodSeries;
+    const labels = series.map((d) => d.label.split(',')[0] ?? d.label);
     return {
-      points,
-      chart: {
-        datasets: [{
-          label: 'Check-ins',
-          data: points.map((p) => ({ x: p.x, y: p.y })),
-          backgroundColor: points.map((p) => p.color),
-          borderColor: points.map((p) => p.color),
+      labels,
+      datasets: [
+        {
+          type: 'line' as const,
+          label: 'Iman meter',
+          data: series.map((d) => d.iman),
+          borderColor: theme.accent,
+          backgroundColor: theme.accentSoft,
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+          yAxisID: 'y',
+          order: 1,
+        },
+        {
+          type: 'bar' as const,
+          label: 'Mood',
+          data: series.map((d) => d.moodScore),
+          backgroundColor: series.map((d) =>
+            d.moodColor ? `${d.moodColor}99` : 'rgba(128,128,128,0.15)',
+          ),
+          borderColor: series.map((d) => d.moodColor ?? 'transparent'),
           borderWidth: 1,
-          pointRadius: 6,
-          pointHoverRadius: 8,
-        }],
-      },
+          borderRadius: 6,
+          yAxisID: 'y1',
+          order: 2,
+        },
+      ],
+      points: series.filter((d) => d.moodScore != null),
     };
-  }, [data.moodHistory, theme]);
-
-  const moodAxisLabels = [...MOOD_OPTIONS].reverse().map((m) => m.label);
+  }, [data.imanMoodSeries, theme]);
 
   return (
-    <section className="dawa-analytics__bento">
+    <section ref={sectionRef} className="dawa-analytics__bento">
       <h2 className="dawa-analytics__section-title">Deep dive charts</h2>
-      <p className="dawa-analytics__section-sub">Six+ views — each highlights a different angle of your ibadah</p>
+      <p className="dawa-analytics__section-sub">Each view highlights a different angle of your ibadah</p>
 
       <div className="dawa-analytics__grid">
         <article className="dawa-analytics__card dawa-glass span-2">
@@ -288,48 +300,75 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
 
         <article className="dawa-analytics__card dawa-glass">
           <h3 className="dawa-analytics__card-title">Iman vs mood</h3>
-          <p className="dawa-analytics__card-sub">How you felt against your iman meter</p>
-          {moodVsIman.points.length > 0 ? (
+          <p className="dawa-analytics__card-sub">
+            {describeImanMoodCorrelation(data.imanMoodCorrelation)}
+            {data.imanMoodCorrelation != null && (
+              <> · r = {data.imanMoodCorrelation.toFixed(2)}</>
+            )}
+          </p>
+          {imanMoodChart.points.length > 0 ? (
             <div className="dawa-analytics__chart">
-              <Scatter
-                data={moodVsIman.chart}
+              <Chart
+                type="bar"
+                data={{
+                  labels: imanMoodChart.labels,
+                  datasets: imanMoodChart.datasets,
+                }}
                 options={{
-                  ...chartOpts(theme, true),
+                  ...chartOpts(theme),
+                  interaction: { mode: 'index', intersect: false },
                   plugins: {
-                    ...chartOpts(theme, true).plugins,
+                    ...chartOpts(theme).plugins,
+                    legend: { display: false },
                     tooltip: {
-                      ...chartOpts(theme, true).plugins?.tooltip,
+                      ...chartOpts(theme).plugins?.tooltip,
                       callbacks: {
-                        title: (items) => {
+                        afterTitle: (items) => {
                           const i = items[0]?.dataIndex;
-                          return i != null ? moodVsIman.points[i]?.date ?? '' : '';
-                        },
-                        label: (ctx) => {
-                          const p = moodVsIman.points[ctx.dataIndex];
-                          return p ? `${p.label} · Iman ${p.y}%` : '';
+                          if (i == null) return '';
+                          const day = data.imanMoodSeries[i];
+                          if (!day) return '';
+                          const parts = [
+                            day.moodLabel ? `Mood: ${day.moodLabel}` : 'No mood logged',
+                            `On time: ${day.onTime}`,
+                            `Kaza: ${day.kaza}`,
+                            `Missed: ${day.missed}`,
+                          ];
+                          return parts.join(' · ');
                         },
                       },
                     },
                   },
                   scales: {
                     x: {
-                      min: 0.5,
-                      max: 6.5,
+                      ticks: { color: theme.text, font: { size: 9 }, maxRotation: 45, minRotation: 0 },
+                      grid: { display: false },
+                    },
+                    y: {
+                      type: 'linear',
+                      position: 'left',
+                      min: 0,
+                      max: 100,
+                      title: { display: true, text: 'Iman %', color: theme.text, font: { size: 9 } },
+                      ticks: { color: theme.text, font: { size: 9 }, maxTicksLimit: 5 },
+                      grid: { color: theme.grid },
+                    },
+                    y1: {
+                      type: 'linear',
+                      position: 'right',
+                      min: 0,
+                      max: 6,
+                      title: { display: true, text: 'Mood', color: theme.text, font: { size: 9 } },
                       ticks: {
                         stepSize: 1,
                         color: theme.text,
-                        font: { size: 9 },
-                        callback: (v) => moodAxisLabels[Number(v) - 1] ?? '',
+                        font: { size: 8 },
+                        callback: (v) => {
+                          const labels = [...MOOD_OPTIONS].reverse().map((m) => m.label);
+                          return labels[Number(v) - 1] ?? '';
+                        },
                       },
-                      grid: { color: theme.grid },
-                      title: { display: true, text: 'Mood', color: theme.text, font: { size: 10 } },
-                    },
-                    y: {
-                      min: 0,
-                      max: 100,
-                      ticks: { color: theme.text, font: { size: 10 } },
-                      grid: { color: theme.grid },
-                      title: { display: true, text: 'Iman %', color: theme.text, font: { size: 10 } },
+                      grid: { drawOnChartArea: false },
                     },
                   },
                 }}
@@ -337,7 +376,7 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
             </div>
           ) : (
             <p className="dawa-analytics__empty">
-              Check in your mood on the dashboard to see how it tracks with iman.
+              Check in your mood on the dashboard to see how emotional patterns track with your iman meter.
             </p>
           )}
         </article>

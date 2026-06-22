@@ -6,6 +6,7 @@ import {
   summarizeWeakest,
 } from '@/lib/analytics-coaching';
 import { moodById } from '@/lib/moods';
+import { buildImanMoodSeries } from '@/lib/iman-mood-analytics';
 import { computePrayerInsights } from '@/lib/prayer-insights';
 import {
   addDays,
@@ -95,6 +96,12 @@ export async function GET() {
     };
   });
 
+  const { series: imanMoodSeries, correlation: imanMoodCorrelation } = buildImanMoodSeries(
+    insights.days,
+    moods,
+    formatDateKey,
+  );
+
   const weakestPrayer = summarizeWeakest(byPrayer);
   const bestPrayer = summarizeBest(byPrayer);
 
@@ -132,6 +139,8 @@ export async function GET() {
     weekDays,
     weekLabels,
     moodHistory,
+    imanMoodSeries,
+    imanMoodCorrelation,
     coaching,
     totals: insights.totals,
     trend: insights.trend,
