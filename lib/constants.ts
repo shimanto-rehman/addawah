@@ -21,7 +21,7 @@ export const PRAYER_ARABIC: Record<PrayerName, string> = {
   ISHA: 'العشاء',
 };
 
-/** Sunnah units per fard — each tiny checkbox is one unit (typically 2 rakʿah) */
+/** Sunnah units per fard — each circle is one unit (typically 2 rakʿah) */
 export const SUNNAH_SLOTS: Record<PrayerName, { before: number; after: number }> = {
   FAJR: { before: 1, after: 0 },
   DHUHR: { before: 2, after: 1 },
@@ -29,6 +29,18 @@ export const SUNNAH_SLOTS: Record<PrayerName, { before: number; after: number }>
   MAGHRIB: { before: 0, after: 1 },
   ISHA: { before: 0, after: 1 },
 };
+
+/** Fard rakʿah count per prayer */
+export const FARD_RAKATS: Record<PrayerName, number> = {
+  FAJR: 2,
+  DHUHR: 4,
+  ASR: 4,
+  MAGHRIB: 3,
+  ISHA: 4,
+};
+
+/** Rakʿah per sunnah circle (one tracked unit) */
+export const SUNNAH_UNIT_RAKATS = 2;
 
 export type SalahKind = 'FARD' | 'SUNNAH_BEFORE' | 'SUNNAH_AFTER';
 

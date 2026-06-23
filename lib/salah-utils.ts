@@ -14,6 +14,11 @@ export function startOfWeek(d: Date) {
   return x;
 }
 
+/** Seven-day window ending on `d` (today in the last column). */
+export function rollingWeekStart(d: Date) {
+  return addDays(startOfDay(d), -6);
+}
+
 export function addDays(d: Date, n: number) {
   const x = new Date(d);
   x.setDate(x.getDate() + n);

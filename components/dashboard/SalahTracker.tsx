@@ -2,11 +2,13 @@
 
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   PRAYERS,
   PRAYER_LABELS,
   PRAYER_ARABIC,
+  FARD_RAKATS,
+  SUNNAH_UNIT_RAKATS,
   type PrayerName,
   type SalahKind,
 } from '@/lib/constants';
@@ -16,7 +18,7 @@ import {
   formatWeekLabel,
   getSalahCell,
   getWeekDays,
-  startOfWeek,
+  rollingWeekStart,
   type SalahCell,
   type SalahGrid,
 } from '@/lib/salah-utils';
@@ -35,34 +37,55 @@ type ToggleArgs = {
   unit?: number;
 };
 
+function SalahHoverBubble({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <span className="dawa-salah-tip">
+      {children}
+      <span className="dawa-salah-tip__bubble" role="tooltip">
+        {label}
+      </span>
+    </span>
+  );
+}
+
 function SunnahToggle({
   done,
   disabled,
   label,
+  tip,
   onClick,
 }: {
   done: boolean;
   disabled: boolean;
   label: string;
+  tip: string;
   onClick: () => void;
 }) {
   return (
-    <motion.button
-      type="button"
-      className={`dawa-salah-sunnah${done ? ' is-done' : ''}`}
-      disabled={disabled}
-      onClick={onClick}
-      whileTap={{ scale: 0.9 }}
-      aria-label={label}
-      aria-pressed={done}
-    >
-      {done ? '✓' : ''}
-    </motion.button>
+    <SalahHoverBubble label={tip}>
+      <motion.button
+        type="button"
+        className={`dawa-salah-sunnah${done ? ' is-done' : ''}`}
+        disabled={disabled}
+        onClick={onClick}
+        whileTap={{ scale: 0.9 }}
+        aria-label={label}
+        aria-pressed={done}
+      >
+        {done ? '✓' : ''}
+      </motion.button>
+    </SalahHoverBubble>
   );
 }
 
 export function SalahTracker() {
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [weekStart, setWeekStart] = useState(() => rollingWeekStart(new Date()));
   const weekKey = formatDateKeyLocal(weekStart);
 
   const { data, mutate, isLoading } = useSWR<{ grid: SalahGrid }>(
@@ -80,7 +103,7 @@ export function SalahTracker() {
   const todayKey = prayerTimes
     ? formatDateKeyInTimezone(new Date(), prayerTimes.timeZone)
     : formatDateKeyLocal(new Date());
-  const maxWeek = startOfWeek(new Date());
+  const maxWeek = rollingWeekStart(new Date());
 
   function isCellDisabled(day: Date, prayer: PrayerName) {
     const key = formatDateKeyLocal(day);
@@ -220,29 +243,32 @@ export function SalahTracker() {
                                     done={done}
                                     disabled={disabled}
                                     label={`${PRAYER_LABELS[prayer]} sunnah before ${key}`}
+                                    tip={`${SUNNAH_UNIT_RAKATS} Rakats Sunnah`}
                                     onClick={() =>
                                       toggle({ date: d, prayer, kind: 'SUNNAH_BEFORE', unit })
                                     }
                                   />
                                 ))}
                               </div>
-                              <motion.button
-                                type="button"
-                                className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}`}
-                                disabled={disabled && !cell.fard}
-                                onClick={() => toggle({ date: d, prayer, kind: 'FARD' })}
-                                whileTap={{ scale: 0.88 }}
-                                aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
-                                title={
-                                  disabled && !cell.fard
-                                    ? key === todayKey
-                                      ? 'Wakt has not started yet'
-                                      : 'Future day'
-                                    : undefined
-                                }
-                              >
-                                {cell.fard ? '✓' : '○'}
-                              </motion.button>
+                              <SalahHoverBubble label={`${FARD_RAKATS[prayer]} Rakats Fard`}>
+                                <motion.button
+                                  type="button"
+                                  className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}`}
+                                  disabled={disabled && !cell.fard}
+                                  onClick={() => toggle({ date: d, prayer, kind: 'FARD' })}
+                                  whileTap={{ scale: 0.88 }}
+                                  aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
+                                  title={
+                                    disabled && !cell.fard
+                                      ? key === todayKey
+                                        ? 'Wakt has not started yet'
+                                        : 'Future day'
+                                      : undefined
+                                  }
+                                >
+                                  {cell.fard ? '✓' : '○'}
+                                </motion.button>
+                              </SalahHoverBubble>
                               <div className="dawa-salah-cell__wing dawa-salah-cell__wing--after">
                                 {cell.sunnahAfter.map((done, unit) => (
                                   <SunnahToggle
@@ -250,6 +276,7 @@ export function SalahTracker() {
                                     done={done}
                                     disabled={disabled}
                                     label={`${PRAYER_LABELS[prayer]} sunnah after ${key}`}
+                                    tip={`${SUNNAH_UNIT_RAKATS} Rakats Sunnah`}
                                     onClick={() =>
                                       toggle({ date: d, prayer, kind: 'SUNNAH_AFTER', unit })
                                     }

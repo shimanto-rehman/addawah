@@ -6,7 +6,7 @@ import {
   buildSalahGrid,
   dateFromKey,
   formatDateKeyLocal,
-  startOfWeek,
+  rollingWeekStart,
   weekRangeFromStartKey,
 } from '@/lib/salah-utils';
 import { fetchPrayerTimes } from '@/lib/prayer-times';
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   const weekStartKey =
     weekParam && /^\d{4}-\d{2}-\d{2}$/.test(weekParam)
       ? weekParam
-      : formatDateKeyLocal(startOfWeek(new Date()));
+      : formatDateKeyLocal(rollingWeekStart(new Date()));
   const { start: weekStart, end: weekEnd } = weekRangeFromStartKey(weekStartKey);
 
   const records = await prisma.salahRecord.findMany({
