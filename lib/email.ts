@@ -56,7 +56,10 @@ function getFromAddress() {
   return process.env.SMTP_FROM || process.env.RESEND_FROM || RESEND_SANDBOX_FROM;
 }
 
-function isDomainVerificationError(error: { message?: string; statusCode?: number }) {
+function isDomainVerificationError(error: {
+  message?: string | null;
+  statusCode?: number | null;
+}) {
   const msg = (error.message || '').toLowerCase();
   return error.statusCode === 403 && msg.includes('domain') && msg.includes('not verified');
 }
