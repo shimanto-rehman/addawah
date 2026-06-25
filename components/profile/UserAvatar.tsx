@@ -9,6 +9,7 @@ type UserAvatarProps = {
   name: string;
   avatarColor: string;
   avatarUrl?: string | null;
+  resetToken?: string;
   size?: number;
   className?: string;
   variant?: 'silhouette' | 'initials';
@@ -66,16 +67,17 @@ export function UserAvatar({
   name,
   avatarColor,
   avatarUrl,
+  resetToken,
   size = 36,
   className = '',
   variant = 'silhouette',
 }: UserAvatarProps) {
   const [photoFailed, setPhotoFailed] = useState(false);
-  const src = resolveAvatarSrc(userId, avatarUrl);
+  const src = resolveAvatarSrc(userId, avatarUrl, resetToken ? { resetToken } : undefined);
 
   useEffect(() => {
     setPhotoFailed(false);
-  }, [avatarUrl, src]);
+  }, [avatarUrl, src, resetToken]);
 
   const style = { width: size, height: size, fontSize: Math.max(10, Math.round(size * 0.32)) };
 

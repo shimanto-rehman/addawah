@@ -110,6 +110,7 @@ export function ResetPasswordSetClient() {
                     name={user.name}
                     avatarColor={user.avatarColor}
                     avatarUrl={user.avatarUrl}
+                    resetToken={token}
                     size={88}
                     className="dawa-reset-password__avatar"
                   />
