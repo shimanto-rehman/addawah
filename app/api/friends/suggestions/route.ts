@@ -99,9 +99,9 @@ export async function GET(request: Request) {
     .map((u) => {
       const candidateFriends = candidateFriendsMap.get(u.id) ?? new Set<string>();
       let mutualFriends = 0;
-      for (const friendId of candidateFriends) {
+      candidateFriends.forEach((friendId) => {
         if (myFriendIds.has(friendId)) mutualFriends += 1;
-      }
+      });
 
       const bio = [u.city, u.country].filter(Boolean).join(' · ') || 'New on Addawah';
       return {
