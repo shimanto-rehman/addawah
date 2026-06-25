@@ -35,6 +35,7 @@ model User {
   deletionOtp  AccountDeletionOtp?
   passwordResetOtp PasswordResetOtp?
   moodCheckIns MoodCheckIn[]
+  notifications Notification[]
 }
 
 model PasswordResetOtp {
@@ -132,6 +133,31 @@ model Poke {
   toUser     User      @relation("RecvPokes", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@index([toUserId, readAt])
+}
+
+enum NotificationType {
+  DAWAH_POKE
+  CONNECTION_REQUEST
+  CONNECTION_ACCEPTED
+  WAKT_REMINDER
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  href      String
+  meta      Json             @default("{}")
+  dedupeKey String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dedupeKey])
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
 }
 
 enum Prayer {

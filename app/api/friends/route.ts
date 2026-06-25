@@ -7,6 +7,10 @@ import { getBadgeForCoins } from '@/lib/rewards';
 import { removeFriendship } from '@/lib/friendship';
 import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, maskWeekRate } from '@/lib/profile-privacy-apply';
+import {
+  notifyConnectionAccepted,
+  notifyConnectionRequest,
+} from '@/lib/notifications';
 
 const userSelect = {
   id: true,
@@ -156,8 +160,15 @@ export async function POST(req: NextRequest) {
     });
     if (existing) return jsonError('Friendship already exists');
 
-    await prisma.friendship.create({
+    const friendship = await prisma.friendship.create({
       data: { userId: user!.id, friendId: friend.id, status: 'PENDING' },
+    });
+
+    await notifyConnectionRequest({
+      id: friendship.id,
+      userId: user!.id,
+      friendId: friend.id,
+      fromName: user!.name,
     });
 
     return jsonOk({ ok: true });
@@ -187,6 +198,12 @@ export async function PATCH(req: NextRequest) {
       await prisma.friendship.update({
         where: { id: body.friendshipId },
         data: { status: 'ACCEPTED' },
+      });
+      await notifyConnectionAccepted({
+        id: friendship.id,
+        userId: friendship.userId,
+        friendId: friendship.friendId,
+        accepterName: user!.name,
       });
       return jsonOk({ ok: true });
     }

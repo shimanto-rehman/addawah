@@ -11,6 +11,8 @@ export function privateWaktRow() {
     waktEndsAt: null,
     waktEndLabel: null,
     canPoke: false,
+    pokeCooldownUntil: null,
+    pokeCooldownSeconds: 0,
     forbiddenNow: false,
     elapsedMinutes: 0,
     remainingMinutes: 0,

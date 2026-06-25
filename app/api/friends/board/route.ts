@@ -5,6 +5,7 @@ import { getBadgeForCoins } from '@/lib/rewards';
 import { buildFriendWaktRow } from '@/lib/friends-wakt';
 import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, privateWaktRow } from '@/lib/profile-privacy-apply';
+import { POKE_COOLDOWN_MS, applyPokeCooldown } from '@/lib/poke-cooldown';
 
 const userSelect = {
   id: true,
@@ -40,6 +41,27 @@ export async function GET() {
   const uniqueFriends = Array.from(
     new Map(friendUsers.map((u) => [u.id, u])).values(),
   );
+  const friendIds = uniqueFriends.map((f) => f.id);
+
+  const recentPokes =
+    friendIds.length > 0
+      ? await prisma.poke.findMany({
+          where: {
+            fromUserId: user!.id,
+            toUserId: { in: friendIds },
+            createdAt: { gte: new Date(Date.now() - POKE_COOLDOWN_MS) },
+          },
+          select: { toUserId: true, createdAt: true },
+          orderBy: { createdAt: 'desc' },
+        })
+      : [];
+
+  const lastPokeByFriend = new Map<string, Date>();
+  for (const poke of recentPokes) {
+    if (!lastPokeByFriend.has(poke.toUserId)) {
+      lastPokeByFriend.set(poke.toUserId, poke.createdAt);
+    }
+  }
 
   const board = await Promise.all(
     uniqueFriends.map(async (friend) => {
@@ -68,6 +90,7 @@ export async function GET() {
           friend.country,
           records,
         );
+        wakt = applyPokeCooldown(wakt, lastPokeByFriend.get(friend.id));
       }
 
       const goldCoins = friend.goldCoins;

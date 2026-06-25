@@ -9,6 +9,8 @@ import {
   awardGoldCoins,
   computeDawahReward,
 } from '@/lib/rewards';
+import { POKE_COOLDOWN_MS, pokeCooldownMessage } from '@/lib/poke-cooldown';
+import { notifyDawahPoke } from '@/lib/notifications';
 
 const schema = z.object({
   friendId: z.string(),
@@ -57,7 +59,20 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    await prisma.poke.create({
+    const recentPoke = await prisma.poke.findFirst({
+      where: {
+        fromUserId: user!.id,
+        toUserId: body.friendId,
+        createdAt: { gte: new Date(Date.now() - POKE_COOLDOWN_MS) },
+      },
+      orderBy: { createdAt: 'desc' },
+      select: { createdAt: true },
+    });
+    if (recentPoke) {
+      return jsonError(pokeCooldownMessage(recentPoke.createdAt), 429);
+    }
+
+    const poke = await prisma.poke.create({
       data: {
         fromUserId: user!.id,
         toUserId: body.friendId,
@@ -66,6 +81,14 @@ export async function POST(req: NextRequest) {
           ? `Assalamu Alaikum — ${prayer} wakt is active. May Allah make it easy for you 🤲`
           : 'Assalamu Alaikum — a gentle reminder to keep up with your salah today 🤲',
       },
+    });
+
+    await notifyDawahPoke({
+      id: poke.id,
+      fromUserId: user!.id,
+      toUserId: body.friendId,
+      prayer: poke.prayer,
+      fromName: user!.name,
     });
 
     let coinsEarned = 0;

@@ -7,7 +7,6 @@ import {
   profileViewerFromConnection,
 } from '@/lib/profile-privacy';
 import { getBadgeForCoins } from '@/lib/rewards';
-import { seedProfileByUsername } from '@/lib/seed-users';
 import { buildPublicUserStats } from '@/lib/user-public-stats';
 
 type RouteParams = { params: { username: string } };
@@ -51,7 +50,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
       })
     : [];
 
-  const seedBio = seedProfileByUsername(profileUser.username ?? '');
+  const bio = [profileUser.city, profileUser.country].filter(Boolean).join(' · ') || null;
   const rawStats = buildPublicUserStats(
     profileUser.id,
     profileUser.goldCoins,
@@ -71,7 +70,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
       avatarUrl: canView(privacy, 'showAvatarPhoto', viewer) ? profileUser.avatarUrl : null,
       city: canView(privacy, 'showLocation', viewer) ? profileUser.city : null,
       country: canView(privacy, 'showLocation', viewer) ? profileUser.country : null,
-      bio: seedBio?.bio ?? null,
+      bio,
       memberSince: canView(privacy, 'showMemberSince', viewer)
         ? profileUser.createdAt.toISOString()
         : null,

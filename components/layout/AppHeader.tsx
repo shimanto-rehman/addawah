@@ -6,15 +6,24 @@ import { BrandMark } from '@/components/ui/BrandMark';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { UserMenu } from '@/components/layout/UserMenu';
+import { NotificationBell } from '@/components/layout/NotificationBell';
+import { useNotifications } from '@/components/notifications/useNotifications';
 import { useApp } from '@/components/providers/AppProvider';
 
-type NavIconName = 'home' | 'friends' | 'analytics' | 'settings';
+type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notifications';
 
-const NAV: { href: string; label: string; icon: NavIconName }[] = [
+const DESKTOP_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/dashboard', label: 'Home', icon: 'home' },
   { href: '/friends', label: 'Friends', icon: 'friends' },
   { href: '/analytics', label: 'Analytics', icon: 'analytics' },
   { href: '/settings', label: 'Settings', icon: 'settings' },
+];
+
+const MOBILE_TAB_NAV: { href: string; label: string; icon: NavIconName }[] = [
+  { href: '/dashboard', label: 'Home', icon: 'home' },
+  { href: '/friends', label: 'Friends', icon: 'friends' },
+  { href: '/analytics', label: 'Analytics', icon: 'analytics' },
+  { href: '/notifications', label: 'Alerts', icon: 'notifications' },
 ];
 
 function NavIcon({ name }: { name: NavIconName }) {
@@ -63,6 +72,13 @@ function NavIcon({ name }: { name: NavIconName }) {
           <path d="M12 2v2.25M12 19.75V22M4.22 4.22l1.59 1.59M18.19 18.19l1.59 1.59M2 12h2.25M19.75 12H22M4.22 19.78l1.59-1.59M18.19 5.81l1.59-1.59" />
         </svg>
       );
+    case 'notifications':
+      return (
+        <svg {...props}>
+          <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5" />
+          <path d="M10 20a2 2 0 0 0 4 0" />
+        </svg>
+      );
   }
 }
 
@@ -81,7 +97,7 @@ export function AppHeader() {
         </Link>
 
         <nav className="dawa-header__nav" aria-label="Main">
-          {NAV.map((item) => {
+          {DESKTOP_NAV.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
@@ -101,6 +117,7 @@ export function AppHeader() {
         <div className="dawa-header__actions">
           <ThemeModeToggle compact />
           <ThemeSwitcher compact />
+          {user && <NotificationBell />}
           {user && <UserMenu user={user} />}
         </div>
       </div>
@@ -111,12 +128,15 @@ export function AppHeader() {
 
 export function MobileTabBar() {
   const pathname = usePathname();
+  const { data } = useNotifications(60_000);
+  const unreadCount = data?.unreadCount ?? 0;
 
   return (
     <nav className="dawa-tabbar" aria-label="Mobile navigation">
       <div className="dawa-tabbar__inner">
-        {NAV.map((item) => {
+        {MOBILE_TAB_NAV.map((item) => {
           const active = pathname === item.href;
+          const showBadge = item.icon === 'notifications' && unreadCount > 0;
           return (
             <Link
               key={item.href}
@@ -125,6 +145,11 @@ export function MobileTabBar() {
             >
               <span className="dawa-tabbar__icon">
                 <NavIcon name={item.icon} />
+                {showBadge && (
+                  <span className="dawa-tabbar__badge" aria-hidden>
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </span>
               <span className="dawa-tabbar__label">{item.label}</span>
             </Link>

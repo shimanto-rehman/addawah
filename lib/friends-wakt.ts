@@ -23,6 +23,8 @@ export type FriendWaktRow = {
   waktEndsAt: string | null;
   waktEndLabel: string | null;
   canPoke: boolean;
+  pokeCooldownUntil?: string | null;
+  pokeCooldownSeconds?: number;
   forbiddenNow: boolean;
   elapsedMinutes: number;
   remainingMinutes: number;
@@ -81,6 +83,8 @@ function emptyRow(userId: string): FriendWaktRow {
     waktEndsAt: null,
     waktEndLabel: null,
     canPoke: false,
+    pokeCooldownUntil: null,
+    pokeCooldownSeconds: 0,
     forbiddenNow: false,
     elapsedMinutes: 0,
     remainingMinutes: 0,
@@ -149,6 +153,8 @@ export async function buildFriendWaktRow(
       waktEndsAt: null,
       waktEndLabel: formatClockTime(startedAt, true),
       canPoke: false,
+      pokeCooldownUntil: null,
+      pokeCooldownSeconds: 0,
       forbiddenNow: false,
       elapsedMinutes: 0,
       remainingMinutes: Math.ceil(untilStartSec / 60),
