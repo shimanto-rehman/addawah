@@ -132,7 +132,7 @@ export function GoldCoinAmount({ amount, size = 16 }: { amount: number; size?: n
   return (
     <span className="dawa-gold-coin-amount">
       <GoldCoin size={size} />
-      <span>{amount}</span>
+      <span className="dawa-num">{amount}</span>
     </span>
   );
 }

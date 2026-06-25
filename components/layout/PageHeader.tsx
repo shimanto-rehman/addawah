@@ -21,9 +21,13 @@ function HijriBlock({ compact = false }: { compact?: boolean }) {
   const hijri = toHijri();
   return (
     <div className={`dawa-intro__cal${compact ? ' dawa-intro__cal--compact' : ''}`}>
-      <span className="dawa-intro__cal-day">{hijri.day || '—'}</span>
+      <span className="dawa-intro__cal-day dawa-num">{hijri.day || '—'}</span>
       <span className="dawa-intro__cal-mon">{hijri.month}</span>
-      {hijri.year && <span className="dawa-intro__cal-yr">{hijri.year} AH</span>}
+      {hijri.year && (
+        <span className="dawa-intro__cal-yr">
+          <span className="dawa-num">{hijri.year}</span> AH
+        </span>
+      )}
     </div>
   );
 }

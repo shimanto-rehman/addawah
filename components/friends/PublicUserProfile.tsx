@@ -43,7 +43,9 @@ type ProfilePayload = {
 function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="dawa-user-profile__stat">
-      <p className="dawa-user-profile__stat-val">{value}</p>
+      <p className="dawa-user-profile__stat-val">
+        <span className="dawa-num">{value}</span>
+      </p>
       <p className="dawa-user-profile__stat-label">{label}</p>
       {hint && <p className="dawa-user-profile__stat-hint">{hint}</p>}
     </div>

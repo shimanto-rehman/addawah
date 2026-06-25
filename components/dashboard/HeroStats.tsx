@@ -41,7 +41,7 @@ export function HeroStats() {
   const prayedShare = data?.lifetimeRate ?? 0;
 
   const stream = [
-    { value: fmt(data?.lifetimeMissed), label: 'fard missed · since tracking' },
+    { value: fmt(data?.lifetimePrayed), label: 'fard prayers prayed · since tracking' },
     { value: fmt(data?.streak), label: 'day streak' },
     { value: fmt(data?.fajrMissed), label: 'fajr missed' },
     { value: fmt(data?.perfectDays), label: 'perfect days' },
@@ -54,13 +54,18 @@ export function HeroStats() {
       aria-label="Prayer journey statistics"
     >
       <div className="dawa-metrics__lead">
-        <span className="dawa-metrics__hero">{fmt(data?.lifetimePrayed)}</span>
+        <span className="dawa-metrics__hero dawa-num">{fmt(data?.lifetimeMissed)}</span>
         <p className="dawa-metrics__headline">
-          fard prayers prayed
+          fard missed
           <span className="dawa-metrics__headline-sub">
-            {data
-              ? `${data.lifetimeRate}% completion · ${data.daysOnApp} days since you started tracking`
-              : 'Loading your journey…'}
+            {data ? (
+              <>
+                <span className="dawa-num">{data.lifetimeRate}%</span> completion ·{' '}
+                <span className="dawa-num">{data.daysOnApp}</span> days since you started tracking
+              </>
+            ) : (
+              'Loading your journey…'
+            )}
           </span>
         </p>
       </div>
@@ -71,7 +76,7 @@ export function HeroStats() {
             key={item.label}
             className="dawa-metrics__stream-item"
           >
-            <span className="dawa-metrics__stream-val">{item.value}</span>
+            <span className="dawa-metrics__stream-val dawa-num">{item.value}</span>
             {item.label}
           </li>
         ))}
@@ -97,7 +102,7 @@ export function HeroStats() {
       <div className="dawa-metrics__progress">
         <div className="dawa-metrics__progress-head">
           <span>Lifetime</span>
-          <span>{data ? `${data.lifetimeRate}%` : '—'}</span>
+          <span>{data ? <span className="dawa-num">{data.lifetimeRate}%</span> : '—'}</span>
         </div>
         <div
           className="dawa-metrics__bar"
@@ -113,17 +118,54 @@ export function HeroStats() {
           />
         </div>
         <div className="dawa-metrics__progress-foot">
-          <span>{data ? `${fmt(data.lifetimePrayed)} prayed` : '—'}</span>
-          <span>This week {data ? `${data.weekCompleted}/${data.weekTotal}` : '—'} · {data ? `${weekPct}%` : '—'}</span>
-          <span>{data ? `${fmt(data.lifetimeMissed)} missed` : '—'}</span>
+          <span>
+            {data ? (
+              <>
+                <span className="dawa-num">{fmt(data.lifetimeMissed)}</span> missed
+              </>
+            ) : (
+              '—'
+            )}
+          </span>
+          <span>
+            This week{' '}
+            {data ? (
+              <>
+                <span className="dawa-num">{data.weekCompleted}/{data.weekTotal}</span>
+                {' · '}
+                <span className="dawa-num">{weekPct}%</span>
+              </>
+            ) : (
+              '—'
+            )}
+          </span>
+          <span>
+            {data ? (
+              <>
+                <span className="dawa-num">{fmt(data.lifetimePrayed)}</span> prayed
+              </>
+            ) : (
+              '—'
+            )}
+          </span>
         </div>
       </div>
 
       <p className="dawa-metrics__meta">
-        {data?.bestPrayer
-          ? `Strongest ${data.bestPrayer.label} at ${data.bestPrayer.rate}%`
-          : 'Log prayers to unlock insights'}
-        {data ? ` · ${data.activeDays} active days` : ''}
+        {data?.bestPrayer ? (
+          <>
+            Strongest {data.bestPrayer.label} at{' '}
+            <span className="dawa-num">{data.bestPrayer.rate}%</span>
+          </>
+        ) : (
+          'Log prayers to unlock insights'
+        )}
+        {data ? (
+          <>
+            {' · '}
+            <span className="dawa-num">{data.activeDays}</span> active days
+          </>
+        ) : null}
       </p>
     </section>
   );

@@ -211,7 +211,9 @@ export function PrayerInsights() {
               </p>
             </div>
             <div className="dawa-insights__gauge" aria-label={`Iman meter ${data?.currentIman ?? '—'} percent`}>
-              <span className="dawa-insights__gauge-val">{data ? data.currentIman : '—'}</span>
+              <span className="dawa-insights__gauge-val">
+                <span className="dawa-num">{data ? data.currentIman : '—'}</span>
+              </span>
               <span className="dawa-insights__gauge-unit">%</span>
             </div>
           </header>
@@ -251,15 +253,15 @@ export function PrayerInsights() {
               <ul className="dawa-insights__legend">
                 <li>
                   <span className="dawa-insights__dot dawa-insights__dot--good" />
-                  On time <strong>{data.totals.onTime}</strong>
+                  On time <strong className="dawa-num">{data.totals.onTime}</strong>
                 </li>
                 <li>
                   <span className="dawa-insights__dot dawa-insights__dot--warn" />
-                  Kaza <strong>{data.totals.kaza}</strong>
+                  Kaza <strong className="dawa-num">{data.totals.kaza}</strong>
                 </li>
                 <li>
                   <span className="dawa-insights__dot dawa-insights__dot--bad" />
-                  Missed <strong>{data.totals.missed}</strong>
+                  Missed <strong className="dawa-num">{data.totals.missed}</strong>
                 </li>
               </ul>
               <p className={`dawa-insights__trend dawa-insights__trend--${data.trend}`}>
@@ -290,7 +292,7 @@ export function PrayerInsights() {
           {data && (
             <footer className="dawa-insights__chart-foot">
               <span className="dawa-insights__chart-foot-stat">
-                <strong>{data.totals.missed}</strong> total missed
+                <strong className="dawa-num">{data.totals.missed}</strong> total missed
               </span>
               <span className="dawa-insights__chart-foot-note">
                 {data.days.filter((d) => d.missed === 0).length} of 14 days with no gaps

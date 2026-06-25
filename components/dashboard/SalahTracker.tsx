@@ -213,7 +213,7 @@ export function SalahTracker() {
                     return (
                       <th key={key}>
                         <div className={`dawa-salah-day${key === todayKey ? ' is-today' : ''}`}>
-                          {d.getDate()}
+                          <span className="dawa-num">{d.getDate()}</span>
                         </div>
                         {d.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 1)}
                       </th>

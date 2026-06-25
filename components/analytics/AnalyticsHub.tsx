@@ -84,7 +84,7 @@ export function AnalyticsHub() {
           ].map((k) => (
             <div key={k.label} className="dawa-analytics__kpi">
               <span className="dawa-analytics__kpi-val">
-                {k.val}{k.unit && <small>{k.unit}</small>}
+                <span className="dawa-num">{k.val}</span>{k.unit && <small>{k.unit}</small>}
               </span>
               <span className="dawa-analytics__kpi-label">{k.label}</span>
             </div>

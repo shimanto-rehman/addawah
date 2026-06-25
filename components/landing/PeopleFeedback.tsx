@@ -39,7 +39,7 @@ export function PeopleFeedback() {
       <div className="dawa-feedback__summary">
         <StarRating rating={5} size="md" />
         <p className="dawa-feedback__score">
-          <strong>4.9</strong>
+          <strong className="dawa-num">4.9</strong>
           <span>average rating</span>
         </p>
         <p className="dawa-feedback__count">From 2,400+ community members</p>

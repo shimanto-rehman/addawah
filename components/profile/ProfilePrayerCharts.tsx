@@ -138,7 +138,7 @@ export function ProfilePrayerCharts({ insightsUrl, title = 'Prayer insights' }: 
         <h2 className="dawa-social__title">{title}</h2>
         {data && (
           <span className="dawa-profile-charts__iman">
-            Iman <strong>{data.currentIman}%</strong>
+            Iman <strong><span className="dawa-num">{data.currentIman}</span>%</strong>
           </span>
         )}
       </header>

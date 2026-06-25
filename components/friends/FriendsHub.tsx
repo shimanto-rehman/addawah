@@ -143,7 +143,7 @@ function WaktStatusCell({ row }: { row: BoardRow }) {
     return (
       <span className="dawa-social-board__status dawa-social-board__status--wait">
         <span className={countdownClass}>
-          {formatCountdownHms(remainingSeconds)}
+          <span className="dawa-num">{formatCountdownHms(remainingSeconds)}</span>
         </span>
         <span className="dawa-social-board__timer-sub">
           until {wakt.waktEndLabel ?? 'start'}
@@ -156,7 +156,7 @@ function WaktStatusCell({ row }: { row: BoardRow }) {
     return (
       <span className="dawa-social-board__status dawa-social-board__status--forbidden">
         <span className={countdownClass}>
-          {formatCountdownHms(remainingSeconds)}
+          <span className="dawa-num">{formatCountdownHms(remainingSeconds)}</span>
         </span>
         <span className="dawa-social-board__timer-sub">Forbidden time</span>
       </span>
@@ -166,7 +166,7 @@ function WaktStatusCell({ row }: { row: BoardRow }) {
   return (
     <span className="dawa-social-board__status dawa-social-board__status--active">
       <span className={countdownClass}>
-        {formatCountdownHms(remainingSeconds)}
+        <span className="dawa-num">{formatCountdownHms(remainingSeconds)}</span>
       </span>
       <span className="dawa-social-board__timer-sub">
         left · ends {wakt.waktEndLabel ?? '—'}
@@ -295,7 +295,7 @@ export function FriendsHub() {
           <GoldCoin size={28} className="dawa-social__hero-coin" />
           <div className="dawa-social__hero-copy">
             <span className="dawa-social__hero-val dawa-social__hero-val--gold">
-              {data?.me?.goldCoins ?? '—'}
+              <span className="dawa-num">{data?.me?.goldCoins ?? '—'}</span>
             </span>
             <span className="dawa-social__hero-lbl">Gold coins</span>
           </div>
