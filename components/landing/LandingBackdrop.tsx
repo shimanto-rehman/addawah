@@ -11,8 +11,7 @@ import {
 
 const MOBILE_VIDEO_MQ = '(max-width: 768px)';
 const PLAY_RETRY_MS = 400;
-const DESKTOP_PLAY_TIMEOUT_MS = 18000;
-const MOBILE_PLAY_TIMEOUT_MS = 10000;
+const PLAY_TIMEOUT_MS = 18000;
 
 type VideoSources = {
   webm: string | null;
@@ -25,6 +24,11 @@ function pickSources(isMobile: boolean): VideoSources {
     : { webm: LANDING_VIDEO_SRC, mp4: LANDING_VIDEO_MP4_SRC };
 }
 
+function isMobileViewport() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia(MOBILE_VIDEO_MQ).matches;
+}
+
 function prefersReducedMotion() {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -33,10 +37,8 @@ function prefersReducedMotion() {
 export function LandingBackdrop() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const readySent = useRef(false);
-  const [sources, setSources] = useState<VideoSources | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [sources, setSources] = useState(() => pickSources(isMobileViewport()));
   const [useFallback, setUseFallback] = useState(() => prefersReducedMotion());
-  const [videoVisible, setVideoVisible] = useState(false);
 
   const signalReady = useCallback(() => {
     if (readySent.current) return;
@@ -56,28 +58,13 @@ export function LandingBackdrop() {
     }
   }, [useFallback]);
 
-  /* Resolve viewport on client only — avoids mobile downloading the 7MB desktop file from SSR. */
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_VIDEO_MQ);
-    const sync = () => {
-      const mobile = mq.matches;
-      setIsMobile(mobile);
-      setSources(pickSources(mobile));
-    };
+    const sync = () => setSources(pickSources(mq.matches));
     sync();
     mq.addEventListener('change', sync);
     return () => mq.removeEventListener('change', sync);
   }, []);
-
-  /* Dismiss preloader once poster is ready — do not wait for full video playback. */
-  useEffect(() => {
-    if (useFallback) return;
-
-    const poster = new Image();
-    poster.onload = () => signalReady();
-    poster.onerror = () => signalReady();
-    poster.src = LANDING_HERO_SRC;
-  }, [useFallback, signalReady]);
 
   useEffect(() => {
     if (!useFallback) return;
@@ -90,11 +77,11 @@ export function LandingBackdrop() {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || useFallback || !sources) return;
+    if (!video || useFallback) return;
 
     video.load();
 
-    const onPlaying = () => setVideoVisible(true);
+    const onPlaying = () => signalReady();
     const onReady = () => void tryPlay();
     const onError = () => setUseFallback(true);
 
@@ -109,12 +96,15 @@ export function LandingBackdrop() {
     document.addEventListener('visibilitychange', onVisible);
     window.addEventListener('pageshow', onReady);
 
-    const retryId = window.setInterval(() => void tryPlay(), PLAY_RETRY_MS);
+    const retryId = window.setInterval(() => {
+      if (readySent.current) return;
+      void tryPlay();
+    }, PLAY_RETRY_MS);
 
-    const timeoutMs = isMobile ? MOBILE_PLAY_TIMEOUT_MS : DESKTOP_PLAY_TIMEOUT_MS;
     const timeoutId = window.setTimeout(() => {
-      if (!videoVisible) setUseFallback(true);
-    }, timeoutMs);
+      if (readySent.current) return;
+      setUseFallback(true);
+    }, PLAY_TIMEOUT_MS);
 
     void tryPlay();
 
@@ -128,19 +118,15 @@ export function LandingBackdrop() {
       window.clearInterval(retryId);
       window.clearTimeout(timeoutId);
     };
-  }, [sources, isMobile, tryPlay, useFallback, videoVisible]);
+  }, [sources, tryPlay, useFallback, signalReady]);
 
   return (
     <div
-      className={`dawa-landing-backdrop${useFallback ? ' is-fallback' : ''}${videoVisible ? ' is-video-playing' : ''}`}
+      className={`dawa-landing-backdrop${useFallback ? ' is-fallback' : ''}`}
       aria-hidden="true"
-      style={{
-        backgroundImage: `url('${LANDING_HERO_SRC}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+      style={useFallback ? { backgroundImage: `url('${LANDING_HERO_SRC}')` } : undefined}
     >
-      {sources && !useFallback && (
+      {!useFallback && (
         <video
           ref={videoRef}
           className="dawa-landing-backdrop__video"
@@ -148,7 +134,7 @@ export function LandingBackdrop() {
           muted
           loop
           playsInline
-          preload={isMobile ? 'metadata' : 'auto'}
+          preload="auto"
           poster={LANDING_HERO_SRC}
         >
           <source src={sources.mp4} type="video/mp4" />

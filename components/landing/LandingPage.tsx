@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LandingBackdrop } from '@/components/landing/LandingBackdrop';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
@@ -34,7 +33,6 @@ export function LandingPage() {
 
   return (
     <>
-      <LandingBackdrop />
       <div className="dawa-landing">
         <header className="dawa-landing-nav">
           <div className="dawa-landing-nav__inner">

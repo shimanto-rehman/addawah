@@ -8,7 +8,6 @@ import { AuthFrame } from '@/components/auth/AuthFrame';
 import { PhoneInput } from '@/components/auth/PhoneInput';
 import { ValidatedField } from '@/components/auth/ValidatedField';
 import { PasswordField } from '@/components/auth/PasswordField';
-import { LandingBackdrop } from '@/components/landing/LandingBackdrop';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { useFieldAvailability } from '@/hooks/useFieldAvailability';
@@ -189,7 +188,6 @@ export function LoginPageClient() {
 
   return (
     <>
-      <LandingBackdrop />
       <div className="dawa-auth">
         <div className="dawa-auth__theme-bar">
           <ThemeModeToggle compact />

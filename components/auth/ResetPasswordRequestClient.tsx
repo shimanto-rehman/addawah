@@ -7,7 +7,6 @@ import { AuthAside } from '@/components/auth/AuthAside';
 import { AuthFrame } from '@/components/auth/AuthFrame';
 import { OtpField } from '@/components/auth/OtpField';
 import { ValidatedField } from '@/components/auth/ValidatedField';
-import { LandingBackdrop } from '@/components/landing/LandingBackdrop';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { isValidEmail, sanitizeEmail } from '@/lib/validation';
@@ -87,7 +86,6 @@ export function ResetPasswordRequestClient() {
 
   return (
     <>
-      <LandingBackdrop />
       <div className="dawa-auth">
         <div className="dawa-auth__theme-bar">
           <ThemeModeToggle compact />

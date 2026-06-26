@@ -53,12 +53,9 @@ export function PreloaderGate({ children }: { children: React.ReactNode }) {
 
     const onBackdropReady = () => setLandingBackdropReady(true);
     window.addEventListener(LANDING_BACKDROP_READY_EVENT, onBackdropReady);
-    /* Safety net — never block the landing page longer than 3s on slow networks */
-    const fallbackId = window.setTimeout(() => setLandingBackdropReady(true), 3000);
 
     return () => {
       window.removeEventListener(LANDING_BACKDROP_READY_EVENT, onBackdropReady);
-      window.clearTimeout(fallbackId);
     };
   }, [pathname]);
 
