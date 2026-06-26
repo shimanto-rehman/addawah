@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { notificationIcon } from '@/lib/notification-types';
 import type { AppNotification } from '@/lib/notification-types';
@@ -16,16 +17,40 @@ function timeAgo(iso: string) {
   return `${days}d ago`;
 }
 
+function displayTime(item: AppNotification) {
+  const label = item.meta.eventTimeLabel;
+  if (typeof label === 'string' && label.length > 0) return label;
+  return new Date(item.createdAt).toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
 type NotificationPanelProps = {
   variant: 'dropdown' | 'page';
   onClose?: () => void;
+  showSeedSamples?: boolean;
 };
 
-export function NotificationPanel({ variant, onClose }: NotificationPanelProps) {
+export function NotificationPanel({ variant, onClose, showSeedSamples }: NotificationPanelProps) {
   const router = useRouter();
-  const { data, mutate, isLoading } = useNotifications(variant === 'page' ? 30_000 : 60_000);
+  const { data, mutate, isLoading } = useNotifications(variant === 'page' ? 30_000 : 30_000);
   const notifications = data?.notifications ?? [];
   const unreadCount = data?.unreadCount ?? 0;
+  const [seeding, setSeeding] = useState(false);
+
+  async function loadSampleNotifications() {
+    setSeeding(true);
+    try {
+      await fetch('/api/notifications/seed', { method: 'POST' });
+      await mutate();
+    } finally {
+      setSeeding(false);
+    }
+  }
 
   async function markAllRead() {
     if (unreadCount === 0) return;
@@ -62,6 +87,16 @@ export function NotificationPanel({ variant, onClose }: NotificationPanelProps) 
             Mark all read
           </button>
         )}
+        {showSeedSamples && (
+          <button
+            type="button"
+            className="dawa-notif-panel__mark-all"
+            disabled={seeding}
+            onClick={() => void loadSampleNotifications()}
+          >
+            {seeding ? 'Loading…' : 'Load samples'}
+          </button>
+        )}
       </div>
 
       {isLoading && notifications.length === 0 ? (
@@ -89,7 +124,9 @@ export function NotificationPanel({ variant, onClose }: NotificationPanelProps) 
                 <span className="dawa-notif-item__body">
                   <span className="dawa-notif-item__title">{item.title}</span>
                   <span className="dawa-notif-item__text">{item.body}</span>
-                  <span className="dawa-notif-item__time">{timeAgo(item.createdAt)}</span>
+                  <span className="dawa-notif-item__time">
+                    {displayTime(item)} · {timeAgo(item.createdAt)}
+                  </span>
                 </span>
                 {!item.readAt && <span className="dawa-notif-item__dot" aria-hidden />}
               </button>

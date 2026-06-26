@@ -16,7 +16,7 @@ export function NotificationBell() {
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const { data } = useNotifications(60_000);
+  const { data } = useNotifications(30_000);
   const unreadCount = data?.unreadCount ?? 0;
 
   useEffect(() => setMounted(true), []);

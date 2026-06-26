@@ -12,6 +12,7 @@ import {
 import { fetchPrayerTimes } from '@/lib/prayer-times';
 import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
+import { clearWaktReminderForPrayer } from '@/lib/notifications';
 import type { PrayerName } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
@@ -100,6 +101,8 @@ export async function POST(req: NextRequest) {
 
     let coinsEarned = 0;
     if (body.completed && body.kind === 'FARD' && body.unit === 0) {
+      await clearWaktReminderForPrayer(user!.id, body.prayer, body.date);
+
       const reward = await computePrayerReward(
         user!.city,
         user!.country,

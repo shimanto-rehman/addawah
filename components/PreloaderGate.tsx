@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Preloader from '@/components/proloader/addawah-Preloader';
+import Preloader from '@/components/preloader/addawah-Preloader';
 import { LANDING_BACKDROP_READY_EVENT } from '@/lib/constants';
 
 const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings', '/u'];

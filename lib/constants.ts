@@ -59,7 +59,6 @@ export const THEME_COLOR_LABELS: Record<ThemeColor, string> = {
 export const SITE_LOGO_SRC = '/assets/images/Logo.webp';
 export const LANDING_HERO_SRC = '/assets/images/landing.webp';
 export const LANDING_VIDEO_SRC = '/assets/videos/landing.webm';
-export const LANDING_VIDEO_MOBILE_SRC = '/assets/videos/landing-mobile.webm';
 export const LANDING_VIDEO_MP4_SRC = '/assets/videos/landing.mp4';
 export const LANDING_VIDEO_MOBILE_MP4_SRC = '/assets/videos/landing-mobile.mp4';
 /** Dispatched when the landing background video is playing or a static fallback is ready. */
