@@ -43,6 +43,70 @@ function prayerLabel(prayer: Prayer | PrayerName | null | undefined) {
   return PRAYER_LABELS[prayer as PrayerName] ?? prayer;
 }
 
+const notificationListSelect = {
+  id: true,
+  type: true,
+  title: true,
+  body: true,
+  href: true,
+  meta: true,
+  readAt: true,
+  createdAt: true,
+} as const;
+
+type NotificationListRow = {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  href: string;
+  meta: Prisma.JsonValue;
+  readAt: Date | null;
+  createdAt: Date;
+};
+
+function toAppNotification(row: NotificationListRow): AppNotification {
+  return {
+    id: row.id,
+    type: row.type as AppNotification['type'],
+    title: row.title,
+    body: row.body,
+    href: row.href,
+    meta: (row.meta as Record<string, unknown>) ?? {},
+    readAt: row.readAt?.toISOString() ?? null,
+    createdAt: row.createdAt.toISOString(),
+  };
+}
+
+async function fetchNotificationList(userId: string, limit: number) {
+  const unreadWhere = { userId, readAt: null };
+  const readWhere = { userId, readAt: { not: null } };
+
+  const [unreadCount, unreadRows, readRows] = await Promise.all([
+    prisma.notification.count({ where: unreadWhere }),
+    prisma.notification.findMany({
+      where: unreadWhere,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: notificationListSelect,
+    }),
+    prisma.notification.findMany({
+      where: readWhere,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: notificationListSelect,
+    }),
+  ]);
+
+  const readSlots = Math.max(0, limit - unreadRows.length);
+  const rows = [...unreadRows, ...readRows.slice(0, readSlots)];
+
+  return {
+    notifications: rows.map(toAppNotification),
+    unreadCount,
+  };
+}
+
 function buildMeta(
   meta: Record<string, unknown>,
   eventAt: Date,
@@ -450,35 +514,7 @@ export async function listNotifications(userId: string, limit = 30) {
     async () => {
       await syncNotificationsForUser(userId);
 
-      const rows = await prisma.notification.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-      });
-
-      rows.sort((a, b) => {
-        const aUnread = a.readAt ? 1 : 0;
-        const bUnread = b.readAt ? 1 : 0;
-        if (aUnread !== bUnread) return aUnread - bUnread;
-        return b.createdAt.getTime() - a.createdAt.getTime();
-      });
-
-      const unreadCount = await prisma.notification.count({
-        where: { userId, readAt: null },
-      });
-
-      const notifications: AppNotification[] = rows.map((row) => ({
-        id: row.id,
-        type: row.type as AppNotification['type'],
-        title: row.title,
-        body: row.body,
-        href: row.href,
-        meta: (row.meta as Record<string, unknown>) ?? {},
-        readAt: row.readAt?.toISOString() ?? null,
-        createdAt: row.createdAt.toISOString(),
-      }));
-
-      return { notifications, unreadCount };
+      return fetchNotificationList(userId, limit);
     },
     { notifications: [], unreadCount: 0 },
   );
