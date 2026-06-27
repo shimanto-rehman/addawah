@@ -2,9 +2,8 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
-import { countCompleted, startOfWeek, addDays } from '@/lib/salah-utils';
 import { getBadgeForCoins } from '@/lib/rewards';
-import { removeFriendship } from '@/lib/friendship';
+import { batchFriendWeekRates, removeFriendship } from '@/lib/friendship';
 import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, maskWeekRate } from '@/lib/profile-privacy-apply';
 import {
@@ -25,27 +24,19 @@ const userSelect = {
   profilePrivacy: true,
 } as const;
 
-async function friendWeekRate(userId: string) {
-  const weekStart = startOfWeek(new Date());
-  const weekEnd = addDays(weekStart, 6);
-  const records = await prisma.salahRecord.findMany({
-    where: { userId, date: { gte: weekStart, lte: weekEnd } },
-  });
-  const total = records.length || 35;
-  return Math.round((countCompleted(records) / total) * 100);
-}
+type FriendUser = {
+  id: string;
+  name: string;
+  username: string | null;
+  email: string;
+  avatarColor: string;
+  avatarUrl: string | null;
+  goldCoins: number;
+  profilePrivacy: unknown;
+};
 
 function mapFriend(
-  u: {
-    id: string;
-    name: string;
-    username: string | null;
-    email: string;
-    avatarColor: string;
-    avatarUrl: string | null;
-    goldCoins: number;
-    profilePrivacy: unknown;
-  },
+  u: FriendUser,
   friendshipId: string,
   weekRate: number,
   connected: boolean,
@@ -74,43 +65,44 @@ export async function GET() {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
 
-  const [sent, received, recvAccepted] = await Promise.all([
+  const userId = user!.id;
+
+  const [accepted, received, me] = await Promise.all([
     prisma.friendship.findMany({
-      where: { userId: user!.id, status: 'ACCEPTED' },
-      include: { friend: { select: userSelect } },
+      where: {
+        status: 'ACCEPTED',
+        OR: [{ userId }, { friendId: userId }],
+      },
+      include: {
+        user: { select: userSelect },
+        friend: { select: userSelect },
+      },
     }),
     prisma.friendship.findMany({
-      where: { friendId: user!.id, status: 'PENDING' },
+      where: { friendId: userId, status: 'PENDING' },
       include: { user: { select: userSelect } },
     }),
-    prisma.friendship.findMany({
-      where: { friendId: user!.id, status: 'ACCEPTED' },
-      include: { user: { select: userSelect } },
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { goldCoins: true },
     }),
   ]);
 
-  const friendMap = new Map<string, ReturnType<typeof mapFriend>>();
+  const acceptedPeers = accepted.map((friendship) => ({
+    friendshipId: friendship.id,
+    person: friendship.userId === userId ? friendship.friend : friendship.user,
+  }));
 
-  for (const f of sent) {
-    const weekRate = await friendWeekRate(f.friend.id);
-    friendMap.set(f.friend.id, mapFriend(f.friend, f.id, weekRate, true));
-  }
-  for (const f of recvAccepted) {
-    if (friendMap.has(f.user.id)) continue;
-    const weekRate = await friendWeekRate(f.user.id);
-    friendMap.set(f.user.id, mapFriend(f.user, f.id, weekRate, true));
-  }
+  const weekRates = await batchFriendWeekRates(acceptedPeers.map((entry) => entry.person.id));
 
-  const friends = Array.from(friendMap.values());
+  const friends = acceptedPeers.map(({ friendshipId, person }) =>
+    mapFriend(person, friendshipId, weekRates.get(person.id) ?? 0, true),
+  );
+
   const requests = received.map((r) => ({
     ...mapFriend(r.user, r.id, 0, false),
     status: r.status,
   }));
-
-  const me = await prisma.user.findUnique({
-    where: { id: user!.id },
-    select: { goldCoins: true },
-  });
 
   return jsonOk({
     friends,
@@ -142,8 +134,8 @@ export async function POST(req: NextRequest) {
       const query = body.username?.replace(/^@/, '').toLowerCase() ?? body.email!.toLowerCase();
       friend = body.username
         ? await prisma.user.findFirst({
-            where: { username: { equals: query, mode: 'insensitive' } },
-          })
+          where: { username: { equals: query, mode: 'insensitive' } },
+        })
         : await prisma.user.findUnique({ where: { email: query } });
     }
 
