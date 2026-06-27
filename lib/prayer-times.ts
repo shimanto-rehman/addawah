@@ -1,4 +1,11 @@
 import { PRAYERS, PRAYER_LABELS, type PrayerName } from './constants';
+import {
+  getCachedPrayerTimes,
+  prayerTimesCacheKey,
+  prayerTimesCacheTtlMs,
+  setCachedPrayerTimes,
+} from './prayer-times-cache';
+import { kvGetJson, kvSetJson } from './kv';
 
 export type PrayerSlot = {
   prayer: PrayerName;
@@ -25,6 +32,35 @@ export type PrayerTimesPayload = {
   timeZone: string;
   fetchedAt: string;
 };
+
+export function isPrayerTimesPayload(value: unknown): value is PrayerTimesPayload {
+  if (!value || typeof value !== 'object') return false;
+  const v = value as PrayerTimesPayload;
+  return (
+    Array.isArray(v.prayers) &&
+    v.prayers.length >= PRAYERS.length &&
+    v.prayers.every(
+      (p) =>
+        typeof p === 'object' &&
+        p !== null &&
+        typeof p.minutes === 'number' &&
+        typeof p.time === 'string',
+    ) &&
+    Array.isArray(v.forbidden) &&
+    typeof v.timeZone === 'string' &&
+    typeof v.sunrise === 'string'
+  );
+}
+
+/** Rejects error JSON and malformed cache payloads from SWR. */
+export async function prayerTimesFetcher(url: string): Promise<PrayerTimesPayload> {
+  const res = await fetch(url);
+  const json: unknown = await res.json();
+  if (!res.ok || !isPrayerTimesPayload(json)) {
+    throw new Error('Could not load prayer times');
+  }
+  return json;
+}
 
 const API_PRAYER: Record<PrayerName, string> = {
   FAJR: 'Fajr',
@@ -135,16 +171,19 @@ export function zonedMinutesToDate(anchor: Date, minutesFromMidnight: number, ti
 
 /** Wakt window for a fard prayer — Fajr runs until Dhuhr; others until the next fard. */
 export function prayerWaktWindow(prayer: PrayerName, times: PrayerTimesPayload) {
+  if (!isPrayerTimesPayload(times)) {
+    return { start: 0, end: 24 * 60 };
+  }
   const idx = PRAYERS.indexOf(prayer);
-  const start = times.prayers[idx].minutes;
+  const start = times.prayers[idx]?.minutes ?? 0;
 
   if (prayer === 'FAJR') {
-    return { start, end: times.prayers[idx + 1].minutes };
+    return { start, end: times.prayers[idx + 1]?.minutes ?? 24 * 60 };
   }
   if (prayer === 'ISHA') {
     return { start, end: 24 * 60 };
   }
-  return { start, end: times.prayers[idx + 1].minutes };
+  return { start, end: times.prayers[idx + 1]?.minutes ?? 24 * 60 };
 }
 
 /** Karahah windows where poking for the active fard is not allowed. */
@@ -235,8 +274,22 @@ export function buildPrayerSlots(timings: Record<string, string>): PrayerSlot[] 
   });
 }
 
+function prayerDateParam(onDate: Date) {
+  return `${onDate.getDate()}-${onDate.getMonth() + 1}-${onDate.getFullYear()}`;
+}
+
 export async function fetchPrayerTimes(city: string, country: string, onDate = new Date()): Promise<PrayerTimesPayload> {
-  const dateParam = `${onDate.getDate()}-${onDate.getMonth() + 1}-${onDate.getFullYear()}`;
+  const dateParam = prayerDateParam(onDate);
+  const cacheKey = prayerTimesCacheKey(city, country, dateParam);
+  const cached = getCachedPrayerTimes(cacheKey);
+  if (cached && isPrayerTimesPayload(cached)) return cached;
+
+  const kvKey = `prayer:${cacheKey}`;
+  const fromKv = await kvGetJson<unknown>(kvKey);
+  if (fromKv && isPrayerTimesPayload(fromKv)) {
+    setCachedPrayerTimes(cacheKey, fromKv, prayerTimesCacheTtlMs(onDate));
+    return fromKv;
+  }
 
   const url = new URL('https://api.aladhan.com/v1/timingsByCity');
   url.searchParams.set('city', city);
@@ -256,7 +309,7 @@ export async function fetchPrayerTimes(city: string, country: string, onDate = n
   const timeZone =
     (json?.data?.meta?.timezone as string | undefined)?.trim() || 'Asia/Dhaka';
 
-  return {
+  const payload: PrayerTimesPayload = {
     city,
     country,
     date: json?.data?.date?.readable ?? dateParam,
@@ -266,4 +319,9 @@ export async function fetchPrayerTimes(city: string, country: string, onDate = n
     timeZone,
     fetchedAt: new Date().toISOString(),
   };
+
+  setCachedPrayerTimes(cacheKey, payload, prayerTimesCacheTtlMs(onDate));
+  const ttlSec = Math.max(60, Math.floor(prayerTimesCacheTtlMs(onDate) / 1000));
+  void kvSetJson(kvKey, payload, ttlSec);
+  return payload;
 }

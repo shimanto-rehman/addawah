@@ -27,7 +27,7 @@ export async function GET() {
       },
     });
 
-    const insights = await computePrayerInsights(records, city, country, 14);
+    const insights = await computePrayerInsights(records, city, country, 14, user!.id);
     return jsonOk(insights);
   } catch (e) {
     console.error(e);

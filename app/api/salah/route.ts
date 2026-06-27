@@ -9,10 +9,13 @@ import {
   rollingWeekStart,
   weekRangeFromStartKey,
 } from '@/lib/salah-utils';
+import { DASHBOARD_CACHE_HEADERS } from '@/lib/salah-query';
 import { fetchPrayerTimes } from '@/lib/prayer-times';
 import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import { clearWaktReminderForPrayer } from '@/lib/notifications';
+import { refreshSnapshotsForSalahUser } from '@/lib/wakt-snapshot';
+import { refreshSalahDayStatForUser } from '@/lib/salah-day-stats';
 import type { PrayerName } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
@@ -31,9 +34,16 @@ export async function GET(req: NextRequest) {
       userId: user!.id,
       date: { gte: weekStart, lte: weekEnd },
     },
+    select: {
+      date: true,
+      prayer: true,
+      kind: true,
+      unit: true,
+      completed: true,
+    },
   });
 
-  return jsonOk({ grid: buildSalahGrid(records) });
+  return jsonOk({ grid: buildSalahGrid(records) }, 200, DASHBOARD_CACHE_HEADERS);
 }
 
 const postSchema = z.object({
@@ -100,20 +110,24 @@ export async function POST(req: NextRequest) {
     }
 
     let coinsEarned = 0;
-    if (body.completed && body.kind === 'FARD' && body.unit === 0) {
-      await clearWaktReminderForPrayer(user!.id, body.prayer, body.date);
+    if (body.kind === 'FARD' && body.unit === 0) {
+      if (body.completed) {
+        await clearWaktReminderForPrayer(user!.id, body.prayer, body.date);
 
-      const reward = await computePrayerReward(
-        user!.city,
-        user!.country,
-        body.prayer as PrayerName,
-        body.date,
-        now,
-      );
-      if (reward) {
-        await awardGoldCoins(user!.id, reward.amount);
-        coinsEarned = reward.amount;
+        const reward = await computePrayerReward(
+          user!.city,
+          user!.country,
+          body.prayer as PrayerName,
+          body.date,
+          now,
+        );
+        if (reward) {
+          await awardGoldCoins(user!.id, reward.amount);
+          coinsEarned = reward.amount;
+        }
       }
+      void refreshSnapshotsForSalahUser(user!.id);
+      void refreshSalahDayStatForUser(user!.id, body.date);
     }
 
     return jsonOk({ ok: true, coinsEarned });

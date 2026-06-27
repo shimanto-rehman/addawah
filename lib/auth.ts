@@ -4,6 +4,14 @@ import { prisma } from './prisma';
 
 const COOKIE_NAME = 'addawah-session';
 const SESSION_DAYS = 30;
+const SESSION_CACHE_MS = 30_000;
+
+type CachedSession = {
+  user: SessionUser;
+  cachedAt: number;
+};
+
+const sessionCache = new Map<string, CachedSession>();
 
 function getSecret() {
   const secret = process.env.AUTH_SECRET;
@@ -53,6 +61,7 @@ export async function createSession(userId: string) {
 export async function destroySession() {
   const token = cookies().get(COOKIE_NAME)?.value;
   if (token) {
+    sessionCache.delete(token);
     await prisma.session.deleteMany({ where: { token } }).catch(() => {});
   }
   cookies().set(COOKIE_NAME, '', { httpOnly: true, expires: new Date(0), path: '/' });
@@ -62,6 +71,11 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const token = cookies().get(COOKIE_NAME)?.value;
   if (!token) return null;
 
+  const cached = sessionCache.get(token);
+  if (cached && Date.now() - cached.cachedAt < SESSION_CACHE_MS) {
+    return cached.user;
+  }
+
   try {
     const { payload } = await jwtVerify(token, getSecret());
     const userId = payload.sub;
@@ -69,7 +83,8 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 
     const session = await prisma.session.findUnique({
       where: { token },
-      include: {
+      select: {
+        expiresAt: true,
         user: {
           select: {
             id: true,
@@ -93,6 +108,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       return null;
     }
 
+    sessionCache.set(token, { user: session.user, cachedAt: Date.now() });
     return session.user;
   } catch {
     return null;

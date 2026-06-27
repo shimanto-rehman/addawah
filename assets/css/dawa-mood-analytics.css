@@ -233,6 +233,39 @@
   max-width: 100%;
   word-break: break-word;
 }
+.dawa-analytics__kpi--skeleton {
+  pointer-events: none;
+}
+.dawa-analytics__kpi-val--skeleton,
+.dawa-analytics__kpi-label--skeleton {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 0%,
+    color-mix(in srgb, var(--surface) 55%, var(--text-dim)) 50%,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 100%
+  );
+  background-size: 200% 100%;
+  animation: dawa-kpi-shimmer 1.2s ease-in-out infinite;
+}
+.dawa-analytics__kpi-val--skeleton {
+  width: 48px;
+  height: 28px;
+}
+.dawa-analytics__kpi-label--skeleton {
+  width: 64px;
+  height: 10px;
+  margin-top: 8px;
+}
+@keyframes dawa-kpi-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
 .dawa-analytics__section-title {
   margin: 0 0 4px;
   font-family: var(--font-display);

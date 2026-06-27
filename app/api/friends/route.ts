@@ -2,105 +2,64 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
-import { getBadgeForCoins } from '@/lib/rewards';
+import {
+  buildFriendsHubPayload,
+  loadAcceptedFriendPeers,
+  mapCircleFriend,
+  parseFriendsPageParams,
+} from '@/lib/friends-hub';
 import { batchFriendWeekRates, removeFriendship } from '@/lib/friendship';
-import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
-import { maskGoldCoins, maskWeekRate } from '@/lib/profile-privacy-apply';
+import { getBadgeForCoins } from '@/lib/rewards';
 import {
   notifyConnectionAccepted,
   notifyConnectionRequest,
 } from '@/lib/notifications';
+import { friendUserSelect } from '@/lib/friends-hub';
 
-const userSelect = {
-  id: true,
-  name: true,
-  username: true,
-  email: true,
-  avatarColor: true,
-  avatarUrl: true,
-  goldCoins: true,
-  city: true,
-  country: true,
-  profilePrivacy: true,
-} as const;
+const postSchema = z.object({
+  username: z.string().min(2).max(30).optional(),
+  email: z.string().email().optional(),
+  userId: z.string().optional(),
+}).refine((d) => d.username || d.email || d.userId, { message: 'Username, email, or userId required' });
 
-type FriendUser = {
-  id: string;
-  name: string;
-  username: string | null;
-  email: string;
-  avatarColor: string;
-  avatarUrl: string | null;
-  goldCoins: number;
-  profilePrivacy: unknown;
-};
-
-function mapFriend(
-  u: FriendUser,
-  friendshipId: string,
-  weekRate: number,
-  connected: boolean,
-) {
-  const privacy = parseProfilePrivacy(u.profilePrivacy);
-  const viewer = connected ? ('connection' as const) : ('public' as const);
-  const showBadge = canView(privacy, 'showBadge', viewer);
-  const showPhoto = canView(privacy, 'showAvatarPhoto', viewer);
-  return {
-    id: u.id,
-    name: u.name,
-    username: u.username,
-    email: u.email,
-    avatarColor: u.avatarColor,
-    avatarUrl: showPhoto ? u.avatarUrl : null,
-    goldCoins: maskGoldCoins(u.goldCoins, privacy, viewer) ?? 0,
-    goldCoinsHidden: !canView(privacy, 'showGoldCoins', viewer),
-    friendshipId,
-    weekRate: maskWeekRate(weekRate, privacy, viewer),
-    weekRateHidden: !canView(privacy, 'showSalahStats', viewer),
-    badge: showBadge ? getBadgeForCoins(u.goldCoins) : null,
-  };
-}
-
-export async function GET() {
+export async function GET(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
 
-  const userId = user!.id;
+  const hasPagination =
+    req.nextUrl.searchParams.has('cursor') || req.nextUrl.searchParams.has('limit');
 
-  const [accepted, received, me] = await Promise.all([
-    prisma.friendship.findMany({
-      where: {
-        status: 'ACCEPTED',
-        OR: [{ userId }, { friendId: userId }],
-      },
-      include: {
-        user: { select: userSelect },
-        friend: { select: userSelect },
-      },
-    }),
+  if (hasPagination) {
+    const { cursor, limit } = parseFriendsPageParams(req.nextUrl.searchParams);
+    const data = await buildFriendsHubPayload(user!.id, cursor, limit);
+    return jsonOk({
+      friends: data.friends,
+      requests: data.requests,
+      me: data.me,
+      page: data.page,
+    });
+  }
+
+  const userId = user!.id;
+  const [peers, received, me] = await Promise.all([
+    loadAcceptedFriendPeers(userId),
     prisma.friendship.findMany({
       where: { friendId: userId, status: 'PENDING' },
-      include: { user: { select: userSelect } },
+      include: { user: { select: friendUserSelect } },
     }),
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { goldCoins: true },
-    }),
+    prisma.user.findUnique({ where: { id: userId }, select: { goldCoins: true } }),
   ]);
 
-  const acceptedPeers = accepted.map((friendship) => ({
-    friendshipId: friendship.id,
-    person: friendship.userId === userId ? friendship.friend : friendship.user,
-  }));
-
-  const weekRates = await batchFriendWeekRates(acceptedPeers.map((entry) => entry.person.id));
-
-  const friends = acceptedPeers.map(({ friendshipId, person }) =>
-    mapFriend(person, friendshipId, weekRates.get(person.id) ?? 0, true),
+  const weekRates = await batchFriendWeekRates(peers.map((entry) => entry.person.id));
+  const friends = peers.map(({ friendshipId, person }) =>
+    mapCircleFriend(person, {
+      friendshipId,
+      weekRate: weekRates.get(person.id) ?? 0,
+      connected: true,
+    }),
   );
-
   const requests = received.map((r) => ({
-    ...mapFriend(r.user, r.id, 0, false),
+    ...mapCircleFriend(r.user, { friendshipId: r.id, weekRate: 0, connected: false }),
     status: r.status,
   }));
 
@@ -113,12 +72,6 @@ export async function GET() {
     },
   });
 }
-
-const postSchema = z.object({
-  username: z.string().min(2).max(30).optional(),
-  email: z.string().email().optional(),
-  userId: z.string().optional(),
-}).refine((d) => d.username || d.email || d.userId, { message: 'Username, email, or userId required' });
 
 export async function POST(req: NextRequest) {
   const { user, error } = await apiRequireAuth();

@@ -1,38 +1,30 @@
 'use client';
 
 import useSWR from 'swr';
-import type { PrayerName } from '@/lib/constants';
+import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
+import { STATS_KEY } from '@/lib/swr-revalidate';
+import type { StatsPayload } from '@/lib/stats-data';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const BEADS = 33;
 
-type Stats = {
-  weekCompleted: number;
-  weekTotal: number;
-  streak: number;
-  lifetimeRate: number;
-  todayCompleted: number;
-  lifetimePrayed: number;
-  lifetimeMissed: number;
-  lifetimeExpected: number;
-  activeDays: number;
-  perfectDays: number;
-  daysOnApp: number;
-  fajrMissed: number;
-  bestPrayer: { prayer: PrayerName; label: string; rate: number } | null;
-};
+type Stats = StatsPayload;
 
 function fmt(n: number | undefined) {
   return n === undefined ? '—' : n.toLocaleString();
 }
 
 export function HeroStats() {
-  const { data } = useSWR<Stats>('/api/stats', fetcher, {
+  const dashboard = useDashboardData();
+  const useRemote = !dashboard;
+  const { data: remote } = useSWR<Stats>(useRemote ? STATS_KEY : null, fetcher, {
     refreshInterval: 60_000,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
     revalidateIfStale: true,
   });
+
+  const data = dashboard?.data?.stats ?? remote;
 
   const weekPct = data ? Math.round((data.weekCompleted / data.weekTotal) * 100) : 0;
   const expected = data?.lifetimeExpected ?? 0;

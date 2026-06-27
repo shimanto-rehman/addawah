@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonOk } from '@/lib/api-helpers';
-import { countCompleted, startOfWeek, addDays } from '@/lib/salah-utils';
+import { batchFriendWeekRates } from '@/lib/friendship';
 import { getBadgeForCoins } from '@/lib/rewards';
 import { canView, parseProfilePrivacy } from '@/lib/profile-privacy';
 import { maskGoldCoins, maskWeekRate } from '@/lib/profile-privacy-apply';
@@ -17,16 +17,6 @@ const userSelect = {
   country: true,
   profilePrivacy: true,
 } as const;
-
-async function friendWeekRate(userId: string) {
-  const weekStart = startOfWeek(new Date());
-  const weekEnd = addDays(weekStart, 6);
-  const records = await prisma.salahRecord.findMany({
-    where: { userId, date: { gte: weekStart, lte: weekEnd } },
-  });
-  const total = records.length || 35;
-  return Math.round((countCompleted(records) / total) * 100);
-}
 
 function mapConnection(
   u: {
@@ -91,29 +81,26 @@ export async function GET() {
     }),
   ]);
 
-  const friendMap = new Map<string, ReturnType<typeof mapConnection>>();
+  const friendEntries: Array<{
+    id: string;
+    user: (typeof acceptedSent)[number]['friend'];
+    friendshipId: string;
+  }> = [];
 
   for (const f of acceptedSent) {
-    const weekRate = await friendWeekRate(f.friend.id);
-    friendMap.set(f.friend.id, mapConnection(f.friend, f.id, weekRate, 'friend'));
+    friendEntries.push({ id: f.friend.id, user: f.friend, friendshipId: f.id });
   }
   for (const f of acceptedRecv) {
-    if (friendMap.has(f.user.id)) continue;
-    const weekRate = await friendWeekRate(f.user.id);
-    friendMap.set(f.user.id, mapConnection(f.user, f.id, weekRate, 'friend'));
+    if (friendEntries.some((entry) => entry.id === f.user.id)) continue;
+    friendEntries.push({ id: f.user.id, user: f.user, friendshipId: f.id });
   }
 
-  const friends = Array.from(friendMap.values());
-  const requests = await Promise.all(
-    incoming.map(async (r) =>
-      mapConnection(r.user, r.id, 0, 'incoming'),
-    ),
+  const weekRates = await batchFriendWeekRates(friendEntries.map((entry) => entry.id));
+  const friends = friendEntries.map((entry) =>
+    mapConnection(entry.user, entry.friendshipId, weekRates.get(entry.id) ?? 0, 'friend'),
   );
-  const pending = await Promise.all(
-    outgoing.map(async (r) =>
-      mapConnection(r.friend, r.id, 0, 'outgoing'),
-    ),
-  );
+  const requests = incoming.map((r) => mapConnection(r.user, r.id, 0, 'incoming'));
+  const pending = outgoing.map((r) => mapConnection(r.friend, r.id, 0, 'outgoing'));
 
   return jsonOk({
     friends,

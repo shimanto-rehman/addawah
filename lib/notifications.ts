@@ -17,8 +17,10 @@ import {
 } from './prayer-times';
 import { activePrayerForNow } from './rewards';
 import { dateFromKey } from './salah-utils';
+import { throttlePerKey } from './user-sync-throttle';
 
 export const WAKT_REMINDER_MINUTES = 10;
+export const NOTIFICATION_SYNC_INTERVAL_MS = 60_000;
 
 function isMissingNotificationTable(error: unknown) {
   return (
@@ -136,26 +138,9 @@ async function upsertNotification(
   },
 ) {
   try {
-    const existing = await prisma.notification.findUnique({
+    await prisma.notification.upsert({
       where: { userId_dedupeKey: { userId, dedupeKey } },
-      select: { id: true },
-    });
-
-    if (existing) {
-      await prisma.notification.update({
-        where: { id: existing.id },
-        data: {
-          title: data.title,
-          body: data.body,
-          href: data.href,
-          meta: data.meta ?? {},
-        },
-      });
-      return;
-    }
-
-    await prisma.notification.create({
-      data: {
+      create: {
         userId,
         dedupeKey,
         type: data.type,
@@ -164,6 +149,12 @@ async function upsertNotification(
         href: data.href,
         meta: data.meta ?? {},
         ...(data.createdAt ? { createdAt: data.createdAt } : {}),
+      },
+      update: {
+        title: data.title,
+        body: data.body,
+        href: data.href,
+        meta: data.meta ?? {},
       },
     });
   } catch (error) {
@@ -387,6 +378,20 @@ export async function syncNotificationsForUser(userId: string) {
   );
 }
 
+/** At most once per minute per user — safe to call on every poll or /auth/me. */
+export async function maybeSyncNotificationsForUser(userId: string) {
+  await throttlePerKey(`notif-sync:${userId}`, NOTIFICATION_SYNC_INTERVAL_MS, () =>
+    syncNotificationsForUser(userId),
+  );
+}
+
+export async function countUnreadNotifications(userId: string) {
+  return withNotifications(
+    () => prisma.notification.count({ where: { userId, readAt: null } }),
+    0,
+  );
+}
+
 export async function seedSampleNotifications(userId: string) {
   const now = new Date();
   const hoursAgo = (h: number) => new Date(now.getTime() - h * 60 * 60 * 1000);
@@ -509,10 +514,12 @@ export async function seedSampleNotifications(userId: string) {
   return { created };
 }
 
-export async function listNotifications(userId: string, limit = 30) {
+export async function listNotifications(userId: string, limit = 30, options?: { sync?: boolean }) {
   return withNotifications(
     async () => {
-      await syncNotificationsForUser(userId);
+      if (options?.sync !== false) {
+        await maybeSyncNotificationsForUser(userId);
+      }
 
       return fetchNotificationList(userId, limit);
     },

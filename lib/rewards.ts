@@ -5,6 +5,7 @@ import {
   formatDateKeyInTimezone,
   getNowMinutesInTimezone,
   isForbiddenForPoke,
+  isPrayerTimesPayload,
   prayerWaktWindow,
   type PrayerTimesPayload,
 } from './prayer-times';
@@ -145,6 +146,7 @@ export async function computePrayerReward(
 }
 
 export function activePrayerForNow(times: PrayerTimesPayload, now = new Date()): PrayerName | null {
+  if (!isPrayerTimesPayload(times)) return null;
   const mins = getNowMinutesInTimezone(now, times.timeZone);
 
   for (const prayer of [...times.prayers].reverse()) {

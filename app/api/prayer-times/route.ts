@@ -10,7 +10,9 @@ export async function GET() {
 
   try {
     const data = await fetchPrayerTimes(city, country);
-    return jsonOk(data);
+    return jsonOk(data, 200, {
+      'Cache-Control': 'private, max-age=1800, stale-while-revalidate=3600',
+    });
   } catch (e) {
     console.error(e);
     return jsonError('Could not load prayer times', 502);

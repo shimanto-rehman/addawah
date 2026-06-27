@@ -3,6 +3,7 @@
 import { HeroStats } from '@/components/dashboard/HeroStats';
 import { MoodCheckIn } from '@/components/dashboard/MoodCheckIn';
 import { SalahTracker } from '@/components/dashboard/SalahTracker';
+import { DashboardDataProvider } from '@/components/dashboard/DashboardDataProvider';
 import { HijriCalendar } from '@/components/dashboard/HijriCalendar';
 import { InspirationCard } from '@/components/dashboard/InspirationCard';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -12,7 +13,7 @@ export default function DashboardPage() {
   const { user } = useApp();
 
   return (
-    <>
+    <DashboardDataProvider>
       <PageHeader
         variant="home"
         greeting="السَّلَامُ عَلَيْكُمْ"
@@ -27,6 +28,6 @@ export default function DashboardPage() {
         <HijriCalendar />
         <InspirationCard />
       </div>
-    </>
+    </DashboardDataProvider>
   );
 }

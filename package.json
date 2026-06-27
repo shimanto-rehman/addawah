@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@tanstack/react-virtual": "^3.14.4",
     "@vercel/blob": "^2.4.1",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.1",

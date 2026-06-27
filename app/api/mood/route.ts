@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { isValidMoodId, moodById } from '@/lib/moods';
 import { formatDateKey, startOfDay } from '@/lib/salah-utils';
+import { DASHBOARD_CACHE_HEADERS } from '@/lib/salah-query';
 
 export async function GET() {
   const { user, error } = await apiRequireAuth();
@@ -13,11 +14,15 @@ export async function GET() {
   });
 
   const mood = checkIn ? moodById(checkIn.moodId) : null;
-  return jsonOk({
-    today: checkIn
-      ? { moodId: checkIn.moodId, label: mood?.label, date: formatDateKey(today) }
-      : null,
-  });
+  return jsonOk(
+    {
+      today: checkIn
+        ? { moodId: checkIn.moodId, label: mood?.label, date: formatDateKey(today) }
+        : null,
+    },
+    200,
+    DASHBOARD_CACHE_HEADERS,
+  );
 }
 
 export async function POST(req: Request) {

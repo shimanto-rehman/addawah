@@ -3,23 +3,29 @@
 import { useCallback, useState, type CSSProperties } from 'react';
 import useSWR from 'swr';
 import { MoodIcon } from '@/components/dashboard/MoodIcon';
+import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import { MOOD_OPTIONS } from '@/lib/moods';
-import { revalidateMoodAnalytics } from '@/lib/swr-revalidate';
+import { revalidateMoodAnalytics, MOOD_KEY } from '@/lib/swr-revalidate';
 import { useMidnightRefresh } from '@/lib/use-midnight-refresh';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export function MoodCheckIn() {
-  const { data, mutate } = useSWR<{
+  const dashboard = useDashboardData();
+  const useRemote = !dashboard;
+  const { data: remote, mutate: remoteMutate } = useSWR<{
     today: { moodId: string; label: string; date?: string } | null;
-  }>('/api/mood', fetcher, { revalidateOnFocus: true });
+  }>(useRemote ? MOOD_KEY : null, fetcher, { revalidateOnFocus: false });
+
+  const data = dashboard?.data?.mood ?? remote;
 
   const [saving, setSaving] = useState<string | null>(null);
   const selected = data?.today?.moodId ?? null;
 
   const refreshMood = useCallback(() => {
-    mutate();
-  }, [mutate]);
+    if (dashboard) void dashboard.mutate();
+    else void remoteMutate();
+  }, [dashboard, remoteMutate]);
 
   useMidnightRefresh(refreshMood);
 
@@ -33,10 +39,18 @@ export function MoodCheckIn() {
       });
       if (!res.ok) throw new Error('Failed to save mood');
       const json = await res.json();
-      await mutate(json, { revalidate: false });
+      if (dashboard) {
+        await dashboard.mutate(
+          (current) => (current ? { ...current, mood: json } : current),
+          { revalidate: false },
+        );
+      } else {
+        await remoteMutate(json, { revalidate: false });
+      }
       await revalidateMoodAnalytics();
     } catch {
-      await mutate();
+      if (dashboard) await dashboard.mutate();
+      else await remoteMutate();
     } finally {
       setSaving(null);
     }
