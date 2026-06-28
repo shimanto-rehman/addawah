@@ -152,13 +152,30 @@ function MissedAreaChart({
   );
 }
 
-export function PrayerInsights() {
+export function PrayerInsights({
+  insights: insightsProp,
+  isLoading: loadingProp,
+  embedded = false,
+}: {
+  insights?: PrayerInsightsPayload | null;
+  isLoading?: boolean;
+  /** When true, parent owns data — never call /api/insights. */
+  embedded?: boolean;
+} = {}) {
   const sectionRef = useRef<HTMLElement>(null);
-  const { data, isLoading } = useSWR<PrayerInsightsPayload>('/api/insights', fetcher, {
-    refreshInterval: 300_000,
-    revalidateOnFocus: true,
-    revalidateIfStale: true,
-  });
+  const useRemote = !embedded && insightsProp === undefined;
+  const { data: fetched, isLoading: fetching } = useSWR<PrayerInsightsPayload>(
+    useRemote ? '/api/insights' : null,
+    fetcher,
+    {
+      refreshInterval: 300_000,
+      revalidateOnFocus: false,
+      revalidateIfStale: true,
+    },
+  );
+
+  const data = insightsProp ?? fetched;
+  const isLoading = loadingProp ?? (useRemote && fetching);
 
   const theme = chartTheme();
   useChartResize(sectionRef, [data, isLoading]);

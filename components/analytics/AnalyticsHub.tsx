@@ -7,6 +7,7 @@ import type { CoachingTip } from '@/lib/analytics-coaching';
 import type { PrayerName } from '@/lib/constants';
 import type { AnalyticsChartsData } from '@/components/analytics/AnalyticsChartsGrid';
 import type { ImanMoodDay } from '@/lib/iman-mood-analytics';
+import type { AnalyticsKpis } from '@/lib/analytics-data';
 
 const PrayerInsights = dynamic(
   () => import('@/components/dashboard/PrayerInsights').then((m) => ({ default: m.PrayerInsights })),
@@ -21,15 +22,7 @@ const AnalyticsChartsGrid = dynamic(
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 type AnalyticsPayload = AnalyticsChartsData & {
-  kpis: {
-    iman: number;
-    streak: number;
-    weekRate: number;
-    lifetimeRate: number;
-    perfectDays: number;
-    fajrMissed: number;
-    totalCompleted: number;
-  };
+  kpis: AnalyticsKpis;
   insights: PrayerInsightsPayload;
   coaching: CoachingTip[];
   trend: 'up' | 'down' | 'steady';
@@ -37,31 +30,56 @@ type AnalyticsPayload = AnalyticsChartsData & {
   imanMoodCorrelation: number | null;
 };
 
+type AnalyticsSummary = {
+  kpis: AnalyticsKpis;
+  coaching: CoachingTip[];
+  totals: PrayerInsightsPayload['totals'];
+  trend: PrayerInsightsPayload['trend'];
+  revision: string;
+};
+
 const swrOpts = {
   refreshInterval: 300_000,
-  revalidateOnFocus: true,
+  revalidateOnFocus: false,
   revalidateIfStale: true,
 };
 
+function KpiSkeleton() {
+  return (
+    <div className="dawa-analytics__kpi dawa-analytics__kpi--skeleton" aria-hidden>
+      <span className="dawa-analytics__kpi-val dawa-analytics__kpi-val--skeleton" />
+      <span className="dawa-analytics__kpi-label dawa-analytics__kpi-label--skeleton" />
+    </div>
+  );
+}
+
 export function AnalyticsHub() {
-  const { data, isLoading } = useSWR<AnalyticsPayload>('/api/analytics', fetcher, swrOpts);
+  const { data: summary, isLoading: summaryLoading } = useSWR<AnalyticsSummary>(
+    '/api/analytics/summary',
+    fetcher,
+    swrOpts,
+  );
 
-  if (isLoading && !data) {
-    return <p className="dawa-analytics__loading">Loading your worship analytics…</p>;
-  }
+  const { data: full, isLoading: fullLoading } = useSWR<AnalyticsPayload>(
+    summary ? '/api/analytics' : null,
+    fetcher,
+    swrOpts,
+  );
 
-  const kpis = data?.kpis;
+  const kpis = full?.kpis ?? summary?.kpis;
+  const coaching = full?.coaching ?? summary?.coaching ?? [];
+  const showKpiSkeleton = !kpis && (summaryLoading || fullLoading);
 
-  const chartsData: AnalyticsChartsData | null = data
+  const chartsData: AnalyticsChartsData | null = full
     ? {
-        insights: data.insights,
-        byPrayer: data.byPrayer,
-        stackedWeek: data.stackedWeek,
-        weekDays: data.weekDays,
-        weekLabels: data.weekLabels,
-        moodHistory: data.moodHistory,
-        imanMoodSeries: data.imanMoodSeries,
-        imanMoodCorrelation: data.imanMoodCorrelation,
+        insights: full.insights,
+        byPrayer: full.byPrayer,
+        stackedWeek: full.stackedWeek,
+        weekDays: full.weekDays,
+        weekLabels: full.weekLabels,
+        moodHistory: full.moodHistory,
+        imanMoodSeries: full.imanMoodSeries,
+        imanMoodCorrelation: full.imanMoodCorrelation,
       }
     : null;
 
@@ -76,28 +94,31 @@ export function AnalyticsHub() {
           </p>
         </div>
         <div className="dawa-analytics__kpis">
-          {[
-            { val: kpis?.iman ?? '—', unit: '%', label: 'Iman meter' },
-            { val: kpis?.streak ?? '—', unit: '', label: 'Day streak' },
-            { val: kpis?.weekRate ?? '—', unit: '%', label: 'This week' },
-            { val: kpis?.lifetimeRate ?? '—', unit: '%', label: 'Lifetime' },
-          ].map((k) => (
-            <div key={k.label} className="dawa-analytics__kpi">
-              <span className="dawa-analytics__kpi-val">
-                <span className="dawa-num">{k.val}</span>{k.unit && <small>{k.unit}</small>}
-              </span>
-              <span className="dawa-analytics__kpi-label">{k.label}</span>
-            </div>
-          ))}
+          {showKpiSkeleton
+            ? Array.from({ length: 4 }, (_, i) => <KpiSkeleton key={i} />)
+            : [
+                { val: kpis?.iman ?? '—', unit: '%', label: 'Iman meter' },
+                { val: kpis?.streak ?? '—', unit: '', label: 'Day streak' },
+                { val: kpis?.weekRate ?? '—', unit: '%', label: 'This week' },
+                { val: kpis?.lifetimeRate ?? '—', unit: '%', label: 'Lifetime' },
+              ].map((k) => (
+                <div key={k.label} className="dawa-analytics__kpi">
+                  <span className="dawa-analytics__kpi-val">
+                    <span className="dawa-num">{k.val}</span>
+                    {k.unit && <small>{k.unit}</small>}
+                  </span>
+                  <span className="dawa-analytics__kpi-label">{k.label}</span>
+                </div>
+              ))}
         </div>
       </section>
 
-      {(data?.coaching?.length ?? 0) > 0 && (
+      {coaching.length > 0 && (
         <section className="dawa-analytics__coaching">
           <h2 className="dawa-analytics__section-title">Personal guidance</h2>
           <p className="dawa-analytics__section-sub">Actionable insights based on your recent salah patterns</p>
           <ul className="dawa-analytics__tips">
-            {data!.coaching.map((tip) => (
+            {coaching.map((tip) => (
               <li
                 key={tip.id}
                 className={`dawa-analytics__tip dawa-analytics__tip--${tip.priority} dawa-glass`}
@@ -115,10 +136,18 @@ export function AnalyticsHub() {
       )}
 
       <div className="dawa-analytics__insights-wrap">
-        <PrayerInsights />
+        <PrayerInsights
+          embedded
+          insights={full?.insights ?? null}
+          isLoading={fullLoading && !full?.insights}
+        />
       </div>
 
-      {chartsData && <AnalyticsChartsGrid data={chartsData} />}
+      {fullLoading && !chartsData ? (
+        <p className="dawa-analytics__loading">Loading deep dive charts…</p>
+      ) : (
+        chartsData && <AnalyticsChartsGrid data={chartsData} />
+      )}
     </div>
   );
 }

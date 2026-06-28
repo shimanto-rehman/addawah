@@ -2,15 +2,13 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { PreloaderGate } from '@/components/PreloaderGate';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import { SITE_NAME, SITE_TAGLINE } from '@/lib/constants';
+import { rootMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} — ${SITE_TAGLINE}`,
-  description:
-    'Free Islamic web platform for Salah tracking, accountability, daily inspiration, and community support.',
-  icons: {
-    icon: '/favicon.ico',
-  },
+  ...rootMetadata,
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthAside } from '@/components/auth/AuthAside';
 import { AuthFrame } from '@/components/auth/AuthFrame';
 import { PasswordField } from '@/components/auth/PasswordField';
-import { LandingBackdrop } from '@/components/landing/LandingBackdrop';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
@@ -90,7 +89,6 @@ export function ResetPasswordSetClient() {
 
   return (
     <>
-      <LandingBackdrop />
       <div className="dawa-auth">
         <div className="dawa-auth__theme-bar">
           <ThemeModeToggle compact />
@@ -110,6 +108,7 @@ export function ResetPasswordSetClient() {
                     name={user.name}
                     avatarColor={user.avatarColor}
                     avatarUrl={user.avatarUrl}
+                    resetToken={token}
                     size={88}
                     className="dawa-reset-password__avatar"
                   />

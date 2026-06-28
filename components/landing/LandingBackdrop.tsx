@@ -5,7 +5,6 @@ import {
   LANDING_BACKDROP_READY_EVENT,
   LANDING_HERO_SRC,
   LANDING_VIDEO_MOBILE_MP4_SRC,
-  LANDING_VIDEO_MOBILE_SRC,
   LANDING_VIDEO_MP4_SRC,
   LANDING_VIDEO_SRC,
 } from '@/lib/constants';
@@ -14,9 +13,14 @@ const MOBILE_VIDEO_MQ = '(max-width: 768px)';
 const PLAY_RETRY_MS = 400;
 const PLAY_TIMEOUT_MS = 18000;
 
-function pickSources(isMobile: boolean) {
+type VideoSources = {
+  webm: string | null;
+  mp4: string;
+};
+
+function pickSources(isMobile: boolean): VideoSources {
   return isMobile
-    ? { webm: LANDING_VIDEO_MOBILE_SRC, mp4: LANDING_VIDEO_MOBILE_MP4_SRC }
+    ? { webm: null, mp4: LANDING_VIDEO_MOBILE_MP4_SRC }
     : { webm: LANDING_VIDEO_SRC, mp4: LANDING_VIDEO_MP4_SRC };
 }
 
@@ -55,6 +59,14 @@ export function LandingBackdrop() {
   }, [useFallback]);
 
   useEffect(() => {
+    const mq = window.matchMedia(MOBILE_VIDEO_MQ);
+    const sync = () => setSources(pickSources(mq.matches));
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  useEffect(() => {
     if (!useFallback) return;
 
     const img = new Image();
@@ -62,13 +74,6 @@ export function LandingBackdrop() {
     img.onerror = () => signalReady();
     img.src = LANDING_HERO_SRC;
   }, [useFallback, signalReady]);
-
-  useEffect(() => {
-    const mq = window.matchMedia(MOBILE_VIDEO_MQ);
-    const update = () => setSources(pickSources(mq.matches));
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -132,8 +137,8 @@ export function LandingBackdrop() {
           preload="auto"
           poster={LANDING_HERO_SRC}
         >
-          <source src={sources.webm} type="video/webm" />
           <source src={sources.mp4} type="video/mp4" />
+          {sources.webm && <source src={sources.webm} type="video/webm" />}
         </video>
       )}
       <div className="dawa-landing-backdrop__scrim" />

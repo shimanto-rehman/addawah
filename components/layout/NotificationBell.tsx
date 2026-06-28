@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { NotificationPanel } from '@/components/notifications/NotificationPanel';
-import { useNotifications } from '@/components/notifications/useNotifications';
+import { useNotificationCount } from '@/components/notifications/useNotifications';
 
 const PANEL_WIDTH = 380;
 const PANEL_GAP = 10;
@@ -16,7 +16,7 @@ export function NotificationBell() {
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const { data } = useNotifications(60_000);
+  const { data } = useNotificationCount(30_000);
   const unreadCount = data?.unreadCount ?? 0;
 
   useEffect(() => setMounted(true), []);

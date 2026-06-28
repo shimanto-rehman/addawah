@@ -72,7 +72,7 @@ function getDateKeyInTimezone(date: Date, timeZone: string) {
   return new Intl.DateTimeFormat('en-CA', { timeZone }).format(date);
 }
 
-function emptyRow(userId: string): FriendWaktRow {
+export function emptyFriendWaktRow(userId: string): FriendWaktRow {
   return {
     userId,
     prayer: null,
@@ -118,21 +118,50 @@ function buildTimingFields(
   };
 }
 
-export async function buildFriendWaktRow(
-  userId: string,
-  city: string | null | undefined,
-  country: string | null | undefined,
-  records: FardRecord[],
-  now = new Date(),
-): Promise<FriendWaktRow> {
-  let times: PrayerTimesPayload;
+export function friendPrayerLocation(city: string | null | undefined, country: string | null | undefined) {
+  return {
+    city: city?.trim() || 'Dhaka',
+    country: country?.trim() || 'Bangladesh',
+  };
+}
 
-  try {
-    times = await fetchPrayerTimes(city?.trim() || 'Dhaka', country?.trim() || 'Bangladesh', now);
-  } catch {
-    return emptyRow(userId);
+export function friendPrayerLocationKey(city: string | null | undefined, country: string | null | undefined) {
+  const loc = friendPrayerLocation(city, country);
+  return `${loc.city.toLowerCase()}|${loc.country.toLowerCase()}`;
+}
+
+/** Fetch prayer times once per unique city/country (uses in-memory cache per location). */
+export async function fetchPrayerTimesForLocations(
+  locations: Array<{ city: string; country: string }>,
+  onDate = new Date(),
+): Promise<Map<string, PrayerTimesPayload>> {
+  const unique = new Map<string, { city: string; country: string }>();
+  for (const loc of locations) {
+    const normalized = friendPrayerLocation(loc.city, loc.country);
+    const key = friendPrayerLocationKey(normalized.city, normalized.country);
+    unique.set(key, normalized);
   }
 
+  const results = await Promise.all(
+    Array.from(unique.entries()).map(async ([key, loc]) => {
+      try {
+        const data = await fetchPrayerTimes(loc.city, loc.country, onDate);
+        return [key, data] as const;
+      } catch {
+        return null;
+      }
+    }),
+  );
+
+  return new Map(results.filter((entry): entry is [string, PrayerTimesPayload] => entry !== null));
+}
+
+export function buildFriendWaktRowFromTimes(
+  userId: string,
+  records: FardRecord[],
+  times: PrayerTimesPayload,
+  now = new Date(),
+): FriendWaktRow {
   const tz = times.timeZone;
   const nowMins = getNowMinutesInTimezone(now, tz);
   const active = activePrayerForNow(times, now);
@@ -194,4 +223,25 @@ export async function buildFriendWaktRow(
     elapsedSeconds: timing.elapsedSeconds,
     remainingSeconds: timing.remainingSeconds,
   };
+}
+
+export async function buildFriendWaktRow(
+  userId: string,
+  city: string | null | undefined,
+  country: string | null | undefined,
+  records: FardRecord[],
+  now = new Date(),
+  preloadedTimes?: PrayerTimesPayload,
+): Promise<FriendWaktRow> {
+  if (preloadedTimes) {
+    return buildFriendWaktRowFromTimes(userId, records, preloadedTimes, now);
+  }
+
+  try {
+    const loc = friendPrayerLocation(city, country);
+    const times = await fetchPrayerTimes(loc.city, loc.country, now);
+    return buildFriendWaktRowFromTimes(userId, records, times, now);
+  } catch {
+    return emptyFriendWaktRow(userId);
+  }
 }

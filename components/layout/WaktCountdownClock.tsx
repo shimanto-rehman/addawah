@@ -2,11 +2,15 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-import type { PrayerTimesPayload } from '@/lib/prayer-times';
 import { formatWaktDate, getWaktCountdownState } from '@/lib/wakt-countdown';
+import {
+  isPrayerTimesPayload,
+  prayerTimesFetcher,
+  type PrayerTimesPayload,
+} from '@/lib/prayer-times';
 import { splitCountdownHms } from '@/lib/wakt-display';
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = prayerTimesFetcher;
 
 type WaktCountdownClockProps = {
   className?: string;
@@ -26,7 +30,7 @@ export function WaktCountdownClock({ className = '', variant = 'default' }: Wakt
   }, []);
 
   const state = useMemo(
-    () => (data?.prayers?.length ? getWaktCountdownState(data, now) : null),
+    () => (isPrayerTimesPayload(data) ? getWaktCountdownState(data, now) : null),
     [data, now],
   );
 

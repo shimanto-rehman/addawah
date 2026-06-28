@@ -30,8 +30,13 @@ function avatarVersion(avatarUrl: string): string {
 export function resolveAvatarSrc(
   userId: string | undefined,
   avatarUrl: string | null | undefined,
+  opts?: { resetToken?: string },
 ): string | null {
   if (!avatarUrl) return null;
+  if (opts?.resetToken) {
+    const v = avatarVersion(avatarUrl);
+    return `/api/auth/reset-password/avatar?token=${encodeURIComponent(opts.resetToken)}&v=${v}`;
+  }
   if (userId && (isPrivateBlobAvatar(avatarUrl) || isLocalAvatar(avatarUrl))) {
     return `/api/avatars/${userId}?v=${avatarVersion(avatarUrl)}`;
   }

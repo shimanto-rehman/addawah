@@ -53,7 +53,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
 
     const city = profileUser.city?.trim() || 'Dhaka';
     const country = profileUser.country?.trim() || 'Bangladesh';
-    const insights = await computePrayerInsights(records, city, country, 14);
+    const insights = await computePrayerInsights(records, city, country, 14, profileUser.id);
     return jsonOk(insights);
   } catch (e) {
     console.error(e);

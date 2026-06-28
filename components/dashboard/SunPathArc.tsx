@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import {
   formatPrayerTime,
+  isPrayerTimesPayload,
   isTimeInWindow,
+  prayerTimesFetcher,
   type PrayerTimesPayload,
 } from '@/lib/prayer-times';
 import {
@@ -16,7 +18,7 @@ import {
   windowToArc,
 } from '@/lib/sun-arc';
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = prayerTimesFetcher;
 
 const CX = 300;
 const CY = 168;
@@ -136,7 +138,7 @@ export function SunPathArc() {
   });
 
   const model = useMemo(() => {
-    if (!times?.prayers.length) return null;
+    if (!isPrayerTimesPayload(times)) return null;
 
     const radialBase = compact ? 22 : 36;
     const radialSpread = compact ? 10 : 20;

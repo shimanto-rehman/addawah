@@ -1,4 +1,7 @@
 import { prisma } from './prisma';
+import { countCompleted, startOfWeek, addDays } from './salah-utils';
+
+const DEFAULT_WEEK_FARD_SLOTS = 35;
 
 export type ConnectionStatus =
   | 'none'
@@ -37,6 +40,38 @@ export async function getConnectionBetween(
     return { status: 'pending_sent', friendshipId: friendship.id };
   }
   return { status: 'pending_received', friendshipId: friendship.id };
+}
+
+/** Weekly fard completion % for many users in one query (Mon–Sun window). */
+export async function batchFriendWeekRates(userIds: string[]): Promise<Map<string, number>> {
+  if (userIds.length === 0) return new Map();
+
+  const weekStart = startOfWeek(new Date());
+  const weekEnd = addDays(weekStart, 6);
+
+  const records = await prisma.salahRecord.findMany({
+    where: {
+      userId: { in: userIds },
+      date: { gte: weekStart, lte: weekEnd },
+    },
+    select: { userId: true, completed: true },
+  });
+
+  const recordsByUser = records.reduce<Map<string, { completed: boolean }[]>>((acc, record) => {
+    const bucket = acc.get(record.userId);
+    if (bucket) bucket.push(record);
+    else acc.set(record.userId, [record]);
+    return acc;
+  }, new Map());
+
+  return new Map(
+    userIds.map((id) => {
+      const userRecords = recordsByUser.get(id) ?? [];
+      const total = userRecords.length || DEFAULT_WEEK_FARD_SLOTS;
+      const rate = Math.round((countCompleted(userRecords) / total) * 100);
+      return [id, rate] as const;
+    }),
+  );
 }
 
 export async function removeFriendship(friendshipId: string, userId: string) {

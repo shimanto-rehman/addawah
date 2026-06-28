@@ -25,8 +25,9 @@ import {
 import { fireCelebrationConfetti } from '@/lib/confetti';
 import { revalidateDashboardMetrics } from '@/lib/swr-revalidate';
 import { canMarkSalahCellLocal } from '@/lib/salah-mark-rules';
+import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import type { PrayerTimesPayload } from '@/lib/prayer-times';
-import { formatDateKeyInTimezone } from '@/lib/prayer-times';
+import { formatDateKeyInTimezone, isPrayerTimesPayload, prayerTimesFetcher } from '@/lib/prayer-times';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -85,22 +86,31 @@ function SunnahToggle({
 }
 
 export function SalahTracker() {
+  const dashboard = useDashboardData();
   const [weekStart, setWeekStart] = useState(() => rollingWeekStart(new Date()));
   const weekKey = formatDateKeyLocal(weekStart);
+  const hubGrid =
+    dashboard?.data?.weekKey === weekKey ? dashboard.data.grid : undefined;
 
   const { data, mutate, isLoading } = useSWR<{ grid: SalahGrid }>(
     `/api/salah?week=${weekKey}`,
     fetcher,
+    {
+      fallbackData: hubGrid ? { grid: hubGrid } : undefined,
+      revalidateOnMount: !hubGrid,
+      revalidateOnFocus: false,
+    },
   );
 
-  const { data: prayerTimes } = useSWR<PrayerTimesPayload>('/api/prayer-times', fetcher, {
+  const { data: prayerTimes } = useSWR<PrayerTimesPayload>('/api/prayer-times', prayerTimesFetcher, {
     refreshInterval: 60_000,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
-  const grid = data?.grid ?? {};
+  const grid = data?.grid ?? hubGrid ?? {};
+  const gridLoading = isLoading && !data && !hubGrid;
   const days = getWeekDays(weekStart);
-  const todayKey = prayerTimes
+  const todayKey = isPrayerTimesPayload(prayerTimes)
     ? formatDateKeyInTimezone(new Date(), prayerTimes.timeZone)
     : formatDateKeyLocal(new Date());
   const maxWeek = rollingWeekStart(new Date());
@@ -201,7 +211,7 @@ export function SalahTracker() {
           </button>
         </div>
         <div className="dawa-salah__body">
-          {isLoading ? (
+          {gridLoading ? (
             <p className="dawa-salah__loading">Loading…</p>
           ) : (
             <table className="dawa-salah-table">

@@ -7,7 +7,7 @@ import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { UserMenu } from '@/components/layout/UserMenu';
 import { NotificationBell } from '@/components/layout/NotificationBell';
-import { useNotifications } from '@/components/notifications/useNotifications';
+import { useNotificationCount } from '@/components/notifications/useNotifications';
 import { useApp } from '@/components/providers/AppProvider';
 
 type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notifications';
@@ -128,7 +128,7 @@ export function AppHeader() {
 
 export function MobileTabBar() {
   const pathname = usePathname();
-  const { data } = useNotifications(60_000);
+  const { data } = useNotificationCount(60_000);
   const unreadCount = data?.unreadCount ?? 0;
 
   return (

@@ -9,12 +9,15 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { UserProfileLink } from '@/components/friends/UserProfileLink';
 import { UsernameSearch } from '@/components/friends/UsernameSearch';
 import { PageHeader } from '@/components/layout/PageHeader';
-import type { PrayerName } from '@/lib/constants';
-import type { FriendWaktPhase } from '@/lib/friends-wakt';
+import {
+  WaktBoardVirtual,
+  useBoardSummaryPoll,
+  type BoardRow,
+} from '@/components/friends/WaktBoardVirtual';
 import { BADGE_TIERS, PRAYER_REWARD, REWARD_POINTS } from '@/lib/rewards';
-import { formatCountdownHms } from '@/lib/wakt-display';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const HUB_LIMIT = 20;
 
 type Badge = { id: string; name: string; minCoins: number; icon: string; blurb: string };
 
@@ -50,226 +53,38 @@ type SuggestionsResponse = {
   hasMore: boolean;
 };
 
-type BoardRow = {
-  id: string;
-  name: string;
-  username: string | null;
-  avatarColor: string;
-  avatarUrl?: string | null;
-  goldCoins: number;
-  goldCoinsHidden?: boolean;
-  badge: Badge | null;
-  wakt: {
-    prayer: PrayerName | null;
-    prayerLabel: string;
-    phase: FriendWaktPhase;
-    salahStatus: string;
-    waktStartedAt: string | null;
-    waktEndsAt: string | null;
-    waktEndLabel: string | null;
-    canPoke: boolean;
-    pokeCooldownUntil?: string | null;
-    pokeCooldownSeconds?: number;
-    forbiddenNow: boolean;
-    elapsedMinutes: number;
-    remainingMinutes: number;
-    elapsedSeconds: number;
-    remainingSeconds: number;
-    isPrivate?: boolean;
+type HubResponse = {
+  me: { goldCoins: number; badge: Badge };
+  requests: Friend[];
+  friends: Friend[];
+  board: BoardRow[];
+  page: {
+    cursor: number;
+    nextCursor: string | null;
+    hasMore: boolean;
+    limit: number;
+    totalFriends: number;
+  };
+  summary: {
+    activeInWakt: number;
+    pokeable: number;
+    totalFriends: number;
+    revision: string;
   };
 };
 
-function useWaktCountdown(wakt: BoardRow['wakt']) {
-  const [remainingSeconds, setRemainingSeconds] = useState(wakt.remainingSeconds);
-
-  useEffect(() => {
-    if (wakt.phase === 'upcoming') {
-      const startMs = wakt.waktStartedAt ? new Date(wakt.waktStartedAt).getTime() : null;
-      if (!startMs) {
-        setRemainingSeconds(wakt.remainingSeconds);
-        return;
-      }
-      const tick = () => setRemainingSeconds(Math.max(0, Math.floor((startMs - Date.now()) / 1000)));
-      tick();
-      const id = setInterval(tick, 1000);
-      return () => clearInterval(id);
-    }
-
-    if (wakt.phase !== 'active' || !wakt.waktEndsAt) {
-      setRemainingSeconds(wakt.remainingSeconds);
-      return;
-    }
-
-    const endMs = new Date(wakt.waktEndsAt).getTime();
-    const tick = () => setRemainingSeconds(Math.max(0, Math.floor((endMs - Date.now()) / 1000)));
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [
-    wakt.phase,
-    wakt.waktEndsAt,
-    wakt.waktStartedAt,
-    wakt.remainingSeconds,
-  ]);
-
-  return remainingSeconds;
-}
-
-function usePokeCooldown(wakt: BoardRow['wakt'], onExpired?: () => void) {
-  const [remainingSeconds, setRemainingSeconds] = useState(wakt.pokeCooldownSeconds ?? 0);
-
-  useEffect(() => {
-    const initial = wakt.pokeCooldownSeconds ?? 0;
-    if (initial <= 0 || !wakt.pokeCooldownUntil) {
-      setRemainingSeconds(0);
-      return;
-    }
-
-    const untilMs = new Date(wakt.pokeCooldownUntil).getTime();
-    const tick = () => {
-      const next = Math.max(0, Math.ceil((untilMs - Date.now()) / 1000));
-      setRemainingSeconds(next);
-      if (next === 0) onExpired?.();
-    };
-
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [wakt.pokeCooldownSeconds, wakt.pokeCooldownUntil, onExpired]);
-
-  return remainingSeconds;
-}
-
-function PokeActionCell({
-  row,
-  pokeBusy,
-  onPoke,
-  onCooldownEnd,
-}: {
-  row: BoardRow;
-  pokeBusy: boolean;
-  onPoke: (row: BoardRow) => void;
-  onCooldownEnd: () => void;
-}) {
-  const { wakt } = row;
-  const cooldownSeconds = usePokeCooldown(wakt, onCooldownEnd);
-
-  if (wakt.canPoke) {
-    return (
-      <button
-        type="button"
-        className="dawa-poke"
-        disabled={pokeBusy}
-        onClick={() => onPoke(row)}
-      >
-        {pokeBusy ? '…' : 'Poke 🤲'}
-      </button>
-    );
-  }
-
-  if (cooldownSeconds > 0) {
-    return (
-      <span className="dawa-social-board__muted" title="Poke cooldown">
-        <span className="dawa-num">{formatCountdownHms(cooldownSeconds)}</span>
-      </span>
-    );
-  }
-
-  if (wakt.forbiddenNow && wakt.phase === 'active' && wakt.salahStatus === 'pending') {
-    return (
-      <span className="dawa-social-board__muted" title="Forbidden time">
-        Wait
-      </span>
-    );
-  }
-
-  if (wakt.salahStatus === 'on-time' || wakt.phase === 'prayed') {
-    return <span className="dawa-social-board__done">Prayed ✓</span>;
-  }
-
-  return <span className="dawa-social-board__muted">—</span>;
-}
-
-function WaktStatusCell({ row }: { row: BoardRow }) {
-  const { wakt } = row;
-  const remainingSeconds = useWaktCountdown(wakt);
-  const isLowTime = remainingSeconds <= 5 * 60;
-  const countdownClass = `dawa-social-board__timer dawa-social-board__timer--countdown${
-    isLowTime ? ' dawa-social-board__timer--danger' : ''
-  }`;
-
-  if (wakt.isPrivate) {
-    return (
-      <span className="dawa-social-board__status dawa-social-board__status--private">
-        Private
-      </span>
-    );
-  }
-
-  if (wakt.phase === 'prayed' || wakt.salahStatus === 'on-time') {
-    return (
-      <span className="dawa-social-board__status dawa-social-board__status--ok">
-        ✓ Prayed
-      </span>
-    );
-  }
-
-  if (wakt.phase === 'passed' || wakt.salahStatus === 'missed') {
-    return (
-      <span className="dawa-social-board__status dawa-social-board__status--missed">
-        Wakt passed
-      </span>
-    );
-  }
-
-  if (wakt.phase === 'upcoming') {
-    return (
-      <span className="dawa-social-board__status dawa-social-board__status--wait">
-        <span className={countdownClass}>
-          <span className="dawa-num">{formatCountdownHms(remainingSeconds)}</span>
-        </span>
-        <span className="dawa-social-board__timer-sub">
-          until {wakt.waktEndLabel ?? 'start'}
-        </span>
-      </span>
-    );
-  }
-
-  if (wakt.forbiddenNow) {
-    return (
-      <span className="dawa-social-board__status dawa-social-board__status--forbidden">
-        <span className={countdownClass}>
-          <span className="dawa-num">{formatCountdownHms(remainingSeconds)}</span>
-        </span>
-        <span className="dawa-social-board__timer-sub">Forbidden time</span>
-      </span>
-    );
-  }
-
-  return (
-    <span className="dawa-social-board__status dawa-social-board__status--active">
-      <span className={countdownClass}>
-        <span className="dawa-num">{formatCountdownHms(remainingSeconds)}</span>
-      </span>
-      <span className="dawa-social-board__timer-sub">
-        left · ends {wakt.waktEndLabel ?? '—'}
-      </span>
-    </span>
-  );
-}
-
 export function FriendsHub() {
-  const { data, mutate } = useSWR<{
-    friends: Friend[];
-    requests: Friend[];
-    me: { goldCoins: number; badge: Badge };
-  }>('/api/friends', fetcher, { revalidateOnFocus: false });
-
-  const { data: boardData, mutate: mutateBoard } = useSWR<{ board: BoardRow[] }>(
-    '/api/friends/board',
+  const hubKey = `/api/friends/hub?cursor=0&limit=${HUB_LIMIT}`;
+  const { data: hubData, mutate: mutateHub, isLoading: hubLoading } = useSWR<HubResponse>(
+    hubKey,
     fetcher,
-    { refreshInterval: 120_000, revalidateOnFocus: true },
+    { revalidateOnFocus: false },
   );
+
+  const [extraFriends, setExtraFriends] = useState<Friend[]>([]);
+  const [extraBoard, setExtraBoard] = useState<BoardRow[]>([]);
+  const [pageMeta, setPageMeta] = useState<HubResponse['page'] | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const { data: suggestData, mutate: mutateSuggestions } = useSWR<SuggestionsResponse>(
     '/api/friends/suggestions?cursor=0&limit=8',
@@ -290,6 +105,52 @@ export function FriendsHub() {
   const [loadingMoreSuggestions, setLoadingMoreSuggestions] = useState(false);
   const [connectSuggestBusy, setConnectSuggestBusy] = useState<string | null>(null);
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
+
+  const resetHubPages = useCallback(() => {
+    setExtraFriends([]);
+    setExtraBoard([]);
+    setPageMeta(null);
+  }, []);
+
+  const refreshHub = useCallback(() => {
+    resetHubPages();
+    void mutateHub();
+  }, [mutateHub, resetHubPages]);
+
+  useBoardSummaryPoll(refreshHub);
+
+  useEffect(() => {
+    if (hubData?.page) setPageMeta(hubData.page);
+  }, [hubData?.page]);
+
+  const friends = [...(hubData?.friends ?? []), ...extraFriends];
+  const boardRows = [...(hubData?.board ?? []), ...extraBoard];
+  const requests = hubData?.requests ?? [];
+  const summary = hubData?.summary;
+  const hasMoreFriends = pageMeta?.hasMore ?? hubData?.page?.hasMore ?? false;
+  const totalFriends = pageMeta?.totalFriends ?? hubData?.page?.totalFriends ?? friends.length;
+
+  async function loadMoreFriends() {
+    const nextCursor = pageMeta?.nextCursor ?? hubData?.page?.nextCursor;
+    if (!nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(`/api/friends/hub?cursor=${nextCursor}&limit=${HUB_LIMIT}`);
+      const json = (await res.json()) as HubResponse;
+      if (!res.ok) return;
+      setExtraFriends((prev) => {
+        const seen = new Set(prev.map((f) => f.id));
+        return [...prev, ...json.friends.filter((f) => !seen.has(f.id))];
+      });
+      setExtraBoard((prev) => {
+        const seen = new Set(prev.map((r) => r.id));
+        return [...prev, ...json.board.filter((r) => !seen.has(r.id))];
+      });
+      setPageMeta(json.page);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   function showToast(msg: string) {
     setToast(msg);
@@ -330,9 +191,7 @@ export function FriendsHub() {
       if (!hasMoreSuggestions || loadingMoreSuggestions) return;
       const nearEnd =
         container.scrollLeft + container.clientWidth >= container.scrollWidth - 180;
-      if (nearEnd) {
-        void loadMoreSuggestions();
-      }
+      if (nearEnd) void loadMoreSuggestions();
     };
 
     container.addEventListener('scroll', onScroll, { passive: true });
@@ -357,7 +216,7 @@ export function FriendsHub() {
     }
     setUsername('');
     showToast('Connect request sent');
-    mutate();
+    refreshHub();
     mutateSuggestions();
   }
 
@@ -382,8 +241,6 @@ export function FriendsHub() {
     mutateSuggestions();
   }
 
-  const boardRows = boardData?.board ?? [];
-
   async function acceptFriend() {
     if (!acceptTarget) return;
     await fetch('/api/friends', {
@@ -392,8 +249,7 @@ export function FriendsHub() {
       body: JSON.stringify({ friendshipId: acceptTarget.friendshipId, action: 'accept' }),
     });
     setAcceptTarget(null);
-    mutate();
-    mutateBoard();
+    refreshHub();
     mutateSuggestions();
     showToast(`Connected with ${acceptTarget.name.split(' ')[0]}`);
   }
@@ -418,8 +274,7 @@ export function FriendsHub() {
         ? `Dawah sent · +${json.coinsEarned} gold coins`
         : 'Gentle reminder sent',
     );
-    mutate();
-    mutateBoard();
+    refreshHub();
   }
 
   return (
@@ -451,7 +306,7 @@ export function FriendsHub() {
           <GoldCoin size={28} className="dawa-social__hero-coin" />
           <div className="dawa-social__hero-copy">
             <span className="dawa-social__hero-val dawa-social__hero-val--gold">
-              <span className="dawa-num">{data?.me?.goldCoins ?? '—'}</span>
+              <span className="dawa-num">{hubData?.me?.goldCoins ?? '—'}</span>
             </span>
             <span className="dawa-social__hero-lbl">Gold coins</span>
           </div>
@@ -461,19 +316,19 @@ export function FriendsHub() {
 
         <div
           className="dawa-social__hero-side dawa-social__hero-side--right"
-          title={data?.me?.badge?.blurb ?? ''}
+          title={hubData?.me?.badge?.blurb ?? ''}
         >
           <div className="dawa-social__hero-copy">
-            <span className="dawa-social__hero-val">{data?.me?.badge?.name ?? 'Seedling'}</span>
+            <span className="dawa-social__hero-val">{hubData?.me?.badge?.name ?? 'Seedling'}</span>
             <span className="dawa-social__hero-lbl">Badge</span>
           </div>
           <span className="dawa-social__hero-emoji" aria-hidden>
-            {data?.me?.badge?.icon ?? '🌱'}
+            {hubData?.me?.badge?.icon ?? '🌱'}
           </span>
         </div>
       </div>
 
-      {(data?.requests?.length ?? 0) > 0 && (
+      {requests.length > 0 && (
         <section className="dawa-glass dawa-social__section">
           <div className="dawa-social__section-head">
             <h2 className="dawa-social__title">Connect requests</h2>
@@ -482,7 +337,7 @@ export function FriendsHub() {
             </Link>
           </div>
           <ul className="dawa-social__requests">
-            {data?.requests.map((r) => (
+            {requests.map((r) => (
               <li key={r.friendshipId} className="dawa-social__request">
                 <UserProfileLink username={r.username} className="dawa-social__request-profile">
                   <UserAvatar name={r.name} userId={r.id} avatarColor={r.avatarColor} avatarUrl={r.avatarUrl} size={48} />
@@ -502,67 +357,46 @@ export function FriendsHub() {
 
       <section className="dawa-glass dawa-social__section">
         <div className="dawa-social__section-head">
-          <h2 className="dawa-social__title">Wakt board</h2>
-          <p className="dawa-social__sub dawa-social__sub--inline">
-            Live salah status · poke during wakt for dawah coins
-          </p>
+          <div>
+            <h2 className="dawa-social__title">Wakt board</h2>
+            <p className="dawa-social__sub dawa-social__sub--inline">
+              Live salah status · poke during wakt for dawah coins
+              {summary && summary.totalFriends > 0 && (
+                <>
+                  {' '}
+                  · <span className="dawa-num">{summary.activeInWakt}</span> in wakt
+                  {summary.pokeable > 0 && (
+                    <>
+                      {' '}
+                      · <span className="dawa-num">{summary.pokeable}</span> pokeable
+                    </>
+                  )}
+                </>
+              )}
+            </p>
+          </div>
         </div>
 
-        {(boardRows.length ?? 0) === 0 ? (
-          <p className="dawa-social__empty">Connect with friends to see live salah status here.</p>
-        ) : (
-          <div className="dawa-social-board">
-            <div className="dawa-social-board__head" role="row">
-              <span>Brother / Sister</span>
-              <span>Prayer</span>
-              <span>Status</span>
-              <span>Action</span>
-            </div>
-            {boardRows.map((row) => (
-              <div
-                key={row.id}
-                className="dawa-social-board__row"
-                role="row"
-              >
-                <UserProfileLink username={row.username} className="dawa-social-board__friend dawa-social-board__friend-link">
-                  <UserAvatar
-                    userId={row.id}
-                    name={row.name}
-                    avatarColor={row.avatarColor}
-                    avatarUrl={row.avatarUrl}
-                    size={40}
-                  />
-                  <div className="dawa-social-board__friend-info">
-                    <p className="dawa-social-board__name">{row.name}</p>
-                    <p className="dawa-social-board__meta">
-                      @{row.username ?? 'user'}
-                      {row.badge && (
-                        <span className="dawa-social-board__badge">
-                          {row.badge.icon} {row.badge.name}
-                        </span>
-                      )}
-                    </p>
-                    {!row.goldCoinsHidden && (
-                      <div className="dawa-social-board__coins">
-                        <GoldCoinAmount amount={row.goldCoins} size={13} />
-                      </div>
-                    )}
-                  </div>
-                </UserProfileLink>
-                <div className="dawa-social-board__prayer">
-                  <span className="dawa-social-board__prayer-label">{row.wakt.prayerLabel}</span>
-                </div>
-                <WaktStatusCell row={row} />
-                <div className="dawa-social-board__action">
-                  <PokeActionCell
-                    row={row}
-                    pokeBusy={pokeBusy === row.id}
-                    onPoke={poke}
-                    onCooldownEnd={() => mutateBoard()}
-                  />
-                </div>
-              </div>
-            ))}
+        <WaktBoardVirtual
+          rows={boardRows}
+          loading={hubLoading}
+          pokeBusy={pokeBusy}
+          onPoke={poke}
+          onCooldownEnd={refreshHub}
+        />
+
+        {hasMoreFriends && (
+          <div className="dawa-social__load-more">
+            <button
+              type="button"
+              className="dawa-btn dawa-btn--outline dawa-btn--sm"
+              disabled={loadingMore}
+              onClick={() => void loadMoreFriends()}
+            >
+              {loadingMore
+                ? 'Loading…'
+                : `Load more (${friends.length} of ${totalFriends})`}
+            </button>
           </div>
         )}
       </section>
@@ -578,7 +412,7 @@ export function FriendsHub() {
           </Link>
         </div>
         <ul className="dawa-social__circle">
-          {(data?.friends ?? []).map((f) => (
+          {friends.map((f) => (
             <li key={f.id} className="dawa-social__circle-item">
               <UserProfileLink username={f.username} className="dawa-social__circle-link">
                 <UserAvatar name={f.name} userId={f.id} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={44} />
@@ -595,6 +429,18 @@ export function FriendsHub() {
             </li>
           ))}
         </ul>
+        {hasMoreFriends && (
+          <div className="dawa-social__load-more">
+            <button
+              type="button"
+              className="dawa-btn dawa-btn--ghost dawa-btn--sm"
+              disabled={loadingMore}
+              onClick={() => void loadMoreFriends()}
+            >
+              {loadingMore ? 'Loading…' : 'Load more friends'}
+            </button>
+          </div>
+        )}
       </section>
 
       <section className="dawa-glass dawa-social__section">
@@ -606,32 +452,29 @@ export function FriendsHub() {
           {suggestions.length === 0 ? (
             <p className="dawa-social__empty">No new suggestions right now.</p>
           ) : (
-          suggestions.map((p) => (
-            <article
-              key={p.id}
-              className="dawa-social__suggest-card"
-            >
-              <UserProfileLink username={p.username} className="dawa-social__suggest-link">
-                <UserAvatar name={p.name} userId={p.id} avatarColor={p.avatarColor} avatarUrl={p.avatarUrl} size={56} />
-                <p className="dawa-social__suggest-name">{p.name}</p>
-                <p className="dawa-social__suggest-user">@{p.username ?? 'user'}</p>
-                <p className="dawa-social__suggest-bio">{p.bio}</p>
-              </UserProfileLink>
-              <p className="dawa-social__suggest-mutual">{p.mutualFriends} mutual friends</p>
-              {p.requestSent ? (
-                <span className="dawa-social__suggest-sent">Request sent</span>
-              ) : (
-                <button
-                  type="button"
-                  className="dawa-btn dawa-btn--primary dawa-btn--sm dawa-social__suggest-btn"
-                  disabled={connectSuggestBusy === p.id}
-                  onClick={() => connectSuggestion(p)}
-                >
-                  {connectSuggestBusy === p.id ? '…' : 'Connect'}
-                </button>
-              )}
-            </article>
-          ))
+            suggestions.map((p) => (
+              <article key={p.id} className="dawa-social__suggest-card">
+                <UserProfileLink username={p.username} className="dawa-social__suggest-link">
+                  <UserAvatar name={p.name} userId={p.id} avatarColor={p.avatarColor} avatarUrl={p.avatarUrl} size={56} />
+                  <p className="dawa-social__suggest-name">{p.name}</p>
+                  <p className="dawa-social__suggest-user">@{p.username ?? 'user'}</p>
+                  <p className="dawa-social__suggest-bio">{p.bio}</p>
+                </UserProfileLink>
+                <p className="dawa-social__suggest-mutual">{p.mutualFriends} mutual friends</p>
+                {p.requestSent ? (
+                  <span className="dawa-social__suggest-sent">Request sent</span>
+                ) : (
+                  <button
+                    type="button"
+                    className="dawa-btn dawa-btn--primary dawa-btn--sm dawa-social__suggest-btn"
+                    disabled={connectSuggestBusy === p.id}
+                    onClick={() => connectSuggestion(p)}
+                  >
+                    {connectSuggestBusy === p.id ? '…' : 'Connect'}
+                  </button>
+                )}
+              </article>
+            ))
           )}
           {loadingMoreSuggestions && (
             <p className="dawa-social__suggest-loading" aria-live="polite">

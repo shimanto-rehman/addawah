@@ -2,6 +2,7 @@ import type { PrayerName } from './constants';
 import {
   formatDateKeyInTimezone,
   getNowMinutesInTimezone,
+  isPrayerTimesPayload,
   prayerWaktWindow,
   type PrayerTimesPayload,
 } from './prayer-times';
@@ -44,7 +45,7 @@ export function canMarkSalahCellLocal(
 ): boolean {
   if (prayerDateKey > todayDateKey) return false;
   if (prayerDateKey < todayDateKey) return true;
-  if (!times) return false;
+  if (!times || !isPrayerTimesPayload(times)) return false;
 
   const mins = getNowMinutesInTimezone(now, times.timeZone);
   const { start } = prayerWaktWindow(prayer, times);

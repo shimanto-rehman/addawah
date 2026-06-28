@@ -36,6 +36,8 @@ model User {
   passwordResetOtp PasswordResetOtp?
   moodCheckIns MoodCheckIn[]
   notifications Notification[]
+  waktSnapshot UserWaktSnapshot?
+  salahDayStats UserSalahDayStat[]
 }
 
 model PasswordResetOtp {
@@ -87,8 +89,8 @@ model Session {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token])
   @@index([userId])
+  @@index([expiresAt])
 }
 
 model SalahRecord {
@@ -105,6 +107,7 @@ model SalahRecord {
 
   @@unique([userId, date, prayer, kind, unit])
   @@index([userId, date])
+  @@index([userId, date, prayer, kind, completed])
 }
 
 model Friendship {
@@ -119,6 +122,8 @@ model Friendship {
 
   @@unique([userId, friendId])
   @@index([friendId])
+  @@index([userId, status])
+  @@index([friendId, status])
 }
 
 model Poke {
@@ -133,6 +138,7 @@ model Poke {
   toUser     User      @relation("RecvPokes", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@index([toUserId, readAt])
+  @@index([toUserId, createdAt])
 }
 
 enum NotificationType {
@@ -158,6 +164,7 @@ model Notification {
   @@unique([userId, dedupeKey])
   @@index([userId, readAt])
   @@index([userId, createdAt])
+  @@index([userId, type, readAt])
 }
 
 enum Prayer {
@@ -177,4 +184,44 @@ enum SalahKind {
 enum FriendshipStatus {
   PENDING
   ACCEPTED
+}
+
+// Precomputed live wakt status — refreshed on salah change and when stale on read.
+model UserWaktSnapshot {
+  userId           String    @id
+  dateKey          String
+  prayer           Prayer?
+  phase            String
+  salahStatus      String
+  prayerLabel      String    @default("—")
+  canPoke          Boolean   @default(false)
+  forbiddenNow     Boolean   @default(false)
+  remainingSeconds Int       @default(0)
+  elapsedSeconds   Int       @default(0)
+  waktStartedAt    DateTime?
+  waktEndsAt       DateTime?
+  waktEndLabel     String?
+  timeZone         String    @default("Asia/Dhaka")
+  refreshedAt      DateTime  @default(now())
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([dateKey, phase])
+  @@index([refreshedAt])
+}
+
+// Precomputed per-day on-time / kaza / missed / iman for fast analytics reads.
+model UserSalahDayStat {
+  userId        String
+  date          DateTime @db.Date
+  onTime        Int      @default(0)
+  kaza          Int      @default(0)
+  missed        Int      @default(0)
+  pending       Int      @default(0)
+  iman          Int      @default(68)
+  missedPrayers Json     @default("[]")
+  refreshedAt   DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, date])
+  @@index([userId, date])
 }
