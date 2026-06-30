@@ -29,13 +29,13 @@ export async function kvSet(key: string, value: string, exSeconds: number) {
   const { url, token } = kvConfig();
   if (!url || !token) return;
   try {
-    await fetch(`${url}/set/${encodeURIComponent(key)}`, {
+    const ex = exSeconds > 0 ? `?EX=${exSeconds}` : '';
+    await fetch(`${url}/set/${encodeURIComponent(key)}${ex}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ value, ex: exSeconds }),
+      body: value,
     });
   } catch {
     // optional cache — ignore failures
@@ -80,11 +80,28 @@ export async function kvDel(key: string) {
   }
 }
 
+function unwrapLegacyKvJson<T>(parsed: unknown): T | null {
+  if (
+    parsed &&
+    typeof parsed === 'object' &&
+    'value' in parsed &&
+    'ex' in parsed &&
+    typeof (parsed as { value: unknown }).value === 'string'
+  ) {
+    try {
+      return JSON.parse((parsed as { value: string }).value) as T;
+    } catch {
+      return null;
+    }
+  }
+  return parsed as T;
+}
+
 export async function kvGetJson<T>(key: string): Promise<T | null> {
   const raw = await kvGet(key);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as T;
+    return unwrapLegacyKvJson<T>(JSON.parse(raw));
   } catch {
     return null;
   }
