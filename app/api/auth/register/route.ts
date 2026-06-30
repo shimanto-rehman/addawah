@@ -15,6 +15,7 @@ import {
 } from '@/lib/validation';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getClientIp } from '@/lib/get-client-ip';
+import { logger } from '@/lib/logger';
 
 const schema = z.object({
   name: z.string().min(2).max(80),
@@ -66,13 +67,13 @@ export async function POST(req: NextRequest) {
     await createSession(user.id);
 
     sendWelcomeEmail({ to: email, name, username }).catch((err) => {
-      console.error('[email] welcome email failed', err);
+      logger.error({ route: '/api/auth/register', err }, 'Welcome email failed');
     });
 
     return jsonOk({ ok: true });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0]?.message ?? 'Invalid input');
-    console.error(e);
+    logger.error({ route: '/api/auth/register', err: e }, 'Registration failed');
     return jsonError('Registration failed', 500);
   }
 }

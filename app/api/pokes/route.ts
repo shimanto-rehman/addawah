@@ -12,6 +12,7 @@ import {
 import { POKE_COOLDOWN_MS, pokeCooldownMessage } from '@/lib/poke-cooldown';
 import { notifyDawahPoke } from '@/lib/notifications';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 const schema = z.object({
   friendId: z.string(),
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
 
     return jsonOk({ ok: true, coinsEarned });
   } catch (e) {
-    console.error('[pokes]', e);
+    logger.error({ route: '/api/pokes', err: e }, 'Failed to send reminder');
     return jsonError('Failed to send reminder', 500);
   }
 }

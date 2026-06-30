@@ -1,7 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
-import { checkRateLimit } from '@/lib/rate-limit';
-import { getClientIp } from '@/lib/get-client-ip';
+import { apiRequireAuth, jsonOk } from '@/lib/api-helpers';
 import { kvGetJson, kvSetJson } from '@/lib/kv';
 
 const DEFAULT_LIMIT = 20;

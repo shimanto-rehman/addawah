@@ -3,6 +3,7 @@ import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { isValidMoodId, moodById } from '@/lib/moods';
 import { formatDateKey, startOfDay } from '@/lib/salah-utils';
 import { DASHBOARD_CACHE_HEADERS } from '@/lib/salah-query';
+import { logger } from '@/lib/logger';
 
 export async function GET() {
   const { user, error } = await apiRequireAuth();
@@ -50,7 +51,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (e) {
-    console.error('[mood]', e);
+    logger.error({ route: '/api/mood', err: e }, 'Could not save mood');
     return jsonError('Could not save mood', 500);
   }
 }

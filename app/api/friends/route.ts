@@ -12,6 +12,7 @@ import {
   notifyConnectionRequest,
 } from '@/lib/notifications';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 const postSchema = z.object({
   username: z.string().min(2).max(30).optional(),
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
     return jsonOk({ ok: true });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError('Invalid username or email');
-    console.error(e);
+    logger.error({ route: '/api/friends', action: 'POST', err: e }, 'Failed to send request');
     return jsonError('Failed to send request', 500);
   }
 }
@@ -148,7 +149,7 @@ export async function PATCH(req: NextRequest) {
 
     return jsonError('Unknown action', 400);
   } catch (e) {
-    console.error('[friends]', e);
+    logger.error({ route: '/api/friends', action: 'PATCH', err: e }, 'Failed to update connection');
     return jsonError('Failed to update connection', 500);
   }
 }

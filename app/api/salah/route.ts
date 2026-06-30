@@ -15,6 +15,7 @@ import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import { clearWaktReminderForPrayer } from '@/lib/notifications';
 import { triggerSync } from '@/lib/internal-sync';
+import { logger } from '@/lib/logger';
 import type { PrayerName } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
@@ -132,7 +133,7 @@ export async function POST(req: NextRequest) {
     return jsonOk({ ok: true, coinsEarned });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError('Invalid input');
-    console.error(e);
+    logger.error({ route: '/api/salah', err: e }, 'Failed to save');
     return jsonError('Failed to save', 500);
   }
 }

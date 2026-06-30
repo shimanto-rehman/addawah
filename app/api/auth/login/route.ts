@@ -7,6 +7,7 @@ import { jsonError, jsonOk } from '@/lib/api-helpers';
 import { normalizeMobile } from '@/lib/phone-countries';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getClientIp } from '@/lib/get-client-ip';
+import { logger } from '@/lib/logger';
 
 const schema = z.object({
   password: z.string().min(1).max(100),
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
     return jsonOk({ ok: true });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0]?.message ?? 'Invalid input');
-    console.error(e);
+    logger.error({ route: '/api/auth/login', err: e }, 'Login failed');
     return jsonError('Login failed', 500);
   }
 }
