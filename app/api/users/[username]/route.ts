@@ -7,7 +7,10 @@ import {
   profileViewerFromConnection,
 } from '@/lib/profile-privacy';
 import { getBadgeForCoins } from '@/lib/rewards';
-import { buildPublicUserStats } from '@/lib/user-public-stats';
+import { buildPublicUserStatsFromDayStats } from '@/lib/user-public-stats';
+import { kvGetJson, kvSetJson } from '@/lib/kv';
+
+const PROFILE_CACHE_TTL = 60; // 1 minute
 
 type RouteParams = { params: { username: string } };
 
@@ -17,6 +20,13 @@ export async function GET(_req: Request, { params }: RouteParams) {
 
   const username = decodeURIComponent(params.username).replace(/^@/, '').trim();
   if (!username) return jsonError('Invalid username', 400);
+
+  // Check cache (keyed by viewer + profile for privacy-aware caching)
+  const cacheKey = `profile:${user!.id}:${username.toLowerCase()}`;
+  const cached = await kvGetJson<unknown>(cacheKey);
+  if (cached) {
+    return jsonOk(cached);
+  }
 
   const profileUser = await prisma.user.findFirst({
     where: { username: { equals: username, mode: 'insensitive' } },
@@ -43,25 +53,31 @@ export async function GET(_req: Request, { params }: RouteParams) {
 
   const showStats = canView(privacy, 'showSalahStats', viewer);
 
-  const records = showStats
-    ? await prisma.salahRecord.findMany({
-        where: { userId: profileUser.id },
-        select: { date: true, prayer: true, completed: true, kind: true },
+  const PROFILE_STATS_DAYS = 90;
+  const statsCutoff = new Date();
+  statsCutoff.setDate(statsCutoff.getDate() - PROFILE_STATS_DAYS);
+
+  // Use precomputed UserSalahDayStat (90 rows) instead of raw SalahRecord (thousands)
+  const dayStats = showStats
+    ? await prisma.userSalahDayStat.findMany({
+        where: { userId: profileUser.id, date: { gte: statsCutoff } },
+        select: { date: true, onTime: true, kaza: true, missed: true, pending: true, iman: true },
+        orderBy: { date: 'desc' },
       })
     : [];
 
   const bio = [profileUser.city, profileUser.country].filter(Boolean).join(' · ') || null;
-  const rawStats = buildPublicUserStats(
+  const rawStats = buildPublicUserStatsFromDayStats(
     profileUser.id,
     profileUser.goldCoins,
     profileUser.createdAt,
-    records,
+    dayStats,
   );
 
   const showCoins = canView(privacy, 'showGoldCoins', viewer);
   const showBadge = canView(privacy, 'showBadge', viewer);
 
-  return jsonOk({
+  const response = {
     profile: {
       id: profileUser.id,
       name: profileUser.name,
@@ -86,5 +102,10 @@ export async function GET(_req: Request, { params }: RouteParams) {
     connection,
     viewerIsSelf,
     privacy: viewerIsSelf ? privacy : undefined,
-  });
+  };
+
+  // Cache for 1 minute
+  await kvSetJson(cacheKey, response, PROFILE_CACHE_TTL);
+
+  return jsonOk(response);
 }

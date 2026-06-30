@@ -3,7 +3,7 @@ import { getSessionUser } from './auth';
 
 export async function apiRequireAuth() {
   const user = await getSessionUser();
-  if (!user) {
+  if (!user?.id) {
     return { user: null, error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
   }
   return { user, error: null };

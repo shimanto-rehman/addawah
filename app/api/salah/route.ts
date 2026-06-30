@@ -14,8 +14,7 @@ import { fetchPrayerTimes } from '@/lib/prayer-times';
 import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import { clearWaktReminderForPrayer } from '@/lib/notifications';
-import { refreshSnapshotsForSalahUser } from '@/lib/wakt-snapshot';
-import { refreshSalahDayStatForUser } from '@/lib/salah-day-stats';
+import { triggerSync } from '@/lib/internal-sync';
 import type { PrayerName } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
@@ -126,8 +125,8 @@ export async function POST(req: NextRequest) {
           coinsEarned = reward.amount;
         }
       }
-      void refreshSnapshotsForSalahUser(user!.id);
-      void refreshSalahDayStatForUser(user!.id, body.date);
+      triggerSync('refresh-snapshots', user!.id);
+      triggerSync('refresh-day-stat', user!.id, body.date);
     }
 
     return jsonOk({ ok: true, coinsEarned });

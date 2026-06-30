@@ -13,6 +13,8 @@ import {
   sanitizeUsername,
   validateUsername,
 } from '@/lib/validation';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/get-client-ip';
 
 const schema = z.object({
   name: z.string().min(2).max(80),
@@ -23,6 +25,11 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const rl = await checkRateLimit(`rl:register:${getClientIp(req)}`, 3, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many attempts. Please try again later.', 429);
+  }
+
   try {
     const body = schema.parse(await req.json());
     const name = sanitizeName(body.name);

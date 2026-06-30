@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { decodeJwt } from 'jose';
 
 const protectedPaths = ['/dashboard', '/friends', '/analytics', '/settings', '/profile', '/notifications', '/u'];
 
@@ -11,6 +12,18 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get('addawah-session')?.value;
   if (!token) {
     return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  // Verify JWT expiry without DB call — CPU only
+  try {
+    const payload = decodeJwt(token);
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      const response = NextResponse.redirect(new URL('/login', req.url));
+      response.cookies.set('addawah-session', '', { httpOnly: true, expires: new Date(0), path: '/' });
+      return response;
+    }
+  } catch {
+    // Malformed token — let the API route handle it (same as before)
   }
 
   const response = NextResponse.next();

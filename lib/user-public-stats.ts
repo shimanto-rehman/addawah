@@ -15,6 +15,15 @@ type SalahRecordRow = {
   kind?: string;
 };
 
+type DayStatRow = {
+  date: Date;
+  onTime: number;
+  kaza: number;
+  missed: number;
+  pending: number;
+  iman: number;
+};
+
 export type PublicUserStats = {
   weekRate: number;
   weekCompleted: number;
@@ -138,4 +147,82 @@ export function buildPublicUserStats(
 
 export function userProfilePath(username: string) {
   return `/u/${encodeURIComponent(username.toLowerCase())}`;
+}
+
+/**
+ * Build public user stats from precomputed UserSalahDayStat rows.
+ * Uses 90 rows (one per day) instead of thousands of raw SalahRecord rows.
+ */
+export function buildPublicUserStatsFromDayStats(
+  userId: string,
+  goldCoins: number,
+  joinedAt: Date,
+  dayStats: DayStatRow[],
+): PublicUserStats {
+  if (dayStats.length === 0) {
+    return {
+      ...demoStatsForUser(userId),
+      goldCoins,
+      isDemoFilled: true,
+    };
+  }
+
+  const totalPrayersInStats = dayStats.length * PRAYERS.length;
+  const totalOnTime = dayStats.reduce((sum, d) => sum + d.onTime, 0);
+  const totalKaza = dayStats.reduce((sum, d) => sum + d.kaza, 0);
+  const totalMissed = dayStats.reduce((sum, d) => sum + d.missed, 0);
+  const totalPrayed = totalOnTime + totalKaza;
+
+  // Week stats from last 7 days
+  const weekStats = dayStats.slice(0, 7);
+  const weekTotal = weekStats.length * PRAYERS.length;
+  const weekCompleted = weekStats.reduce((sum, d) => sum + d.onTime + d.kaza, 0);
+
+  // Streak: count consecutive days with all prayers completed (onTime + kaza = 5)
+  let streak = 0;
+  for (const day of dayStats) {
+    if (day.onTime + day.kaza >= PRAYERS.length) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  // Perfect days: all 5 prayers on time
+  const perfectDays = dayStats.filter((d) => d.onTime >= PRAYERS.length).length;
+
+  // Active days: at least 1 prayer completed
+  const activeDays = dayStats.filter((d) => d.onTime + d.kaza > 0).length;
+
+  // Days on app: from joined date to now
+  const now = new Date();
+  const daysOnApp = Math.max(1, Math.ceil((now.getTime() - joinedAt.getTime()) / (1000 * 60 * 60 * 24)));
+
+  // Fajr missed: sum of missed prayers where the day had a missed prayer
+  // Since we don't have per-prayer breakdown in day stats, estimate from total missed
+  const fajrMissed = Math.round(totalMissed / PRAYERS.length);
+
+  // Best prayer: not available from day stats, use null
+  const bestPrayer = null;
+
+  const lifetimeRate = totalPrayersInStats > 0
+    ? Math.round((totalPrayed / totalPrayersInStats) * 100)
+    : 0;
+
+  return {
+    weekRate: weekTotal > 0 ? Math.round((weekCompleted / weekTotal) * 100) : 0,
+    weekCompleted,
+    weekTotal,
+    streak,
+    lifetimeRate,
+    lifetimePrayed: totalPrayed,
+    lifetimeMissed: totalMissed,
+    perfectDays,
+    activeDays,
+    daysOnApp,
+    fajrMissed,
+    bestPrayer,
+    goldCoins,
+    isDemoFilled: false,
+  };
 }

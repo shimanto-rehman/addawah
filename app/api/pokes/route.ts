@@ -11,6 +11,7 @@ import {
 } from '@/lib/rewards';
 import { POKE_COOLDOWN_MS, pokeCooldownMessage } from '@/lib/poke-cooldown';
 import { notifyDawahPoke } from '@/lib/notifications';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const schema = z.object({
   friendId: z.string(),
@@ -20,6 +21,11 @@ const schema = z.object({
 export async function POST(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
+
+  const rl = await checkRateLimit(`rl:pokes:${user!.id}`, 20, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many reminders. Please slow down.', 429);
+  }
 
   try {
     const body = schema.parse(await req.json());
@@ -101,7 +107,8 @@ export async function POST(req: NextRequest) {
     }
 
     return jsonOk({ ok: true, coinsEarned });
-  } catch {
+  } catch (e) {
+    console.error('[pokes]', e);
     return jsonError('Failed to send reminder', 500);
   }
 }

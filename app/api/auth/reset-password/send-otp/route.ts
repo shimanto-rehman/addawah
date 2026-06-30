@@ -2,12 +2,19 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { jsonError, jsonOk } from '@/lib/api-helpers';
 import { sendPasswordResetOtp } from '@/lib/password-reset-service';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/get-client-ip';
 
 const schema = z.object({
   email: z.string().email(),
 });
 
 export async function POST(req: NextRequest) {
+  const rl = await checkRateLimit(`rl:send-otp:${getClientIp(req)}`, 3, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many attempts. Please try again later.', 429);
+  }
+
   try {
     const body = schema.parse(await req.json());
     const result = await sendPasswordResetOtp(body.email);

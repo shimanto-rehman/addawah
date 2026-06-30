@@ -42,6 +42,44 @@ export async function kvSet(key: string, value: string, exSeconds: number) {
   }
 }
 
+/**
+ * Atomic increment with TTL. Uses Upstash pipeline to run INCR + EXPIRE
+ * in a single HTTP request (1 round-trip, 2 commands counted).
+ * Returns the new value, or null if Redis is unavailable.
+ */
+export async function kvIncr(key: string, ttlSeconds: number): Promise<number | null> {
+  const { url, token } = kvConfig();
+  if (!url || !token) return null;
+  try {
+    const res = await fetch(`${url}/pipeline`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([['incr', key], ['expire', key, ttlSeconds]]),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { result: [number, number] };
+    return json.result[0];
+  } catch {
+    return null;
+  }
+}
+
+export async function kvDel(key: string) {
+  const { url, token } = kvConfig();
+  if (!url || !token) return;
+  try {
+    await fetch(`${url}/del/${encodeURIComponent(key)}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch {
+    // optional cache — ignore failures
+  }
+}
+
 export async function kvGetJson<T>(key: string): Promise<T | null> {
   const raw = await kvGet(key);
   if (!raw) return null;

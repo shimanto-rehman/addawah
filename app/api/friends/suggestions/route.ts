@@ -1,8 +1,12 @@
 import { prisma } from '@/lib/prisma';
-import { apiRequireAuth, jsonOk } from '@/lib/api-helpers';
+import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/get-client-ip';
+import { kvGetJson, kvSetJson } from '@/lib/kv';
 
-const DEFAULT_LIMIT = 8;
-const MAX_LIMIT = 24;
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 50;
+const CACHE_TTL_SECONDS = 600; // 10 minutes
 
 function parsePositiveInt(raw: string | null, fallback: number) {
   if (!raw) return fallback;
@@ -20,42 +24,58 @@ export async function GET(request: Request) {
   const requestedLimit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT);
   const limit = Math.max(1, Math.min(requestedLimit, MAX_LIMIT));
 
-  const myAcceptedFriendships = await prisma.friendship.findMany({
-    where: {
-      status: 'ACCEPTED',
-      OR: [{ userId: user!.id }, { friendId: user!.id }],
-    },
-    select: { userId: true, friendId: true },
-  });
-
-  const myFriendIds = new Set<string>();
-  for (const f of myAcceptedFriendships) {
-    myFriendIds.add(f.userId === user!.id ? f.friendId : f.userId);
+  // Check Redis cache first
+  const cacheKey = `suggest:${user!.id}:${cursor}:${limit}`;
+  const cached = await kvGetJson<{ suggestions: unknown[]; nextCursor: number | null; hasMore: boolean }>(cacheKey);
+  if (cached) {
+    return jsonOk(cached);
   }
 
-  const friendships = await prisma.friendship.findMany({
-    where: {
-      OR: [{ userId: user!.id }, { friendId: user!.id }],
-    },
-    select: { userId: true, friendId: true, status: true },
-  });
+  // Step 1: Fetch existing connection IDs (accepted + pending) via targeted SQL
+  const [acceptedSent, acceptedRecv, pendingRecv] = await Promise.all([
+    prisma.friendship.findMany({
+      where: { userId: user!.id, status: 'ACCEPTED' },
+      select: { friendId: true },
+    }),
+    prisma.friendship.findMany({
+      where: { friendId: user!.id, status: 'ACCEPTED' },
+      select: { userId: true },
+    }),
+    prisma.friendship.findMany({
+      where: { friendId: user!.id, status: 'PENDING' },
+      select: { userId: true },
+    }),
+  ]);
 
   const excludeIds = new Set<string>();
-  const requestSentIds = new Set<string>();
-  for (const f of friendships) {
-    const otherId = f.userId === user!.id ? f.friendId : f.userId;
-    if (f.status === 'ACCEPTED') {
-      excludeIds.add(otherId);
-    } else if (f.userId === user!.id) {
-      requestSentIds.add(otherId);
-    } else {
-      excludeIds.add(otherId);
-    }
+  const myFriendIds = new Set<string>();
+  for (const f of acceptedSent) {
+    excludeIds.add(f.friendId);
+    myFriendIds.add(f.friendId);
+  }
+  for (const f of acceptedRecv) {
+    excludeIds.add(f.userId);
+    myFriendIds.add(f.userId);
+  }
+  for (const f of pendingRecv) {
+    excludeIds.add(f.userId);
   }
 
+  // Find users where I already sent a pending request (to show "requestSent" flag)
+  const pendingSent = await prisma.friendship.findMany({
+    where: { userId: user!.id, status: 'PENDING' },
+    select: { friendId: true },
+  });
+  const requestSentIds = new Set(pendingSent.map((f) => f.friendId));
+
+  // Step 2: Fetch candidates with DB-level pagination (no full table scan)
+  const excludeArray = Array.from(excludeIds);
   const candidates = await prisma.user.findMany({
     where: {
-      id: { not: user!.id, notIn: Array.from(excludeIds) },
+      id: {
+        not: user!.id,
+        ...(excludeArray.length > 0 ? { notIn: excludeArray } : {}),
+      },
     },
     select: {
       id: true,
@@ -68,41 +88,47 @@ export async function GET(request: Request) {
       country: true,
       createdAt: true,
     },
+    orderBy: { createdAt: 'desc' },
+    skip: cursor,
+    take: limit + 1, // fetch one extra to check hasMore
   });
 
-  const candidateIds = candidates.map((u) => u.id);
-  const candidateFriendships =
-    candidateIds.length > 0
-      ? await prisma.friendship.findMany({
-          where: {
-            status: 'ACCEPTED',
-            OR: [{ userId: { in: candidateIds } }, { friendId: { in: candidateIds } }],
-          },
-          select: { userId: true, friendId: true },
-        })
-      : [];
+  const hasMore = candidates.length > limit;
+  const page = candidates.slice(0, limit);
 
-  const candidateFriendsMap = new Map<string, Set<string>>();
-  for (const candidateId of candidateIds) {
-    candidateFriendsMap.set(candidateId, new Set<string>());
-  }
-  for (const f of candidateFriendships) {
-    if (candidateFriendsMap.has(f.userId)) {
-      candidateFriendsMap.get(f.userId)!.add(f.friendId);
-    }
-    if (candidateFriendsMap.has(f.friendId)) {
-      candidateFriendsMap.get(f.friendId)!.add(f.userId);
+  // Step 3: Count mutual friends in batch (single query)
+  const candidateIds = page.map((u) => u.id);
+  let mutualCountMap = new Map<string, number>();
+
+  if (candidateIds.length > 0 && myFriendIds.size > 0) {
+    // Find accepted friendships where candidate is friends with someone in my friend set
+    const mutualFriendships = await prisma.friendship.findMany({
+      where: {
+        status: 'ACCEPTED',
+        OR: [
+          { userId: { in: candidateIds }, friendId: { in: Array.from(myFriendIds) } },
+          { friendId: { in: candidateIds }, userId: { in: Array.from(myFriendIds) } },
+        ],
+      },
+      select: { userId: true, friendId: true },
+    });
+
+    mutualCountMap = new Map(candidateIds.map((id) => [id, 0]));
+    for (const f of mutualFriendships) {
+      // If userId is a candidate and friendId is in my friends
+      if (myFriendIds.has(f.friendId) && mutualCountMap.has(f.userId)) {
+        mutualCountMap.set(f.userId, mutualCountMap.get(f.userId)! + 1);
+      }
+      // If friendId is a candidate and userId is in my friends
+      if (myFriendIds.has(f.userId) && mutualCountMap.has(f.friendId)) {
+        mutualCountMap.set(f.friendId, mutualCountMap.get(f.friendId)! + 1);
+      }
     }
   }
 
-  const ranked = candidates
+  // Step 4: Rank and format
+  const suggestions = page
     .map((u) => {
-      const candidateFriends = candidateFriendsMap.get(u.id) ?? new Set<string>();
-      let mutualFriends = 0;
-      candidateFriends.forEach((friendId) => {
-        if (myFriendIds.has(friendId)) mutualFriends += 1;
-      });
-
       const bio = [u.city, u.country].filter(Boolean).join(' · ') || 'New on Addawah';
       return {
         id: u.id,
@@ -112,7 +138,7 @@ export async function GET(request: Request) {
         avatarUrl: u.avatarUrl,
         goldCoins: u.goldCoins,
         bio,
-        mutualFriends,
+        mutualFriends: mutualCountMap.get(u.id) ?? 0,
         requestSent: requestSentIds.has(u.id),
         createdAt: u.createdAt,
       };
@@ -121,16 +147,16 @@ export async function GET(request: Request) {
       if (b.mutualFriends !== a.mutualFriends) {
         return b.mutualFriends - a.mutualFriends;
       }
-      if (a.mutualFriends === 0 && b.mutualFriends === 0) {
-        return b.createdAt.getTime() - a.createdAt.getTime();
-      }
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
 
-  const paged = ranked.slice(cursor, cursor + limit);
-  const nextCursor = cursor + paged.length;
-  const hasMore = nextCursor < ranked.length;
-  const suggestions = paged.map(({ createdAt: _createdAt, ...person }) => person);
+  const nextCursor = hasMore ? cursor + limit : null;
+  const result = suggestions.map(({ createdAt: _createdAt, ...person }) => person);
 
-  return jsonOk({ suggestions, nextCursor, hasMore });
+  const response = { suggestions: result, nextCursor, hasMore };
+
+  // Cache in Redis for 10 minutes
+  await kvSetJson(cacheKey, response, CACHE_TTL_SECONDS);
+
+  return jsonOk(response);
 }

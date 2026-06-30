@@ -1,8 +1,10 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { jsonOk } from '@/lib/api-helpers';
+import { jsonError, jsonOk } from '@/lib/api-helpers';
 import { normalizeMobile } from '@/lib/phone-countries';
 import { isValidEmail, sanitizeEmail, sanitizeUsername, validateUsername } from '@/lib/validation';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/get-client-ip';
 
 type FieldResult = {
   valid: boolean;
@@ -11,6 +13,11 @@ type FieldResult = {
 };
 
 export async function GET(req: NextRequest) {
+  const rl = await checkRateLimit(`rl:check-avail:${getClientIp(req)}`, 10, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many requests. Please try again later.', 429);
+  }
+
   const sp = new URL(req.url).searchParams;
   const excludeUserId = sp.get('excludeUserId') ?? undefined;
 

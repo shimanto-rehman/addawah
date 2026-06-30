@@ -49,7 +49,8 @@ export async function POST(req: Request) {
         date: formatDateKey(today),
       },
     });
-  } catch {
+  } catch (e) {
+    console.error('[mood]', e);
     return jsonError('Could not save mood', 500);
   }
 }

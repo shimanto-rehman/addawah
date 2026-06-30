@@ -4,17 +4,14 @@ import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import {
   buildFriendsHubPayload,
-  loadAcceptedFriendPeers,
-  mapCircleFriend,
   parseFriendsPageParams,
 } from '@/lib/friends-hub';
-import { batchFriendWeekRates, removeFriendship } from '@/lib/friendship';
-import { getBadgeForCoins } from '@/lib/rewards';
+import { removeFriendship } from '@/lib/friendship';
 import {
   notifyConnectionAccepted,
   notifyConnectionRequest,
 } from '@/lib/notifications';
-import { friendUserSelect } from '@/lib/friends-hub';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const postSchema = z.object({
   username: z.string().min(2).max(30).optional(),
@@ -26,56 +23,24 @@ export async function GET(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
 
-  const hasPagination =
-    req.nextUrl.searchParams.has('cursor') || req.nextUrl.searchParams.has('limit');
-
-  if (hasPagination) {
-    const { cursor, limit } = parseFriendsPageParams(req.nextUrl.searchParams);
-    const data = await buildFriendsHubPayload(user!.id, cursor, limit);
-    return jsonOk({
-      friends: data.friends,
-      requests: data.requests,
-      me: data.me,
-      page: data.page,
-    });
-  }
-
-  const userId = user!.id;
-  const [peers, received, me] = await Promise.all([
-    loadAcceptedFriendPeers(userId),
-    prisma.friendship.findMany({
-      where: { friendId: userId, status: 'PENDING' },
-      include: { user: { select: friendUserSelect } },
-    }),
-    prisma.user.findUnique({ where: { id: userId }, select: { goldCoins: true } }),
-  ]);
-
-  const weekRates = await batchFriendWeekRates(peers.map((entry) => entry.person.id));
-  const friends = peers.map(({ friendshipId, person }) =>
-    mapCircleFriend(person, {
-      friendshipId,
-      weekRate: weekRates.get(person.id) ?? 0,
-      connected: true,
-    }),
-  );
-  const requests = received.map((r) => ({
-    ...mapCircleFriend(r.user, { friendshipId: r.id, weekRate: 0, connected: false }),
-    status: r.status,
-  }));
-
+  const { cursor, limit } = parseFriendsPageParams(req.nextUrl.searchParams);
+  const data = await buildFriendsHubPayload(user!.id, cursor, limit);
   return jsonOk({
-    friends,
-    requests,
-    me: {
-      goldCoins: me?.goldCoins ?? 0,
-      badge: getBadgeForCoins(me?.goldCoins ?? 0),
-    },
+    friends: data.friends,
+    requests: data.requests,
+    me: data.me,
+    page: data.page,
   });
 }
 
 export async function POST(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
+
+  const rl = await checkRateLimit(`rl:friends-post:${user!.id}`, 30, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many requests. Please slow down.', 429);
+  }
 
   try {
     const body = postSchema.parse(await req.json());
@@ -133,6 +98,11 @@ export async function PATCH(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
 
+  const rl = await checkRateLimit(`rl:friends-patch:${user!.id}`, 60, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many requests. Please slow down.', 429);
+  }
+
   try {
     const body = patchSchema.parse(await req.json());
     const friendship = await prisma.friendship.findUnique({ where: { id: body.friendshipId } });
@@ -177,7 +147,8 @@ export async function PATCH(req: NextRequest) {
     }
 
     return jsonError('Unknown action', 400);
-  } catch {
+  } catch (e) {
+    console.error('[friends]', e);
     return jsonError('Failed to update connection', 500);
   }
 }

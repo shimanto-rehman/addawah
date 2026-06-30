@@ -5,6 +5,8 @@ import { verifyPassword } from '@/lib/password';
 import { createSession } from '@/lib/auth';
 import { jsonError, jsonOk } from '@/lib/api-helpers';
 import { normalizeMobile } from '@/lib/phone-countries';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/get-client-ip';
 
 const schema = z.object({
   password: z.string().min(1).max(100),
@@ -15,6 +17,11 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const rl = await checkRateLimit(`rl:login:${getClientIp(req)}`, 5, 60);
+  if (!rl.allowed) {
+    return jsonError('Too many attempts. Please try again later.', 429);
+  }
+
   try {
     const body = schema.parse(await req.json());
 

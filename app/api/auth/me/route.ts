@@ -1,11 +1,11 @@
 import { getSessionUser } from '@/lib/auth';
 import { jsonOk } from '@/lib/api-helpers';
-import { maybeSyncNotificationsForUser } from '@/lib/notifications';
+import { triggerSync } from '@/lib/internal-sync';
 
 export async function GET() {
   const user = await getSessionUser();
   if (user) {
-    void maybeSyncNotificationsForUser(user.id);
+    triggerSync('sync-notifications', user.id);
   }
   return jsonOk({ user });
 }

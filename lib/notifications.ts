@@ -259,16 +259,18 @@ async function syncPokeNotifications(userId: string) {
     take: 20,
   });
 
-  for (const poke of unreadPokes) {
-    await notifyDawahPoke({
-      id: poke.id,
-      fromUserId: poke.fromUserId,
-      toUserId: poke.toUserId,
-      prayer: poke.prayer,
-      fromName: poke.fromUser.name,
-      createdAt: poke.createdAt,
-    });
-  }
+  await Promise.all(
+    unreadPokes.map((poke) =>
+      notifyDawahPoke({
+        id: poke.id,
+        fromUserId: poke.fromUserId,
+        toUserId: poke.toUserId,
+        prayer: poke.prayer,
+        fromName: poke.fromUser.name,
+        createdAt: poke.createdAt,
+      }),
+    ),
+  );
 }
 
 async function syncConnectionRequestNotifications(userId: string) {
@@ -279,15 +281,17 @@ async function syncConnectionRequestNotifications(userId: string) {
     take: 20,
   });
 
-  for (const friendship of incoming) {
-    await notifyConnectionRequest({
-      id: friendship.id,
-      userId: friendship.userId,
-      friendId: friendship.friendId,
-      fromName: friendship.user.name,
-      createdAt: friendship.createdAt,
-    });
-  }
+  await Promise.all(
+    incoming.map((friendship) =>
+      notifyConnectionRequest({
+        id: friendship.id,
+        userId: friendship.userId,
+        friendId: friendship.friendId,
+        fromName: friendship.user.name,
+        createdAt: friendship.createdAt,
+      }),
+    ),
+  );
 }
 
 async function syncWaktReminderNotification(userId: string) {

@@ -1,17 +1,16 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { createHash } from 'crypto';
 import { prisma } from './prisma';
+import { kvGetJson, kvSetJson, kvDel } from './kv';
 
 const COOKIE_NAME = 'addawah-session';
 const SESSION_DAYS = 30;
-const SESSION_CACHE_MS = 30_000;
+const SESSION_CACHE_TTL_S = 30;
 
-type CachedSession = {
-  user: SessionUser;
-  cachedAt: number;
-};
-
-const sessionCache = new Map<string, CachedSession>();
+function tokenHash(token: string): string {
+  return createHash('sha256').update(token).digest('hex').slice(0, 32);
+}
 
 function getSecret() {
   const secret = process.env.AUTH_SECRET;
@@ -32,6 +31,12 @@ export type SessionUser = {
   city: string | null;
   country: string;
 };
+
+function asSessionUser(value: unknown): SessionUser | null {
+  if (!value || typeof value !== 'object') return null;
+  const id = (value as SessionUser).id;
+  return typeof id === 'string' && id.length > 0 ? (value as SessionUser) : null;
+}
 
 export async function createSession(userId: string) {
   const expiresAt = new Date();
@@ -61,7 +66,7 @@ export async function createSession(userId: string) {
 export async function destroySession() {
   const token = cookies().get(COOKIE_NAME)?.value;
   if (token) {
-    sessionCache.delete(token);
+    await kvDel(`session:${tokenHash(token)}`).catch(() => {});
     await prisma.session.deleteMany({ where: { token } }).catch(() => {});
   }
   cookies().set(COOKIE_NAME, '', { httpOnly: true, expires: new Date(0), path: '/' });
@@ -71,10 +76,12 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const token = cookies().get(COOKIE_NAME)?.value;
   if (!token) return null;
 
-  const cached = sessionCache.get(token);
-  if (cached && Date.now() - cached.cachedAt < SESSION_CACHE_MS) {
-    return cached.user;
-  }
+  // L1: Check Redis cache (shared across serverless instances)
+  const cacheKey = `session:${tokenHash(token)}`;
+  const cached = await kvGetJson<SessionUser>(cacheKey);
+  const cachedUser = asSessionUser(cached);
+  if (cachedUser) return cachedUser;
+  if (cached) await kvDel(cacheKey).catch(() => {});
 
   try {
     const { payload } = await jwtVerify(token, getSecret());
@@ -103,13 +110,20 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       },
     });
 
-    if (!session || session.expiresAt < new Date()) {
+    if (!session || session.expiresAt < new Date() || !session.user) {
       await destroySession();
       return null;
     }
 
-    sessionCache.set(token, { user: session.user, cachedAt: Date.now() });
-    return session.user;
+    const user = asSessionUser(session.user);
+    if (!user) {
+      await destroySession();
+      return null;
+    }
+
+    // Cache in Redis for 30 seconds
+    await kvSetJson(cacheKey, user, SESSION_CACHE_TTL_S);
+    return user;
   } catch {
     return null;
   }
