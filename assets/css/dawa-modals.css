@@ -14,9 +14,29 @@
   overflow-y: auto;
   margin: auto;
   padding: clamp(20px, 4vw, 28px);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius);
   border: 1px solid var(--border-soft);
+  background: var(--bg-soft);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  isolation: isolate;
+}
+[data-theme='light'] .dawa-modal {
+  background: rgba(15, 23, 42, 0.18);
+}
+[data-theme='light'] .dawa-modal__panel {
+  background: var(--surface-2);
+  border-color: var(--border);
+  box-shadow: var(--popover-shadow);
+}
+[data-theme='light'] .dawa-modal__panel .dawa-btn--outline {
+  background: var(--bg-soft);
+  color: var(--text);
+  border-color: var(--border);
+}
+[data-theme='light'] .dawa-modal__panel .dawa-btn--outline:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-dim);
+  background: color-mix(in srgb, var(--accent-soft) 65%, #fff);
 }
 .dawa-modal__title {
   margin: 0 0 10px;
@@ -119,6 +139,8 @@
   text-decoration: none;
   color: inherit;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 .dawa-social__suggest-link:hover .dawa-social__suggest-name { color: var(--accent-bright); }
 .dawa-social-board__friend-link {

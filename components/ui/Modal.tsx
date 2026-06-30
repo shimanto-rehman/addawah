@@ -34,7 +34,7 @@ export function Modal({ open, onClose, children, panelClassName = '', labelledBy
   return createPortal(
     <div className="dawa-modal" role="presentation" onClick={onClose}>
       <div
-        className={`dawa-modal__panel dawa-glass${panelClassName ? ` ${panelClassName}` : ''}`}
+        className={`dawa-modal__panel${panelClassName ? ` ${panelClassName}` : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

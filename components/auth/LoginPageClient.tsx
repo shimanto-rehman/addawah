@@ -11,6 +11,7 @@ import { PasswordField } from '@/components/auth/PasswordField';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { useFieldAvailability } from '@/hooks/useFieldAvailability';
+import { useSigninAvailability } from '@/hooks/useSigninAvailability';
 import {
   isValidEmail,
   sanitizeEmail,
@@ -20,15 +21,16 @@ import {
 } from '@/lib/validation';
 
 type AuthMode = 'signin' | 'register';
-type SignInMethod = 'email' | 'mobile';
+type SignInMethod = 'identifier' | 'mobile';
 
 export function LoginPageClient() {
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<AuthMode>('signin');
-  const [signInMethod, setSignInMethod] = useState<SignInMethod>('email');
+  const [signInMethod, setSignInMethod] = useState<SignInMethod>('identifier');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -59,7 +61,18 @@ export function LoginPageClient() {
   );
   const mobileAvailability = useFieldAvailability('mobile', mobile, mobileFormatValid);
 
-  const signInEmailValid = mode === 'signin' && signInMethod === 'email' && emailFormatValid;
+  // Sign-in identifier availability (green tick when account exists)
+  const signinAvailability = useSigninAvailability(identifier);
+
+  // Identifier type hint
+  const identifierIsEmail = identifier.includes('@');
+  const identifierTypeHint = identifier.trim().length === 0
+    ? undefined
+    : identifierIsEmail
+      ? 'Logging in as email'
+      : identifier.trim().length >= 3
+        ? 'Logging in as username'
+        : undefined;
 
   const passwordValid = password.length >= 6;
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
@@ -101,14 +114,14 @@ export function LoginPageClient() {
     let payload: Record<string, string>;
 
     if (mode === 'signin') {
-      if (signInMethod === 'email') {
-        const emailVal = sanitizeEmail(String(fd.get('email') ?? email));
-        if (!isValidEmail(emailVal)) {
+      if (signInMethod === 'identifier') {
+        const identifierVal = String(fd.get('identifier') ?? identifier).trim();
+        if (!identifierVal) {
           setLoading(false);
-          setError('Enter a valid email address');
+          setError('Enter your email or username');
           return;
         }
-        payload = { email: emailVal, password: passwordVal };
+        payload = { identifier: identifierVal, password: passwordVal };
       } else {
         const mobileVal = String(fd.get('mobile') ?? mobile);
         if (!mobileVal) {
@@ -200,7 +213,7 @@ export function LoginPageClient() {
           <AuthFrame>
             <h1 className="dawa-auth__title">{mode === 'signin' ? 'Welcome back' : 'Create account'}</h1>
             <p className="dawa-auth__sub">
-              {mode === 'signin' ? 'Sign in with your email or mobile number.' : 'Join Addawah — free, forever.'}
+              {mode === 'signin' ? 'Sign in with your email, username, or mobile number.' : 'Join Addawah — free, forever.'}
             </p>
 
             <div className="dawa-auth__tabs" role="tablist" aria-label="Authentication mode">
@@ -261,10 +274,10 @@ export function LoginPageClient() {
                 <div className="dawa-auth__method">
                   <button
                     type="button"
-                    className={`dawa-auth__method-btn${signInMethod === 'email' ? ' is-active' : ''}`}
-                    onClick={() => setSignInMethod('email')}
+                    className={`dawa-auth__method-btn${signInMethod === 'identifier' ? ' is-active' : ''}`}
+                    onClick={() => setSignInMethod('identifier')}
                   >
-                    Email
+                    Email or Username
                   </button>
                   <button
                     type="button"
@@ -276,7 +289,7 @@ export function LoginPageClient() {
                 </div>
               )}
 
-              {(mode === 'register' || signInMethod === 'email') && (
+              {mode === 'register' && (
                 <ValidatedField
                   id="email"
                   name="email"
@@ -286,11 +299,28 @@ export function LoginPageClient() {
                   onChange={setEmail}
                   placeholder="you@example.com"
                   autoComplete="email"
-                  required={mode === 'register' || signInMethod === 'email'}
+                  required
                   sanitize={sanitizeEmail}
-                  showTick={mode === 'register' ? emailAvailability.showTick : signInEmailValid}
+                  showTick={emailAvailability.showTick}
                   hint={emailHint()}
                   hintVariant={emailHintVariant()}
+                />
+              )}
+
+              {mode === 'signin' && signInMethod === 'identifier' && (
+                <ValidatedField
+                  id="identifier"
+                  name="identifier"
+                  label="Email or Username"
+                  value={identifier}
+                  onChange={setIdentifier}
+                  placeholder="you@example.com or yourname"
+                  autoComplete="username"
+                  required
+                  showTick={signinAvailability.showTick}
+                  showCross={signinAvailability.showCross}
+                  hint={signinAvailability.hint || (signinAvailability.status === 'checking' ? 'Checking…' : identifierTypeHint)}
+                  hintVariant={signinAvailability.hintVariant}
                 />
               )}
 

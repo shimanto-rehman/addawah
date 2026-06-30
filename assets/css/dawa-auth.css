@@ -390,6 +390,20 @@
   align-items: center;
   pointer-events: none;
 }
+.dawa-validated-field__cross {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.dawa-validated-field__wrap .dawa-input.is-invalid {
+  padding-right: 42px;
+  border-color: var(--danger);
+}
 .dawa-validated-field__hint {
   margin: 6px 0 0;
   font-size: 12px;
