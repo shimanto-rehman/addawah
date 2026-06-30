@@ -12,7 +12,7 @@ import {
 } from './salah-utils';
 import { PRAYERS, PRAYER_LABELS, type PrayerName } from './constants';
 import { cappedLifetimeRecordStart, SALAH_RECORD_STATS_SELECT } from './salah-query';
-import { kvGetJson, kvSetJson } from './kv';
+import { kvDel, kvGetJson, kvSetJson } from './kv';
 
 const STATS_CACHE_TTL_SECONDS = 60;
 
@@ -34,11 +34,19 @@ export type StatsPayload = {
   loggedCompleted: number;
 };
 
+function isStatsPayload(value: unknown): value is StatsPayload {
+  return (
+    Boolean(value) &&
+    typeof value === 'object' &&
+    typeof (value as StatsPayload).lifetimeRate === 'number'
+  );
+}
+
 export async function buildStatsPayload(userId: string): Promise<StatsPayload> {
-  // Check Redis cache first
   const cacheKey = `stats:${userId}`;
   const cached = await kvGetJson<StatsPayload>(cacheKey);
-  if (cached) return cached;
+  if (isStatsPayload(cached)) return cached;
+  if (cached) await kvDel(cacheKey).catch(() => {});
 
   const today = startOfDay(new Date());
   const weekStart = startOfWeek(today);

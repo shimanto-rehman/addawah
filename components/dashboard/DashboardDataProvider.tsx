@@ -4,8 +4,8 @@ import { createContext, useContext, type ReactNode } from 'react';
 import useSWR, { type KeyedMutator } from 'swr';
 import type { DashboardPayload } from '@/lib/dashboard-data';
 import { DASHBOARD_KEY } from '@/lib/swr-revalidate';
-
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+import { swrFetcher } from '@/lib/swr-fetcher';
+import { useApp } from '@/components/providers/AppProvider';
 
 export { DASHBOARD_KEY };
 
@@ -24,7 +24,12 @@ const swrOpts = {
 };
 
 export function DashboardDataProvider({ children }: { children: ReactNode }) {
-  const { data, isLoading, mutate } = useSWR<DashboardPayload>(DASHBOARD_KEY, fetcher, swrOpts);
+  const { user, loading } = useApp();
+  const { data, isLoading, mutate } = useSWR<DashboardPayload>(
+    user && !loading ? DASHBOARD_KEY : null,
+    swrFetcher,
+    swrOpts,
+  );
 
   return (
     <DashboardDataContext.Provider value={{ data, isLoading, mutate }}>

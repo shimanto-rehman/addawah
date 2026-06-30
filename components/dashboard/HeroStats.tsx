@@ -3,9 +3,8 @@
 import useSWR from 'swr';
 import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import { STATS_KEY } from '@/lib/swr-revalidate';
+import { swrFetcher } from '@/lib/swr-fetcher';
 import type { StatsPayload } from '@/lib/stats-data';
-
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const BEADS = 33;
 
@@ -16,15 +15,21 @@ function fmt(n: number | undefined) {
 }
 
 export function HeroStats() {
-  const dashboard = useDashboardData();
-  const useRemote = !dashboard;
-  const { data: remote } = useSWR<Stats>(useRemote ? STATS_KEY : null, fetcher, {
-    refreshInterval: 60_000,
-    revalidateOnFocus: false,
-    revalidateIfStale: true,
-  });
+  const ctx = useDashboardData();
+  const hubStats = ctx?.data?.stats;
+  const shouldFetchStats = ctx === null || (!hubStats && !ctx.isLoading);
 
-  const data = dashboard?.data?.stats ?? remote;
+  const { data: remote } = useSWR<Stats>(
+    shouldFetchStats ? STATS_KEY : null,
+    swrFetcher,
+    {
+      refreshInterval: 60_000,
+      revalidateOnFocus: false,
+      revalidateIfStale: true,
+    },
+  );
+
+  const data = hubStats ?? remote;
 
   const weekPct = data ? Math.round((data.weekCompleted / data.weekTotal) * 100) : 0;
   const expected = data?.lifetimeExpected ?? 0;
