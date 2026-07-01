@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { decodeJwt } from 'jose';
 
-const protectedPaths = ['/dashboard', '/friends', '/analytics', '/settings', '/profile', '/notifications', '/u'];
+const protectedPaths = ['/dashboard', '/friends', '/analytics', '/settings', '/profile', '/notifications', '/u', '/ruhaniah'];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -42,5 +42,6 @@ export const config = {
     '/profile/:path*',
     '/notifications/:path*',
     '/u/:path*',
+    '/ruhaniah/:path*',
   ],
 };

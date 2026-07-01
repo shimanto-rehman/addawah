@@ -38,6 +38,12 @@ model User {
   notifications Notification[]
   waktSnapshot UserWaktSnapshot?
   salahDayStats UserSalahDayStat[]
+  taqwaPulses   TaqwaPulse[]
+  fahmResponses FahmResponse[]
+  fahmProfile   UserFahmProfile?
+  barakahLogs   BarakahLog[]
+  duaEntries    DuaEntry[]
+  ruhaniahVerses RuhaniahVerse[]
 }
 
 model PasswordResetOtp {
@@ -223,5 +229,104 @@ model UserSalahDayStat {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, date])
+  @@index([userId, date])
+}
+
+// ─── Ruhaniah — The Inner Deen Suite ───
+
+model TaqwaPulse {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  score     Int      // 1-5
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model FahmQuestion {
+  id        String   @id @default(cuid())
+  category  String   // QADR, TRUTH, DAWAH, NAFS, AKHIRAH, SABR_SHUKR, ILM, SOCIAL
+  text      String
+  options   Json     // [{text, weight}]
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([category, active])
+}
+
+model FahmResponse {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @db.Date
+  questionId  String   // References static JSON — no FK to FahmQuestion
+  answerIndex Int
+  weight      Int      // QAS weight (1-4)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date, questionId])
+  @@index([userId, date])
+  @@index([userId, createdAt])
+}
+
+model UserFahmProfile {
+  userId         String   @id
+  totalQuestions Int      @default(0)
+  categoryScores Json     @default("{}") // { QADR: 3.2, TRUTH: 2.8, ... }
+  overallQAS     Float    @default(0)
+  strongest      String?
+  weakest        String?
+  trend          String   @default("NEW") // IMPROVING, STABLE, DECLINING, NEW
+  updatedAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BarakahLog {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @db.Date
+  timeScore   Int      // 1-5
+  rizqScore   Int      // 1-5
+  healthScore Int      // 1-5
+  heartScore  Int      // 1-5
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model DuaEntry {
+  id           String    @id @default(cuid())
+  userId       String
+  text         String
+  category     String    // RIZQ, HEALTH, RELATIONSHIPS, GUIDANCE, FORGIVENESS, JANNAH, DUNYA, CUSTOM
+  status       String    @default("WAITING") // ANSWERED_SAME, ANSWERED_DIFFERENT, WAITING, STORED_AKHIRAH
+  context      String?
+  dateStarted  DateTime  @db.Date
+  dateResolved DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+}
+
+model RuhaniahVerse {
+  id             String   @id @default(cuid())
+  userId         String
+  date           DateTime @db.Date
+  ayahRef        String   // e.g., "65:2-3"
+  reflectionText String
+  dawahText      String
+  signals        Json     // snapshot of all input signals
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
   @@index([userId, date])
 }

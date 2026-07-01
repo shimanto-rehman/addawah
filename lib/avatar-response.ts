@@ -39,23 +39,27 @@ export async function avatarResponseForUrl(avatarUrl: string | null | undefined)
 
   if (isBlobAvatar(avatarUrl)) {
     const access = avatarUrl.includes('.private.blob.vercel-storage.com') ? 'private' : 'public';
-    const result = await get(blobUrlWithoutQuery(avatarUrl), {
-      access,
-      ...(process.env.BLOB_READ_WRITE_TOKEN
-        ? { token: process.env.BLOB_READ_WRITE_TOKEN }
-        : {}),
-    });
+    try {
+      const result = await get(blobUrlWithoutQuery(avatarUrl), {
+        access,
+        ...(process.env.BLOB_READ_WRITE_TOKEN
+          ? { token: process.env.BLOB_READ_WRITE_TOKEN }
+          : {}),
+      });
 
-    if (!result || result.statusCode !== 200 || !result.stream) {
-      return jsonError('Avatar not found', 404);
+      if (!result || result.statusCode !== 200 || !result.stream) {
+        return jsonError('Avatar not found', 404);
+      }
+
+      return new Response(result.stream, {
+        headers: {
+          'Content-Type': result.blob.contentType ?? 'image/jpeg',
+          'Cache-Control': 'private, max-age=60',
+        },
+      });
+    } catch {
+      return jsonError('Avatar temporarily unavailable', 503);
     }
-
-    return new Response(result.stream, {
-      headers: {
-        'Content-Type': result.blob.contentType ?? 'image/jpeg',
-        'Cache-Control': 'private, max-age=60',
-      },
-    });
   }
 
   return Response.redirect(avatarUrl, 302);

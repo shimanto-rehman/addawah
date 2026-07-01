@@ -6,6 +6,9 @@ export const ANALYTICS_KEY = '/api/analytics';
 export const ANALYTICS_SUMMARY_KEY = '/api/analytics/summary';
 export const INSIGHTS_KEY = '/api/insights';
 export const MOOD_KEY = '/api/mood';
+export const RUHANIAH_KEY = '/api/ruhaniah';
+export const RUHANIAH_HISTORY_KEY = '/api/ruhaniah/history';
+export const RUHANIAH_DUAS_KEY = '/api/ruhaniah/duas';
 
 /** Refresh dashboard metrics after salah changes. */
 export async function revalidateDashboardMetrics() {
@@ -25,5 +28,14 @@ export async function revalidateMoodAnalytics() {
     mutate(DASHBOARD_KEY),
     mutate(ANALYTICS_KEY),
     mutate(ANALYTICS_SUMMARY_KEY),
+  ]);
+}
+
+/** Refresh Ruhaniah data after nightly submission. */
+export async function revalidateRuhaniah() {
+  await Promise.all([
+    mutate(RUHANIAH_KEY),
+    mutate(RUHANIAH_HISTORY_KEY),
+    mutate(RUHANIAH_DUAS_KEY),
   ]);
 }

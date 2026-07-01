@@ -1,0 +1,7362 @@
+[
+  {
+    "id": "Q1",
+    "category": "QADR",
+    "text": "You apply for a job you desperately need and get rejected. Your first internal reaction is",
+    "options": [
+      {
+        "text": "Allah has something better written for me.",
+        "weight": 4
+      },
+      {
+        "text": "I need to improve my CV and try harder.",
+        "weight": 2
+      },
+      {
+        "text": "The system is rigged against people like me.",
+        "weight": 1
+      },
+      {
+        "text": "Maybe I wasn't qualified enough.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q2",
+    "category": "QADR",
+    "text": "A close friend suddenly cuts ties with you without explanation. You think",
+    "options": [
+      {
+        "text": "If it's meant to be, Allah will bring them back.",
+        "weight": 4
+      },
+      {
+        "text": "I must have done something wrong.",
+        "weight": 2
+      },
+      {
+        "text": "People are just unreliable.",
+        "weight": 1
+      },
+      {
+        "text": "I should reach out once, then leave it to Allah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q3",
+    "category": "QADR",
+    "text": "You find out someone you trusted was talking behind your back. You think",
+    "options": [
+      {
+        "text": "Allah is showing me their true colors — good.",
+        "weight": 4
+      },
+      {
+        "text": "I need to confront them immediately.",
+        "weight": 2
+      },
+      {
+        "text": "I'll never trust anyone again.",
+        "weight": 1
+      },
+      {
+        "text": "It hurts, but I'll distance myself quietly.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q4",
+    "category": "QADR",
+    "text": "You get sick right before an important event. You feel",
+    "options": [
+      {
+        "text": "Allah is protecting me from something I can't see.",
+        "weight": 4
+      },
+      {
+        "text": "My body is failing me at the worst time.",
+        "weight": 1
+      },
+      {
+        "text": "I should have taken better care of myself.",
+        "weight": 2
+      },
+      {
+        "text": "This is just bad luck.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q5",
+    "category": "QADR",
+    "text": "You see someone who wronged you thriving and successful. You think",
+    "options": [
+      {
+        "text": "Their account is with Allah — I focus on mine.",
+        "weight": 4
+      },
+      {
+        "text": "Life is unfair.",
+        "weight": 1
+      },
+      {
+        "text": "Maybe I'm doing something wrong if they're succeeding.",
+        "weight": 2
+      },
+      {
+        "text": "Good for them — their success doesn't affect my path.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q6",
+    "category": "QADR",
+    "text": "Your flight gets cancelled and you miss a once-in-a-lifetime event. You think",
+    "options": [
+      {
+        "text": "Allah's plan is better than mine, even when I can't see it.",
+        "weight": 4
+      },
+      {
+        "text": "I should have booked a different airline.",
+        "weight": 2
+      },
+      {
+        "text": "This always happens to me.",
+        "weight": 1
+      },
+      {
+        "text": "I'm frustrated but I'll try to rebook.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q7",
+    "category": "QADR",
+    "text": "You pray istikhara for a decision and still feel confused. You",
+    "options": [
+      {
+        "text": "Trust that Allah will guide you through the unfolding of events.",
+        "weight": 4
+      },
+      {
+        "text": "Think you didn't pray it correctly.",
+        "weight": 2
+      },
+      {
+        "text": "Feel frustrated that Allah didn't give you a clear sign.",
+        "weight": 1
+      },
+      {
+        "text": "Ask more people for advice to compensate.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q8",
+    "category": "QADR",
+    "text": "A natural disaster hits a Muslim community. You think",
+    "options": [
+      {
+        "text": "Allah tests those He loves — there's wisdom even in this.",
+        "weight": 4
+      },
+      {
+        "text": "Where was Allah when this happened?",
+        "weight": 1
+      },
+      {
+        "text": "I should donate and make dua for them.",
+        "weight": 3
+      },
+      {
+        "text": "Nature is cruel and random.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q9",
+    "category": "QADR",
+    "text": "You lose money in a bad investment. Your reaction is",
+    "options": [
+      {
+        "text": "Allah gives and takes — this was a test of my patience.",
+        "weight": 4
+      },
+      {
+        "text": "I should have been smarter with my money.",
+        "weight": 2
+      },
+      {
+        "text": "I'm cursed with bad luck.",
+        "weight": 1
+      },
+      {
+        "text": "Lesson learned — I'll be more careful next time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q10",
+    "category": "QADR",
+    "text": "You see a child suffering from illness. You think",
+    "options": [
+      {
+        "text": "This child's rank in Jannah is being elevated through this.",
+        "weight": 4
+      },
+      {
+        "text": "How can a loving God allow this?",
+        "weight": 1
+      },
+      {
+        "text": "I should help if I can and make dua.",
+        "weight": 3
+      },
+      {
+        "text": "Life is just cruel to some people.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q11",
+    "category": "QADR",
+    "text": "You work hard for something and achieve it. You think",
+    "options": [
+      {
+        "text": "Alhamdulillah — Allah made it easy through my effort.",
+        "weight": 4
+      },
+      {
+        "text": "I earned this through my own hard work.",
+        "weight": 2
+      },
+      {
+        "text": "Finally, luck is on my side.",
+        "weight": 1
+      },
+      {
+        "text": "I deserved this — I put in the time.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q12",
+    "category": "QADR",
+    "text": "You're stuck in traffic and late for Jummah. You feel",
+    "options": [
+      {
+        "text": "Allah is the best of planners — I'll catch what I can.",
+        "weight": 4
+      },
+      {
+        "text": "This city's infrastructure is terrible.",
+        "weight": 1
+      },
+      {
+        "text": "I should have left earlier.",
+        "weight": 3
+      },
+      {
+        "text": "Everything is against me today.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q13",
+    "category": "QADR",
+    "text": "Someone gets the promotion you worked years for. You think",
+    "options": [
+      {
+        "text": "Allah's provision for me is written — this wasn't mine.",
+        "weight": 4
+      },
+      {
+        "text": "Office politics beat merit again.",
+        "weight": 1
+      },
+      {
+        "text": "Maybe I need to network better.",
+        "weight": 2
+      },
+      {
+        "text": "I'm happy for them — Allah has my rizq covered.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q14",
+    "category": "QADR",
+    "text": "You make a dua for months and it seems unanswered. You feel",
+    "options": [
+      {
+        "text": "Allah is storing it for me in the Akhirah — I win either way.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe Allah doesn't listen to me.",
+        "weight": 1
+      },
+      {
+        "text": "I should make more dua and be patient.",
+        "weight": 3
+      },
+      {
+        "text": "I guess it's not going to happen.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q15",
+    "category": "QADR",
+    "text": "You're born into poverty while others are born rich. You think",
+    "options": [
+      {
+        "text": "Allah distributed rizq with wisdom — my test is different from theirs.",
+        "weight": 4
+      },
+      {
+        "text": "Life is fundamentally unfair.",
+        "weight": 1
+      },
+      {
+        "text": "I need to work harder to change my situation.",
+        "weight": 2
+      },
+      {
+        "text": "I accept my situation but strive for better.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q16",
+    "category": "QADR",
+    "text": "Your car breaks down in the middle of nowhere. You think",
+    "options": [
+      {
+        "text": "Maybe Allah delayed me for a reason — perhaps to protect me.",
+        "weight": 4
+      },
+      {
+        "text": "I should have gotten the car serviced.",
+        "weight": 2
+      },
+      {
+        "text": "Why does this always happen to me?",
+        "weight": 1
+      },
+      {
+        "text": "I'll call for help and deal with it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q17",
+    "category": "QADR",
+    "text": "You see someone sinning openly and living comfortably. You think",
+    "options": [
+      {
+        "text": "Allah gives them dunya — their test is different from mine.",
+        "weight": 4
+      },
+      {
+        "text": "Why do I struggle when they don't?",
+        "weight": 1
+      },
+      {
+        "text": "Their comfort is temporary — the real account is later.",
+        "weight": 3
+      },
+      {
+        "text": "Maybe sinning doesn't actually matter.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q18",
+    "category": "QADR",
+    "text": "You're tested with repeated failures in something. You think",
+    "options": [
+      {
+        "text": "Allah is either redirecting me or building me through this.",
+        "weight": 4
+      },
+      {
+        "text": "I'm not good enough.",
+        "weight": 2
+      },
+      {
+        "text": "The universe is working against me.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try a different approach.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q19",
+    "category": "QADR",
+    "text": "A loved one passes away suddenly. Your first thought is",
+    "options": [
+      {
+        "text": "To Allah we belong and to Him we return — He gives and takes with wisdom.",
+        "weight": 4
+      },
+      {
+        "text": "Life is meaningless without them.",
+        "weight": 1
+      },
+      {
+        "text": "I should have spent more time with them.",
+        "weight": 3
+      },
+      {
+        "text": "Why did this have to happen?",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q20",
+    "category": "QADR",
+    "text": "You accidentally harm someone. You think",
+    "options": [
+      {
+        "text": "I'll seek their forgiveness and Allah's — nothing happens outside His will.",
+        "weight": 4
+      },
+      {
+        "text": "I'm a terrible person.",
+        "weight": 2
+      },
+      {
+        "text": "It was an accident — not my fault.",
+        "weight": 1
+      },
+      {
+        "text": "I need to make it right immediately.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q21",
+    "category": "QADR",
+    "text": "You're given a gift you didn't earn. You feel",
+    "options": [
+      {
+        "text": "Allah's rizq comes in unexpected ways — Alhamdulillah.",
+        "weight": 4
+      },
+      {
+        "text": "I don't deserve this.",
+        "weight": 2
+      },
+      {
+        "text": "Nice, free stuff.",
+        "weight": 1
+      },
+      {
+        "text": "I'm grateful — I'll pay it forward.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q22",
+    "category": "QADR",
+    "text": "Your child gets bad grades despite studying hard. You think",
+    "options": [
+      {
+        "text": "Allah has a different path written for my child.",
+        "weight": 4
+      },
+      {
+        "text": "The education system failed my child.",
+        "weight": 1
+      },
+      {
+        "text": "Maybe they need a tutor.",
+        "weight": 2
+      },
+      {
+        "text": "Grades aren't everything — I'll support them either way.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q23",
+    "category": "QADR",
+    "text": "You're betrayed by a business partner. You think",
+    "options": [
+      {
+        "text": "Allah is the best of planners — this loss might be a protection.",
+        "weight": 4
+      },
+      {
+        "text": "I'll get revenge.",
+        "weight": 1
+      },
+      {
+        "text": "I should have been more careful.",
+        "weight": 2
+      },
+      {
+        "text": "I'll seek legal recourse and leave the rest to Allah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q24",
+    "category": "QADR",
+    "text": "You move to a new country and struggle to fit in. You think",
+    "options": [
+      {
+        "text": "Allah placed me here for a reason — I'll find my purpose.",
+        "weight": 4
+      },
+      {
+        "text": "I should have never left home.",
+        "weight": 1
+      },
+      {
+        "text": "I need to adapt faster.",
+        "weight": 2
+      },
+      {
+        "text": "It's hard but I'll give it time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q25",
+    "category": "QADR",
+    "text": "You see corruption winning in your community. You think",
+    "options": [
+      {
+        "text": "Allah is Al-Hakam — the ultimate judge. I do my part and trust His justice.",
+        "weight": 4
+      },
+      {
+        "text": "There's no point fighting the system.",
+        "weight": 1
+      },
+      {
+        "text": "I need to be smarter about how I resist.",
+        "weight": 2
+      },
+      {
+        "text": "I'll speak the truth and leave the outcome to Allah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q26",
+    "category": "QADR",
+    "text": "You're tested with sudden wealth. You think",
+    "options": [
+      {
+        "text": "This is from Allah — I must be grateful and use it wisely.",
+        "weight": 4
+      },
+      {
+        "text": "I finally got what I deserve.",
+        "weight": 2
+      },
+      {
+        "text": "Time to enjoy life.",
+        "weight": 1
+      },
+      {
+        "text": "I should invest and save carefully.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q27",
+    "category": "QADR",
+    "text": "You witness someone being oppressed. You think",
+    "options": [
+      {
+        "text": "Allah sees everything — the oppressor will be held accountable.",
+        "weight": 4
+      },
+      {
+        "text": "Not my problem.",
+        "weight": 1
+      },
+      {
+        "text": "I should help if I can.",
+        "weight": 3
+      },
+      {
+        "text": "The world is just cruel.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q28",
+    "category": "QADR",
+    "text": "You don't get the result you expected from years of effort. You think",
+    "options": [
+      {
+        "text": "Allah's timing is perfect — maybe I needed this delay.",
+        "weight": 4
+      },
+      {
+        "text": "All that effort was wasted.",
+        "weight": 1
+      },
+      {
+        "text": "I need to try harder or try differently.",
+        "weight": 2
+      },
+      {
+        "text": "I'm disappointed but I trust there's a reason.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q29",
+    "category": "QADR",
+    "text": "You are tested with fame or recognition. You think",
+    "options": [
+      {
+        "text": "This is from Allah — I must stay humble and use it for good.",
+        "weight": 4
+      },
+      {
+        "text": "I worked hard for this — I deserve it.",
+        "weight": 2
+      },
+      {
+        "text": "Finally people recognize my worth.",
+        "weight": 1
+      },
+      {
+        "text": "I'll stay grounded and remember it can vanish.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q30",
+    "category": "QADR",
+    "text": "You're stuck in a situation you can't change. You feel",
+    "options": [
+      {
+        "text": "Allah is teaching me something through this patience.",
+        "weight": 4
+      },
+      {
+        "text": "I'm trapped and helpless.",
+        "weight": 1
+      },
+      {
+        "text": "I need to find a way out.",
+        "weight": 2
+      },
+      {
+        "text": "I'll endure and look for the lesson.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q31",
+    "category": "QADR",
+    "text": "You see someone living the exact life you wished for. You think",
+    "options": [
+      {
+        "text": "Allah wrote different paths for us — mine has its own beauty.",
+        "weight": 4
+      },
+      {
+        "text": "Why not me?",
+        "weight": 1
+      },
+      {
+        "text": "I should work harder to get there.",
+        "weight": 2
+      },
+      {
+        "text": "I'm happy for them — I focus on my own journey.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q32",
+    "category": "QADR",
+    "text": "You face the same trial repeatedly. You think",
+    "options": [
+      {
+        "text": "Allah keeps sending this test because I haven't learned the lesson yet.",
+        "weight": 4
+      },
+      {
+        "text": "I'm stuck in a cycle of bad luck.",
+        "weight": 1
+      },
+      {
+        "text": "I need to change my approach.",
+        "weight": 2
+      },
+      {
+        "text": "Maybe the test is in how I respond, not the trial itself.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q33",
+    "category": "QADR",
+    "text": "Your dua is answered immediately. You feel",
+    "options": [
+      {
+        "text": "Allah loves to answer — I should make more dua.",
+        "weight": 4
+      },
+      {
+        "text": "I got lucky this time.",
+        "weight": 1
+      },
+      {
+        "text": "It was bound to happen eventually.",
+        "weight": 2
+      },
+      {
+        "text": "Alhamdulillah — I need to be worthy of this blessing.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q34",
+    "category": "QADR",
+    "text": "You're given responsibility you didn't ask for. You think",
+    "options": [
+      {
+        "text": "Allah put this on me — He must see something in me I don't.",
+        "weight": 4
+      },
+      {
+        "text": "This is too much for me.",
+        "weight": 2
+      },
+      {
+        "text": "Someone else should do this.",
+        "weight": 1
+      },
+      {
+        "text": "I'll do my best and rely on Allah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q35",
+    "category": "QADR",
+    "text": "You see people your age who seem to have figured life out. You think",
+    "options": [
+      {
+        "text": "Allah's plan for me is different — comparison is from Shaytan.",
+        "weight": 4
+      },
+      {
+        "text": "I'm falling behind.",
+        "weight": 2
+      },
+      {
+        "text": "They're probably faking it.",
+        "weight": 1
+      },
+      {
+        "text": "Everyone has their own timeline.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q36",
+    "category": "QADR",
+    "text": "You face financial hardship during Ramadan. You think",
+    "options": [
+      {
+        "text": "Allah is testing my trust in Him during the most blessed month.",
+        "weight": 4
+      },
+      {
+        "text": "Ramadan is supposed to be a happy time — this is unfair.",
+        "weight": 1
+      },
+      {
+        "text": "I need to budget better.",
+        "weight": 2
+      },
+      {
+        "text": "I'll fast with patience and trust Allah's rizq.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q37",
+    "category": "QADR",
+    "text": "You make a mistake that affects others. You think",
+    "options": [
+      {
+        "text": "Allah allowed this to happen — I'll learn and make amends.",
+        "weight": 4
+      },
+      {
+        "text": "I'm a failure.",
+        "weight": 2
+      },
+      {
+        "text": "It's not that serious.",
+        "weight": 1
+      },
+      {
+        "text": "I need to fix what I broke and ask forgiveness.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q38",
+    "category": "QADR",
+    "text": "You're tested with loneliness. You think",
+    "options": [
+      {
+        "text": "Allah is the best companion — maybe He wants me to turn to Him more.",
+        "weight": 4
+      },
+      {
+        "text": "Nobody cares about me.",
+        "weight": 1
+      },
+      {
+        "text": "I need to get out more and meet people.",
+        "weight": 2
+      },
+      {
+        "text": "This is a phase — I'll be patient.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q39",
+    "category": "QADR",
+    "text": "You see the pious struggling while the corrupt prosper. You think",
+    "options": [
+      {
+        "text": "Allah's justice is in the Akhirah — dunya is not the final destination.",
+        "weight": 4
+      },
+      {
+        "text": "Being good doesn't pay off.",
+        "weight": 1
+      },
+      {
+        "text": "The pious are being rewarded in ways I can't see.",
+        "weight": 3
+      },
+      {
+        "text": "Maybe I should be more practical and less idealistic.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q40",
+    "category": "QADR",
+    "text": "You wake up and everything seems to go wrong. You think",
+    "options": [
+      {
+        "text": "Allah is testing me today — I'll respond with patience and trust.",
+        "weight": 4
+      },
+      {
+        "text": "I knew today would be terrible.",
+        "weight": 1
+      },
+      {
+        "text": "Let me just get through it.",
+        "weight": 2
+      },
+      {
+        "text": "Bad days are part of life — tomorrow will be better inshaAllah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q41",
+    "category": "TRUTH",
+    "text": "When two scholars disagree on a matter, you believe",
+    "options": [
+      {
+        "text": "The truth is with one of them — I should study the evidence.",
+        "weight": 4
+      },
+      {
+        "text": "Both are probably right in their own way.",
+        "weight": 2
+      },
+      {
+        "text": "Scholars disagree on everything — I'll just follow my gut.",
+        "weight": 1
+      },
+      {
+        "text": "I follow whichever opinion is easier for me.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q42",
+    "category": "TRUTH",
+    "text": "A friend says \"your truth is your truth, my truth is my truth.\" You think",
+    "options": [
+      {
+        "text": "There is one absolute truth from Allah — but I'll discuss it gently.",
+        "weight": 4
+      },
+      {
+        "text": "They have a point — everyone's experience is valid.",
+        "weight": 2
+      },
+      {
+        "text": "That's modern nonsense.",
+        "weight": 1
+      },
+      {
+        "text": "I don't want to argue.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q43",
+    "category": "TRUTH",
+    "text": "You hear a hadith that contradicts your personal opinion. You",
+    "options": [
+      {
+        "text": "If it's authentic, I submit — my opinion doesn't override the Prophet ﷺ.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe there's a different interpretation that fits my view.",
+        "weight": 2
+      },
+      {
+        "text": "I'll ignore it — it doesn't feel right to me.",
+        "weight": 1
+      },
+      {
+        "text": "I'll research it further before changing my stance.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q44",
+    "category": "TRUTH",
+    "text": "You're in a debate about Islam and realize you might be wrong. You",
+    "options": [
+      {
+        "text": "I'll accept the correction — truth is more important than my ego.",
+        "weight": 4
+      },
+      {
+        "text": "I'll change the subject.",
+        "weight": 2
+      },
+      {
+        "text": "I'll double down — I can't lose face.",
+        "weight": 1
+      },
+      {
+        "text": "I'll think about it later in private.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q45",
+    "category": "TRUTH",
+    "text": "Science seems to contradict something in the Quran. You think",
+    "options": [
+      {
+        "text": "The Quran is the ultimate truth — science will eventually catch up.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe the Quran is metaphorical in that part.",
+        "weight": 2
+      },
+      {
+        "text": "Science is always right.",
+        "weight": 1
+      },
+      {
+        "text": "I should study both more deeply.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q46",
+    "category": "TRUTH",
+    "text": "You discover that something you've been doing is actually haram. You",
+    "options": [
+      {
+        "text": "I'll stop immediately — truth is truth regardless of how long I've done it.",
+        "weight": 4
+      },
+      {
+        "text": "I'll gradually phase it out.",
+        "weight": 2
+      },
+      {
+        "text": "Maybe the scholars are being too strict.",
+        "weight": 1
+      },
+      {
+        "text": "I feel guilty but I'm not sure I can stop right away.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q47",
+    "category": "TRUTH",
+    "text": "Everyone around you follows a cultural practice that has no basis in Islam. You",
+    "options": [
+      {
+        "text": "I'll follow the Quran and Sunnah even if I stand alone.",
+        "weight": 4
+      },
+      {
+        "text": "It's harmless — I'll go along with it.",
+        "weight": 2
+      },
+      {
+        "text": "Culture and religion are basically the same thing.",
+        "weight": 1
+      },
+      {
+        "text": "I'll quietly not participate without making a scene.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q48",
+    "category": "TRUTH",
+    "text": "You're asked your opinion on a controversial Islamic topic. You",
+    "options": [
+      {
+        "text": "I'll share what the Quran and Sunnah say — not my personal feelings.",
+        "weight": 4
+      },
+      {
+        "text": "I'll say what's popular so I don't cause conflict.",
+        "weight": 1
+      },
+      {
+        "text": "I'll give my honest opinion even if it's unpopular.",
+        "weight": 3
+      },
+      {
+        "text": "I'll stay quiet to avoid trouble.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q49",
+    "category": "TRUTH",
+    "text": "A popular influencer says something Islamic that sounds wrong. You",
+    "options": [
+      {
+        "text": "I'll verify with authentic sources before believing or sharing.",
+        "weight": 4
+      },
+      {
+        "text": "If they have millions of followers, they must be right.",
+        "weight": 1
+      },
+      {
+        "text": "I'll share it — it sounds good.",
+        "weight": 1
+      },
+      {
+        "text": "I'll check if trusted scholars have addressed this.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q50",
+    "category": "TRUTH",
+    "text": "You feel strongly about something but the Quran says the opposite. You",
+    "options": [
+      {
+        "text": "I submit to Allah's word — my feelings don't override revelation.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe I'm misunderstanding the verse.",
+        "weight": 3
+      },
+      {
+        "text": "Times have changed — maybe the ruling is outdated.",
+        "weight": 1
+      },
+      {
+        "text": "I'll follow the Quran but I still feel conflicted.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q51",
+    "category": "TRUTH",
+    "text": "You notice most of your friends follow Islam loosely. You think",
+    "options": [
+      {
+        "text": "I should be careful — I'm the average of the people I spend time with.",
+        "weight": 4
+      },
+      {
+        "text": "They're good people — that's enough.",
+        "weight": 2
+      },
+      {
+        "text": "Everyone's on their own journey — who am I to judge?",
+        "weight": 3
+      },
+      {
+        "text": "Moderation is better than extremism.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q52",
+    "category": "TRUTH",
+    "text": "You find out a scholar you respect holds a view you disagree with. You",
+    "options": [
+      {
+        "text": "I'll reconsider my view — maybe they know something I don't.",
+        "weight": 4
+      },
+      {
+        "text": "I'll stop following that scholar.",
+        "weight": 2
+      },
+      {
+        "text": "Scholars are humans too — they can be wrong.",
+        "weight": 3
+      },
+      {
+        "text": "I was right all along — even experts make mistakes.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q53",
+    "category": "TRUTH",
+    "text": "A non-Muslim asks you if Islam is the only true religion. You",
+    "options": [
+      {
+        "text": "Yes — with conviction and wisdom, explaining that all prophets taught the same core message.",
+        "weight": 4
+      },
+      {
+        "text": "All religions lead to God in their own way.",
+        "weight": 1
+      },
+      {
+        "text": "I believe so, but I respect your choice.",
+        "weight": 3
+      },
+      {
+        "text": "I'd rather not discuss religion.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q54",
+    "category": "TRUTH",
+    "text": "You see two Muslims arguing about a fiqh issue online. You",
+    "options": [
+      {
+        "text": "Both should return to the Quran and Sunnah with the understanding of the righteous predecessors.",
+        "weight": 4
+      },
+      {
+        "text": "I'll pick whichever side sounds more logical.",
+        "weight": 2
+      },
+      {
+        "text": "Fiqh debates are pointless — just be a good person.",
+        "weight": 1
+      },
+      {
+        "text": "I'll stay out of it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q55",
+    "category": "TRUTH",
+    "text": "You hear someone say \"Islam needs to be modernized.\" You think",
+    "options": [
+      {
+        "text": "Islam is complete and timeless — it's us who need to understand it better.",
+        "weight": 4
+      },
+      {
+        "text": "They have a point — some things need updating.",
+        "weight": 1
+      },
+      {
+        "text": "I see their concern but disagree with the approach.",
+        "weight": 3
+      },
+      {
+        "text": "I don't know enough to comment.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q56",
+    "category": "TRUTH",
+    "text": "You're in a situation where lying would benefit you greatly. You",
+    "options": [
+      {
+        "text": "The truth is from Allah — I won't compromise it for dunya.",
+        "weight": 4
+      },
+      {
+        "text": "A small lie won't hurt anyone.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try to find a truthful way out.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone lies in situations like this.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q57",
+    "category": "TRUTH",
+    "text": "You learn that a halal alternative exists for something you enjoy. You",
+    "options": [
+      {
+        "text": "I'll switch immediately — obeying Allah is more important than comfort.",
+        "weight": 4
+      },
+      {
+        "text": "The halal alternative isn't as good — I'll stick with what I have.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try it and see if I like it.",
+        "weight": 3
+      },
+      {
+        "text": "It's a small matter — I don't think it really matters.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q58",
+    "category": "TRUTH",
+    "text": "You're unsure whether something is halal or haram. You",
+    "options": [
+      {
+        "text": "I'll avoid it until I find clear evidence — caution in doubtful matters.",
+        "weight": 4
+      },
+      {
+        "text": "I'll do it until someone proves it's haram.",
+        "weight": 1
+      },
+      {
+        "text": "I'll ask a knowledgeable person.",
+        "weight": 3
+      },
+      {
+        "text": "I think it's fine — I'll go with my feeling.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q59",
+    "category": "TRUTH",
+    "text": "You see someone using a weak hadith to justify their position. You",
+    "options": [
+      {
+        "text": "I'll gently point out the weakness and share the authentic evidence.",
+        "weight": 4
+      },
+      {
+        "text": "It doesn't matter — the point they're making is good.",
+        "weight": 2
+      },
+      {
+        "text": "I'll ignore it — not my fight.",
+        "weight": 2
+      },
+      {
+        "text": "I'll publicly call them out for spreading misinformation.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q60",
+    "category": "TRUTH",
+    "text": "You realize you've been wrong about something Islamic for years. You",
+    "options": [
+      {
+        "text": "Alhamdulillah for the guidance — I'll correct myself and inform others I may have misled.",
+        "weight": 4
+      },
+      {
+        "text": "I've been doing it so long — it's fine.",
+        "weight": 1
+      },
+      {
+        "text": "I feel embarrassed but I'll change gradually.",
+        "weight": 3
+      },
+      {
+        "text": "Maybe my old understanding was valid too.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q61",
+    "category": "TRUTH",
+    "text": "You're watching a show that normalizes haram behavior. You",
+    "options": [
+      {
+        "text": "I'll stop — my eyes and ears are amanah from Allah.",
+        "weight": 4
+      },
+      {
+        "text": "It's just entertainment — it doesn't affect me.",
+        "weight": 1
+      },
+      {
+        "text": "I'll skip the haram parts.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone watches this — it's not a big deal.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q62",
+    "category": "TRUTH",
+    "text": "Your family follows a cultural practice that contradicts the Sunnah. You",
+    "options": [
+      {
+        "text": "I'll follow the Sunnah with respect — I'll explain my position kindly.",
+        "weight": 4
+      },
+      {
+        "text": "Family harmony is more important — I'll go along.",
+        "weight": 2
+      },
+      {
+        "text": "I'll do it their way in front of them and differently in private.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try to gently introduce the correct practice over time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q63",
+    "category": "TRUTH",
+    "text": "You hear someone say \"Allah is merciful, He won't punish anyone.\" You think",
+    "options": [
+      {
+        "text": "Allah is merciful AND just — He forgives those who repent, but accountability is real.",
+        "weight": 4
+      },
+      {
+        "text": "That's a nice way to think about it.",
+        "weight": 1
+      },
+      {
+        "text": "I hope that's true.",
+        "weight": 2
+      },
+      {
+        "text": "Only Allah knows who He'll punish — I focus on my own repentance.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q64",
+    "category": "TRUTH",
+    "text": "You're faced with a moral dilemma where every option seems wrong. You",
+    "options": [
+      {
+        "text": "I'll seek the option closest to what Allah would want, make dua, and trust.",
+        "weight": 4
+      },
+      {
+        "text": "I'll pick whatever causes least harm to me.",
+        "weight": 1
+      },
+      {
+        "text": "I'll ask people I trust for advice.",
+        "weight": 3
+      },
+      {
+        "text": "I'll go with my gut feeling.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q65",
+    "category": "TRUTH",
+    "text": "You see Muslims cherry-picking verses to support their desires. You think",
+    "options": [
+      {
+        "text": "The Quran must be understood as a whole — context matters.",
+        "weight": 4
+      },
+      {
+        "text": "If the verse supports them, who am I to argue?",
+        "weight": 2
+      },
+      {
+        "text": "Everyone interprets it differently.",
+        "weight": 2
+      },
+      {
+        "text": "That's dishonest — but it's their problem.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q66",
+    "category": "TRUTH",
+    "text": "You find a fatwa that makes your life easier but doubt its authenticity. You",
+    "options": [
+      {
+        "text": "I'll verify it with reliable scholars before following it.",
+        "weight": 4
+      },
+      {
+        "text": "I'll follow it — it makes my life easier.",
+        "weight": 1
+      },
+      {
+        "text": "I'll stick with the stricter opinion to be safe.",
+        "weight": 3
+      },
+      {
+        "text": "If a scholar said it, it must be valid.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q67",
+    "category": "TRUTH",
+    "text": "Someone says \"don't be so strict — just follow your heart.\" You think",
+    "options": [
+      {
+        "text": "The heart can be deceived — I follow the Quran and Sunnah.",
+        "weight": 4
+      },
+      {
+        "text": "They're right — I need to relax.",
+        "weight": 1
+      },
+      {
+        "text": "There's wisdom in balance.",
+        "weight": 3
+      },
+      {
+        "text": "Following your heart is what matters most.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q68",
+    "category": "TRUTH",
+    "text": "You're unsure about a hadith's authenticity. You",
+    "options": [
+      {
+        "text": "I'll check with scholars of hadith before acting on it.",
+        "weight": 4
+      },
+      {
+        "text": "I'll just assume it's authentic.",
+        "weight": 2
+      },
+      {
+        "text": "I'll ignore it altogether.",
+        "weight": 2
+      },
+      {
+        "text": "Hadith verification is for scholars — I'll follow what I've always heard.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q69",
+    "category": "TRUTH",
+    "text": "You hear a beautiful interpretation of a verse that you later learn is incorrect. You",
+    "options": [
+      {
+        "text": "I'll let go of it and seek the correct tafsir.",
+        "weight": 4
+      },
+      {
+        "text": "The incorrect interpretation was more meaningful to me.",
+        "weight": 1
+      },
+      {
+        "text": "I'll keep both interpretations in mind.",
+        "weight": 2
+      },
+      {
+        "text": "It doesn't matter much — the feeling was nice.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q70",
+    "category": "TRUTH",
+    "text": "A friend says \"I'm spiritual but not religious.\" You think",
+    "options": [
+      {
+        "text": "Islam is both spiritual AND structured — you need the framework to protect the spirituality.",
+        "weight": 4
+      },
+      {
+        "text": "That's a valid approach.",
+        "weight": 1
+      },
+      {
+        "text": "I understand what they mean.",
+        "weight": 2
+      },
+      {
+        "text": "Structure without spirit is empty, but spirit without structure is dangerous.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q71",
+    "category": "TRUTH",
+    "text": "You notice your community has innovations (bid'ah) in their worship. You",
+    "options": [
+      {
+        "text": "I'll focus on my own worship and gently share knowledge when appropriate.",
+        "weight": 4
+      },
+      {
+        "text": "I'll loudly condemn it.",
+        "weight": 1
+      },
+      {
+        "text": "If it brings them closer to Allah, it's fine.",
+        "weight": 2
+      },
+      {
+        "text": "I'll quietly avoid it without causing division.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q72",
+    "category": "TRUTH",
+    "text": "You read a verse that makes you uncomfortable. You",
+    "options": [
+      {
+        "text": "This is Allah's word — I submit even if my nafs resists.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe I'm misunderstanding it.",
+        "weight": 3
+      },
+      {
+        "text": "I'll skip it and focus on verses I like.",
+        "weight": 1
+      },
+      {
+        "text": "I'll study the tafsir to understand the context.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q73",
+    "category": "TRUTH",
+    "text": "You're told that your understanding of Islam is wrong. You",
+    "options": [
+      {
+        "text": "I'll humbly review the evidence — I want truth, not comfort.",
+        "weight": 4
+      },
+      {
+        "text": "I've been Muslim my whole life — I know my deen.",
+        "weight": 1
+      },
+      {
+        "text": "I'll listen but I'm skeptical.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone thinks they're right.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q74",
+    "category": "TRUTH",
+    "text": "You see someone doing a good deed with wrong intentions. You think",
+    "options": [
+      {
+        "text": "I should focus on my own intentions — Allah is the judge of hearts.",
+        "weight": 4
+      },
+      {
+        "text": "At least they're doing good.",
+        "weight": 2
+      },
+      {
+        "text": "Their deed is invalid.",
+        "weight": 1
+      },
+      {
+        "text": "I should advise them privately.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q75",
+    "category": "TRUTH",
+    "text": "You're asked to compromise your principles for social acceptance. You",
+    "options": [
+      {
+        "text": "The truth from Allah matters more than people's approval.",
+        "weight": 4
+      },
+      {
+        "text": "I'll compromise a little to keep the peace.",
+        "weight": 2
+      },
+      {
+        "text": "I'll stand firm and accept the consequences.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone else does it — it's fine.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q76",
+    "category": "TRUTH",
+    "text": "You see a verse used out of context to justify violence. You think",
+    "options": [
+      {
+        "text": "This verse has specific context — I'll share the correct understanding.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe they have a point.",
+        "weight": 1
+      },
+      {
+        "text": "I'll ignore it — extremists will always exist.",
+        "weight": 2
+      },
+      {
+        "text": "I should educate myself on this verse's tafsir.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q77",
+    "category": "TRUTH",
+    "text": "You realize that something widely accepted in your culture is actually haram. You",
+    "options": [
+      {
+        "text": "I'll stop it and gently educate those around me.",
+        "weight": 4
+      },
+      {
+        "text": "If everyone does it, it can't be that bad.",
+        "weight": 1
+      },
+      {
+        "text": "I'll stop personally but won't say anything.",
+        "weight": 3
+      },
+      {
+        "text": "I'll research it more before making changes.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q78",
+    "category": "TRUTH",
+    "text": "You're in a group where people are making fun of Islamic practices. You",
+    "options": [
+      {
+        "text": "I'll speak up respectfully — I won't let mockery of my deen pass.",
+        "weight": 4
+      },
+      {
+        "text": "I'll laugh along to fit in.",
+        "weight": 1
+      },
+      {
+        "text": "I'll stay silent and leave the group later.",
+        "weight": 3
+      },
+      {
+        "text": "It's just jokes — they don't mean it.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q79",
+    "category": "TRUTH",
+    "text": "You find a khilafiyyah (scholarly disagreement) on something you do. You",
+    "options": [
+      {
+        "text": "I'll follow the strongest evidence, not the easiest opinion.",
+        "weight": 4
+      },
+      {
+        "text": "I'll follow whichever is easier.",
+        "weight": 1
+      },
+      {
+        "text": "I'll follow what my family has always done.",
+        "weight": 2
+      },
+      {
+        "text": "I'll ask a scholar I trust for guidance.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q80",
+    "category": "TRUTH",
+    "text": "You're told \"Islam is simple — don't overthink it.\" You think",
+    "options": [
+      {
+        "text": "Islam is simple in its core message but deep in its wisdom — I should seek knowledge.",
+        "weight": 4
+      },
+      {
+        "text": "They're right — I stress too much.",
+        "weight": 2
+      },
+      {
+        "text": "Simplicity is the key.",
+        "weight": 2
+      },
+      {
+        "text": "There's a difference between simplicity and laziness in seeking knowledge.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q81",
+    "category": "DAWAH",
+    "text": "A non-Muslim colleague asks why you fast in Ramadan. You",
+    "options": [
+      {
+        "text": "It's about empathy, discipline, and connecting with Allah — let me explain.",
+        "weight": 4
+      },
+      {
+        "text": "It's just something we do — religious obligation.",
+        "weight": 2
+      },
+      {
+        "text": "I'd rather not discuss religion at work.",
+        "weight": 1
+      },
+      {
+        "text": "It's a personal thing.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q82",
+    "category": "DAWAH",
+    "text": "Your non-Muslim friend is going through a hard time. You",
+    "options": [
+      {
+        "text": "Share wisdom from the Quran about patience — without being preachy.",
+        "weight": 4
+      },
+      {
+        "text": "Just listen — now isn't the time for religion.",
+        "weight": 2
+      },
+      {
+        "text": "Tell them to pray — it's the only solution.",
+        "weight": 1
+      },
+      {
+        "text": "Be there for them as a human — the dawah is in the character.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q83",
+    "category": "DAWAH",
+    "text": "Someone asks you \"why does Islam allow polygamy?\" You",
+    "options": [
+      {
+        "text": "Explain the wisdom, context, and conditions with patience and honesty.",
+        "weight": 4
+      },
+      {
+        "text": "Deflect — it's a sensitive topic.",
+        "weight": 2
+      },
+      {
+        "text": "Get defensive and argue.",
+        "weight": 1
+      },
+      {
+        "text": "Acknowledge it's complex and share what you know humbly.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q84",
+    "category": "DAWAH",
+    "text": "You see someone interested in Islam but afraid to ask. You",
+    "options": [
+      {
+        "text": "Approach them gently — create a safe space for questions.",
+        "weight": 4
+      },
+      {
+        "text": "Wait for them to come to me.",
+        "weight": 2
+      },
+      {
+        "text": "Hand them a book and walk away.",
+        "weight": 1
+      },
+      {
+        "text": "Invite them to a casual conversation over coffee.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q85",
+    "category": "DAWAH",
+    "text": "You're at a gathering where alcohol is being served. You",
+    "options": [
+      {
+        "text": "Politely decline and if asked, explain your values with confidence.",
+        "weight": 4
+      },
+      {
+        "text": "Just say 'I don't drink' without elaborating.",
+        "weight": 3
+      },
+      {
+        "text": "Make up a health excuse.",
+        "weight": 2
+      },
+      {
+        "text": "Leave immediately without explanation.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q86",
+    "category": "DAWAH",
+    "text": "A friend says \"I respect Islam but it's too strict for me.\" You",
+    "options": [
+      {
+        "text": "Explain that what looks like restriction is actually freedom — with examples from your life.",
+        "weight": 4
+      },
+      {
+        "text": "To each their own.",
+        "weight": 2
+      },
+      {
+        "text": "You're right — it is strict.",
+        "weight": 1
+      },
+      {
+        "text": "I felt that way too until I understood the wisdom behind it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q87",
+    "category": "DAWAH",
+    "text": "You're asked about terrorism done in Islam's name. You",
+    "options": [
+      {
+        "text": "Islam explicitly forbids killing innocents — these people don't represent us.",
+        "weight": 4
+      },
+      {
+        "text": "I don't want to get political.",
+        "weight": 2
+      },
+      {
+        "text": "Every religion has extremists.",
+        "weight": 2
+      },
+      {
+        "text": "That's not real Islam — let me show you what the Quran actually says.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q88",
+    "category": "DAWAH",
+    "text": "You notice your Muslim friend drifting away from the deen. You",
+    "options": [
+      {
+        "text": "Gently remind them with love — invite them to something positive, not lecture.",
+        "weight": 4
+      },
+      {
+        "text": "It's their life — not my business.",
+        "weight": 1
+      },
+      {
+        "text": "Publicly shame them into coming back.",
+        "weight": 1
+      },
+      {
+        "text": "Make dua for them and be a good example.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q89",
+    "category": "DAWAH",
+    "text": "You're asked to explain Islam in 60 seconds. You",
+    "options": [
+      {
+        "text": "Islam is about surrendering to the One who created you — living with purpose, justice, and gratitude.",
+        "weight": 4
+      },
+      {
+        "text": "It's a religion of peace.",
+        "weight": 2
+      },
+      {
+        "text": "We pray 5 times a day and fast in Ramadan.",
+        "weight": 2
+      },
+      {
+        "text": "It's the same message all prophets taught — worship One God.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q90",
+    "category": "DAWAH",
+    "text": "Someone online attacks Islam in the comments. You",
+    "options": [
+      {
+        "text": "Respond with wisdom and beautiful preaching — or scroll past if it's not productive.",
+        "weight": 4
+      },
+      {
+        "text": "Attack them back.",
+        "weight": 1
+      },
+      {
+        "text": "Ignore it completely.",
+        "weight": 2
+      },
+      {
+        "text": "Report and block.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q91",
+    "category": "DAWAH",
+    "text": "Your child asks \"why are we Muslim?\" You",
+    "options": [
+      {
+        "text": "Because Allah chose this path for us — and it's the most beautiful way to live.",
+        "weight": 4
+      },
+      {
+        "text": "Because we were born into it.",
+        "weight": 1
+      },
+      {
+        "text": "Because it's the truth.",
+        "weight": 3
+      },
+      {
+        "text": "You'll understand when you're older.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q92",
+    "category": "DAWAH",
+    "text": "You're in a position of influence at work. You think about dawah",
+    "options": [
+      {
+        "text": "My character and conduct ARE my dawah — I'll lead by example.",
+        "weight": 4
+      },
+      {
+        "text": "Work isn't the place for religion.",
+        "weight": 1
+      },
+      {
+        "text": "I'll mention Islam when relevant.",
+        "weight": 3
+      },
+      {
+        "text": "I'll put a Quran verse in my email signature.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q93",
+    "category": "DAWAH",
+    "text": "A revert friend is struggling with their new identity. You",
+    "options": [
+      {
+        "text": "Be their support system — connect them with community, be patient, remind them of Allah's love.",
+        "weight": 4
+      },
+      {
+        "text": "Tell them to read more Quran.",
+        "weight": 2
+      },
+      {
+        "text": "Everyone struggles at first — they'll get over it.",
+        "weight": 1
+      },
+      {
+        "text": "Connect them with other reverts who've been through it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q94",
+    "category": "DAWAH",
+    "text": "You're asked \"doesn't Islam oppress women?\" You",
+    "options": [
+      {
+        "text": "Explain the rights Islam gave women 1400 years ago that the West only recently recognized.",
+        "weight": 4
+      },
+      {
+        "text": "That's a stereotype — we don't do that.",
+        "weight": 2
+      },
+      {
+        "text": "I don't know enough to answer.",
+        "weight": 2
+      },
+      {
+        "text": "Let me share some examples of empowered Muslim women in history.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q95",
+    "category": "DAWAH",
+    "text": "You see someone making dua at work in a non-Muslim environment. You feel",
+    "options": [
+      {
+        "text": "MashAllah — their confidence in their deen is inspiring.",
+        "weight": 4
+      },
+      {
+        "text": "They should be more discreet.",
+        "weight": 2
+      },
+      {
+        "text": "That's brave — I wish I could do that.",
+        "weight": 3
+      },
+      {
+        "text": "They're making us look bad.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q96",
+    "category": "DAWAH",
+    "text": "You're at a dinner party and someone serves haram food. You",
+    "options": [
+      {
+        "text": "Politely eat what's halal and explain if asked — dawah through manners.",
+        "weight": 4
+      },
+      {
+        "text": "Eat everything — I don't want to be rude.",
+        "weight": 1
+      },
+      {
+        "text": "Refuse to eat anything.",
+        "weight": 2
+      },
+      {
+        "text": "Quietly eat only the sides and salads.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q97",
+    "category": "DAWAH",
+    "text": "Someone says \"you're Muslim? But you're so normal!\" You",
+    "options": [
+      {
+        "text": "Smile and say 'Islam IS normal — let me show you.'",
+        "weight": 4
+      },
+      {
+        "text": "I'm not that religious.",
+        "weight": 1
+      },
+      {
+        "text": "Thanks, I guess?",
+        "weight": 2
+      },
+      {
+        "text": "What did you expect?",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q98",
+    "category": "DAWAH",
+    "text": "You have the chance to explain salah to a curious non-Muslim. You",
+    "options": [
+      {
+        "text": "It's a conversation with the Creator — 5 times a day, I reset, refocus, and reconnect.",
+        "weight": 4
+      },
+      {
+        "text": "It's just a ritual we have to do.",
+        "weight": 1
+      },
+      {
+        "text": "It's like meditation but with more structure.",
+        "weight": 3
+      },
+      {
+        "text": "I pray because Allah commanded it.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q99",
+    "category": "DAWAH",
+    "text": "You see a homeless person on the street. You think",
+    "options": [
+      {
+        "text": "This is a dawah opportunity — a kind word, a meal, and a smile can open hearts.",
+        "weight": 4
+      },
+      {
+        "text": "I'll give some change and move on.",
+        "weight": 2
+      },
+      {
+        "text": "They probably need food more than money.",
+        "weight": 3
+      },
+      {
+        "text": "I can't help everyone.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q100",
+    "category": "DAWAH",
+    "text": "You're debating ethics with an atheist. You",
+    "options": [
+      {
+        "text": "Find common ground first — shared values of justice and compassion — then build from there.",
+        "weight": 4
+      },
+      {
+        "text": "Try to win the argument.",
+        "weight": 1
+      },
+      {
+        "text": "Avoid the topic.",
+        "weight": 2
+      },
+      {
+        "text": "Listen to understand, not to respond.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q101",
+    "category": "DAWAH",
+    "text": "You're asked why you wear hijab / dress modestly. You",
+    "options": [
+      {
+        "text": "It's an act of worship and identity — I wear it for Allah, not for anyone's approval.",
+        "weight": 4
+      },
+      {
+        "text": "My family expects it.",
+        "weight": 1
+      },
+      {
+        "text": "It's just my culture.",
+        "weight": 2
+      },
+      {
+        "text": "It reminds me of who I am and what I stand for.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q102",
+    "category": "DAWAH",
+    "text": "Your non-Muslim neighbor is curious about the Quran. You",
+    "options": [
+      {
+        "text": "Gift them a copy with a bookmark in a meaningful chapter — let the Quran speak for itself.",
+        "weight": 4
+      },
+      {
+        "text": "Tell them to Google it.",
+        "weight": 1
+      },
+      {
+        "text": "Give them a long lecture about it.",
+        "weight": 1
+      },
+      {
+        "text": "Invite them to listen to a recitation with you.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q103",
+    "category": "DAWAH",
+    "text": "Someone mocks your beard / hijab. You",
+    "options": [
+      {
+        "text": "Respond with dignity and a smile — your patience IS the dawah.",
+        "weight": 4
+      },
+      {
+        "text": "Get angry and argue.",
+        "weight": 1
+      },
+      {
+        "text": "Feel embarrassed and consider changing.",
+        "weight": 1
+      },
+      {
+        "text": "Ignore them — their opinion doesn't define you.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q104",
+    "category": "DAWAH",
+    "text": "You see someone interested in Islam on social media. You",
+    "options": [
+      {
+        "text": "Send them a kind, personal message offering to answer questions.",
+        "weight": 4
+      },
+      {
+        "text": "Tag them in an Islamic post.",
+        "weight": 2
+      },
+      {
+        "text": "Ignore — online dawah doesn't work.",
+        "weight": 1
+      },
+      {
+        "text": "Follow them and engage naturally over time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q105",
+    "category": "DAWAH",
+    "text": "A colleague is interested in Islam but afraid of their family's reaction. You",
+    "options": [
+      {
+        "text": "Support them with patience — don't pressure. Be there when they need you.",
+        "weight": 4
+      },
+      {
+        "text": "Tell them to just convert already.",
+        "weight": 1
+      },
+      {
+        "text": "That's their problem to deal with.",
+        "weight": 1
+      },
+      {
+        "text": "Share stories of reverts who faced similar challenges.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q106",
+    "category": "DAWAH",
+    "text": "You're asked \"what makes Islam different from other religions?\" You",
+    "options": [
+      {
+        "text": "Islam is the final, complete message — same God, same core, perfected guidance for all times.",
+        "weight": 4
+      },
+      {
+        "text": "We have the Quran.",
+        "weight": 2
+      },
+      {
+        "text": "We're the fastest growing religion.",
+        "weight": 1
+      },
+      {
+        "text": "Every prophet submitted to the One God — Islam is that original message.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q107",
+    "category": "DAWAH",
+    "text": "You feel unqualified to give dawah. You think",
+    "options": [
+      {
+        "text": "Dawah isn't about being a scholar — it's about sincerity and character.",
+        "weight": 4
+      },
+      {
+        "text": "I'll leave it to the experts.",
+        "weight": 2
+      },
+      {
+        "text": "I should learn more first.",
+        "weight": 3
+      },
+      {
+        "text": "I'm not good enough for this.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q108",
+    "category": "DAWAH",
+    "text": "You see people leaving Islam. You think",
+    "options": [
+      {
+        "text": "I should reflect — maybe we as an ummah failed to present Islam beautifully.",
+        "weight": 4
+      },
+      {
+        "text": "They were never really Muslim.",
+        "weight": 1
+      },
+      {
+        "text": "Their loss.",
+        "weight": 1
+      },
+      {
+        "text": "I'll make dua for them and be available if they want to talk.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q109",
+    "category": "DAWAH",
+    "text": "You're at an interfaith event. You",
+    "options": [
+      {
+        "text": "Represent Islam with wisdom — listen as much as you speak.",
+        "weight": 4
+      },
+      {
+        "text": "Try to convert everyone there.",
+        "weight": 1
+      },
+      {
+        "text": "Stay quiet and just observe.",
+        "weight": 2
+      },
+      {
+        "text": "Build genuine relationships — dawah happens through trust.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q110",
+    "category": "DAWAH",
+    "text": "You have a platform (social media, community role). You think about dawah",
+    "options": [
+      {
+        "text": "I'll use it to inspire — share beauty of Islam through stories, not lectures.",
+        "weight": 4
+      },
+      {
+        "text": "I'll post Quran verses and hadith constantly.",
+        "weight": 2
+      },
+      {
+        "text": "I'll keep my platform secular.",
+        "weight": 1
+      },
+      {
+        "text": "I'll mix Islamic content with relatable, everyday posts.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q111",
+    "category": "DAWAH",
+    "text": "Someone says \"I've read the Quran and I'm not convinced.\" You",
+    "options": [
+      {
+        "text": "Respect their journey — 'There's no compulsion in religion.' Be a friend, not a salesman.",
+        "weight": 4
+      },
+      {
+        "text": "Try harder to convince them.",
+        "weight": 1
+      },
+      {
+        "text": "Give up on them.",
+        "weight": 1
+      },
+      {
+        "text": "Ask what specifically they found unconvincing — listen first.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q112",
+    "category": "DAWAH",
+    "text": "Your Muslim friend is doing dawah aggressively and pushing people away. You",
+    "options": [
+      {
+        "text": "Advise them gently — the Prophet ﷺ was the best of examples in dawah through character.",
+        "weight": 4
+      },
+      {
+        "text": "It's their style — who am I to judge?",
+        "weight": 2
+      },
+      {
+        "text": "At least they're trying.",
+        "weight": 2
+      },
+      {
+        "text": "They mean well — the method just needs adjustment.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q113",
+    "category": "DAWAH",
+    "text": "You're asked \"if God is real, why is there suffering?\" You",
+    "options": [
+      {
+        "text": "Suffering is a test, a purification, and a reminder — it's part of the human journey toward Allah.",
+        "weight": 4
+      },
+      {
+        "text": "I don't know — it's a mystery.",
+        "weight": 2
+      },
+      {
+        "text": "God works in mysterious ways.",
+        "weight": 2
+      },
+      {
+        "text": "Without hardship, we'd never grow — and paradise wouldn't be worth earning.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q114",
+    "category": "DAWAH",
+    "text": "You have a chance to give a talk about Islam to non-Muslims. You",
+    "options": [
+      {
+        "text": "Focus on the universal beauty — mercy, purpose, gratitude, justice.",
+        "weight": 4
+      },
+      {
+        "text": "List all the rules and prohibitions.",
+        "weight": 1
+      },
+      {
+        "text": "Keep it generic and non-controversial.",
+        "weight": 2
+      },
+      {
+        "text": "Share your personal journey — stories connect better than doctrines.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q115",
+    "category": "DAWAH",
+    "text": "You see a Muslim doing something haram in public. You think",
+    "options": [
+      {
+        "text": "This affects how people see Islam — I should advise them privately.",
+        "weight": 4
+      },
+      {
+        "text": "Not my problem.",
+        "weight": 1
+      },
+      {
+        "text": "I'll publicly call them out.",
+        "weight": 1
+      },
+      {
+        "text": "I'll make dua for them and focus on my own deeds.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q116",
+    "category": "DAWAH",
+    "text": "Someone says \"Islam was spread by the sword.\" You",
+    "options": [
+      {
+        "text": "Actually, the fastest growth of Islam happened through trade, character, and scholarship — not force.",
+        "weight": 4
+      },
+      {
+        "text": "That's Islamophobic propaganda.",
+        "weight": 1
+      },
+      {
+        "text": "I don't know enough history to respond.",
+        "weight": 2
+      },
+      {
+        "text": "Let me share some historical facts with you.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q117",
+    "category": "DAWAH",
+    "text": "You feel like your iman is too weak to give dawah. You think",
+    "options": [
+      {
+        "text": "Even a weak light can guide someone in darkness — I share what I have.",
+        "weight": 4
+      },
+      {
+        "text": "I need to fix myself first.",
+        "weight": 2
+      },
+      {
+        "text": "I'll wait until I'm the perfect Muslim.",
+        "weight": 1
+      },
+      {
+        "text": "My struggles might actually help someone relate to me.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q118",
+    "category": "DAWAH",
+    "text": "A non-Muslim friend says \"I'm happy without religion.\" You",
+    "options": [
+      {
+        "text": "I'm glad you're happy — but happiness without purpose eventually feels empty. Want to explore that?",
+        "weight": 4
+      },
+      {
+        "text": "Good for you.",
+        "weight": 2
+      },
+      {
+        "text": "You're deluding yourself.",
+        "weight": 1
+      },
+      {
+        "text": "That's valid — but I've found something deeper in Islam.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q119",
+    "category": "DAWAH",
+    "text": "You're asked to participate in an interfaith prayer. You",
+    "options": [
+      {
+        "text": "Politely explain that in Islam, worship is directed only to Allah — but I'll respectfully observe.",
+        "weight": 4
+      },
+      {
+        "text": "Join in to be polite.",
+        "weight": 1
+      },
+      {
+        "text": "Refuse rudely.",
+        "weight": 1
+      },
+      {
+        "text": "Attend and observe, making my own dua silently.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q120",
+    "category": "DAWAH",
+    "text": "You think about your legacy. What matters most to you?",
+    "options": [
+      {
+        "text": "That I was a means of someone finding Allah — even one person guided through me is worth more than the whole world.",
+        "weight": 4
+      },
+      {
+        "text": "That I was successful in my career.",
+        "weight": 1
+      },
+      {
+        "text": "That people remember me as a good person.",
+        "weight": 2
+      },
+      {
+        "text": "That my children carry on the deen.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q121",
+    "category": "NAFS",
+    "text": "When you miss Fajr, the real reason is usually",
+    "options": [
+      {
+        "text": "I stayed up too late doing things that weren't important.",
+        "weight": 4
+      },
+      {
+        "text": "I'm genuinely exhausted.",
+        "weight": 2
+      },
+      {
+        "text": "I just couldn't wake up.",
+        "weight": 2
+      },
+      {
+        "text": "Salah doesn't feel urgent to me right now.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q122",
+    "category": "NAFS",
+    "text": "When you feel spiritually low, you",
+    "options": [
+      {
+        "text": "Recognize it as a signal to reconnect with Allah — Quran, dua, dhikr.",
+        "weight": 4
+      },
+      {
+        "text": "Wait for the feeling to pass.",
+        "weight": 2
+      },
+      {
+        "text": "Distract myself with entertainment.",
+        "weight": 1
+      },
+      {
+        "text": "Push through — feelings don't matter, actions do.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q123",
+    "category": "NAFS",
+    "text": "You catch yourself backbiting. You",
+    "options": [
+      {
+        "text": "Stop immediately, make istighfar, and change the subject.",
+        "weight": 4
+      },
+      {
+        "text": "Feel bad but keep going.",
+        "weight": 2
+      },
+      {
+        "text": "It's not that bad — everyone does it.",
+        "weight": 1
+      },
+      {
+        "text": "Promise myself I'll stop next time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q124",
+    "category": "NAFS",
+    "text": "You feel jealous of someone's success. You",
+    "options": [
+      {
+        "text": "Recognize it as from Shaytan, make dua for them, and say MashAllah.",
+        "weight": 4
+      },
+      {
+        "text": "Try to ignore the feeling.",
+        "weight": 2
+      },
+      {
+        "text": "Use it as motivation to work harder.",
+        "weight": 2
+      },
+      {
+        "text": "Secretly wish they'd fail.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q125",
+    "category": "NAFS",
+    "text": "You're alone with free time and no responsibilities. You",
+    "options": [
+      {
+        "text": "Use it for ibadah, knowledge, or something beneficial — this is an amanah.",
+        "weight": 4
+      },
+      {
+        "text": "Scroll social media.",
+        "weight": 1
+      },
+      {
+        "text": "Relax — I deserve a break.",
+        "weight": 2
+      },
+      {
+        "text": "Do something productive but not necessarily spiritual.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q126",
+    "category": "NAFS",
+    "text": "When you look in the mirror, you",
+    "options": [
+      {
+        "text": "Make the du'a for looking in the mirror and remember that Allah created you with purpose.",
+        "weight": 4
+      },
+      {
+        "text": "Focus on how I look.",
+        "weight": 1
+      },
+      {
+        "text": "Check if I look presentable.",
+        "weight": 2
+      },
+      {
+        "text": "Don't think much about it.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q127",
+    "category": "NAFS",
+    "text": "You feel angry at someone. You",
+    "options": [
+      {
+        "text": "Remember the hadith about anger, seek refuge in Allah, and stay silent until it passes.",
+        "weight": 4
+      },
+      {
+        "text": "Let it all out — I need to express myself.",
+        "weight": 1
+      },
+      {
+        "text": "Suppress it and pretend I'm fine.",
+        "weight": 2
+      },
+      {
+        "text": "Process it later when I'm calm.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q128",
+    "category": "NAFS",
+    "text": "You're about to post something on social media. You",
+    "options": [
+      {
+        "text": "Ask yourself: 'Would I be okay if the Prophet ﷺ saw this?'",
+        "weight": 4
+      },
+      {
+        "text": "Post whatever I feel like.",
+        "weight": 1
+      },
+      {
+        "text": "Think about how many likes it'll get.",
+        "weight": 1
+      },
+      {
+        "text": "Make sure it's not offensive.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q129",
+    "category": "NAFS",
+    "text": "You realize you've been spending too much money on yourself. You",
+    "options": [
+      {
+        "text": "Make a conscious effort to give more sadaqah and reduce unnecessary spending.",
+        "weight": 4
+      },
+      {
+        "text": "It's my money — I earned it.",
+        "weight": 1
+      },
+      {
+        "text": "I'll cut back eventually.",
+        "weight": 2
+      },
+      {
+        "text": "Set a budget and stick to it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q130",
+    "category": "NAFS",
+    "text": "You're at a gathering where people are gossiping. You",
+    "options": [
+      {
+        "text": "Quietly redirect the conversation or excuse yourself.",
+        "weight": 4
+      },
+      {
+        "text": "Join in — it's just socializing.",
+        "weight": 1
+      },
+      {
+        "text": "Stay silent but listen.",
+        "weight": 2
+      },
+      {
+        "text": "Say something positive about the person being discussed.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q131",
+    "category": "NAFS",
+    "text": "You feel the urge to show off after doing a good deed. You",
+    "options": [
+      {
+        "text": "Seek refuge in Allah from riya (showing off) and remind yourself the deed is for Allah alone.",
+        "weight": 4
+      },
+      {
+        "text": "It's fine to share — it might inspire others.",
+        "weight": 2
+      },
+      {
+        "text": "Share it on social media.",
+        "weight": 1
+      },
+      {
+        "text": "Keep it private — that's safer.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q132",
+    "category": "NAFS",
+    "text": "You feel lazy about making wudu for salah. You",
+    "options": [
+      {
+        "text": "Recognize it as whispers of Shaytan and push through — the reward is worth the effort.",
+        "weight": 4
+      },
+      {
+        "text": "Skip salah — I'll make it up later.",
+        "weight": 1
+      },
+      {
+        "text": "Force myself to do it reluctantly.",
+        "weight": 2
+      },
+      {
+        "text": "Make wudu once and keep it for multiple prayers.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q133",
+    "category": "NAFS",
+    "text": "You see someone sinning and feel tempted to join. You",
+    "options": [
+      {
+        "text": "Remember Allah is watching and seek His protection.",
+        "weight": 4
+      },
+      {
+        "text": "Just this once won't hurt.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try to resist but it's hard.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone does it.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q134",
+    "category": "NAFS",
+    "text": "You get a sudden rush of motivation to improve your deen. You",
+    "options": [
+      {
+        "text": "Channel it into consistent small actions — motivation fades, habits stay.",
+        "weight": 4
+      },
+      {
+        "text": "Make big plans and goals.",
+        "weight": 2
+      },
+      {
+        "text": "It'll pass — I've felt this before.",
+        "weight": 1
+      },
+      {
+        "text": "Start with one thing and build from there.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q135",
+    "category": "NAFS",
+    "text": "You feel superior to someone who sins more than you. You",
+    "options": [
+      {
+        "text": "Seek refuge in Allah from kibr (arrogance) — you don't know your own ending.",
+        "weight": 4
+      },
+      {
+        "text": "At least I'm better than them.",
+        "weight": 1
+      },
+      {
+        "text": "I should focus on my own sins.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone has different struggles.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q136",
+    "category": "NAFS",
+    "text": "You're in an argument and feel the need to win. You",
+    "options": [
+      {
+        "text": "Ask yourself: 'Is this worth my ego? Or is truth more important?'",
+        "weight": 4
+      },
+      {
+        "text": "I need to prove I'm right.",
+        "weight": 1
+      },
+      {
+        "text": "I'll back down to keep the peace.",
+        "weight": 3
+      },
+      {
+        "text": "Let me think about whether I'm actually right.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q137",
+    "category": "NAFS",
+    "text": "You're told to lower your gaze but find it difficult. You",
+    "options": [
+      {
+        "text": "Acknowledge the struggle and make dua for strength — the effort itself is rewarded.",
+        "weight": 4
+      },
+      {
+        "text": "It's natural — I can't help it.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try harder.",
+        "weight": 3
+      },
+      {
+        "text": "It's not a big deal.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q138",
+    "category": "NAFS",
+    "text": "You realize you've been doing the minimum in your worship. You",
+    "options": [
+      {
+        "text": "Recognize it as a sign of a hard heart and increase voluntary acts gradually.",
+        "weight": 4
+      },
+      {
+        "text": "At least I'm doing the basics.",
+        "weight": 2
+      },
+      {
+        "text": "I'll step up when I feel more spiritual.",
+        "weight": 1
+      },
+      {
+        "text": "Add one small sunnah to my routine this week.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q139",
+    "category": "NAFS",
+    "text": "You feel the need for people's approval. You",
+    "options": [
+      {
+        "text": "Remember that only Allah's pleasure matters — people's opinions are wind.",
+        "weight": 4
+      },
+      {
+        "text": "It's human nature to want to be liked.",
+        "weight": 2
+      },
+      {
+        "text": "I should care less about what people think.",
+        "weight": 3
+      },
+      {
+        "text": "I need validation — I can't help it.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q140",
+    "category": "NAFS",
+    "text": "You find yourself comparing your deen to others. You",
+    "options": [
+      {
+        "text": "Compare yourself only to who you were yesterday — your race is with your own nafs.",
+        "weight": 4
+      },
+      {
+        "text": "I need to be more religious than them.",
+        "weight": 1
+      },
+      {
+        "text": "At least I'm doing better than some.",
+        "weight": 1
+      },
+      {
+        "text": "Everyone's journey is different.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q141",
+    "category": "NAFS",
+    "text": "You feel a strong desire for something haram. You",
+    "options": [
+      {
+        "text": "Make dua for sabr, remove yourself from the situation, and remember the pleasure of Allah is greater.",
+        "weight": 4
+      },
+      {
+        "text": "I'll give in just this once.",
+        "weight": 1
+      },
+      {
+        "text": "I'll fight it but it's so hard.",
+        "weight": 3
+      },
+      {
+        "text": "It's just a desire — it doesn't define me.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q142",
+    "category": "NAFS",
+    "text": "You're procrastinating on making tawbah (repentance). You",
+    "options": [
+      {
+        "text": "Repent now — death doesn't send a calendar invite.",
+        "weight": 4
+      },
+      {
+        "text": "I'll repent when I'm ready to change.",
+        "weight": 2
+      },
+      {
+        "text": "I have time — I'm still young.",
+        "weight": 1
+      },
+      {
+        "text": "I feel guilty but I keep delaying.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q143",
+    "category": "NAFS",
+    "text": "You notice you're spending hours on your phone. You",
+    "options": [
+      {
+        "text": "Recognize it as a distraction from purpose — set limits and fill the time with dhikr or reading.",
+        "weight": 4
+      },
+      {
+        "text": "Everyone does it — it's normal.",
+        "weight": 1
+      },
+      {
+        "text": "I should cut down.",
+        "weight": 3
+      },
+      {
+        "text": "At least I'm not doing anything haram.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q144",
+    "category": "NAFS",
+    "text": "You feel like your prayers are just routine. You",
+    "options": [
+      {
+        "text": "Study the meanings of what you recite — khushu comes from understanding.",
+        "weight": 4
+      },
+      {
+        "text": "At least I'm praying.",
+        "weight": 2
+      },
+      {
+        "text": "I'll pray when I feel more connected.",
+        "weight": 1
+      },
+      {
+        "text": "Try to pray one salah with full concentration and build from there.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q145",
+    "category": "NAFS",
+    "text": "You're tempted to lie to avoid trouble. You",
+    "options": [
+      {
+        "text": "Choose truth and trust Allah with the consequences.",
+        "weight": 4
+      },
+      {
+        "text": "A small lie won't hurt.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try to find a way to be truthful without making things worse.",
+        "weight": 3
+      },
+      {
+        "text": "Self-preservation is natural.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q146",
+    "category": "NAFS",
+    "text": "You see someone younger than you being more pious. You feel",
+    "options": [
+      {
+        "text": "Inspired — I should learn from them regardless of age.",
+        "weight": 4
+      },
+      {
+        "text": "I need to catch up.",
+        "weight": 2
+      },
+      {
+        "text": "They'll probably fall off when they're older.",
+        "weight": 1
+      },
+      {
+        "text": "Everyone's timeline is different — I focus on my own growth.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q147",
+    "category": "NAFS",
+    "text": "You feel disconnected from the Quran. You",
+    "options": [
+      {
+        "text": "Even if you don't feel it, read one ayah — the Quran heals even when you don't feel it.",
+        "weight": 4
+      },
+      {
+        "text": "I'll read when I'm in the mood.",
+        "weight": 1
+      },
+      {
+        "text": "Maybe I need a different reciter to motivate me.",
+        "weight": 3
+      },
+      {
+        "text": "I don't understand Arabic — it's not impactful for me.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q148",
+    "category": "NAFS",
+    "text": "You catch yourself judging someone's appearance. You",
+    "options": [
+      {
+        "text": "Make istighfar — Allah looks at hearts, not appearances.",
+        "weight": 4
+      },
+      {
+        "text": "I can't help it — first impressions matter.",
+        "weight": 1
+      },
+      {
+        "text": "Try to give them the benefit of the doubt.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone judges — it's human nature.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q149",
+    "category": "NAFS",
+    "text": "You feel overwhelmed by how much you need to improve. You",
+    "options": [
+      {
+        "text": "Take one step — Allah doesn't expect perfection, just sincere effort.",
+        "weight": 4
+      },
+      {
+        "text": "I'll never be good enough.",
+        "weight": 1
+      },
+      {
+        "text": "I'll make a plan and work through it systematically.",
+        "weight": 3
+      },
+      {
+        "text": "I need to do everything at once.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q150",
+    "category": "NAFS",
+    "text": "You're praised for your religiosity. You feel",
+    "options": [
+      {
+        "text": "Grateful but cautious — praise can be a test. Only Allah's opinion matters.",
+        "weight": 4
+      },
+      {
+        "text": "Proud — I've earned this.",
+        "weight": 1
+      },
+      {
+        "text": "Uncomfortable — I know my sins.",
+        "weight": 3
+      },
+      {
+        "text": "Happy — it motivates me to do more.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q151",
+    "category": "NAFS",
+    "text": "You notice you're being stingy with your time or money. You",
+    "options": [
+      {
+        "text": "Remember that generosity opens doors of rizq — give even when it's hard.",
+        "weight": 4
+      },
+      {
+        "text": "I need to save for myself first.",
+        "weight": 1
+      },
+      {
+        "text": "I'll give when I have more.",
+        "weight": 2
+      },
+      {
+        "text": "Set a small regular sadaqah and increase gradually.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q152",
+    "category": "NAFS",
+    "text": "You feel like Allah is far from you. You",
+    "options": [
+      {
+        "text": "Allah is closer to you than your jugular vein — the distance is from your side, not His.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe I've sinned too much.",
+        "weight": 2
+      },
+      {
+        "text": "I need a spiritual experience to reconnect.",
+        "weight": 2
+      },
+      {
+        "text": "Turn to Him with even a small dhikr — He'll respond.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q153",
+    "category": "NAFS",
+    "text": "You feel the pull of social media during salah time. You",
+    "options": [
+      {
+        "text": "Put the phone down — the Creator is waiting, the creation can wait.",
+        "weight": 4
+      },
+      {
+        "text": "I'll finish this video first.",
+        "weight": 1
+      },
+      {
+        "text": "I'll pray after this.",
+        "weight": 2
+      },
+      {
+        "text": "Set my phone aside and pray — it'll still be there after.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q154",
+    "category": "NAFS",
+    "text": "You feel envious of someone's relationship with Allah. You",
+    "options": [
+      {
+        "text": "Turn that envy into du'a — ask Allah to give you what they have and more.",
+        "weight": 4
+      },
+      {
+        "text": "They're probably faking it.",
+        "weight": 1
+      },
+      {
+        "text": "I wish I had that.",
+        "weight": 2
+      },
+      {
+        "text": "Ask them what they do — learn from them.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q155",
+    "category": "NAFS",
+    "text": "You've been avoiding a sin but the desire is getting stronger. You",
+    "options": [
+      {
+        "text": "Increase your ibadah — the cure for one desire is a stronger desire for Allah.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe I should just give in once to get it out of my system.",
+        "weight": 1
+      },
+      {
+        "text": "I'll keep resisting but it's getting harder.",
+        "weight": 3
+      },
+      {
+        "text": "Find an accountability partner.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q156",
+    "category": "NAFS",
+    "text": "You feel like you're going through the motions of Islam without feeling it. You",
+    "options": [
+      {
+        "text": "Keep going — the feelings will come. Consistency is worship even without emotion.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe Islam isn't for me.",
+        "weight": 1
+      },
+      {
+        "text": "I need to take a break and come back refreshed.",
+        "weight": 1
+      },
+      {
+        "text": "Focus on understanding the meaning behind what I'm doing.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q157",
+    "category": "NAFS",
+    "text": "You're asked \"what's your biggest spiritual weakness?\" You",
+    "options": [
+      {
+        "text": "You know exactly what it is — and that self-awareness is the first step to fixing it.",
+        "weight": 4
+      },
+      {
+        "text": "I don't have any major ones.",
+        "weight": 1
+      },
+      {
+        "text": "I'd rather not think about it.",
+        "weight": 2
+      },
+      {
+        "text": "I know my weakness but I struggle to change.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q158",
+    "category": "NAFS",
+    "text": "You feel the urge to check your phone during the Quran recitation. You",
+    "options": [
+      {
+        "text": "Put it away — give the Quran the respect it deserves.",
+        "weight": 4
+      },
+      {
+        "text": "A quick glance won't hurt.",
+        "weight": 1
+      },
+      {
+        "text": "I'll finish this recitation first.",
+        "weight": 3
+      },
+      {
+        "text": "Turn on Do Not Disturb before reading.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q159",
+    "category": "NAFS",
+    "text": "You realize you've been neglecting your parents. You",
+    "options": [
+      {
+        "text": "Call them today — 'Uff' is not even the smallest word of disrespect.",
+        "weight": 4
+      },
+      {
+        "text": "I'll visit when I have time.",
+        "weight": 2
+      },
+      {
+        "text": "They know I love them.",
+        "weight": 2
+      },
+      {
+        "text": "Set a weekly reminder to check on them.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q160",
+    "category": "NAFS",
+    "text": "At the end of a long day, you feel spiritually empty. You",
+    "options": [
+      {
+        "text": "Even one ayah before sleep, one sajdah of shukr — fill the cup even if it's one drop.",
+        "weight": 4
+      },
+      {
+        "text": "I'm too tired — tomorrow.",
+        "weight": 1
+      },
+      {
+        "text": "Make a quick dua from your heart.",
+        "weight": 3
+      },
+      {
+        "text": "This emptiness means I need to restructure my day.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q161",
+    "category": "AKHIRAH",
+    "text": "You're choosing between a high-paying haram job and a lower-paying halal one. You",
+    "options": [
+      {
+        "text": "Choose the halal one — rizq is from Allah, not from the salary number.",
+        "weight": 4
+      },
+      {
+        "text": "Take the haram job — I'll repent later.",
+        "weight": 1
+      },
+      {
+        "text": "Try to find a middle ground.",
+        "weight": 2
+      },
+      {
+        "text": "Take the halal job but worry about finances.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q162",
+    "category": "AKHIRAH",
+    "text": "You're planning for retirement. You think",
+    "options": [
+      {
+        "text": "I plan for dunya AND akhirah — my real retirement is Jannah.",
+        "weight": 4
+      },
+      {
+        "text": "Focus on financial security — that's what matters.",
+        "weight": 1
+      },
+      {
+        "text": "I should balance both.",
+        "weight": 3
+      },
+      {
+        "text": "I'll think about that later.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q163",
+    "category": "AKHIRAH",
+    "text": "You have to choose between attending a beneficial Islamic lecture or a fun social event. You",
+    "options": [
+      {
+        "text": "The lecture — investing in my akhirah is always the better deal.",
+        "weight": 4
+      },
+      {
+        "text": "The social event — I need to live a little.",
+        "weight": 1
+      },
+      {
+        "text": "Depends on my mood.",
+        "weight": 2
+      },
+      {
+        "text": "Go to the lecture but leave early for the event.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q164",
+    "category": "AKHIRAH",
+    "text": "You think about death. You feel",
+    "options": [
+      {
+        "text": "It's a reality I prepare for daily — it's the door to the real life.",
+        "weight": 4
+      },
+      {
+        "text": "I try not to think about it.",
+        "weight": 1
+      },
+      {
+        "text": "It scares me.",
+        "weight": 2
+      },
+      {
+        "text": "It's a reminder to live well.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q165",
+    "category": "AKHIRAH",
+    "text": "You're deciding how to spend your weekend. You",
+    "options": [
+      {
+        "text": "Balance — some dunya rest, some akhirah investment.",
+        "weight": 4
+      },
+      {
+        "text": "Entirely for fun — I worked hard all week.",
+        "weight": 1
+      },
+      {
+        "text": "I should do something Islamic but I probably won't.",
+        "weight": 2
+      },
+      {
+        "text": "Dedicate some time to Quran or volunteering.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q166",
+    "category": "AKHIRAH",
+    "text": "You're offered a business deal that's technically legal but ethically questionable. You",
+    "options": [
+      {
+        "text": "Avoid it — the akhirah account includes intentions, not just technicalities.",
+        "weight": 4
+      },
+      {
+        "text": "If it's legal, it's fine.",
+        "weight": 1
+      },
+      {
+        "text": "I'll think about it.",
+        "weight": 2
+      },
+      {
+        "text": "Consult a scholar about the ethics.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q167",
+    "category": "AKHIRAH",
+    "text": "You see someone who spent their whole life accumulating wealth die suddenly. You think",
+    "options": [
+      {
+        "text": "A reminder — what you don't give in sadaqah, you leave behind.",
+        "weight": 4
+      },
+      {
+        "text": "That's sad.",
+        "weight": 2
+      },
+      {
+        "text": "At least their family is taken care of.",
+        "weight": 2
+      },
+      {
+        "text": "I should make sure my will is in order.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q168",
+    "category": "AKHIRAH",
+    "text": "You're deciding whether to donate to a cause or buy something you want. You",
+    "options": [
+      {
+        "text": "Donate — the reward in the akhirah is worth more than the item.",
+        "weight": 4
+      },
+      {
+        "text": "Buy what I want — I can donate later.",
+        "weight": 1
+      },
+      {
+        "text": "Split the money between both.",
+        "weight": 3
+      },
+      {
+        "text": "I'll donate when I have more money.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q169",
+    "category": "AKHIRAH",
+    "text": "You think about standing before Allah on Judgment Day. You feel",
+    "options": [
+      {
+        "text": "It motivates me to be better — Allah is also Al-Ghafoor, Ar-Raheem.",
+        "weight": 4
+      },
+      {
+        "text": "Terrified.",
+        "weight": 2
+      },
+      {
+        "text": "I try not to think about it.",
+        "weight": 1
+      },
+      {
+        "text": "I hope my good deeds outweigh my bad.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q170",
+    "category": "AKHIRAH",
+    "text": "You're asked \"what would you do if you had one day left to live?\" You",
+    "options": [
+      {
+        "text": "Repent, pray, give sadaqah, reconcile with people, and prepare to meet Allah.",
+        "weight": 4
+      },
+      {
+        "text": "Spend it with loved ones.",
+        "weight": 2
+      },
+      {
+        "text": "Do everything I never got to do.",
+        "weight": 1
+      },
+      {
+        "text": "Make sure my affairs are in order.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q171",
+    "category": "AKHIRAH",
+    "text": "You're tempted to delay a good deed. You think",
+    "options": [
+      {
+        "text": "Do it now — you don't know if you'll get another chance.",
+        "weight": 4
+      },
+      {
+        "text": "I'll do it tomorrow.",
+        "weight": 2
+      },
+      {
+        "text": "When the time is right.",
+        "weight": 2
+      },
+      {
+        "text": "Better late than never.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q172",
+    "category": "AKHIRAH",
+    "text": "You're investing time in building a career. You think about the akhirah",
+    "options": [
+      {
+        "text": "My career is my means — the end is pleasing Allah.",
+        "weight": 4
+      },
+      {
+        "text": "Career is for this life — I'll worry about the next life when I'm older.",
+        "weight": 1
+      },
+      {
+        "text": "I try to keep a balance.",
+        "weight": 3
+      },
+      {
+        "text": "Success in dunya can help my akhirah if I use it right.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q173",
+    "category": "AKHIRAH",
+    "text": "You're choosing entertainment. You think",
+    "options": [
+      {
+        "text": "Will this bring me closer to Allah or further? That's my filter.",
+        "weight": 4
+      },
+      {
+        "text": "I just want to relax.",
+        "weight": 1
+      },
+      {
+        "text": "As long as it's not haram, it's fine.",
+        "weight": 3
+      },
+      {
+        "text": "Entertainment is necessary for mental health.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q174",
+    "category": "AKHIRAH",
+    "text": "You hear that a pious person died. You think",
+    "options": [
+      {
+        "text": "May Allah grant them Jannah — their real life has just begun.",
+        "weight": 4
+      },
+      {
+        "text": "That's sad — they were young.",
+        "weight": 2
+      },
+      {
+        "text": "I should visit the family.",
+        "weight": 3
+      },
+      {
+        "text": "Death comes for everyone.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q175",
+    "category": "AKHIRAH",
+    "text": "You're building your dream house. You think",
+    "options": [
+      {
+        "text": "Build it well, but remember — the real home is Jannah. Don't overspend on dunya.",
+        "weight": 4
+      },
+      {
+        "text": "Go all out — I deserve the best.",
+        "weight": 1
+      },
+      {
+        "text": "Keep it modest and practical.",
+        "weight": 3
+      },
+      {
+        "text": "I need to live well in this life.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q176",
+    "category": "AKHIRAH",
+    "text": "You're making a will. You",
+    "options": [
+      {
+        "text": "Follow the Islamic inheritance rules exactly — this is a command from Allah.",
+        "weight": 4
+      },
+      {
+        "text": "Distribute it however I want.",
+        "weight": 1
+      },
+      {
+        "text": "Follow Islamic rules but also leave extra for causes I care about.",
+        "weight": 3
+      },
+      {
+        "text": "I'll deal with it later.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q177",
+    "category": "AKHIRAH",
+    "text": "You think about the concept of Jannah. You feel",
+    "options": [
+      {
+        "text": "It drives my decisions — every sacrifice is an investment in eternal bliss.",
+        "weight": 4
+      },
+      {
+        "text": "It's a nice thought but I focus on this life.",
+        "weight": 1
+      },
+      {
+        "text": "I hope I make it.",
+        "weight": 2
+      },
+      {
+        "text": "I try to earn it through good deeds.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q178",
+    "category": "AKHIRAH",
+    "text": "You're given extra money unexpectedly. You",
+    "options": [
+      {
+        "text": "Give some in sadaqah first — invest in the akhirah, then use the rest.",
+        "weight": 4
+      },
+      {
+        "text": "Spend it on myself.",
+        "weight": 1
+      },
+      {
+        "text": "Save it for emergencies.",
+        "weight": 3
+      },
+      {
+        "text": "Alhamdulillah — I'll use it wisely.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q179",
+    "category": "AKHIRAH",
+    "text": "You're asked to describe your purpose in life. You",
+    "options": [
+      {
+        "text": "To worship Allah, be His khalifah on earth, and earn Jannah.",
+        "weight": 4
+      },
+      {
+        "text": "To be happy and successful.",
+        "weight": 1
+      },
+      {
+        "text": "To leave the world better than I found it.",
+        "weight": 3
+      },
+      {
+        "text": "To take care of my family.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q180",
+    "category": "AKHIRAH",
+    "text": "You see someone living purely for dunya — career, money, pleasure. You think",
+    "options": [
+      {
+        "text": "Their real life hasn't started yet — I make dua they realize before it's too late.",
+        "weight": 4
+      },
+      {
+        "text": "They're living their best life.",
+        "weight": 1
+      },
+      {
+        "text": "To each their own.",
+        "weight": 2
+      },
+      {
+        "text": "They'll realize eventually.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q181",
+    "category": "AKHIRAH",
+    "text": "You're choosing between attending a friend's wedding or going to a halaqah. You",
+    "options": [
+      {
+        "text": "The halaqah — my akhirah investment takes priority.",
+        "weight": 4
+      },
+      {
+        "text": "The wedding — they'd be hurt if I didn't come.",
+        "weight": 2
+      },
+      {
+        "text": "Try to do both.",
+        "weight": 3
+      },
+      {
+        "text": "The wedding — there'll be other halaqahs.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q182",
+    "category": "AKHIRAH",
+    "text": "You think about your children's future. You prioritize",
+    "options": [
+      {
+        "text": "Their akhirah first — then their dunya. A child who fears Allah will succeed in both.",
+        "weight": 4
+      },
+      {
+        "text": "Their education and career.",
+        "weight": 1
+      },
+      {
+        "text": "Both equally.",
+        "weight": 3
+      },
+      {
+        "text": "Their happiness.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q183",
+    "category": "AKHIRAH",
+    "text": "You're buying a gift for someone. You",
+    "options": [
+      {
+        "text": "Choose something beneficial — maybe a book of dhikr or a Quran.",
+        "weight": 4
+      },
+      {
+        "text": "Buy whatever's trending.",
+        "weight": 1
+      },
+      {
+        "text": "Something practical they'll use.",
+        "weight": 3
+      },
+      {
+        "text": "Something expensive to impress them.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q184",
+    "category": "AKHIRAH",
+    "text": "You hear the adhan while you're in the middle of something. You",
+    "options": [
+      {
+        "text": "Drop everything — the Caller is Allah. Nothing is more important.",
+        "weight": 4
+      },
+      {
+        "text": "Finish what I'm doing first.",
+        "weight": 2
+      },
+      {
+        "text": "I'll pray in a few minutes.",
+        "weight": 2
+      },
+      {
+        "text": "Respond to the adhan and head to salah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q185",
+    "category": "AKHIRAH",
+    "text": "You think about what you want written on your gravestone. You",
+    "options": [
+      {
+        "text": "Something that testifies I tried my best for Allah — nothing else matters at that point.",
+        "weight": 4
+      },
+      {
+        "text": "A nice quote about life.",
+        "weight": 1
+      },
+      {
+        "text": "My accomplishments.",
+        "weight": 1
+      },
+      {
+        "text": "Something simple and humble.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q186",
+    "category": "AKHIRAH",
+    "text": "You're choosing between two activities: one beneficial for your deen, one for your career. You",
+    "options": [
+      {
+        "text": "The deen activity — career success without deen is the ultimate loss.",
+        "weight": 4
+      },
+      {
+        "text": "The career activity — I need to be practical.",
+        "weight": 1
+      },
+      {
+        "text": "Alternate between both.",
+        "weight": 3
+      },
+      {
+        "text": "Do the career one — I can do deen stuff later.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q187",
+    "category": "AKHIRAH",
+    "text": "You think about the Day of Judgment. You feel",
+    "options": [
+      {
+        "text": "Hopeful — Allah's mercy is greater than my sins, but I prepare as if my deeds are barely enough.",
+        "weight": 4
+      },
+      {
+        "text": "Fearful — I have more sins than good deeds.",
+        "weight": 2
+      },
+      {
+        "text": "I don't think about it much.",
+        "weight": 1
+      },
+      {
+        "text": "Anxious but trusting in Allah's mercy.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q188",
+    "category": "AKHIRAH",
+    "text": "You're spending money on a luxury item. You think",
+    "options": [
+      {
+        "text": "Is this a need or a want? Will I be asked about this on the Day of Judgment?",
+        "weight": 4
+      },
+      {
+        "text": "I earned it — I deserve to enjoy it.",
+        "weight": 1
+      },
+      {
+        "text": "I'll buy it but feel slightly guilty.",
+        "weight": 2
+      },
+      {
+        "text": "One treat is fine — as long as I'm also giving sadaqah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q189",
+    "category": "AKHIRAH",
+    "text": "You're scheduling your week. You",
+    "options": [
+      {
+        "text": "Put salah and Quran time first — everything else fits around them.",
+        "weight": 4
+      },
+      {
+        "text": "Fit worship in wherever there's space.",
+        "weight": 2
+      },
+      {
+        "text": "Schedule work and social first.",
+        "weight": 1
+      },
+      {
+        "text": "Try to balance everything.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q190",
+    "category": "AKHIRAH",
+    "text": "You hear a reminder about theakhirah. You",
+    "options": [
+      {
+        "text": "Take it seriously — reflect on how to act on it today.",
+        "weight": 4
+      },
+      {
+        "text": "It's nice to hear.",
+        "weight": 2
+      },
+      {
+        "text": "I've heard it before.",
+        "weight": 2
+      },
+      {
+        "text": "Feel motivated for a few hours then forget.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q191",
+    "category": "AKHIRAH",
+    "text": "You think about what you'll miss most if you go to Jannah. You",
+    "options": [
+      {
+        "text": "Nothing — Jannah has everything and more. The real question is what I'll miss if I don't go.",
+        "weight": 4
+      },
+      {
+        "text": "The people I love who might not be there.",
+        "weight": 3
+      },
+      {
+        "text": "The simple pleasures of dunya.",
+        "weight": 2
+      },
+      {
+        "text": "I try not to think about it.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q192",
+    "category": "AKHIRAH",
+    "text": "You're deciding how to spend your lunch break. You",
+    "options": [
+      {
+        "text": "Eat, make dhikr, and maybe read a page of Quran.",
+        "weight": 4
+      },
+      {
+        "text": "Scroll through social media.",
+        "weight": 1
+      },
+      {
+        "text": "Eat and relax.",
+        "weight": 2
+      },
+      {
+        "text": "Eat and socialize with colleagues.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q193",
+    "category": "AKHIRAH",
+    "text": "You feel attached to a worldly possession. You",
+    "options": [
+      {
+        "text": "Remind yourself — this is a loan from Allah, not a permanent gift.",
+        "weight": 4
+      },
+      {
+        "text": "Enjoy it fully.",
+        "weight": 1
+      },
+      {
+        "text": "Try not to get too attached.",
+        "weight": 3
+      },
+      {
+        "text": "I worked hard for it — I'm allowed to be attached.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q194",
+    "category": "AKHIRAH",
+    "text": "You think about what legacy you want to leave. You",
+    "options": [
+      {
+        "text": "Sadaqah jariyah — ongoing charity, beneficial knowledge, and righteous children.",
+        "weight": 4
+      },
+      {
+        "text": "Wealth and property for my family.",
+        "weight": 1
+      },
+      {
+        "text": "A good reputation.",
+        "weight": 2
+      },
+      {
+        "text": "Something that benefits the community.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q195",
+    "category": "AKHIRAH",
+    "text": "You're offered a shortcut to success that involves compromising your deen. You",
+    "options": [
+      {
+        "text": "Refuse — the long road with Allah is better than the shortcut without Him.",
+        "weight": 4
+      },
+      {
+        "text": "Take it — everyone does.",
+        "weight": 1
+      },
+      {
+        "text": "I'll take it and repent.",
+        "weight": 1
+      },
+      {
+        "text": "Find a halal alternative even if it's slower.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q196",
+    "category": "AKHIRAH",
+    "text": "You think about the concept of hisab (accountability). You",
+    "options": [
+      {
+        "text": "It keeps me in check — every action is recorded, every intention matters.",
+        "weight": 4
+      },
+      {
+        "text": "Allah is merciful — He'll forgive everything.",
+        "weight": 2
+      },
+      {
+        "text": "I don't think about it.",
+        "weight": 1
+      },
+      {
+        "text": "I try to live as if I'll be questioned tomorrow.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q197",
+    "category": "AKHIRAH",
+    "text": "You're choosing a school for your children. You prioritize",
+    "options": [
+      {
+        "text": "Strong Islamic foundation AND good academics — deen comes first.",
+        "weight": 4
+      },
+      {
+        "text": "Best academic ranking only.",
+        "weight": 1
+      },
+      {
+        "text": "Whatever is closest and most convenient.",
+        "weight": 2
+      },
+      {
+        "text": "A school that balances both.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q198",
+    "category": "AKHIRAH",
+    "text": "You feel like you're wasting your youth. You think",
+    "options": [
+      {
+        "text": "Youth is the most valuable capital — invest it in what pleases Allah.",
+        "weight": 4
+      },
+      {
+        "text": "I'm young — I have time.",
+        "weight": 1
+      },
+      {
+        "text": "I should be more productive.",
+        "weight": 3
+      },
+      {
+        "text": "Everyone wastes their youth a little.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q199",
+    "category": "AKHIRAH",
+    "text": "You're asked \"what's the point of all this worship?\" You",
+    "options": [
+      {
+        "text": "To earn the pleasure of the One who created me — and to earn a home in Jannah.",
+        "weight": 4
+      },
+      {
+        "text": "It gives me structure and peace.",
+        "weight": 2
+      },
+      {
+        "text": "It's what I was raised to do.",
+        "weight": 1
+      },
+      {
+        "text": "It connects me to something bigger than myself.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q200",
+    "category": "AKHIRAH",
+    "text": "You think about meeting Allah. You feel",
+    "options": [
+      {
+        "text": "Longing — I want to meet Him and I want Him to be pleased with me.",
+        "weight": 4
+      },
+      {
+        "text": "Scared.",
+        "weight": 2
+      },
+      {
+        "text": "I try not to think about it.",
+        "weight": 1
+      },
+      {
+        "text": "Hopeful and fearful at the same time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q201",
+    "category": "SABR_SHUKR",
+    "text": "You're stuck in a difficult situation with no way out. You",
+    "options": [
+      {
+        "text": "Say 'HasbunAllahu wa ni'mal wakeel' and trust Allah's plan.",
+        "weight": 4
+      },
+      {
+        "text": "Panic and try to force a solution.",
+        "weight": 1
+      },
+      {
+        "text": "Complain to everyone around me.",
+        "weight": 1
+      },
+      {
+        "text": "Be patient but actively look for solutions.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q202",
+    "category": "SABR_SHUKR",
+    "text": "You receive a blessing you've been wanting for years. You",
+    "options": [
+      {
+        "text": "Increase in sujood ash-shukr — the best response to blessing is gratitude in action.",
+        "weight": 4
+      },
+      {
+        "text": "Finally! About time.",
+        "weight": 1
+      },
+      {
+        "text": "Enjoy it.",
+        "weight": 2
+      },
+      {
+        "text": "Alhamdulillah — I hope I'm worthy of this.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q203",
+    "category": "SABR_SHUKR",
+    "text": "Someone wrongs you and never apologizes. You",
+    "options": [
+      {
+        "text": "Forgive them for Allah's sake — the reward of forgiveness is greater than the apology.",
+        "weight": 4
+      },
+      {
+        "text": "Hold a grudge until they apologize.",
+        "weight": 1
+      },
+      {
+        "text": "Confront them aggressively.",
+        "weight": 1
+      },
+      {
+        "text": "Distance yourself but don't hold hatred.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q204",
+    "category": "SABR_SHUKR",
+    "text": "You're going through a long hardship. You",
+    "options": [
+      {
+        "text": "Remember that Allah promises ease after every hardship — this too shall pass.",
+        "weight": 4
+      },
+      {
+        "text": "When will this end?",
+        "weight": 2
+      },
+      {
+        "text": "I'm losing hope.",
+        "weight": 1
+      },
+      {
+        "text": "I'll endure — there must be a lesson in this.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q205",
+    "category": "SABR_SHUKR",
+    "text": "You see someone with more than you. You",
+    "options": [
+      {
+        "text": "Look at those below you and be grateful — comparison is the thief of contentment.",
+        "weight": 4
+      },
+      {
+        "text": "I deserve what they have.",
+        "weight": 1
+      },
+      {
+        "text": "I should work harder.",
+        "weight": 2
+      },
+      {
+        "text": "Alhamdulillah for what I have — their rizq is theirs.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q206",
+    "category": "SABR_SHUKR",
+    "text": "You lose your wallet with all your cards and cash. You",
+    "options": [
+      {
+        "text": "Say 'Inna lillahi wa inna ilayhi raji'un' — it was never truly mine.",
+        "weight": 4
+      },
+      {
+        "text": "This is a disaster.",
+        "weight": 1
+      },
+      {
+        "text": "I need to cancel everything immediately.",
+        "weight": 3
+      },
+      {
+        "text": "Why does this always happen to me?",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q207",
+    "category": "SABR_SHUKR",
+    "text": "Someone criticizes you unfairly. You",
+    "options": [
+      {
+        "text": "If the criticism has truth, improve. If not, let it go — Allah knows your intention.",
+        "weight": 4
+      },
+      {
+        "text": "Attack them back.",
+        "weight": 1
+      },
+      {
+        "text": "Dwell on it for days.",
+        "weight": 2
+      },
+      {
+        "text": "Prove them wrong through actions.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q208",
+    "category": "SABR_SHUKR",
+    "text": "You're fasting and someone offers you food. You",
+    "options": [
+      {
+        "text": "Politely decline and feel grateful that fasting reminds you of those who have no choice.",
+        "weight": 4
+      },
+      {
+        "text": "Get annoyed — they should know I'm fasting.",
+        "weight": 1
+      },
+      {
+        "text": "Decline without explanation.",
+        "weight": 2
+      },
+      {
+        "text": "Appreciate the offer and explain.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q209",
+    "category": "SABR_SHUKR",
+    "text": "You're tested with a chronic illness. You",
+    "options": [
+      {
+        "text": "Every moment of pain is a sin erased — Allah is purifying you through this.",
+        "weight": 4
+      },
+      {
+        "text": "Why me?",
+        "weight": 1
+      },
+      {
+        "text": "I just want it to end.",
+        "weight": 2
+      },
+      {
+        "text": "I'll seek treatment and trust Allah's wisdom.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q210",
+    "category": "SABR_SHUKR",
+    "text": "You achieve something you worked hard for. You",
+    "options": [
+      {
+        "text": "Make sujood ash-shukr — this success is from Allah, not just your effort.",
+        "weight": 4
+      },
+      {
+        "text": "I did this myself.",
+        "weight": 1
+      },
+      {
+        "text": "Celebrate and move on.",
+        "weight": 2
+      },
+      {
+        "text": "Alhamdulillah — and share the good news with loved ones.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q211",
+    "category": "SABR_SHUKR",
+    "text": "Your plans get cancelled at the last minute. You",
+    "options": [
+      {
+        "text": "Allah's plan is better — maybe this cancellation was a protection.",
+        "weight": 4
+      },
+      {
+        "text": "So frustrating — my time was wasted.",
+        "weight": 1
+      },
+      {
+        "text": "I'll reschedule.",
+        "weight": 3
+      },
+      {
+        "text": "These things happen.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q212",
+    "category": "SABR_SHUKR",
+    "text": "You see someone in a worse situation than you. You",
+    "options": [
+      {
+        "text": "Make dua for them and feel grateful — your test could be harder.",
+        "weight": 4
+      },
+      {
+        "text": "At least I'm not in their shoes.",
+        "weight": 2
+      },
+      {
+        "text": "Feel bad for them.",
+        "weight": 2
+      },
+      {
+        "text": "Help them if I can.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q213",
+    "category": "SABR_SHUKR",
+    "text": "You face the same problem for the third time. You",
+    "options": [
+      {
+        "text": "Allah is testing my sabr until I truly learn — I'll pass this time.",
+        "weight": 4
+      },
+      {
+        "text": "I can't take this anymore.",
+        "weight": 1
+      },
+      {
+        "text": "I need to find a permanent solution.",
+        "weight": 3
+      },
+      {
+        "text": "Maybe I'm doing something wrong.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q214",
+    "category": "SABR_SHUKR",
+    "text": "You receive unexpected good news. You",
+    "options": [
+      {
+        "text": "Allahu Akbar — this is from Allah's favor. I must be grateful and use it well.",
+        "weight": 4
+      },
+      {
+        "text": "Finally something good happens to me.",
+        "weight": 2
+      },
+      {
+        "text": "About time!",
+        "weight": 1
+      },
+      {
+        "text": "Share the happiness with loved ones.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q215",
+    "category": "SABR_SHUKR",
+    "text": "Someone you care about disappoints you deeply. You",
+    "options": [
+      {
+        "text": "Forgive them — humans are flawed. Only Allah never disappoints.",
+        "weight": 4
+      },
+      {
+        "text": "Cut them off completely.",
+        "weight": 1
+      },
+      {
+        "text": "I'll need time to process this.",
+        "weight": 3
+      },
+      {
+        "text": "Confront them and express my feelings.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q216",
+    "category": "SABR_SHUKR",
+    "text": "You're waiting for something important and it's delayed. You",
+    "options": [
+      {
+        "text": "Sabr is the key — if it's good for me, Allah will bring it at the right time.",
+        "weight": 4
+      },
+      {
+        "text": "I need to take matters into my own hands.",
+        "weight": 2
+      },
+      {
+        "text": "I'm losing patience.",
+        "weight": 1
+      },
+      {
+        "text": "I'll keep making dua and working toward it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q217",
+    "category": "SABR_SHUKR",
+    "text": "You're in pain (physical or emotional). You",
+    "options": [
+      {
+        "text": "Say the du'a of pain and remember — this is either a test or an expiation of sins.",
+        "weight": 4
+      },
+      {
+        "text": "I just want it to stop.",
+        "weight": 2
+      },
+      {
+        "text": "Distract myself.",
+        "weight": 2
+      },
+      {
+        "text": "Seek treatment and make dua simultaneously.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q218",
+    "category": "SABR_SHUKR",
+    "text": "You complain about the weather, traffic, or small inconveniences. You",
+    "options": [
+      {
+        "text": "Catch yourself — these are small tests. Be grateful you have a car, a home, and safety.",
+        "weight": 4
+      },
+      {
+        "text": "These things are genuinely annoying.",
+        "weight": 2
+      },
+      {
+        "text": "Everyone complains about these.",
+        "weight": 1
+      },
+      {
+        "text": "Try to stay positive.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q219",
+    "category": "SABR_SHUKR",
+    "text": "You're dealing with an ungrateful person. You",
+    "options": [
+      {
+        "text": "Continue being good — your reward is with Allah, not their gratitude.",
+        "weight": 4
+      },
+      {
+        "text": "Stop helping them.",
+        "weight": 2
+      },
+      {
+        "text": "Tell them how ungrateful they are.",
+        "weight": 1
+      },
+      {
+        "text": "Help from a distance.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q220",
+    "category": "SABR_SHUKR",
+    "text": "You lose a competition you prepared months for. You",
+    "options": [
+      {
+        "text": "The preparation itself was beneficial — Allah's plan for me is better than my plan.",
+        "weight": 4
+      },
+      {
+        "text": "All that effort for nothing.",
+        "weight": 1
+      },
+      {
+        "text": "I need to train harder.",
+        "weight": 3
+      },
+      {
+        "text": "I'm disappointed but I'll try again.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q221",
+    "category": "SABR_SHUKR",
+    "text": "You feel like Allah is testing you more than others. You",
+    "options": [
+      {
+        "text": "Allah tests those He loves — the harder the test, the greater the reward.",
+        "weight": 4
+      },
+      {
+        "text": "Why am I always tested?",
+        "weight": 1
+      },
+      {
+        "text": "Everyone has their own tests — I just don't see theirs.",
+        "weight": 3
+      },
+      {
+        "text": "Maybe I'm being punished.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q222",
+    "category": "SABR_SHUKR",
+    "text": "Someone praises you. You",
+    "options": [
+      {
+        "text": "Say 'Alhamdulillah' — all good is from Allah. Don't let praise inflate your ego.",
+        "weight": 4
+      },
+      {
+        "text": "I deserve this compliment.",
+        "weight": 1
+      },
+      {
+        "text": "Thank them graciously.",
+        "weight": 3
+      },
+      {
+        "text": "Feel good about myself.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q223",
+    "category": "SABR_SHUKR",
+    "text": "You're doing everything right but results aren't coming. You",
+    "options": [
+      {
+        "text": "My job is to put in the effort — the results are with Allah. Trust His timing.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe I should try something different.",
+        "weight": 3
+      },
+      {
+        "text": "I give up.",
+        "weight": 1
+      },
+      {
+        "text": "It's frustrating but I'll keep going.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q224",
+    "category": "SABR_SHUKR",
+    "text": "You see someone who hurt you being blessed. You",
+    "options": [
+      {
+        "text": "Their blessings don't take from mine — Allah's rizq is vast for everyone.",
+        "weight": 4
+      },
+      {
+        "text": "That's unfair.",
+        "weight": 1
+      },
+      {
+        "text": "I should be happy for them.",
+        "weight": 3
+      },
+      {
+        "text": "Life is unfair.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q225",
+    "category": "SABR_SHUKR",
+    "text": "You're in a trial that's lasted years. You",
+    "options": [
+      {
+        "text": "Prophet Ayyub (AS) was patient for years — the reward is proportional to the patience.",
+        "weight": 4
+      },
+      {
+        "text": "I've been patient long enough.",
+        "weight": 2
+      },
+      {
+        "text": "Maybe this is just my life now.",
+        "weight": 1
+      },
+      {
+        "text": "I'll keep making dua and trusting Allah.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q226",
+    "category": "SABR_SHUKR",
+    "text": "You feel grateful but don't know how to express it. You",
+    "options": [
+      {
+        "text": "Express gratitude through obedience — the best shukr is using the blessing in a way that pleases Allah.",
+        "weight": 4
+      },
+      {
+        "text": "Just say Alhamdulillah.",
+        "weight": 2
+      },
+      {
+        "text": "I feel it inside — that's enough.",
+        "weight": 2
+      },
+      {
+        "text": "Share the blessing with others.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q227",
+    "category": "SABR_SHUKR",
+    "text": "You're dealing with a person who constantly tests your patience. You",
+    "options": [
+      {
+        "text": "See them as a means of earning reward — every moment of patience with them is ibadah.",
+        "weight": 4
+      },
+      {
+        "text": "I need to cut them off.",
+        "weight": 2
+      },
+      {
+        "text": "Explode and get it over with.",
+        "weight": 1
+      },
+      {
+        "text": "Set boundaries while remaining respectful.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q228",
+    "category": "SABR_SHUKR",
+    "text": "Your electricity goes out on a hot summer night. You",
+    "options": [
+      {
+        "text": "Think of those without electricity permanently — Alhamdulillah for what I usually have.",
+        "weight": 4
+      },
+      {
+        "text": "This is unbearable.",
+        "weight": 1
+      },
+      {
+        "text": "I need to complain to the utility company.",
+        "weight": 3
+      },
+      {
+        "text": "Open the windows and be patient.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q229",
+    "category": "SABR_SHUKR",
+    "text": "You're overlooked for recognition you deserved. You",
+    "options": [
+      {
+        "text": "Allah sees what others don't — the best recognition is from Him.",
+        "weight": 4
+      },
+      {
+        "text": "Make sure people know what I did.",
+        "weight": 1
+      },
+      {
+        "text": "It's fine — I did it for Allah anyway.",
+        "weight": 3
+      },
+      {
+        "text": "I feel undervalued.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q230",
+    "category": "SABR_SHUKR",
+    "text": "You're tested with poverty. You think",
+    "options": [
+      {
+        "text": "The Prophet ﷺ chose poverty — there's honor and barakah in it when borne with patience.",
+        "weight": 4
+      },
+      {
+        "text": "I need to get rich no matter what.",
+        "weight": 1
+      },
+      {
+        "text": "This is temporary — I'll work hard.",
+        "weight": 3
+      },
+      {
+        "text": "Poverty is a curse.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q231",
+    "category": "SABR_SHUKR",
+    "text": "Someone thanks you for a small favor. You",
+    "options": [
+      {
+        "text": "Redirect the gratitude — 'Alhamdulillah, Allah made me a means to help you.'",
+        "weight": 4
+      },
+      {
+        "text": "It was nothing.",
+        "weight": 2
+      },
+      {
+        "text": "You're welcome.",
+        "weight": 3
+      },
+      {
+        "text": "I'm glad I could help.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q232",
+    "category": "SABR_SHUKR",
+    "text": "You're going through a season of ease after a long hardship. You",
+    "options": [
+      {
+        "text": "Be extra grateful — ease after hardship is a sign of Allah's mercy. Prepare for the next test.",
+        "weight": 4
+      },
+      {
+        "text": "Finally — I can relax.",
+        "weight": 2
+      },
+      {
+        "text": "Enjoy it while it lasts.",
+        "weight": 2
+      },
+      {
+        "text": "Use this ease to build resources for the next test.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q233",
+    "category": "SABR_SHUKR",
+    "text": "You make a mistake at work and are publicly corrected. You",
+    "options": [
+      {
+        "text": "Accept it with grace — humility is a sign of strength, not weakness.",
+        "weight": 4
+      },
+      {
+        "text": "Get defensive.",
+        "weight": 1
+      },
+      {
+        "text": "Feel humiliated.",
+        "weight": 2
+      },
+      {
+        "text": "Learn from it and move on.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q234",
+    "category": "SABR_SHUKR",
+    "text": "You feel like your sabr is running out. You",
+    "options": [
+      {
+        "text": "Renew your sabr with dhikr and dua — sabr is not a finite resource, it's renewed by connection to Allah.",
+        "weight": 4
+      },
+      {
+        "text": "I've had enough.",
+        "weight": 1
+      },
+      {
+        "text": "I need a break.",
+        "weight": 2
+      },
+      {
+        "text": "Talk to someone I trust about what I'm feeling.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q235",
+    "category": "SABR_SHUKR",
+    "text": "You're blessed with something others are struggling to get. You",
+    "options": [
+      {
+        "text": "Be humble and share — the blessed are blessed to be a blessing to others.",
+        "weight": 4
+      },
+      {
+        "text": "I worked hard for this — they should too.",
+        "weight": 1
+      },
+      {
+        "text": "I feel guilty.",
+        "weight": 2
+      },
+      {
+        "text": "Help others get it too if I can.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q236",
+    "category": "SABR_SHUKR",
+    "text": "You hear someone complaining about a blessing (e.g., \"this vacation is too short\"). You",
+    "options": [
+      {
+        "text": "Gently remind them — millions would dream of what they're complaining about.",
+        "weight": 4
+      },
+      {
+        "text": "Join in the complaint.",
+        "weight": 1
+      },
+      {
+        "text": "Ignore it.",
+        "weight": 2
+      },
+      {
+        "text": "Change the subject to something positive.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q237",
+    "category": "SABR_SHUKR",
+    "text": "You're in a situation where being honest will cost you. You",
+    "options": [
+      {
+        "text": "Choose honesty — the temporary cost is nothing compared to the permanent reward.",
+        "weight": 4
+      },
+      {
+        "text": "Lie to protect myself.",
+        "weight": 1
+      },
+      {
+        "text": "Find a way to be partially honest.",
+        "weight": 2
+      },
+      {
+        "text": "Tell the truth and trust Allah with the outcome.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q238",
+    "category": "SABR_SHUKR",
+    "text": "You're grateful for your health. You",
+    "options": [
+      {
+        "text": "Protect this blessing — use your health in worship before it's taken.",
+        "weight": 4
+      },
+      {
+        "text": "Take it for granted — I'm young and healthy.",
+        "weight": 1
+      },
+      {
+        "text": "Be grateful but not think much about it.",
+        "weight": 2
+      },
+      {
+        "text": "Exercise and eat well as a form of shukr.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q239",
+    "category": "SABR_SHUKR",
+    "text": "You lose something valuable to you. You",
+    "options": [
+      {
+        "text": "Say 'Inna lillahi wa inna ilayhi raji'un' — everything returns to its Owner.",
+        "weight": 4
+      },
+      {
+        "text": "I need to find it immediately.",
+        "weight": 2
+      },
+      {
+        "text": "I'm devastated.",
+        "weight": 1
+      },
+      {
+        "text": "Look for it while trusting Allah's plan.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q240",
+    "category": "SABR_SHUKR",
+    "text": "At the end of a hard day, you",
+    "options": [
+      {
+        "text": "Make a list of things you're still grateful for — gratitude reframes everything.",
+        "weight": 4
+      },
+      {
+        "text": "Just go to sleep.",
+        "weight": 1
+      },
+      {
+        "text": "Complain about how hard it was.",
+        "weight": 1
+      },
+      {
+        "text": "Reflect on what went well and what didn't.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q241",
+    "category": "ILM",
+    "text": "When was the last time you learned something new about Islam?",
+    "options": [
+      {
+        "text": "This week — I actively seek knowledge regularly.",
+        "weight": 4
+      },
+      {
+        "text": "I can't remember.",
+        "weight": 1
+      },
+      {
+        "text": "A few weeks ago — when I happened to hear something.",
+        "weight": 2
+      },
+      {
+        "text": "Recently — I've been trying to learn more.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q242",
+    "category": "ILM",
+    "text": "You hear a ruling you didn't know before. You",
+    "options": [
+      {
+        "text": "Accept it with humility — learning is lifelong in Islam.",
+        "weight": 4
+      },
+      {
+        "text": "I've been Muslim this long and didn't know this?",
+        "weight": 2
+      },
+      {
+        "text": "I'll research it before accepting.",
+        "weight": 3
+      },
+      {
+        "text": "If it doesn't affect me, I'll ignore it.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q243",
+    "category": "ILM",
+    "text": "You find a book of Islamic knowledge. You",
+    "options": [
+      {
+        "text": "Start reading — even a few pages a day adds up.",
+        "weight": 4
+      },
+      {
+        "text": "I'll read it eventually.",
+        "weight": 2
+      },
+      {
+        "text": "Books are boring — I'll watch a video instead.",
+        "weight": 2
+      },
+      {
+        "text": "I don't have time for this.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q244",
+    "category": "ILM",
+    "text": "You disagree with a scholar's ruling. You",
+    "options": [
+      {
+        "text": "Study the evidence first — maybe they know something I don't.",
+        "weight": 4
+      },
+      {
+        "text": "I know better.",
+        "weight": 1
+      },
+      {
+        "text": "I'll follow whoever agrees with me.",
+        "weight": 1
+      },
+      {
+        "text": "I'll ask for clarification respectfully.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q245",
+    "category": "ILM",
+    "text": "You're in a discussion about Islam and someone asks you a question you can't answer. You",
+    "options": [
+      {
+        "text": "Say 'I don't know, but I'll find out' — this is the Sunnah of the scholars.",
+        "weight": 4
+      },
+      {
+        "text": "Make something up.",
+        "weight": 1
+      },
+      {
+        "text": "Say 'Allahu alem' and leave it at that.",
+        "weight": 2
+      },
+      {
+        "text": "Direct them to someone who knows.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q246",
+    "category": "ILM",
+    "text": "You have the choice between watching a lecture or entertainment. You",
+    "options": [
+      {
+        "text": "Choose the lecture — even if it's shorter, the benefit lasts longer.",
+        "weight": 4
+      },
+      {
+        "text": "Entertainment — I need to relax.",
+        "weight": 1
+      },
+      {
+        "text": "Alternate between both.",
+        "weight": 3
+      },
+      {
+        "text": "Depends on my mood.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q247",
+    "category": "ILM",
+    "text": "You hear a hadith you've never heard before. You",
+    "options": [
+      {
+        "text": "Verify its authenticity, then act on it if it's sound.",
+        "weight": 4
+      },
+      {
+        "text": "Share it immediately — it sounds beautiful.",
+        "weight": 1
+      },
+      {
+        "text": "I'll look into it later.",
+        "weight": 2
+      },
+      {
+        "text": "Listen and reflect on it.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q248",
+    "category": "ILM",
+    "text": "You feel like you know enough about Islam. You think",
+    "options": [
+      {
+        "text": "The ocean of Islamic knowledge is infinite — I'm just at the shore.",
+        "weight": 4
+      },
+      {
+        "text": "I know the basics — that's enough.",
+        "weight": 1
+      },
+      {
+        "text": "I should keep learning but I'm comfortable.",
+        "weight": 2
+      },
+      {
+        "text": "There's always more to learn.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q249",
+    "category": "ILM",
+    "text": "You're reading the Quran but don't understand Arabic. You",
+    "options": [
+      {
+        "text": "Read with translation and tafsir — understanding transforms the experience.",
+        "weight": 4
+      },
+      {
+        "text": "Just read the Arabic — the reward is in the recitation.",
+        "weight": 2
+      },
+      {
+        "text": "I should learn Arabic.",
+        "weight": 3
+      },
+      {
+        "text": "I'll stick to listening to recitations.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q250",
+    "category": "ILM",
+    "text": "You see an Islamic course online. You",
+    "options": [
+      {
+        "text": "Enroll — investing in knowledge is the best investment.",
+        "weight": 4
+      },
+      {
+        "text": "I'll bookmark it for later.",
+        "weight": 2
+      },
+      {
+        "text": "I don't have time.",
+        "weight": 1
+      },
+      {
+        "text": "Check the reviews and syllabus first.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q251",
+    "category": "ILM",
+    "text": "Someone less knowledgeable than you corrects you on something Islamic. You",
+    "options": [
+      {
+        "text": "Check if they're right — knowledge can come from anyone.",
+        "weight": 4
+      },
+      {
+        "text": "Who are they to correct me?",
+        "weight": 1
+      },
+      {
+        "text": "Listen politely and ignore.",
+        "weight": 2
+      },
+      {
+        "text": "Thank them and verify.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q252",
+    "category": "ILM",
+    "text": "You're asked to teach someone about Islam. You",
+    "options": [
+      {
+        "text": "Teach what you know, admit what you don't — sincerity is the teacher's best tool.",
+        "weight": 4
+      },
+      {
+        "text": "I'm not qualified.",
+        "weight": 2
+      },
+      {
+        "text": "Teach confidently even if I'm unsure.",
+        "weight": 1
+      },
+      {
+        "text": "Share what I know and recommend better sources for what I don't.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q253",
+    "category": "ILM",
+    "text": "You learn that a scholar you follow made a mistake. You",
+    "options": [
+      {
+        "text": "Scholars are human — respect the knowledge, not the person infallibly.",
+        "weight": 4
+      },
+      {
+        "text": "Stop following everything they say.",
+        "weight": 2
+      },
+      {
+        "text": "Defend them no matter what.",
+        "weight": 1
+      },
+      {
+        "text": "Evaluate their other teachings independently.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q254",
+    "category": "ILM",
+    "text": "You're choosing between two Islamic books. You",
+    "options": [
+      {
+        "text": "Choose the one that addresses your current spiritual need.",
+        "weight": 4
+      },
+      {
+        "text": "Choose the thinner one.",
+        "weight": 1
+      },
+      {
+        "text": "Choose the more popular one.",
+        "weight": 2
+      },
+      {
+        "text": "Choose the one by the more famous author.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q255",
+    "category": "ILM",
+    "text": "You feel like Islamic knowledge is too complex for you. You",
+    "options": [
+      {
+        "text": "Start with what you can understand — Allah increases those who seek.",
+        "weight": 4
+      },
+      {
+        "text": "Leave it to the scholars.",
+        "weight": 1
+      },
+      {
+        "text": "I'll learn gradually.",
+        "weight": 3
+      },
+      {
+        "text": "It's overwhelming.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q256",
+    "category": "ILM",
+    "text": "You hear two scholars with opposing views. You",
+    "options": [
+      {
+        "text": "Study the evidence from both sides and follow the stronger proof.",
+        "weight": 4
+      },
+      {
+        "text": "Follow whoever I like more.",
+        "weight": 1
+      },
+      {
+        "text": "Follow the easier opinion.",
+        "weight": 1
+      },
+      {
+        "text": "Ask a trusted third scholar for guidance.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q257",
+    "category": "ILM",
+    "text": "You realize you've been doing an act of worship wrong for a long time. You",
+    "options": [
+      {
+        "text": "Correct it immediately and be grateful you learned — better late than never.",
+        "weight": 4
+      },
+      {
+        "text": "Keep doing it — I've done it this long.",
+        "weight": 1
+      },
+      {
+        "text": "Feel embarrassed but change.",
+        "weight": 3
+      },
+      {
+        "text": "Ask if there's a difference of opinion that validates my way.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q258",
+    "category": "ILM",
+    "text": "You have free time on a Friday. You",
+    "options": [
+      {
+        "text": "Read Surah Kahf, make dhikr, and maybe listen to a beneficial talk.",
+        "weight": 4
+      },
+      {
+        "text": "It's just another day off.",
+        "weight": 1
+      },
+      {
+        "text": "Read Surah Kahf and relax.",
+        "weight": 3
+      },
+      {
+        "text": "Catch up on personal tasks.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q259",
+    "category": "ILM",
+    "text": "You're in a halaqah (study circle) and feel bored. You",
+    "options": [
+      {
+        "text": "Push through — the barakah is in the consistency, not just the feeling.",
+        "weight": 4
+      },
+      {
+        "text": "Leave quietly.",
+        "weight": 1
+      },
+      {
+        "text": "Check my phone under the table.",
+        "weight": 1
+      },
+      {
+        "text": "Try to engage more actively.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q260",
+    "category": "ILM",
+    "text": "You hear a beautiful tafsir of a verse you've read many times. You",
+    "options": [
+      {
+        "text": "This is the beauty of the Quran — it reveals new layers every time you approach it.",
+        "weight": 4
+      },
+      {
+        "text": "How did I miss that?",
+        "weight": 2
+      },
+      {
+        "text": "Share it with others.",
+        "weight": 3
+      },
+      {
+        "text": "I should study tafsir more.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q261",
+    "category": "ILM",
+    "text": "You're asked about a topic you studied before but forgot. You",
+    "options": [
+      {
+        "text": "Review it — knowledge needs revision to stay.",
+        "weight": 4
+      },
+      {
+        "text": "Make something up to sound knowledgeable.",
+        "weight": 1
+      },
+      {
+        "text": "Admit I forgot and look it up.",
+        "weight": 3
+      },
+      {
+        "text": "Say 'I used to know this.'",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q262",
+    "category": "ILM",
+    "text": "You learn that a practice you do has no basis in Islam. You",
+    "options": [
+      {
+        "text": "Stop it with gratitude — Allah saved you from an innovation.",
+        "weight": 4
+      },
+      {
+        "text": "Keep doing it — it feels spiritual.",
+        "weight": 1
+      },
+      {
+        "text": "Research more before stopping.",
+        "weight": 3
+      },
+      {
+        "text": "Gradually phase it out.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q263",
+    "category": "ILM",
+    "text": "You have the chance to memorize Quran. You",
+    "options": [
+      {
+        "text": "Start with what you can — even one ayah a day is planting a tree in Jannah.",
+        "weight": 4
+      },
+      {
+        "text": "I'm too old / busy for that.",
+        "weight": 1
+      },
+      {
+        "text": "I'll try a few surahs.",
+        "weight": 3
+      },
+      {
+        "text": "I should have started younger.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q264",
+    "category": "ILM",
+    "text": "You see a beneficial Islamic post on social media. You",
+    "options": [
+      {
+        "text": "Save it, reflect on it, and try to implement one thing from it.",
+        "weight": 4
+      },
+      {
+        "text": "Like it and scroll on.",
+        "weight": 1
+      },
+      {
+        "text": "Share it without reading it fully.",
+        "weight": 1
+      },
+      {
+        "text": "Read it carefully and apply what's relevant.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q265",
+    "category": "ILM",
+    "text": "You're discussing Islam with someone more knowledgeable. You",
+    "options": [
+      {
+        "text": "Listen more than you speak — this is how knowledge is gained.",
+        "weight": 4
+      },
+      {
+        "text": "Try to sound as knowledgeable as them.",
+        "weight": 1
+      },
+      {
+        "text": "Ask questions.",
+        "weight": 3
+      },
+      {
+        "text": "Feel intimidated and stay quiet.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q266",
+    "category": "ILM",
+    "text": "You find out that a practice you thought was Islamic is actually cultural. You",
+    "options": [
+      {
+        "text": "Separate culture from deen — follow what's Islamic, respect what's cultural without confusing the two.",
+        "weight": 4
+      },
+      {
+        "text": "Culture and religion are the same.",
+        "weight": 1
+      },
+      {
+        "text": "Keep doing it — it doesn't matter.",
+        "weight": 2
+      },
+      {
+        "text": "Research the Islamic alternative.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q267",
+    "category": "ILM",
+    "text": "You're asked to summarize a chapter of the Quran. You",
+    "options": [
+      {
+        "text": "Study it deeply first — teaching requires understanding, not just reading.",
+        "weight": 4
+      },
+      {
+        "text": "I'll wing it.",
+        "weight": 1
+      },
+      {
+        "text": "I'll look up a summary online.",
+        "weight": 2
+      },
+      {
+        "text": "Read the tafsir and prepare properly.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q268",
+    "category": "ILM",
+    "text": "You feel like you're not progressing in your Islamic knowledge. You",
+    "options": [
+      {
+        "text": "Consistency beats intensity — even small daily learning accumulates.",
+        "weight": 4
+      },
+      {
+        "text": "Maybe I'm not smart enough.",
+        "weight": 1
+      },
+      {
+        "text": "I need a better teacher.",
+        "weight": 2
+      },
+      {
+        "text": "Change my approach — maybe a different medium or topic.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q269",
+    "category": "ILM",
+    "text": "You see someone sharing Islamic knowledge incorrectly. You",
+    "options": [
+      {
+        "text": "Gently correct them with evidence — protecting the deen is everyone's responsibility.",
+        "weight": 4
+      },
+      {
+        "text": "Publicly shame them.",
+        "weight": 1
+      },
+      {
+        "text": "It's not my problem.",
+        "weight": 1
+      },
+      {
+        "text": "Message them privately.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q270",
+    "category": "ILM",
+    "text": "You're asked why you follow a particular madhab or school of thought. You",
+    "options": [
+      {
+        "text": "I follow the strongest evidence I can find — the madhab is a methodology, not a cult.",
+        "weight": 4
+      },
+      {
+        "text": "Because my family follows it.",
+        "weight": 2
+      },
+      {
+        "text": "I don't really know.",
+        "weight": 1
+      },
+      {
+        "text": "It's the most accessible to me.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q271",
+    "category": "ILM",
+    "text": "You attend a lecture and disagree with the speaker. You",
+    "options": [
+      {
+        "text": "Listen fully, research later, and verify with the Quran and Sunnah.",
+        "weight": 4
+      },
+      {
+        "text": "Walk out.",
+        "weight": 1
+      },
+      {
+        "text": "Confront them publicly.",
+        "weight": 1
+      },
+      {
+        "text": "Take notes and ask questions after.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q272",
+    "category": "ILM",
+    "text": "You feel like you should learn Arabic to understand the Quran. You",
+    "options": [
+      {
+        "text": "Start with basic Quranic Arabic — every word you learn deepens your salah.",
+        "weight": 4
+      },
+      {
+        "text": "It's too hard for me.",
+        "weight": 1
+      },
+      {
+        "text": "Translations are good enough.",
+        "weight": 2
+      },
+      {
+        "text": "Enroll in a beginner's course.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q273",
+    "category": "ILM",
+    "text": "You're browsing Islamic content online. You",
+    "options": [
+      {
+        "text": "Stick to trusted sources — not everything online is accurate.",
+        "weight": 4
+      },
+      {
+        "text": "Watch whatever comes in my feed.",
+        "weight": 1
+      },
+      {
+        "text": "Check who's sharing it before believing.",
+        "weight": 3
+      },
+      {
+        "text": "If it sounds good, it's probably right.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q274",
+    "category": "ILM",
+    "text": "You're asked to lead a prayer or give a talk. You",
+    "options": [
+      {
+        "text": "Accept if you're the most knowledgeable present — and prepare thoroughly.",
+        "weight": 4
+      },
+      {
+        "text": "Refuse — I'm not qualified.",
+        "weight": 2
+      },
+      {
+        "text": "Accept without preparing.",
+        "weight": 1
+      },
+      {
+        "text": "Accept and be honest about your level.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q275",
+    "category": "ILM",
+    "text": "You learn about a Sunnah practice you didn't know. You",
+    "options": [
+      {
+        "text": "Try to implement it — every Sunnah is a light.",
+        "weight": 4
+      },
+      {
+        "text": "It's optional — I'll skip it.",
+        "weight": 1
+      },
+      {
+        "text": "I'll think about it.",
+        "weight": 2
+      },
+      {
+        "text": "Start with the ones easiest to implement.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q276",
+    "category": "ILM",
+    "text": "You're in a conversation about Islam and realize you were wrong. You",
+    "options": [
+      {
+        "text": "Accept the correction gracefully — being right matters more than appearing right.",
+        "weight": 4
+      },
+      {
+        "text": "Defend your position even though you know you're wrong.",
+        "weight": 1
+      },
+      {
+        "text": "Change the subject.",
+        "weight": 2
+      },
+      {
+        "text": "Admit it and thank them.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q277",
+    "category": "ILM",
+    "text": "You feel like you should be doing more with your Islamic knowledge. You",
+    "options": [
+      {
+        "text": "Knowledge without action is a burden — start implementing one thing today.",
+        "weight": 4
+      },
+      {
+        "text": "I'll act when I know more.",
+        "weight": 1
+      },
+      {
+        "text": "I'm already doing enough.",
+        "weight": 2
+      },
+      {
+        "text": "Teach someone else what you know — teaching consolidates knowledge.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q278",
+    "category": "ILM",
+    "text": "You're choosing between two Islamic talks to attend. You",
+    "options": [
+      {
+        "text": "Choose the one that addresses your weakest area — that's where you'll grow most.",
+        "weight": 4
+      },
+      {
+        "text": "Choose the one by the more famous speaker.",
+        "weight": 1
+      },
+      {
+        "text": "Choose whichever is more convenient.",
+        "weight": 2
+      },
+      {
+        "text": "Choose the topic I'm already interested in.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q279",
+    "category": "ILM",
+    "text": "You see a child asking about Islam. You",
+    "options": [
+      {
+        "text": "Answer with patience and simplicity — the Prophet ﷺ loved children and taught them gently.",
+        "weight": 4
+      },
+      {
+        "text": "Tell them to ask their parents.",
+        "weight": 2
+      },
+      {
+        "text": "Give a complicated answer to impress.",
+        "weight": 1
+      },
+      {
+        "text": "Answer simply and encourage their curiosity.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q280",
+    "category": "ILM",
+    "text": "You think about your Islamic knowledge journey. You feel",
+    "options": [
+      {
+        "text": "Grateful for what I know, humble about what I don't, and eager to learn more.",
+        "weight": 4
+      },
+      {
+        "text": "I know enough.",
+        "weight": 1
+      },
+      {
+        "text": "I should have learned more by now.",
+        "weight": 2
+      },
+      {
+        "text": "It's a lifelong journey — I'm somewhere in the middle.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q281",
+    "category": "SOCIAL",
+    "text": "A shopkeeper gives you too much change. You",
+    "options": [
+      {
+        "text": "Return it immediately — this is from the deen of honesty.",
+        "weight": 4
+      },
+      {
+        "text": "Keep it — their mistake.",
+        "weight": 1
+      },
+      {
+        "text": "Feel guilty but keep it.",
+        "weight": 2
+      },
+      {
+        "text": "Return it only if they notice.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q282",
+    "category": "SOCIAL",
+    "text": "Your neighbor is having a loud party late at night. You",
+    "options": [
+      {
+        "text": "Be patient tonight — maybe talk to them kindly tomorrow about it.",
+        "weight": 4
+      },
+      {
+        "text": "Call the police immediately.",
+        "weight": 1
+      },
+      {
+        "text": "Make noise back.",
+        "weight": 1
+      },
+      {
+        "text": "Put on earplugs and deal with it.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q283",
+    "category": "SOCIAL",
+    "text": "You're in a business deal and the other party doesn't know the true value. You",
+    "options": [
+      {
+        "text": "Be fair — Islam commands justice even when you could benefit from ignorance.",
+        "weight": 4
+      },
+      {
+        "text": "Take advantage — business is business.",
+        "weight": 1
+      },
+      {
+        "text": "Give a slight discount to feel better.",
+        "weight": 2
+      },
+      {
+        "text": "Inform them of the true value.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q284",
+    "category": "SOCIAL",
+    "text": "Your parents ask you to do something that's inconvenient for you. You",
+    "options": [
+      {
+        "text": "Do it with a smile — their pleasure is connected to Allah's pleasure.",
+        "weight": 4
+      },
+      {
+        "text": "Tell them I'm busy.",
+        "weight": 2
+      },
+      {
+        "text": "Do it but complain the whole time.",
+        "weight": 1
+      },
+      {
+        "text": "Do it and explain my constraints respectfully.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q285",
+    "category": "SOCIAL",
+    "text": "You see someone being bullied at work. You",
+    "options": [
+      {
+        "text": "Stand up for them — defending the oppressed is an Islamic duty.",
+        "weight": 4
+      },
+      {
+        "text": "Not my problem.",
+        "weight": 1
+      },
+      {
+        "text": "Support them privately afterward.",
+        "weight": 3
+      },
+      {
+        "text": "Report it to HR.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q286",
+    "category": "SOCIAL",
+    "text": "You're tempted to gossip about a mutual friend. You",
+    "options": [
+      {
+        "text": "Remember — backbiting is eating your brother's dead flesh. Say something good or stay silent.",
+        "weight": 4
+      },
+      {
+        "text": "Everyone does it.",
+        "weight": 1
+      },
+      {
+        "text": "Change the subject.",
+        "weight": 3
+      },
+      {
+        "text": "Just a small comment won't hurt.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q287",
+    "category": "SOCIAL",
+    "text": "A colleague takes credit for your work. You",
+    "options": [
+      {
+        "text": "Address it calmly and professionally — justice is from the deen.",
+        "weight": 4
+      },
+      {
+        "text": "Plot revenge.",
+        "weight": 1
+      },
+      {
+        "text": "Let it go — Allah knows the truth.",
+        "weight": 3
+      },
+      {
+        "text": "Confront them aggressively.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q288",
+    "category": "SOCIAL",
+    "text": "You're selling something you own. You",
+    "options": [
+      {
+        "text": "Disclose all defects honestly — the Prophet ﷺ cursed the one who cheats.",
+        "weight": 4
+      },
+      {
+        "text": "Hide the flaws to get a better price.",
+        "weight": 1
+      },
+      {
+        "text": "Only mention flaws if asked.",
+        "weight": 2
+      },
+      {
+        "text": "Be transparent — even if it means a lower price.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q289",
+    "category": "SOCIAL",
+    "text": "You're in traffic and someone cuts you off. You",
+    "options": [
+      {
+        "text": "Make dua for them — maybe they're in an emergency. Control your anger.",
+        "weight": 4
+      },
+      {
+        "text": "Honk and yell.",
+        "weight": 1
+      },
+      {
+        "text": "Let it ruin my mood.",
+        "weight": 2
+      },
+      {
+        "text": "Take a deep breath and let it go.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q290",
+    "category": "SOCIAL",
+    "text": "You owe someone money and can't pay yet. You",
+    "options": [
+      {
+        "text": "Communicate honestly — 'I can't pay now but I will. I'm sorry for the delay.'",
+        "weight": 4
+      },
+      {
+        "text": "Avoid them until I can pay.",
+        "weight": 1
+      },
+      {
+        "text": "Hope they forget about it.",
+        "weight": 1
+      },
+      {
+        "text": "Pay in installments and keep them updated.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q291",
+    "category": "SOCIAL",
+    "text": "You see a friend's spouse doing something suspicious. You",
+    "options": [
+      {
+        "text": "Cover their honor — don't spread it. Advise privately if necessary.",
+        "weight": 4
+      },
+      {
+        "text": "Tell your friend immediately.",
+        "weight": 2
+      },
+      {
+        "text": "Spread the news.",
+        "weight": 1
+      },
+      {
+        "text": "Mind your own business entirely.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q292",
+    "category": "SOCIAL",
+    "text": "You're given too much food at a restaurant. You",
+    "options": [
+      {
+        "text": "Pay for what you ordered — bring the extra to their attention.",
+        "weight": 4
+      },
+      {
+        "text": "Enjoy the free food.",
+        "weight": 1
+      },
+      {
+        "text": "Leave it and not say anything.",
+        "weight": 2
+      },
+      {
+        "text": "Let the waiter know.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q293",
+    "category": "SOCIAL",
+    "text": "Your coworker is struggling with a task you could help with. You",
+    "options": [
+      {
+        "text": "Help them — the Prophet ﷺ said the best of people are most beneficial to others.",
+        "weight": 4
+      },
+      {
+        "text": "Not my job.",
+        "weight": 1
+      },
+      {
+        "text": "Help if they ask.",
+        "weight": 3
+      },
+      {
+        "text": "Give them a hint but don't do it for them.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q294",
+    "category": "SOCIAL",
+    "text": "You see a lost wallet on the ground. You",
+    "options": [
+      {
+        "text": "Try to find the owner — honesty in people's wealth is a sign of iman.",
+        "weight": 4
+      },
+      {
+        "text": "Take the money.",
+        "weight": 1
+      },
+      {
+        "text": "Leave it — not my problem.",
+        "weight": 2
+      },
+      {
+        "text": "Turn it in to the nearest authority.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q295",
+    "category": "SOCIAL",
+    "text": "You're in a group chat where people are backbiting. You",
+    "options": [
+      {
+        "text": "Redirect the conversation or leave — don't participate in sin.",
+        "weight": 4
+      },
+      {
+        "text": "Join in.",
+        "weight": 1
+      },
+      {
+        "text": "Stay silent but read.",
+        "weight": 2
+      },
+      {
+        "text": "Say something positive about the person being discussed.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q296",
+    "category": "SOCIAL",
+    "text": "You promised to attend someone's event but something better came up. You",
+    "options": [
+      {
+        "text": "Keep your promise — breaking promises is a sign of hypocrisy.",
+        "weight": 4
+      },
+      {
+        "text": "Go to the better event — they'll understand.",
+        "weight": 1
+      },
+      {
+        "text": "Cancel last minute with an excuse.",
+        "weight": 1
+      },
+      {
+        "text": "Honor your commitment and enjoy the alternative another time.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q297",
+    "category": "SOCIAL",
+    "text": "Someone asks you for a loan. You",
+    "options": [
+      {
+        "text": "Give it if you can — lending to someone in need is one of the best deeds.",
+        "weight": 4
+      },
+      {
+        "text": "I don't lend money — it ruins relationships.",
+        "weight": 2
+      },
+      {
+        "text": "Lend what you can afford to lose.",
+        "weight": 3
+      },
+      {
+        "text": "Refuse — I need my money.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q298",
+    "category": "SOCIAL",
+    "text": "You're in a parking lot and someone takes your spot. You",
+    "options": [
+      {
+        "text": "Let it go — a parking spot isn't worth your inner peace.",
+        "weight": 4
+      },
+      {
+        "text": "Confront them.",
+        "weight": 1
+      },
+      {
+        "text": "Find another spot and move on.",
+        "weight": 3
+      },
+      {
+        "text": "Stay angry for the next hour.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q299",
+    "category": "SOCIAL",
+    "text": "You discover an employee at a store overcharged you. You",
+    "options": [
+      {
+        "text": "Go back and ask for the correction — this is about justice, not the amount.",
+        "weight": 4
+      },
+      {
+        "text": "It's just a small amount — forget it.",
+        "weight": 2
+      },
+      {
+        "text": "Leave a bad review.",
+        "weight": 1
+      },
+      {
+        "text": "Politely bring it to their attention.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q300",
+    "category": "SOCIAL",
+    "text": "You're dealing with a rude customer service agent. You",
+    "options": [
+      {
+        "text": "Respond with patience and kindness — your character is your dawah.",
+        "weight": 4
+      },
+      {
+        "text": "Be rude back.",
+        "weight": 1
+      },
+      {
+        "text": "Ask for a supervisor.",
+        "weight": 3
+      },
+      {
+        "text": "Hang up.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q301",
+    "category": "SOCIAL",
+    "text": "You see a stray animal in need. You",
+    "options": [
+      {
+        "text": "Help it — mercy to creation is mercy from the Creator.",
+        "weight": 4
+      },
+      {
+        "text": "It's just an animal.",
+        "weight": 1
+      },
+      {
+        "text": "Call animal control.",
+        "weight": 3
+      },
+      {
+        "text": "Give it water and food if you can.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q302",
+    "category": "SOCIAL",
+    "text": "You're in a position to hire someone. You",
+    "options": [
+      {
+        "text": "Choose the most qualified — nepotism is injustice.",
+        "weight": 4
+      },
+      {
+        "text": "Hire my friend or relative.",
+        "weight": 1
+      },
+      {
+        "text": "Give preference to those who need it most.",
+        "weight": 3
+      },
+      {
+        "text": "Hire whoever accepts the lowest salary.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q303",
+    "category": "SOCIAL",
+    "text": "You're at a buffet and there's limited food. You",
+    "options": [
+      {
+        "text": "Take only what you need — others deserve their share too.",
+        "weight": 4
+      },
+      {
+        "text": "Get as much as I can.",
+        "weight": 1
+      },
+      {
+        "text": "Take a reasonable amount.",
+        "weight": 3
+      },
+      {
+        "text": "Fill my plate — I paid for it.",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "Q304",
+    "category": "SOCIAL",
+    "text": "Your friend confides a secret in you. You",
+    "options": [
+      {
+        "text": "Guard it absolutely — betraying a trust is a major sin.",
+        "weight": 4
+      },
+      {
+        "text": "Share it with just one person.",
+        "weight": 1
+      },
+      {
+        "text": "Keep it but feel the urge to tell.",
+        "weight": 2
+      },
+      {
+        "text": "Never reveal it, even if you fall out.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q305",
+    "category": "SOCIAL",
+    "text": "You're in an argument with a sibling. You",
+    "options": [
+      {
+        "text": "Be the first to reconcile — maintaining family ties is a command from Allah.",
+        "weight": 4
+      },
+      {
+        "text": "Wait for them to apologize first.",
+        "weight": 2
+      },
+      {
+        "text": "Cut ties until they come around.",
+        "weight": 1
+      },
+      {
+        "text": "Apologize even if I'm right — relationship matters more than ego.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q306",
+    "category": "SOCIAL",
+    "text": "You find out someone lied to you. You",
+    "options": [
+      {
+        "text": "Address it calmly — trust is important, but so is giving people a chance to explain.",
+        "weight": 4
+      },
+      {
+        "text": "Never trust them again.",
+        "weight": 2
+      },
+      {
+        "text": "Confront them aggressively.",
+        "weight": 1
+      },
+      {
+        "text": "Distance yourself gradually.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q307",
+    "category": "SOCIAL",
+    "text": "You're sharing food with others. You",
+    "options": [
+      {
+        "text": "Give the best portion — the Prophet ﷺ always gave the best to others.",
+        "weight": 4
+      },
+      {
+        "text": "Keep the best for myself.",
+        "weight": 1
+      },
+      {
+        "text": "Split it equally.",
+        "weight": 3
+      },
+      {
+        "text": "Give what I don't want.",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "Q308",
+    "category": "SOCIAL",
+    "text": "You see someone struggling to carry heavy bags. You",
+    "options": [
+      {
+        "text": "Help immediately — no hesitation.",
+        "weight": 4
+      },
+      {
+        "text": "Only if they ask.",
+        "weight": 2
+      },
+      {
+        "text": "I'm in a hurry.",
+        "weight": 1
+      },
+      {
+        "text": "Offer help and carry one bag.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q309",
+    "category": "SOCIAL",
+    "text": "You have the opportunity to take advantage of a loophole in a contract. You",
+    "options": [
+      {
+        "text": "Honor the spirit of the agreement, not just the letter — integrity matters.",
+        "weight": 4
+      },
+      {
+        "text": "If it's legal, it's fair game.",
+        "weight": 1
+      },
+      {
+        "text": "Use it but feel slightly bad.",
+        "weight": 2
+      },
+      {
+        "text": "Discuss it with the other party first.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q310",
+    "category": "SOCIAL",
+    "text": "You're at a gathering and someone is sitting alone. You",
+    "options": [
+      {
+        "text": "Go sit with them — making someone feel included is sadaqah.",
+        "weight": 4
+      },
+      {
+        "text": "They probably want to be alone.",
+        "weight": 2
+      },
+      {
+        "text": "I don't know them.",
+        "weight": 2
+      },
+      {
+        "text": "Smile and invite them to join your group.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q311",
+    "category": "SOCIAL",
+    "text": "You're in a queue and someone tries to cut in front. You",
+    "options": [
+      {
+        "text": "Address it firmly but politely — justice in small matters reflects justice in big ones.",
+        "weight": 4
+      },
+      {
+        "text": "Let them — it's not worth the fight.",
+        "weight": 2
+      },
+      {
+        "text": "Get angry and cause a scene.",
+        "weight": 1
+      },
+      {
+        "text": "Quietly assert your place.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q312",
+    "category": "SOCIAL",
+    "text": "You hear a rumor about someone. You",
+    "options": [
+      {
+        "text": "Don't spread it — verify before believing, and even then, don't spread.",
+        "weight": 4
+      },
+      {
+        "text": "Pass it on — people should know.",
+        "weight": 1
+      },
+      {
+        "text": "I'll keep it to myself but believe it.",
+        "weight": 2
+      },
+      {
+        "text": "Ignore it until I hear it from the person directly.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q313",
+    "category": "SOCIAL",
+    "text": "You're dealing with someone who wronged you in the past. You",
+    "options": [
+      {
+        "text": "Forgive — not because they deserve it, but because you deserve peace and Allah loves the forgivers.",
+        "weight": 4
+      },
+      {
+        "text": "Hold a grudge forever.",
+        "weight": 1
+      },
+      {
+        "text": "Be civil but cold.",
+        "weight": 2
+      },
+      {
+        "text": "Forgive but don't forget — be cautious.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q314",
+    "category": "SOCIAL",
+    "text": "You're on social media and see someone posting about their success. You",
+    "options": [
+      {
+        "text": "Say MashAllah and make dua for their continued success.",
+        "weight": 4
+      },
+      {
+        "text": "Feel jealous.",
+        "weight": 1
+      },
+      {
+        "text": "Scroll past without reacting.",
+        "weight": 2
+      },
+      {
+        "text": "Like and comment positively.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q315",
+    "category": "SOCIAL",
+    "text": "You have extra food after a meal. You",
+    "options": [
+      {
+        "text": "Share it with neighbors or those in need — food is an amanah.",
+        "weight": 4
+      },
+      {
+        "text": "Throw it away.",
+        "weight": 1
+      },
+      {
+        "text": "Save it for later.",
+        "weight": 2
+      },
+      {
+        "text": "Give it to someone who looks hungry.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q316",
+    "category": "SOCIAL",
+    "text": "You're asked for your honest opinion about someone's work. You",
+    "options": [
+      {
+        "text": "Be honest but kind — truth with gentleness is the Prophetic way.",
+        "weight": 4
+      },
+      {
+        "text": "Lie to make them feel good.",
+        "weight": 2
+      },
+      {
+        "text": "Be brutally honest.",
+        "weight": 1
+      },
+      {
+        "text": "Highlight the positives first, then gently mention improvements.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q317",
+    "category": "SOCIAL",
+    "text": "You see a child lost in a public place. You",
+    "options": [
+      {
+        "text": "Help them immediately — protecting the vulnerable is an Islamic duty.",
+        "weight": 4
+      },
+      {
+        "text": "Someone else will help.",
+        "weight": 1
+      },
+      {
+        "text": "Alert security.",
+        "weight": 3
+      },
+      {
+        "text": "Stay with them until help arrives.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q318",
+    "category": "SOCIAL",
+    "text": "You're in a meeting and someone's idea is stolen by another. You",
+    "options": [
+      {
+        "text": "Speak up and give credit to the original person — justice in testimony is a command.",
+        "weight": 4
+      },
+      {
+        "text": "Stay silent — not my fight.",
+        "weight": 2
+      },
+      {
+        "text": "Support the thief to stay on their good side.",
+        "weight": 1
+      },
+      {
+        "text": "Privately tell the original person what happened.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q319",
+    "category": "SOCIAL",
+    "text": "You're about to make a purchase and realize the seller is desperate. You",
+    "options": [
+      {
+        "text": "Pay a fair price — don't exploit their desperation.",
+        "weight": 4
+      },
+      {
+        "text": "Negotiate aggressively — get the lowest price.",
+        "weight": 1
+      },
+      {
+        "text": "Pay what they're asking.",
+        "weight": 3
+      },
+      {
+        "text": "Offer a fair middle ground.",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "Q320",
+    "category": "SOCIAL",
+    "text": "At the end of a social gathering, you",
+    "options": [
+      {
+        "text": "Make sure you didn't hurt anyone, apologize if you did, and leave with a good impression of the deen.",
+        "weight": 4
+      },
+      {
+        "text": "Leave without thinking about it.",
+        "weight": 1
+      },
+      {
+        "text": "Check if I enjoyed myself.",
+        "weight": 1
+      },
+      {
+        "text": "Thank the host and help clean up.",
+        "weight": 3
+      }
+    ]
+  }
+]
