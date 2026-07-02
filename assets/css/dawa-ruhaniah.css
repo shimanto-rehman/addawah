@@ -102,10 +102,22 @@
    TAQWA PULSE — Breathing Orb + Aura + Particles
    ═══════════════════════════════════════════════════════════ */
 
+.dawa-taqwa-card {
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
 .dawa-taqwa-card__header {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.dawa-taqwa-card .dawa-step-card__question {
+  margin: 14px 0 6px;
 }
 
 /* Orb container */
@@ -113,7 +125,8 @@
   position: relative;
   width: 140px;
   height: 140px;
-  margin: 20px auto 16px;
+  margin: 16px auto 20px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -168,7 +181,7 @@
   font-family: var(--font-display);
   font-size: 44px;
   font-weight: 700;
-  color: var(--accent-bright);
+  color: var(--text);
   text-shadow: 0 0 20px var(--accent-glow);
 }
 
@@ -208,15 +221,16 @@
   100% { transform: translateY(-50px) scale(0); opacity: 0; }
 }
 
-/* Slider track */
+/* Slider track — tall enough for ticks + thumb */
 .dawa-taqwa-track {
   position: relative;
-  height: 48px;
-  margin: 0 12px 8px;
+  height: 52px;
+  margin: 4px 14px 12px;
   cursor: pointer;
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+  flex-shrink: 0;
 }
 
 .dawa-taqwa-track__bg {
@@ -269,9 +283,16 @@
   z-index: 2;
 }
 
+.dawa-taqwa-track__tick:first-child {
+  transform: translate(0, -50%);
+}
+
+.dawa-taqwa-track__tick:last-child {
+  transform: translate(-100%, -50%);
+}
+
 .dawa-taqwa-track__tick.is-active {
   border-color: var(--accent);
-  background: var(--accent-soft);
 }
 
 .dawa-taqwa-track__tick-num {
@@ -302,9 +323,10 @@
 /* Labels */
 .dawa-taqwa-label {
   text-align: center;
-  margin: 4px 0 0;
+  margin: 8px 0 0;
+  padding: 0 8px;
   letter-spacing: 0.02em;
-  min-height: 36px;
+  min-height: 42px;
 }
 
 .dawa-taqwa-label__arabic {
@@ -321,7 +343,8 @@
   font-weight: 500;
   color: var(--text-soft);
   display: block;
-  margin-top: 1px;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 
 .dawa-taqwa-hint {
@@ -329,7 +352,8 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--text-dim);
-  margin: 4px 0 0;
+  margin: 8px 0 0;
+  min-height: 20px;
   animation: taqwa-hint-shimmer 2.5s ease-in-out infinite;
 }
 
@@ -688,6 +712,7 @@
   gap: 6px;
 }
 
+/* ── Dua item — base (new/unsaved) ── */
 .dawa-dua-item {
   display: flex;
   align-items: center;
@@ -708,19 +733,11 @@
   flex: 1;
   min-width: 0;
   font-size: 13px;
+  font-weight: 700;
   color: var(--text-soft);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.dawa-dua-item__meta {
-  flex-shrink: 0;
-}
-
-.dawa-dua-item__days {
-  font-size: 11px;
-  color: var(--text-dim);
 }
 
 .dawa-dua-item__remove {
@@ -737,6 +754,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
 
 .dawa-dua-item__remove:hover {
@@ -744,75 +762,115 @@
   color: var(--danger);
 }
 
-.dawa-dua-item__remark {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--accent);
-  font-size: 14px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  margin-left: 4px;
-}
-
-.dawa-dua-item__remark:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-
-.dawa-dua-item__remark:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-/* Remark status picker */
-.dawa-dua-remark {
+/* ── Saved dua — structured inner card ── */
+.dawa-dua-card-inner {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 6px 0 2px;
-  overflow: hidden;
+  gap: 10px;
 }
 
-.dawa-dua-remark__option {
+/* Top row: icon + text + days */
+.dawa-dua-card-inner__head {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 6px 10px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-soft);
-  font-size: 12px;
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: left;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.dawa-dua-remark__option:hover:not(:disabled) {
-  background: var(--accent-soft);
+.dawa-dua-card-inner__icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.dawa-dua-card-inner__text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--text);
+  line-height: 1.5;
+  word-break: break-word;
 }
 
-.dawa-dua-remark__option.is-current {
+.dawa-dua-card-inner__days {
+  font-size: 11px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  line-height: 1.4;
+  padding-top: 1px;
+}
+
+/* Bottom row: status selector — centered, compact */
+.dawa-dua-card-inner__status-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.dawa-dua-card-inner__status-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border-soft);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1;
+  min-width: 0;
+  flex: 1;
+}
+
+.dawa-dua-card-inner__status-btn span:first-child {
+  font-size: 14px;
+}
+
+.dawa-dua-card-inner__status-btn span:last-child {
+  font-size: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.dawa-dua-card-inner__status-btn:hover:not(:disabled):not(.is-active) {
+  border-color: var(--accent);
+  color: var(--text-soft);
+  background: var(--accent-soft);
+}
+
+.dawa-dua-card-inner__status-btn.is-active {
+  border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent-bright);
   font-weight: 600;
   cursor: default;
 }
 
-.dawa-dua-remark__option:disabled:not(.is-current) {
+.dawa-dua-card-inner__status-btn:disabled:not(.is-active) {
   opacity: 0.4;
   cursor: default;
+}
+
+/* Narrow screens: hide labels, show only emojis */
+@media (max-width: 400px) {
+  .dawa-dua-card-inner__status-btn span:last-child {
+    display: none;
+  }
+  .dawa-dua-card-inner__status-btn {
+    padding: 6px;
+  }
+  .dawa-dua-card-inner__status-btn span:first-child {
+    font-size: 16px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -978,74 +1036,217 @@
   margin: 0;
 }
 
-.dawa-verse__close-dua {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  padding: 14px 28px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(145deg, var(--accent-bright), var(--accent-dim));
-  color: var(--accent-text);
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s var(--ease);
-  box-shadow: 0 4px 20px var(--accent-glow);
-}
-
-.dawa-verse__close-dua:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px var(--accent-glow);
-}
-
 /* ═══════════════════════════════════════════════════════════
    MOBILE
    ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 480px) {
+  .dawa-ruhaniah {
+    padding: 0 16px;
+  }
+
+  .dawa-ruhaniah__sections {
+    gap: 18px;
+  }
+
   .dawa-step-card {
-    padding: 16px 14px;
+    padding: 22px 18px;
     border-radius: var(--radius-sm);
   }
 
-  .dawa-barakah-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+  .dawa-step-card__title {
+    font-size: 17px;
   }
 
-  .dawa-barakah-area {
-    padding: 12px 8px;
+  .dawa-step-card__subtitle {
+    font-size: 14px;
   }
 
-  .dawa-barakah-dot {
-    width: 28px;
-    height: 28px;
+  .dawa-step-card__question {
+    font-size: 14px;
+  }
+
+  /* ── Taqwa ── */
+  .dawa-taqwa-card {
+    padding: 24px 20px 32px;
+  }
+
+  .dawa-taqwa-card .dawa-step-card__question {
+    margin: 10px 0 8px;
   }
 
   .dawa-taqwa-orb-wrap {
-    width: 120px;
-    height: 120px;
+    width: 112px;
+    height: 112px;
+    margin: 8px auto 18px;
+  }
+
+  .dawa-taqwa-orb-wrap::before,
+  .dawa-taqwa-orb-wrap::after {
+    inset: -6px;
   }
 
   .dawa-taqwa-orb__num {
-    font-size: 38px;
+    font-size: 34px;
+  }
+
+  .dawa-taqwa-track {
+    height: 56px;
+    margin: 0 10px 14px;
   }
 
   .dawa-taqwa-track__tick {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dawa-taqwa-track__tick-num {
+    font-size: 9px;
+  }
+
+  .dawa-taqwa-track__thumb {
     width: 26px;
     height: 26px;
   }
 
-  .dawa-taqwa-track__thumb {
-    width: 32px;
-    height: 32px;
+  .dawa-taqwa-label {
+    min-height: 44px;
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+
+  .dawa-taqwa-label__arabic {
+    font-size: 14px;
+  }
+
+  .dawa-taqwa-label__en {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .dawa-taqwa-hint {
+    margin-top: 6px;
+  }
+
+  /* ── Fahm ── */
+  .dawa-fahm-list {
+    gap: 14px;
+  }
+
+  .dawa-fahm-item {
+    padding: 12px 10px;
+  }
+
+  .dawa-fahm-item__text {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .dawa-fahm-option {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .dawa-fahm-option__radio {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dawa-fahm-option__text {
+    font-size: 12px;
+  }
+
+  /* ── Barakah ── */
+  .dawa-barakah-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .dawa-barakah-area {
+    padding: 10px 6px;
+    gap: 4px;
+  }
+
+  .dawa-barakah-area__icon {
+    font-size: 20px;
+  }
+
+  .dawa-barakah-area__label {
+    font-size: 12px;
+  }
+
+  .dawa-barakah-area__desc {
+    font-size: 10px;
+  }
+
+  .dawa-barakah-ring {
+    width: 48px;
+    height: 48px;
+  }
+
+  .dawa-barakah-dots {
+    gap: 4px;
+  }
+
+  .dawa-barakah-dot {
+    width: 20px;
+    height: 20px;
+    border-width: 1.5px;
+  }
+
+  /* ── Dua ── */
+  .dawa-dua-inline-form__row {
+    flex-wrap: wrap;
+  }
+
+  .dawa-dua-inline-form__select {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .dawa-dua-inline-form__cancel,
+  .dawa-dua-inline-form__submit {
+    flex: 1;
+  }
+
+  .dawa-dua-item {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .dawa-dua-item__text {
+    font-size: 12px;
+  }
+
+  /* ── Submit ── */
+  .dawa-ruhaniah__submit {
+    min-width: 0;
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+
+  /* ── Verse ── */
+  .dawa-verse {
+    padding: 20px 14px;
   }
 
   .dawa-verse__arabic {
-    font-size: 20px;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .dawa-verse__translation {
+    font-size: 14px;
+  }
+
+  .dawa-verse__reflection,
+  .dawa-verse__dawah {
+    padding: 12px;
+  }
+
+  .dawa-verse__card-text {
+    font-size: 13px;
   }
 }
 
@@ -1116,55 +1317,80 @@
    ═══════════════════════════════════════════════════════════ */
 
 .dawa-insights {
-  margin-top: 8px;
+  margin-top: 24px;
 }
 
-.dawa-insights__toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s var(--ease);
-}
-
-.dawa-insights__toggle:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-
-.dawa-insights__toggle-icon {
-  font-size: 18px;
-}
-
-.dawa-insights__toggle-arrow {
-  margin-left: auto;
-  font-size: 12px;
-  color: var(--text-dim);
-  transition: transform 0.3s var(--ease);
-}
-
-.dawa-insights__body {
-  overflow: hidden;
+/* Section header */
+.dawa-insights__head {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-top: 16px;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  padding: 16px 16px 8px;
 }
 
-.dawa-insights__loading {
-  text-align: center;
-  color: var(--text-dim);
+.dawa-insights__head-glow {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 60px;
+  background: radial-gradient(ellipse, var(--accent-glow), transparent 70%);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.dawa-insights__head-title {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 4.5vw, 26px);
+  font-weight: 700;
+  color: var(--accent-bright);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.dawa-insights__head-sub {
   font-size: 13px;
-  padding: 24px 0;
+  color: var(--text-dim);
+  margin: 0;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .dawa-insights__head-sub {
+    margin-top: 10px;
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+
+/* Grid layout for cards */
+.dawa-insights__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Empty state */
+.dawa-insights__empty {
+  text-align: center;
+  padding: 40px 16px;
+}
+
+.dawa-insights__empty-icon {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.dawa-insights__empty-text {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin: 0;
 }
 
 /* Insight card */
@@ -1234,14 +1460,18 @@
 /* Stats row */
 .dawa-insight-card__stats {
   display: flex;
-  gap: 16px;
+  gap: 32px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .dawa-insight-stat {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  align-items: center;
+  text-align: center;
+  min-width: 70px;
 }
 
 .dawa-insight-stat__label {
@@ -1292,6 +1522,105 @@
   letter-spacing: 0.06em;
 }
 
+/* ── Dua status row ── */
+.dawa-dua-status-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.dawa-dua-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  background: var(--surface-2);
+  font-size: 12px;
+}
+
+.dawa-dua-status-pill__count {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dawa-dua-status-pill__label {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+/* ── Dua acceptance rate bar ── */
+.dawa-dua-rate {
+  margin-bottom: 16px;
+}
+
+.dawa-dua-rate__bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.dawa-dua-rate__fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s var(--ease);
+}
+
+.dawa-dua-rate__text {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* ── Dua list inside insights ── */
+.dawa-dua-list-insights {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.dawa-dua-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  background: color-mix(in srgb, var(--surface-2) 60%, var(--bg));
+}
+
+.dawa-dua-list-item__icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.dawa-dua-list-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dawa-dua-list-item__text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 2px;
+  line-height: 1.4;
+}
+
+.dawa-dua-list-item__meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
 /* Light mode overrides */
 [data-theme='light'] .dawa-insight-card {
   background: var(--surface-2);
@@ -1299,7 +1628,11 @@
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
-[data-theme='light'] .dawa-insights__toggle {
-  background: var(--surface-2);
+[data-theme='light'] .dawa-dua-list-item {
+  background: var(--surface);
   border-color: var(--border-soft);
+}
+
+[data-theme='light'] .dawa-dua-status-pill {
+  background: var(--surface);
 }

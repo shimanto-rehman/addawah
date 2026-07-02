@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { notificationIcon } from '@/lib/notification-types';
 import type { AppNotification } from '@/lib/notification-types';
@@ -32,25 +31,13 @@ function displayTime(item: AppNotification) {
 type NotificationPanelProps = {
   variant: 'dropdown' | 'page';
   onClose?: () => void;
-  showSeedSamples?: boolean;
 };
 
-export function NotificationPanel({ variant, onClose, showSeedSamples }: NotificationPanelProps) {
+export function NotificationPanel({ variant, onClose }: NotificationPanelProps) {
   const router = useRouter();
   const { data, mutate, isLoading } = useNotifications(variant === 'page' ? 30_000 : 30_000);
   const notifications = data?.notifications ?? [];
   const unreadCount = data?.unreadCount ?? 0;
-  const [seeding, setSeeding] = useState(false);
-
-  async function loadSampleNotifications() {
-    setSeeding(true);
-    try {
-      await fetch('/api/notifications/seed', { method: 'POST' });
-      await mutate();
-    } finally {
-      setSeeding(false);
-    }
-  }
 
   async function markAllRead() {
     if (unreadCount === 0) return;
@@ -85,16 +72,6 @@ export function NotificationPanel({ variant, onClose, showSeedSamples }: Notific
         {unreadCount > 0 && (
           <button type="button" className="dawa-notif-panel__mark-all" onClick={() => void markAllRead()}>
             Mark all read
-          </button>
-        )}
-        {showSeedSamples && (
-          <button
-            type="button"
-            className="dawa-notif-panel__mark-all"
-            disabled={seeding}
-            onClick={() => void loadSampleNotifications()}
-          >
-            {seeding ? 'Loading…' : 'Load samples'}
           </button>
         )}
       </div>

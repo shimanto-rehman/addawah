@@ -13,10 +13,9 @@ type VerseData = {
 
 type Props = {
   verse: VerseData;
-  onClose: () => void;
 };
 
-export function RuhaniahVerse({ verse, onClose }: Props) {
+export function RuhaniahVerse({ verse }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -49,14 +48,6 @@ export function RuhaniahVerse({ verse, onClose }: Props) {
           <p className="dawa-verse__card-label">Dawah Moment</p>
           <p className="dawa-verse__card-text">{verse.dawahText}</p>
         </div>
-
-        <button
-          type="button"
-          className="dawa-verse__close-dua"
-          onClick={onClose}
-        >
-          🤲 Close with Du&apos;a
-        </button>
       </div>
     </motion.div>
   );

@@ -816,7 +816,7 @@
   .dawa-insights__grid {
     grid-template-columns: 1fr;
   }
-  .dawa-insights__head {
+  .dawa-insights__card .dawa-insights__head {
     flex-direction: column;
     align-items: stretch;
   }

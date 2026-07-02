@@ -35,12 +35,48 @@ type VerseResult = {
   signals?: Record<string, unknown>;
 };
 
+type DuaTimelineEntry = {
+  text: string;
+  category: string;
+  status: string;
+  daysToAccept: number;
+  dateStarted: string;
+  dateResolved: string;
+};
+
+type DuaListItem = {
+  id: string;
+  text: string;
+  category: string;
+  status: string;
+  dateStarted: string;
+  dateResolved: string | null;
+  daysWaiting: number | null;
+};
+
+type InsightsData = {
+  fahmProfile: {
+    totalQuestions: number;
+    categoryScores: Record<string, number>;
+    overallQAS: number;
+    strongest: string | null;
+    weakest: string | null;
+    trend: string;
+  } | null;
+  taqwaHistory: { date: string; score: number }[];
+  barakahHistory: { date: string; timeScore: number; rizqScore: number; healthScore: number; heartScore: number }[];
+  duaStats: { total: number; answered: number; waiting: number; stored: number };
+  duaTimeline: DuaTimelineEntry[];
+  duaList: DuaListItem[];
+};
+
 const FAHM_QUESTIONS_URL = '/data/fahm-questions.json';
 
 export function RuhaniahFlow() {
   const ctx = useRuhaniahData();
   const [submitting, setSubmitting] = useState(false);
   const [verse, setVerse] = useState<VerseResult | null>(null);
+  const [insights, setInsights] = useState<InsightsData | null>(null);
   const [done, setDone] = useState(false);
 
   // Taqwa
@@ -80,7 +116,7 @@ export function RuhaniahFlow() {
       .catch(console.error);
   }, []);
 
-  // Already completed today → show verse
+  // Already completed today → show verse + insights
   useEffect(() => {
     if (ctx?.data?.completed && ctx.data.verse) {
       const v = ctx.data.verse;
@@ -93,6 +129,22 @@ export function RuhaniahFlow() {
         dawahText: v.dawahText,
         signals: v.signals,
       });
+      // Insights come from the GET response
+      if (ctx.data.insights) {
+        setInsights({
+          fahmProfile: ctx.data.fahmProfile ?? null,
+          ...ctx.data.insights,
+        });
+      } else if (ctx.data.fahmProfile) {
+        setInsights({
+          fahmProfile: ctx.data.fahmProfile,
+          taqwaHistory: [],
+          barakahHistory: [],
+          duaStats: { total: 0, answered: 0, waiting: 0, stored: 0 },
+          duaTimeline: [],
+          duaList: [],
+        });
+      }
       setDone(true);
     }
   }, [ctx?.data]);
@@ -134,10 +186,19 @@ export function RuhaniahFlow() {
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to submit');
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        console.error('Ruhaniah submission failed:', res.status, errBody);
+        throw new Error(errBody?.error || `Server error (${res.status})`);
+      }
 
       const data = await res.json();
-      setVerse(data.verse);
+      if (data.verse) {
+        setVerse(data.verse);
+      }
+      if (data.insights) {
+        setInsights(data.insights);
+      }
       setDone(true);
       ctx?.mutate();
     } catch (err) {
@@ -148,11 +209,24 @@ export function RuhaniahFlow() {
   }, [submitting, canSubmit, taqwaScore, fahmResponses, barakahScores, newDuas, ctx]);
 
   // ─── Completed state ───
-  if (done && verse) {
+  if (done) {
     return (
       <div className="dawa-ruhaniah">
         <RuhaniahHeader />
-        <RuhaniahVerse verse={verse} onClose={() => {}} />
+        {verse ? (
+          <RuhaniahVerse verse={verse} />
+        ) : (
+          <div className="dawa-step-card" style={{ textAlign: 'center', padding: '32px 16px' }}>
+            <p style={{ fontSize: 40, marginBottom: 12 }}>✨</p>
+            <h2 className="dawa-step-card__title">Alhamdulillah</h2>
+            <p className="dawa-step-card__question">
+              Your nightly check-in has been saved. Your verse will appear here tomorrow inshaAllah.
+            </p>
+          </div>
+        )}
+
+        {/* Insights below the verse */}
+        <RuhaniahInsights insights={insights} fahmProfile={insights?.fahmProfile ?? ctx?.data?.fahmProfile ?? null} />
       </div>
     );
   }
@@ -186,9 +260,6 @@ export function RuhaniahFlow() {
           onRemoveNew={handleRemoveNew}
           onStatusChange={handleDuaStatusChange}
         />
-
-        {/* 5. Insights (collapsible) */}
-        <RuhaniahInsights />
       </div>
 
       {/* Single submit button */}

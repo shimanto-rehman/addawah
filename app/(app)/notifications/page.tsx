@@ -10,7 +10,7 @@ export default function NotificationsPage() {
         arabicLabel="الإشعارات"
       />
       <section className="dawa-glass dawa-notif-page__panel">
-        <NotificationPanel variant="page" showSeedSamples />
+        <NotificationPanel variant="page" />
       </section>
     </div>
   );

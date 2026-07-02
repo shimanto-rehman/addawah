@@ -1,4 +1,6 @@
 import { prisma } from './prisma';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 const CATEGORIES = [
   'QADR',
@@ -18,10 +20,10 @@ let questionCategoryCache: Map<string, string> | null = null;
 async function getQuestionCategoryMap(): Promise<Map<string, string>> {
   if (questionCategoryCache) return questionCategoryCache;
   try {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const res = await fetch(`${siteUrl}/data/fahm-questions.json`);
-    if (!res.ok) return new Map();
-    const questions = (await res.json()) as FahmQuestionEntry[];
+    // Read directly from filesystem — avoids server-side fetch of relative URLs
+    const filePath = join(process.cwd(), 'public', 'data', 'fahm-questions.json');
+    const raw = await readFile(filePath, 'utf-8');
+    const questions = JSON.parse(raw) as FahmQuestionEntry[];
     questionCategoryCache = new Map(questions.map((q) => [q.id, q.category]));
     return questionCategoryCache;
   } catch {

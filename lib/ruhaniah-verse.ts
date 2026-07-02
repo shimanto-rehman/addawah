@@ -1,5 +1,7 @@
 import { prisma } from './prisma';
 import { startOfDay } from './salah-utils';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 type AyahEntry = {
   ref: string;
@@ -29,9 +31,10 @@ let ayahCache: AyahEntry[] | null = null;
 async function getAyahPool(): Promise<AyahEntry[]> {
   if (ayahCache) return ayahCache;
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ''}/data/ayah-pool.json`);
-    if (!res.ok) return getDefaultPool();
-    ayahCache = (await res.json()) as AyahEntry[];
+    // Read directly from filesystem — avoids server-side fetch of relative URLs
+    const filePath = join(process.cwd(), 'public', 'data', 'ayah-pool.json');
+    const raw = await readFile(filePath, 'utf-8');
+    ayahCache = JSON.parse(raw) as AyahEntry[];
     return ayahCache;
   } catch {
     return getDefaultPool();

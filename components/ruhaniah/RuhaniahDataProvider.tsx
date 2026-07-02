@@ -31,6 +31,13 @@ export type RuhaniahPayload = {
     weakest: string | null;
     trend: string;
   } | null;
+  insights: {
+    taqwaHistory: { date: string; score: number }[];
+    barakahHistory: { date: string; timeScore: number; rizqScore: number; healthScore: number; heartScore: number }[];
+    duaStats: { total: number; answered: number; waiting: number; stored: number };
+    duaTimeline: { text: string; category: string; status: string; daysToAccept: number; dateStarted: string; dateResolved: string }[];
+    duaList: { id: string; text: string; category: string; status: string; dateStarted: string; dateResolved: string | null; daysWaiting: number | null }[];
+  } | null;
 };
 
 type RuhaniahContextValue = {

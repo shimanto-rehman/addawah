@@ -26,10 +26,10 @@ type Props = {
 };
 
 const STATUS_ICONS: Record<string, string> = {
-  WAITING: '🕰️',
-  ANSWERED_SAME: '🌸',
-  ANSWERED_DIFFERENT: '🌿',
-  STORED_AKHIRAH: '✨',
+  WAITING: '🟡',
+  ANSWERED_SAME: '🟢',
+  ANSWERED_DIFFERENT: '🔵',
+  STORED_AKHIRAH: '🔴',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -62,7 +62,6 @@ export function DuaLog({ duas, newDuas, onAddDua, onRemoveNew, onStatusChange }:
   const [text, setText] = useState('');
   const [category, setCategory] = useState('GUIDANCE');
   const [expanded, setExpanded] = useState(false);
-  const [remarkingId, setRemarkingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
@@ -88,7 +87,6 @@ export function DuaLog({ duas, newDuas, onAddDua, onRemoveNew, onStatusChange }:
       console.error('Dua remark failed:', err);
     } finally {
       setUpdatingId(null);
-      setRemarkingId(null);
     }
   }, [onStatusChange]);
 
@@ -176,12 +174,11 @@ export function DuaLog({ duas, newDuas, onAddDua, onRemoveNew, onStatusChange }:
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
               >
-                <span className="dawa-dua-item__icon">
-                  {STATUS_ICONS[dua.status] || '🕰️'}
-                </span>
-                <span className="dawa-dua-item__text">{dua.text}</span>
-                <span className="dawa-dua-item__meta">
-                  {dua.isNew ? (
+                {dua.isNew ? (
+                  /* ── New (unsaved) dua — simple row ── */
+                  <>
+                    <span className="dawa-dua-item__icon">{STATUS_ICONS[dua.status] || '🕰️'}</span>
+                    <span className="dawa-dua-item__text">{dua.text}</span>
                     <button
                       type="button"
                       className="dawa-dua-item__remove"
@@ -190,37 +187,21 @@ export function DuaLog({ duas, newDuas, onAddDua, onRemoveNew, onStatusChange }:
                     >
                       ×
                     </button>
-                  ) : (
-                    <>
-                      <span className="dawa-dua-item__days">{daysSince(dua.dateStarted)}d</span>
-                      <button
-                        type="button"
-                        className="dawa-dua-item__remark"
-                        onClick={() => setRemarkingId(remarkingId === dua.id ? null : dua.id)}
-                        disabled={updatingId === dua.id}
-                        aria-label="Update status"
-                      >
-                        {updatingId === dua.id ? '…' : '↻'}
-                      </button>
-                    </>
-                  )}
-                </span>
-
-                {/* Status picker dropdown */}
-                <AnimatePresence>
-                  {remarkingId === dua.id && !dua.isNew && (
-                    <motion.div
-                      className="dawa-dua-remark"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
+                  </>
+                ) : (
+                  /* ── Saved dua — structured card ── */
+                  <div className="dawa-dua-card-inner">
+                    <div className="dawa-dua-card-inner__head">
+                      <span className="dawa-dua-card-inner__icon">{STATUS_ICONS[dua.status] || '🕰️'}</span>
+                      <span className="dawa-dua-card-inner__text">{dua.text}</span>
+                      <span className="dawa-dua-card-inner__days">{daysSince(dua.dateStarted)}d</span>
+                    </div>
+                    <div className="dawa-dua-card-inner__status-row">
                       {ALL_STATUSES.map((s) => (
                         <button
                           key={s}
                           type="button"
-                          className={`dawa-dua-remark__option${dua.status === s ? ' is-current' : ''}`}
+                          className={`dawa-dua-card-inner__status-btn${dua.status === s ? ' is-active' : ''}`}
                           onClick={() => handleRemark(dua.id, s)}
                           disabled={dua.status === s || updatingId === dua.id}
                         >
@@ -228,9 +209,9 @@ export function DuaLog({ duas, newDuas, onAddDua, onRemoveNew, onStatusChange }:
                           <span>{STATUS_LABELS[s]}</span>
                         </button>
                       ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    </div>
+                  </div>
+                )}
               </motion.li>
             ))}
           </AnimatePresence>

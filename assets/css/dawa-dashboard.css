@@ -254,7 +254,7 @@
   color: var(--text-soft);
 }
 
-.dawa-insights__head {
+.dawa-insights__card .dawa-insights__head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
