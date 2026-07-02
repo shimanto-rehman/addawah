@@ -5,6 +5,8 @@ import { ruhaniahSubmissionSchema } from '@/lib/ruhaniah-validation';
 import { getOrComputeVerse } from '@/lib/ruhaniah-verse';
 import { getRuhaniahToday } from '@/lib/ruhaniah-data';
 import { computeFahmProfile } from '@/lib/ruhaniah-profile';
+import { clearRuhaniahReminderForDate } from '@/lib/notifications';
+import { fetchPrayerTimes, formatDateKeyInTimezone } from '@/lib/prayer-times';
 
 /** Optimized: fetch all insight data in parallel with bounded queries */
 async function getInsightsData(userId: string) {
@@ -239,6 +241,15 @@ export async function POST(req: Request) {
     console.error('[ruhaniah] Transaction failed:', txErr);
     return jsonError(`Transaction failed: ${txErr instanceof Error ? txErr.message : 'unknown'}`, 500);
   }
+
+  // Fire-and-forget: clear end-of-day reminder notification (non-blocking)
+  prisma.user
+    .findUnique({ where: { id: userId }, select: { city: true, country: true } })
+    .then((u) =>
+      fetchPrayerTimes(u?.city?.trim() || 'Dhaka', u?.country?.trim() || 'Bangladesh', today),
+    )
+    .then((times) => clearRuhaniahReminderForDate(userId, formatDateKeyInTimezone(today, times.timeZone)))
+    .catch(() => {});
 
   // Fire-and-forget: recompute Fahm profile (non-blocking)
   computeFahmProfile(userId).catch(console.error);

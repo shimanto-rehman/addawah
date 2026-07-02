@@ -2,7 +2,8 @@ export type NotificationKind =
   | 'DAWAH_POKE'
   | 'CONNECTION_REQUEST'
   | 'CONNECTION_ACCEPTED'
-  | 'WAKT_REMINDER';
+  | 'WAKT_REMINDER'
+  | 'RUHANIAH_REMINDER';
 
 export type AppNotification = {
   id: string;
@@ -25,6 +26,8 @@ export function notificationIcon(type: NotificationKind) {
       return '✅';
     case 'WAKT_REMINDER':
       return '⏳';
+    case 'RUHANIAH_REMINDER':
+      return '🕌';
     default:
       return '🔔';
   }

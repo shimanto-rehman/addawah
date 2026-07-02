@@ -12,12 +12,14 @@ import { prisma } from './prisma';
 import {
   fetchPrayerTimes,
   formatDateKeyInTimezone,
+  getDatePartsInTimezone,
   getNowMinutesInTimezone,
   prayerWaktWindow,
 } from './prayer-times';
 import { activePrayerForNow } from './rewards';
 import { dateFromKey } from './salah-utils';
 import { throttlePerKey } from './user-sync-throttle';
+import { getRuhaniahToday } from './ruhaniah-data';
 
 export const WAKT_REMINDER_MINUTES = 10;
 export const NOTIFICATION_SYNC_INTERVAL_MS = 60_000;
@@ -370,6 +372,73 @@ async function syncWaktReminderNotification(userId: string) {
   });
 }
 
+export async function clearRuhaniahReminderForDate(userId: string, dateKey: string) {
+  await withNotifications(
+    () =>
+      prisma.notification.deleteMany({
+        where: { userId, dedupeKey: `ruhaniah-reminder:${dateKey}` },
+      }),
+    undefined,
+  );
+}
+
+const RUHANIAH_REMINDER_HOUR = 23;
+const RUHANIAH_REMINDER_MINUTE = 40;
+
+async function syncRuhaniahReminderNotification(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { city: true, country: true },
+  });
+  if (!user) return;
+
+  const now = new Date();
+  let timeZone: string;
+  let dateKey: string;
+
+  try {
+    const times = await fetchPrayerTimes(
+      user.city?.trim() || 'Dhaka',
+      user.country?.trim() || 'Bangladesh',
+      now,
+    );
+    timeZone = times.timeZone;
+    dateKey = formatDateKeyInTimezone(now, times.timeZone);
+  } catch {
+    return;
+  }
+
+  // Check if it's after 11:40 PM in user's timezone
+  const parts = getDatePartsInTimezone(now, timeZone);
+  const currentMinutes = parts.hour * 60 + parts.minute;
+  const reminderMinutes = RUHANIAH_REMINDER_HOUR * 60 + RUHANIAH_REMINDER_MINUTE;
+
+  if (currentMinutes < reminderMinutes) {
+    // Too early — clean up any stale reminder from a previous day
+    return;
+  }
+
+  const dedupeKey = `ruhaniah-reminder:${dateKey}`;
+
+  // Check if user has already completed Ruhaniah today
+  const ruhaniah = await getRuhaniahToday(userId);
+  if (ruhaniah.completed) {
+    await prisma.notification.deleteMany({ where: { userId, dedupeKey } });
+    return;
+  }
+
+  const base =
+    'The night is almost over and you have not completed your Ruhaniah yet. Take a moment for taqwa, barakah, and reflection before the day ends.';
+
+  await upsertNotification(userId, dedupeKey, {
+    type: 'RUHANIAH_REMINDER',
+    title: 'Ruhaniah — 20 min left',
+    body: buildBody(base, now, timeZone),
+    href: '/ruhaniah',
+    meta: buildMeta({ dateKey }, now, timeZone),
+  });
+}
+
 export async function syncNotificationsForUser(userId: string) {
   await withNotifications(
     () =>
@@ -377,6 +446,7 @@ export async function syncNotificationsForUser(userId: string) {
         syncPokeNotifications(userId),
         syncConnectionRequestNotifications(userId),
         syncWaktReminderNotification(userId),
+        syncRuhaniahReminderNotification(userId),
       ]),
     undefined,
   );

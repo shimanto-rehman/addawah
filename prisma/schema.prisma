@@ -152,6 +152,7 @@ enum NotificationType {
   CONNECTION_REQUEST
   CONNECTION_ACCEPTED
   WAKT_REMINDER
+  RUHANIAH_REMINDER
 }
 
 model Notification {

@@ -176,6 +176,78 @@
   color: var(--text-dim);
 }
 
+/* Loading shimmer — matches analytics KPI skeleton */
+.dawa-metrics__shimmer {
+  display: inline-block;
+  border-radius: 6px;
+  vertical-align: middle;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 0%,
+    color-mix(in srgb, var(--surface) 55%, var(--text-dim)) 50%,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 100%
+  );
+  background-size: 200% 100%;
+  animation: dawa-kpi-shimmer 1.2s ease-in-out infinite;
+}
+
+.dawa-metrics__shimmer--hero {
+  width: clamp(88px, 20vw, 128px);
+  height: clamp(48px, 11vw, 76px);
+  border-radius: 10px;
+}
+
+.dawa-metrics__shimmer--sub {
+  display: block;
+  width: min(300px, 92%);
+  height: 14px;
+  margin-top: 4px;
+}
+
+.dawa-metrics__shimmer--stream {
+  width: 52px;
+  height: clamp(20px, 4vw, 26px);
+}
+
+.dawa-metrics__shimmer--pct {
+  width: 44px;
+  height: 14px;
+}
+
+.dawa-metrics__shimmer--foot {
+  width: 72px;
+  height: 11px;
+}
+
+.dawa-metrics__shimmer--meta {
+  display: block;
+  width: min(340px, 100%);
+  height: 11px;
+}
+
+.dawa-metrics__beads--loading .dawa-metrics__bead {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 0%,
+    color-mix(in srgb, var(--surface) 55%, var(--text-dim)) 50%,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 100%
+  );
+  background-size: 200% 100%;
+  animation: dawa-kpi-shimmer 1.2s ease-in-out infinite;
+}
+
+.dawa-metrics__bar--loading {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 0%,
+    color-mix(in srgb, var(--surface) 55%, var(--text-dim)) 50%,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 100%
+  );
+  background-size: 200% 100%;
+  animation: dawa-kpi-shimmer 1.2s ease-in-out infinite;
+  box-shadow: none;
+}
+
 /* Dashboard — prayer insights graphs */
 .dawa-insights {
   margin-bottom: clamp(28px, 5vw, 36px);
