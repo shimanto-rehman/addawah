@@ -7,6 +7,7 @@ import { UserAvatar } from '@/components/profile/UserAvatar';
 import { GoldCoinAmount } from '@/components/ui/GoldCoin';
 import { ConnectionActions } from '@/components/friends/ConnectionActions';
 import { UserProfileLink } from '@/components/friends/UserProfileLink';
+import { ConnectionShimmer } from '@/components/ui/Shimmer';
 import type { ConnectionStatus } from '@/lib/friendship';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -62,7 +63,14 @@ export function ManageConnections() {
       </div>
 
       {isLoading ? (
-        <p className="dawa-social__empty">Loading connections…</p>
+        <section className="dawa-glass dawa-social__section">
+          <h2 className="dawa-social__title">Loading connections...</h2>
+          <div className="dawa-social__conn-list">
+            {Array.from({ length: 4 }, (_, i) => (
+              <ConnectionShimmer key={i} />
+            ))}
+          </div>
+        </section>
       ) : (
         <>
           {(data?.requests?.length ?? 0) > 0 && (

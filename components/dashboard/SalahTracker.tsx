@@ -28,6 +28,7 @@ import { canMarkSalahCellLocal } from '@/lib/salah-mark-rules';
 import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import type { PrayerTimesPayload } from '@/lib/prayer-times';
 import { formatDateKeyInTimezone, isPrayerTimesPayload, prayerTimesFetcher } from '@/lib/prayer-times';
+import { Shimmer } from '@/components/ui/Shimmer';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -212,7 +213,24 @@ export function SalahTracker() {
         </div>
         <div className="dawa-salah__body">
           {gridLoading ? (
-            <p className="dawa-salah__loading">Loading…</p>
+            <div className="dawa-salah__shimmer">
+              {/* Header row */}
+              <div className="dawa-salah__shimmer-row">
+                <Shimmer variant="text" width="60px" height="20px" />
+                {Array.from({ length: 7 }, (_, i) => (
+                  <Shimmer key={i} variant="rect" width="32px" height="32px" borderRadius="4px" />
+                ))}
+              </div>
+              {/* Prayer rows */}
+              {Array.from({ length: 5 }, (_, row) => (
+                <div key={row} className="dawa-salah__shimmer-row">
+                  <Shimmer variant="text" width="50px" height="16px" />
+                  {Array.from({ length: 7 }, (_, col) => (
+                    <Shimmer key={col} variant="circle" width="28px" height="28px" />
+                  ))}
+                </div>
+              ))}
+            </div>
           ) : (
             <table className="dawa-salah-table">
               <thead>

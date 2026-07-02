@@ -76,15 +76,22 @@ export async function getActiveDuas(userId: string) {
   return duas;
 }
 
-/** Get dua stats for insights */
+/** Get dua stats for insights — single groupBy query instead of 3 COUNTs */
 export async function getDuaStats(userId: string) {
-  const [total, answered, waiting] = await Promise.all([
-    prisma.duaEntry.count({ where: { userId } }),
-    prisma.duaEntry.count({
-      where: { userId, status: { in: ['ANSWERED_SAME', 'ANSWERED_DIFFERENT'] } },
-    }),
-    prisma.duaEntry.count({ where: { userId, status: 'WAITING' } }),
-  ]);
+  const grouped = await prisma.duaEntry.groupBy({
+    by: ['status'],
+    where: { userId },
+    _count: { _all: true },
+  });
+
+  let total = 0;
+  let answered = 0;
+  let waiting = 0;
+  for (const row of grouped) {
+    total += row._count._all;
+    if (row.status === 'ANSWERED_SAME' || row.status === 'ANSWERED_DIFFERENT') answered += row._count._all;
+    if (row.status === 'WAITING') waiting += row._count._all;
+  }
 
   return { total, answered, waiting };
 }

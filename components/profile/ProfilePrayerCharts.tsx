@@ -18,6 +18,7 @@ import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { PRAYER_LABELS } from '@/lib/constants';
 import { chartTheme } from '@/lib/chart-theme';
 import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
+import { Shimmer, ChartShimmer } from '@/components/ui/Shimmer';
 
 ChartJS.register(
   CategoryScale,
@@ -136,11 +137,13 @@ export function ProfilePrayerCharts({ insightsUrl, title = 'Prayer insights' }: 
     <section className="dawa-glass dawa-profile-charts">
       <header className="dawa-profile-charts__head">
         <h2 className="dawa-social__title">{title}</h2>
-        {data && (
+        {isLoading ? (
+          <Shimmer variant="text" width="100px" height="20px" />
+        ) : data ? (
           <span className="dawa-profile-charts__iman">
             Iman <strong><span className="dawa-num">{data.currentIman}</span>%</strong>
           </span>
-        )}
+        ) : null}
       </header>
 
       <div className="dawa-profile-charts__grid">
@@ -149,7 +152,7 @@ export function ProfilePrayerCharts({ insightsUrl, title = 'Prayer insights' }: 
           <p className="dawa-profile-charts__card-sub">Wakt salah lifts the curve; kaza and missed pull it down.</p>
           <div className="dawa-profile-charts__canvas">
             {isLoading ? (
-              <p className="dawa-profile-charts__loading">Loading…</p>
+              <ChartShimmer height="100%" />
             ) : data ? (
               <Line
                 data={{
@@ -184,7 +187,7 @@ export function ProfilePrayerCharts({ insightsUrl, title = 'Prayer insights' }: 
           <p className="dawa-profile-charts__card-sub">Fard not logged before wakt ended.</p>
           <div className="dawa-profile-charts__canvas dawa-profile-charts__canvas--tall">
             {isLoading ? (
-              <p className="dawa-profile-charts__loading">Loading…</p>
+              <ChartShimmer height="100%" />
             ) : data ? (
               <MissedAreaChart data={data} theme={theme} />
             ) : null}
@@ -196,7 +199,9 @@ export function ProfilePrayerCharts({ insightsUrl, title = 'Prayer insights' }: 
           <p className="dawa-profile-charts__card-sub">On time vs kaza vs missed (14 days).</p>
           <div className="dawa-profile-charts__canvas dawa-profile-charts__canvas--donut">
             {isLoading ? (
-              <p className="dawa-profile-charts__loading">Loading…</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <Shimmer variant="circle" width="120px" height="120px" />
+              </div>
             ) : data ? (
               <Doughnut
                 data={{
@@ -229,7 +234,7 @@ export function ProfilePrayerCharts({ insightsUrl, title = 'Prayer insights' }: 
           <p className="dawa-profile-charts__card-sub">Fard prayed within wakt, last 7 days.</p>
           <div className="dawa-profile-charts__canvas">
             {isLoading ? (
-              <p className="dawa-profile-charts__loading">Loading…</p>
+              <ChartShimmer height="100%" />
             ) : data ? (
               <Bar
                 data={{

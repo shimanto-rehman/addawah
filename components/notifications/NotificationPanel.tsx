@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { notificationIcon } from '@/lib/notification-types';
 import type { AppNotification } from '@/lib/notification-types';
 import { useNotifications } from '@/components/notifications/useNotifications';
+import { NotificationShimmer } from '@/components/ui/Shimmer';
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -77,7 +78,11 @@ export function NotificationPanel({ variant, onClose }: NotificationPanelProps) 
       </div>
 
       {isLoading && notifications.length === 0 ? (
-        <p className="dawa-notif-panel__empty">Loading notifications…</p>
+        <div className="dawa-notif-panel__list">
+          {Array.from({ length: 5 }, (_, i) => (
+            <NotificationShimmer key={i} />
+          ))}
+        </div>
       ) : notifications.length === 0 ? (
         <div className="dawa-notif-panel__empty">
           <span className="dawa-notif-panel__empty-icon" aria-hidden>

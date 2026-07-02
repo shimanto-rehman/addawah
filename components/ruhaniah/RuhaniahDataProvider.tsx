@@ -38,6 +38,15 @@ export type RuhaniahPayload = {
     duaTimeline: { text: string; category: string; status: string; daysToAccept: number; dateStarted: string; dateResolved: string }[];
     duaList: { id: string; text: string; category: string; status: string; dateStarted: string; dateResolved: string | null; daysWaiting: number | null }[];
   } | null;
+  weaknesses?: {
+    id: string;
+    title: string;
+    arabicTitle: string;
+    description: string;
+    advice: string;
+    severity: 'critical' | 'high' | 'moderate';
+    icon: string;
+  }[];
 };
 
 type RuhaniahContextValue = {

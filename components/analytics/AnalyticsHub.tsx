@@ -8,15 +8,16 @@ import type { PrayerName } from '@/lib/constants';
 import type { AnalyticsChartsData } from '@/components/analytics/AnalyticsChartsGrid';
 import type { ImanMoodDay } from '@/lib/iman-mood-analytics';
 import type { AnalyticsKpis } from '@/lib/analytics-data';
+import { Shimmer, ChartShimmer } from '@/components/ui/Shimmer';
 
 const PrayerInsights = dynamic(
   () => import('@/components/dashboard/PrayerInsights').then((m) => ({ default: m.PrayerInsights })),
-  { ssr: false, loading: () => <p className="dawa-analytics__loading">Loading prayer insights…</p> },
+  { ssr: false, loading: () => <ChartShimmer height="300px" /> },
 );
 
 const AnalyticsChartsGrid = dynamic(
   () => import('@/components/analytics/AnalyticsChartsGrid').then((m) => ({ default: m.AnalyticsChartsGrid })),
-  { ssr: false, loading: () => <p className="dawa-analytics__loading">Loading charts…</p> },
+  { ssr: false, loading: () => <ChartShimmer height="400px" /> },
 );
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -144,7 +145,9 @@ export function AnalyticsHub() {
       </div>
 
       {fullLoading && !chartsData ? (
-        <p className="dawa-analytics__loading">Loading deep dive charts…</p>
+        <div className="dawa-analytics__charts-loading">
+          <ChartShimmer height="300px" />
+        </div>
       ) : (
         chartsData && <AnalyticsChartsGrid data={chartsData} />
       )}

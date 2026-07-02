@@ -133,6 +133,12 @@
   padding: 40px;
   color: var(--text-dim);
 }
+
+.dawa-analytics__charts-loading {
+  padding: 20px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 90%, var(--text-dim));
+}
 .dawa-analytics__hero {
   display: flex;
   flex-wrap: wrap;

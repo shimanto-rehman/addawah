@@ -21,6 +21,7 @@ import { userProfilePath } from '@/lib/user-public-stats';
 import { isValidEmail, sanitizeEmail, sanitizeName } from '@/lib/validation';
 import Link from 'next/link';
 import { ProfilePrayerCharts } from '@/components/profile/ProfilePrayerCharts';
+import { Shimmer } from '@/components/ui/Shimmer';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -170,7 +171,41 @@ export default function ProfilePage() {
       />
 
       {isLoading ? (
-        <p className="dawa-profile__loading">Loading profile…</p>
+        <div className="dawa-profile">
+          <section className="dawa-profile__photo-panel">
+            <div className="dawa-profile__photo-wrap">
+              <Shimmer variant="circle" width="96px" height="96px" />
+              <div className="dawa-profile__photo-actions">
+                <Shimmer variant="button" width="120px" />
+              </div>
+            </div>
+            <div className="dawa-profile__colors">
+              <Shimmer variant="text" width="100px" height="16px" />
+              <div className="dawa-profile__swatches">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <Shimmer key={i} variant="circle" width="32px" height="32px" />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="dawa-panel dawa-profile__details">
+            <Shimmer variant="text-lg" width="140px" />
+            <Shimmer variant="text-sm" width="200px" />
+            {Array.from({ length: 5 }, (_, i) => (
+              <div key={i} className="dawa-field">
+                <Shimmer variant="text-sm" width="80px" height="14px" />
+                <Shimmer variant="rect" width="100%" height="40px" borderRadius="6px" />
+              </div>
+            ))}
+          </section>
+
+          <section className="dawa-panel dawa-profile__privacy">
+            <Shimmer variant="text-lg" width="180px" />
+            <Shimmer variant="text" width="100%" height="40px" />
+            <Shimmer variant="button" width="120px" height="40px" />
+          </section>
+        </div>
       ) : (
         <form className="dawa-profile" onSubmit={saveProfile}>
           <section className="dawa-profile__photo-panel">

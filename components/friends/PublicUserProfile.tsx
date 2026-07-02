@@ -7,6 +7,7 @@ import { UserAvatar } from '@/components/profile/UserAvatar';
 import { GoldCoin, GoldCoinAmount } from '@/components/ui/GoldCoin';
 import { ConnectionActions } from '@/components/friends/ConnectionActions';
 import { ProfilePrayerCharts } from '@/components/profile/ProfilePrayerCharts';
+import { Shimmer, StatShimmer, ProfileShimmer, ChartShimmer } from '@/components/ui/Shimmer';
 import type { ConnectionInfo } from '@/lib/friendship';
 import type { ProfilePrivacy } from '@/lib/profile-privacy';
 import type { PublicUserStats } from '@/lib/user-public-stats';
@@ -59,7 +60,19 @@ export function PublicUserProfile({ username }: { username: string }) {
   );
 
   if (isLoading) {
-    return <p className="dawa-social__empty">Loading profile…</p>;
+    return (
+      <div className="dawa-user-profile">
+        <PageHeader title="Profile" subtitle="Loading profile data..." arabicLabel="الملف" />
+        <ProfileShimmer />
+        <section className="dawa-glass dawa-user-profile__stats-panel">
+          <div className="dawa-user-profile__stats-grid">
+            {Array.from({ length: 6 }, (_, i) => (
+              <StatShimmer key={i} />
+            ))}
+          </div>
+        </section>
+      </div>
+    );
   }
 
   if (error || !data?.profile) {

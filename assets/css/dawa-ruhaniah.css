@@ -1037,6 +1037,137 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   SPIRITUAL WEAKNESS — Post-verse analysis
+   ═══════════════════════════════════════════════════════════ */
+
+.dawa-weakness {
+  margin-top: 20px;
+}
+
+.dawa-weakness__header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dawa-weakness__label {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 3.5vw, 22px);
+  font-weight: 700;
+  color: var(--accent-bright);
+  margin: 0 0 6px;
+}
+
+.dawa-weakness__subtitle {
+  font-size: 13px;
+  color: var(--text-soft);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dawa-weakness__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dawa-weakness__card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(16px, 3vw, 24px);
+  position: relative;
+  overflow: hidden;
+}
+
+.dawa-weakness__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+}
+
+.dawa-weakness__card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dawa-weakness__icon {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.dawa-weakness__card-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.dawa-weakness__title {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 3vw, 19px);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+
+.dawa-weakness__arabic {
+  font-family: var(--font-arabic);
+  font-size: clamp(14px, 2.5vw, 16px);
+  color: var(--accent);
+  direction: rtl;
+  display: block;
+}
+
+.dawa-weakness__badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  padding: 3px 8px;
+  border-radius: 100px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.dawa-weakness__desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin: 0 0 14px;
+}
+
+.dawa-weakness__advice {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+
+.dawa-weakness__advice-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 6px;
+}
+
+.dawa-weakness__advice-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
    MOBILE
    ═══════════════════════════════════════════════════════════ */
 
@@ -1248,6 +1379,34 @@
   .dawa-verse__card-text {
     font-size: 13px;
   }
+
+  .dawa-weakness {
+    margin-top: 16px;
+  }
+
+  .dawa-weakness__card {
+    padding: 16px;
+  }
+
+  .dawa-weakness__icon {
+    font-size: 24px;
+  }
+
+  .dawa-weakness__title {
+    font-size: 16px;
+  }
+
+  .dawa-weakness__desc {
+    font-size: 13px;
+  }
+
+  .dawa-weakness__advice {
+    padding: 12px;
+  }
+
+  .dawa-weakness__advice-text {
+    font-size: 12px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1299,6 +1458,15 @@
     linear-gradient(145deg, var(--accent-soft), transparent 55%),
     var(--surface-2);
   box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='light'] .dawa-weakness__card {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme='light'] .dawa-weakness__advice {
+  background: var(--surface-2);
+  border-color: var(--border-soft);
 }
 
 [data-theme='light'] .dawa-dua-item {

@@ -2,6 +2,7 @@ import { prisma } from './prisma';
 import { startOfDay } from './salah-utils';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { kvGetJson, kvSetJson } from './kv';
 
 type AyahEntry = {
   ref: string;
@@ -26,16 +27,21 @@ type VerseResult = {
   signals: Record<string, unknown>;
 };
 
-let ayahCache: AyahEntry[] | null = null;
+const AYAH_POOL_CACHE_KEY = 'ruhaniah:ayah-pool';
+const AYAH_POOL_TTL = 86400; // 24h — static data
 
 async function getAyahPool(): Promise<AyahEntry[]> {
-  if (ayahCache) return ayahCache;
+  // Try Redis first (survives cold starts)
+  const cached = await kvGetJson<AyahEntry[]>(AYAH_POOL_CACHE_KEY);
+  if (cached) return cached;
+
   try {
-    // Read directly from filesystem — avoids server-side fetch of relative URLs
     const filePath = join(process.cwd(), 'public', 'data', 'ayah-pool.json');
     const raw = await readFile(filePath, 'utf-8');
-    ayahCache = JSON.parse(raw) as AyahEntry[];
-    return ayahCache;
+    const pool = JSON.parse(raw) as AyahEntry[];
+    // Fire-and-forget Redis set
+    kvSetJson(AYAH_POOL_CACHE_KEY, pool, AYAH_POOL_TTL).catch(() => {});
+    return pool;
   } catch {
     return getDefaultPool();
   }
@@ -113,7 +119,7 @@ function getDefaultPool(): AyahEntry[] {
   ];
 }
 
-/** Gather spiritual signal tags from user data */
+/** Gather spiritual signal tags from user data — all queries run in parallel */
 async function gatherSignals(
   userId: string,
 ): Promise<{ tags: string[]; signals: Record<string, unknown> }> {
@@ -121,31 +127,65 @@ async function gatherSignals(
   const tags: string[] = [];
   const signals: Record<string, unknown> = {};
 
-  // 1. Salah completion today
-  const salahRecords = await prisma.salahRecord.findMany({
-    where: { userId, date: today, kind: 'FARD', completed: true },
-    select: { prayer: true },
-  });
+  // All 8 queries in parallel (was 7 sequential + streak)
+  const [salahRecords, taqwa, fahmProfile, barakah, activeDuas, recentlyAnswered, mood, streakData] =
+    await Promise.all([
+      // 1. Salah completion today
+      prisma.salahRecord.findMany({
+        where: { userId, date: today, kind: 'FARD', completed: true },
+        select: { prayer: true },
+      }),
+      // 2. Taqwa pulse
+      prisma.taqwaPulse.findUnique({
+        where: { userId_date: { userId, date: today } },
+        select: { score: true },
+      }),
+      // 3. Fahm profile
+      prisma.userFahmProfile.findUnique({
+        where: { userId },
+        select: { weakest: true, strongest: true, trend: true },
+      }),
+      // 4. Barakah
+      prisma.barakahLog.findUnique({
+        where: { userId_date: { userId, date: today } },
+        select: { timeScore: true, rizqScore: true, healthScore: true, heartScore: true },
+      }),
+      // 5a. Active duas count
+      prisma.duaEntry.count({
+        where: { userId, status: 'WAITING' },
+      }),
+      // 5b. Recently answered duas count
+      prisma.duaEntry.count({
+        where: {
+          userId,
+          status: { in: ['ANSWERED_SAME', 'ANSWERED_DIFFERENT'] },
+          dateResolved: { gte: new Date(Date.now() - 7 * 86400000) },
+        },
+      }),
+      // 6. Mood
+      prisma.moodCheckIn.findUnique({
+        where: { userId_date: { userId, date: today } },
+        select: { moodId: true },
+      }),
+      // 7. Streak
+      computeStreak(userId),
+    ]);
+
+  // --- Derive tags from pre-fetched results ---
+
+  // Salah
   const completed = salahRecords.length;
   signals.todaySalah = completed;
   if (completed >= 4) tags.push('obedient', 'consistent');
   if (completed <= 2) tags.push('neglectful', 'needs_reminder');
 
-  // 2. Taqwa pulse
-  const taqwa = await prisma.taqwaPulse.findUnique({
-    where: { userId_date: { userId, date: today } },
-    select: { score: true },
-  });
+  // Taqwa
   const taqwaScore = taqwa?.score ?? 3;
   signals.taqwaScore = taqwaScore;
   if (taqwaScore <= 2) tags.push('heedless', 'distracted');
   if (taqwaScore >= 4) tags.push('conscious', 'present');
 
-  // 3. Fahm profile
-  const fahmProfile = await prisma.userFahmProfile.findUnique({
-    where: { userId },
-    select: { weakest: true, strongest: true, trend: true },
-  });
+  // Fahm
   signals.fahmWeakest = fahmProfile?.weakest;
   if (fahmProfile?.weakest === 'AKHIRAH') tags.push('dunya_focused');
   if (fahmProfile?.weakest === 'QADR') tags.push('anxious', 'control_seeking');
@@ -153,11 +193,7 @@ async function gatherSignals(
   if (fahmProfile?.weakest === 'SABR_SHUKR') tags.push('impatient');
   if (fahmProfile?.trend === 'IMPROVING') tags.push('strong_streak');
 
-  // 4. Barakah
-  const barakah = await prisma.barakahLog.findUnique({
-    where: { userId_date: { userId, date: today } },
-    select: { timeScore: true, rizqScore: true, healthScore: true, heartScore: true },
-  });
+  // Barakah
   signals.barakah = barakah;
   if (barakah) {
     if (barakah.timeScore <= 2) tags.push('time_restricted');
@@ -166,35 +202,21 @@ async function gatherSignals(
     if (barakah.healthScore <= 2) tags.push('health_struggling');
   }
 
-  // 5. Active duas
-  const activeDuas = await prisma.duaEntry.count({
-    where: { userId, status: 'WAITING' },
-  });
-  const recentlyAnswered = await prisma.duaEntry.count({
-    where: {
-      userId,
-      status: { in: ['ANSWERED_SAME', 'ANSWERED_DIFFERENT'] },
-      dateResolved: { gte: new Date(Date.now() - 7 * 86400000) },
-    },
-  });
+  // Duas
   signals.activeDuas = activeDuas;
   signals.recentlyAnswered = recentlyAnswered;
   if (activeDuas > 5) tags.push('waiting_many', 'needs_sabr');
   if (recentlyAnswered > 0) tags.push('answered_dua', 'needs_shukr');
 
-  // 6. Mood
-  const mood = await prisma.moodCheckIn.findUnique({
-    where: { userId_date: { userId, date: today } },
-    select: { moodId: true },
-  });
+  // Mood
   signals.mood = mood?.moodId;
   if (mood?.moodId === 'anxious') tags.push('anxious');
   if (mood?.moodId === 'grateful') tags.push('grateful');
   if (mood?.moodId === 'sad') tags.push('needs_comfort');
 
-  // 7. Streak
-  const streakData = await computeStreak(userId);
+  // Streak
   signals.streak = streakData.current;
+  signals.broken = streakData.broken;
   if (streakData.current > 30) tags.push('strong_streak');
   if (streakData.broken) tags.push('relapse', 'needs_hope');
 

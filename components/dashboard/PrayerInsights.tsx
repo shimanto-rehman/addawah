@@ -15,6 +15,7 @@ import useSWR from 'swr';
 import { PRAYER_LABELS } from '@/lib/constants';
 import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
 import { useChartResize } from '@/lib/use-chart-resize';
+import { Shimmer, ChartShimmer } from '@/components/ui/Shimmer';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -229,7 +230,11 @@ export function PrayerInsights({
             </div>
             <div className="dawa-insights__gauge" aria-label={`Iman meter ${data?.currentIman ?? '—'} percent`}>
               <span className="dawa-insights__gauge-val">
-                <span className="dawa-num">{data ? data.currentIman : '—'}</span>
+                {isLoading ? (
+                  <Shimmer variant="stat-value" width="48px" height="36px" />
+                ) : (
+                  <span className="dawa-num">{data?.currentIman ?? '—'}</span>
+                )}
               </span>
               <span className="dawa-insights__gauge-unit">%</span>
             </div>
@@ -237,7 +242,7 @@ export function PrayerInsights({
 
           <div className="dawa-insights__chart">
             {isLoading ? (
-              <p className="dawa-insights__loading">Calculating your wakt pattern…</p>
+              <ChartShimmer height="100%" />
             ) : (
               <Line
                 data={imanChart}
@@ -300,7 +305,7 @@ export function PrayerInsights({
 
           <div className="dawa-insights__chart dawa-insights__chart--area">
             {isLoading ? (
-              <p className="dawa-insights__loading">Loading missed salah history…</p>
+              <ChartShimmer height="100%" />
             ) : data ? (
               <MissedAreaChart data={data} theme={theme} />
             ) : null}

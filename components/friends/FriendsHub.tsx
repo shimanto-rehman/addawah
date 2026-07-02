@@ -15,6 +15,7 @@ import {
   type BoardRow,
 } from '@/components/friends/WaktBoardVirtual';
 import { BADGE_TIERS, PRAYER_REWARD, REWARD_POINTS } from '@/lib/rewards';
+import { Shimmer, ConnectionShimmer } from '@/components/ui/Shimmer';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 const HUB_LIMIT = 20;
@@ -303,13 +304,25 @@ export function FriendsHub() {
 
       <div className="dawa-social__hero dawa-glass">
         <div className="dawa-social__hero-side dawa-social__hero-side--left">
-          <GoldCoin size={28} className="dawa-social__hero-coin" />
-          <div className="dawa-social__hero-copy">
-            <span className="dawa-social__hero-val dawa-social__hero-val--gold">
-              <span className="dawa-num">{hubData?.me?.goldCoins ?? '—'}</span>
-            </span>
-            <span className="dawa-social__hero-lbl">Gold coins</span>
-          </div>
+          {hubLoading ? (
+            <>
+              <Shimmer variant="circle" width="28px" height="28px" />
+              <div className="dawa-social__hero-copy">
+                <Shimmer variant="stat-value" width="48px" height="24px" />
+                <Shimmer variant="text-sm" width="60px" />
+              </div>
+            </>
+          ) : (
+            <>
+              <GoldCoin size={28} className="dawa-social__hero-coin" />
+              <div className="dawa-social__hero-copy">
+                <span className="dawa-social__hero-val dawa-social__hero-val--gold">
+                  <span className="dawa-num">{hubData?.me?.goldCoins ?? '—'}</span>
+                </span>
+                <span className="dawa-social__hero-lbl">Gold coins</span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="dawa-social__hero-bridge" aria-hidden />
@@ -318,13 +331,25 @@ export function FriendsHub() {
           className="dawa-social__hero-side dawa-social__hero-side--right"
           title={hubData?.me?.badge?.blurb ?? ''}
         >
-          <div className="dawa-social__hero-copy">
-            <span className="dawa-social__hero-val">{hubData?.me?.badge?.name ?? 'Seedling'}</span>
-            <span className="dawa-social__hero-lbl">Badge</span>
-          </div>
-          <span className="dawa-social__hero-emoji" aria-hidden>
-            {hubData?.me?.badge?.icon ?? '🌱'}
-          </span>
+          {hubLoading ? (
+            <>
+              <div className="dawa-social__hero-copy">
+                <Shimmer variant="text" width="80px" height="20px" />
+                <Shimmer variant="text-sm" width="40px" />
+              </div>
+              <Shimmer variant="circle" width="28px" height="28px" />
+            </>
+          ) : (
+            <>
+              <div className="dawa-social__hero-copy">
+                <span className="dawa-social__hero-val">{hubData?.me?.badge?.name ?? 'Seedling'}</span>
+                <span className="dawa-social__hero-lbl">Badge</span>
+              </div>
+              <span className="dawa-social__hero-emoji" aria-hidden>
+                {hubData?.me?.badge?.icon ?? '🌱'}
+              </span>
+            </>
+          )}
         </div>
       </div>
 
@@ -412,22 +437,30 @@ export function FriendsHub() {
           </Link>
         </div>
         <ul className="dawa-social__circle">
-          {friends.map((f) => (
-            <li key={f.id} className="dawa-social__circle-item">
-              <UserProfileLink username={f.username} className="dawa-social__circle-link">
-                <UserAvatar name={f.name} userId={f.id} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={44} />
-                <div>
-                  <p className="dawa-social__circle-name">{f.name}</p>
-                  <p className="dawa-social__circle-meta">
-                    @{f.username ?? 'user'}
-                    {f.weekRateHidden ? '' : ` · ${f.weekRate ?? 0}% this week`}
-                    {f.badge && <> · {f.badge.icon} {f.badge.name}</>}
-                  </p>
-                </div>
-              </UserProfileLink>
-              {!f.goldCoinsHidden && <GoldCoinAmount amount={f.goldCoins} size={15} />}
-            </li>
-          ))}
+          {hubLoading ? (
+            Array.from({ length: 4 }, (_, i) => (
+              <li key={i} className="dawa-social__circle-item">
+                <ConnectionShimmer />
+              </li>
+            ))
+          ) : (
+            friends.map((f) => (
+              <li key={f.id} className="dawa-social__circle-item">
+                <UserProfileLink username={f.username} className="dawa-social__circle-link">
+                  <UserAvatar name={f.name} userId={f.id} avatarColor={f.avatarColor} avatarUrl={f.avatarUrl} size={44} />
+                  <div>
+                    <p className="dawa-social__circle-name">{f.name}</p>
+                    <p className="dawa-social__circle-meta">
+                      @{f.username ?? 'user'}
+                      {f.weekRateHidden ? '' : ` · ${f.weekRate ?? 0}% this week`}
+                      {f.badge && <> · {f.badge.icon} {f.badge.name}</>}
+                    </p>
+                  </div>
+                </UserProfileLink>
+                {!f.goldCoinsHidden && <GoldCoinAmount amount={f.goldCoins} size={15} />}
+              </li>
+            ))
+          )}
         </ul>
         {hasMoreFriends && (
           <div className="dawa-social__load-more">

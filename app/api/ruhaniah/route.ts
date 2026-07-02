@@ -5,8 +5,21 @@ import { ruhaniahSubmissionSchema } from '@/lib/ruhaniah-validation';
 import { getOrComputeVerse } from '@/lib/ruhaniah-verse';
 import { getRuhaniahToday } from '@/lib/ruhaniah-data';
 import { computeFahmProfile } from '@/lib/ruhaniah-profile';
+import { analyzeWeaknesses, type Weakness } from '@/lib/ruhaniah-weakness';
 import { clearRuhaniahReminderForDate } from '@/lib/notifications';
 import { fetchPrayerTimes, formatDateKeyInTimezone } from '@/lib/prayer-times';
+import { kvGetJson, kvSetJson, kvDel } from '@/lib/kv';
+
+/** Redis cache helpers */
+function todayCacheKey(userId: string) {
+  const dateStr = startOfDay(new Date()).toISOString().slice(0, 10);
+  return `ruhaniah:today:${userId}:${dateStr}`;
+}
+function insightsCacheKey(userId: string) {
+  return `ruhaniah:insights:${userId}`;
+}
+const INSIGHTS_TTL = 600; // 10 minutes
+const TODAY_TTL = 14400; // 4 hours (invalidated on POST anyway)
 
 /** Optimized: fetch all insight data in parallel with bounded queries */
 async function getInsightsData(userId: string) {
@@ -99,12 +112,20 @@ async function getInsightsData(userId: string) {
   };
 }
 
-/** GET — Check if today's flow is done + return verse + insights */
+/** GET — Check if today's flow is done + return verse + insights (Redis-cached) */
 export async function GET() {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
 
   const userId = user!.id;
+
+  // Check Redis cache for today's data
+  const cached = await kvGetJson<Record<string, unknown>>(todayCacheKey(userId));
+  if (cached) {
+    return jsonOk(cached);
+  }
+
+  // Cache miss — fetch from DB
   const [today, fahmProfile, insightsData] = await Promise.all([
     getRuhaniahToday(userId),
     prisma.userFahmProfile.findUnique({
@@ -121,17 +142,36 @@ export async function GET() {
     getInsightsData(userId),
   ]);
 
-  // If completed, also fetch verse
-  let verse = today.verse;
-  if (today.completed && !verse) {
-    verse = await prisma.ruhaniahVerse.findUnique({
-      where: { userId_date: { userId, date: startOfDay(new Date()) } },
-    });
-  }
-
+  // Always include verse (already fetched in getRuhaniahToday if it exists)
+  const verse = today.verse;
   const signals = (verse?.signals ?? {}) as Record<string, unknown>;
 
-  return jsonOk({
+  // Compute weaknesses from signals already gathered (no extra DB queries)
+  const weaknesses: Weakness[] = today.completed
+    ? analyzeWeaknesses(
+        {
+          todaySalah: signals.todaySalah as number | undefined,
+          taqwaScore: (signals.taqwaScore as number | undefined) ?? today.taqwaScore ?? undefined,
+          fahmWeakest: (signals.fahmWeakest as string | undefined) ?? fahmProfile?.weakest ?? undefined,
+          barakah: (signals.barakah as any) ?? today.barakahScores ?? undefined,
+          activeDuas: signals.activeDuas as number | undefined,
+          recentlyAnswered: signals.recentlyAnswered as number | undefined,
+          mood: signals.mood as string | undefined,
+          streak: signals.streak as number | undefined,
+        },
+        fahmProfile
+          ? {
+              categoryScores: fahmProfile.categoryScores as Record<string, number>,
+              overallQAS: fahmProfile.overallQAS,
+              weakest: fahmProfile.weakest,
+              trend: fahmProfile.trend,
+            }
+          : null,
+        insightsData.duaStats,
+      )
+    : [];
+
+  const payload = {
     completed: today.completed,
     taqwaScore: today.taqwaScore,
     barakahScores: today.barakahScores,
@@ -157,7 +197,13 @@ export async function GET() {
         }
       : null,
     insights: insightsData,
-  });
+    weaknesses,
+  };
+
+  // Cache for 4h (invalidated on POST anyway)
+  kvSetJson(todayCacheKey(userId), payload, TODAY_TTL).catch(() => {});
+
+  return jsonOk(payload);
 }
 
 /** POST — Submit the entire nightly flow (all 4 steps) */
@@ -242,6 +288,10 @@ export async function POST(req: Request) {
     return jsonError(`Transaction failed: ${txErr instanceof Error ? txErr.message : 'unknown'}`, 500);
   }
 
+  // Invalidate Redis cache (fire-and-forget)
+  kvDel(todayCacheKey(userId)).catch(() => {});
+  kvDel(insightsCacheKey(userId)).catch(() => {});
+
   // Fire-and-forget: clear end-of-day reminder notification (non-blocking)
   prisma.user
     .findUnique({ where: { id: userId }, select: { city: true, country: true } })
@@ -255,28 +305,31 @@ export async function POST(req: Request) {
   computeFahmProfile(userId).catch(console.error);
 
   // Compute verse + insights (these read from DB, not write)
-  // Use a timeout to avoid hanging the response
   let verse: Awaited<ReturnType<typeof getOrComputeVerse>> | null = null;
   let insightsPayload: Record<string, unknown> | null = null;
+  let weaknesses: Weakness[] = [];
 
   try {
-    const [verseResult, fahmProfile, historyData] = await Promise.all([
+    const [verseResult, historyData] = await Promise.all([
       getOrComputeVerse(userId, today),
-      prisma.userFahmProfile.findUnique({
-        where: { userId },
-        select: {
-          totalQuestions: true,
-          categoryScores: true,
-          overallQAS: true,
-          strongest: true,
-          weakest: true,
-          trend: true,
-        },
-      }),
       getInsightsData(userId),
     ]);
 
     verse = verseResult;
+
+    // Fetch fahmProfile after computeFahmProfile has had time to upsert
+    const fahmProfile = await prisma.userFahmProfile.findUnique({
+      where: { userId },
+      select: {
+        totalQuestions: true,
+        categoryScores: true,
+        overallQAS: true,
+        strongest: true,
+        weakest: true,
+        trend: true,
+      },
+    });
+
     insightsPayload = {
       fahmProfile: fahmProfile
         ? {
@@ -290,6 +343,23 @@ export async function POST(req: Request) {
         : null,
       ...historyData,
     };
+
+    // Compute weaknesses from verse signals (no extra DB queries)
+    const vSignals = (verseResult?.signals ?? {}) as Record<string, unknown>;
+    weaknesses = analyzeWeaknesses(
+      {
+        todaySalah: vSignals.todaySalah as number | undefined,
+        taqwaScore: (vSignals.taqwaScore as number | undefined) ?? taqwaScore,
+        fahmWeakest: vSignals.fahmWeakest as string | undefined,
+        barakah: (vSignals.barakah as any) ?? barakahScores,
+        activeDuas: vSignals.activeDuas as number | undefined,
+        recentlyAnswered: vSignals.recentlyAnswered as number | undefined,
+        mood: vSignals.mood as string | undefined,
+        streak: vSignals.streak as number | undefined,
+      },
+      insightsPayload?.fahmProfile as { categoryScores: Record<string, number>; overallQAS: number; weakest?: string | null; trend: string } | null ?? null,
+      historyData.duaStats,
+    );
   } catch (verseErr) {
     console.error('[ruhaniah] Verse/insights computation failed:', verseErr);
     // Data was saved — verse/insights will be available on next page load
@@ -308,5 +378,6 @@ export async function POST(req: Request) {
         }
       : null,
     insights: insightsPayload,
+    weaknesses,
   });
 }

@@ -1,6 +1,7 @@
 import { prisma } from './prisma';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { kvGetJson, kvSetJson } from './kv';
 
 const CATEGORIES = [
   'QADR',
@@ -15,17 +16,22 @@ const CATEGORIES = [
 
 type FahmQuestionEntry = { id: string; category: string };
 
-let questionCategoryCache: Map<string, string> | null = null;
+const FAHM_CACHE_KEY = 'ruhaniah:fahm-questions';
+const FAHM_CACHE_TTL = 86400; // 24h — static data
 
 async function getQuestionCategoryMap(): Promise<Map<string, string>> {
-  if (questionCategoryCache) return questionCategoryCache;
+  // Try Redis first (survives cold starts)
+  const cached = await kvGetJson<Record<string, string>>(FAHM_CACHE_KEY);
+  if (cached) return new Map(Object.entries(cached));
+
   try {
-    // Read directly from filesystem — avoids server-side fetch of relative URLs
     const filePath = join(process.cwd(), 'public', 'data', 'fahm-questions.json');
     const raw = await readFile(filePath, 'utf-8');
     const questions = JSON.parse(raw) as FahmQuestionEntry[];
-    questionCategoryCache = new Map(questions.map((q) => [q.id, q.category]));
-    return questionCategoryCache;
+    const map = new Map(questions.map((q) => [q.id, q.category]));
+    // Fire-and-forget Redis set (store as object for JSON serialization)
+    kvSetJson(FAHM_CACHE_KEY, Object.fromEntries(map), FAHM_CACHE_TTL).catch(() => {});
+    return map;
   } catch {
     return new Map();
   }

@@ -17,6 +17,7 @@ import {
   outerLabelRadius,
   windowToArc,
 } from '@/lib/sun-arc';
+import { Shimmer } from '@/components/ui/Shimmer';
 
 const fetcher = prayerTimesFetcher;
 
@@ -202,8 +203,18 @@ export function SunPathArc() {
 
   if (!model) {
     return (
-      <div className="dawa-sky__arc dawa-sky__arc--loading" aria-busy="true">
-        <p>Loading prayer times…</p>
+      <div className="dawa-sky__arc dawa-sky__arc--loading-shimmer" aria-busy="true">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '20px' }}>
+          <Shimmer variant="chart" height="180px" />
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            {Array.from({ length: 5 }, (_, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <Shimmer variant="text-sm" width="40px" />
+                <Shimmer variant="text-sm" width="50px" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

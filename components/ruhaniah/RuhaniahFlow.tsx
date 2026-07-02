@@ -9,8 +9,10 @@ import { BarakahMeter } from './BarakahMeter';
 import { DuaLog } from './DuaLog';
 import { RuhaniahVerse } from './RuhaniahVerse';
 import { RuhaniahInsights } from './RuhaniahInsights';
+import { SpiritualWeakness } from './SpiritualWeakness';
 import { useRuhaniahData } from './RuhaniahDataProvider';
 import type { FahmResponseInput } from '@/lib/ruhaniah-validation';
+import type { Weakness } from '@/lib/ruhaniah-weakness';
 
 type FahmQuestion = {
   id: string;
@@ -77,6 +79,7 @@ export function RuhaniahFlow() {
   const [submitting, setSubmitting] = useState(false);
   const [verse, setVerse] = useState<VerseResult | null>(null);
   const [insights, setInsights] = useState<InsightsData | null>(null);
+  const [weaknesses, setWeaknesses] = useState<Weakness[]>([]);
   const [done, setDone] = useState(false);
 
   // Taqwa
@@ -116,7 +119,7 @@ export function RuhaniahFlow() {
       .catch(console.error);
   }, []);
 
-  // Already completed today → show verse + insights
+  // Already completed today → show verse + insights + weaknesses
   useEffect(() => {
     if (ctx?.data?.completed && ctx.data.verse) {
       const v = ctx.data.verse;
@@ -144,6 +147,10 @@ export function RuhaniahFlow() {
           duaTimeline: [],
           duaList: [],
         });
+      }
+      // Weaknesses from GET response
+      if (ctx.data.weaknesses) {
+        setWeaknesses(ctx.data.weaknesses);
       }
       setDone(true);
     }
@@ -199,6 +206,9 @@ export function RuhaniahFlow() {
       if (data.insights) {
         setInsights(data.insights);
       }
+      if (data.weaknesses) {
+        setWeaknesses(data.weaknesses);
+      }
       setDone(true);
       ctx?.mutate();
     } catch (err) {
@@ -214,7 +224,11 @@ export function RuhaniahFlow() {
       <div className="dawa-ruhaniah">
         <RuhaniahHeader />
         {verse ? (
-          <RuhaniahVerse verse={verse} />
+          <>
+            <RuhaniahVerse verse={verse} />
+            {/* Weakness analysis below the verse */}
+            {weaknesses.length > 0 && <SpiritualWeakness weaknesses={weaknesses} />}
+          </>
         ) : (
           <div className="dawa-step-card" style={{ textAlign: 'center', padding: '32px 16px' }}>
             <p style={{ fontSize: 40, marginBottom: 12 }}>✨</p>
@@ -225,7 +239,7 @@ export function RuhaniahFlow() {
           </div>
         )}
 
-        {/* Insights below the verse */}
+        {/* Insights below the verse + weaknesses */}
         <RuhaniahInsights insights={insights} fahmProfile={insights?.fahmProfile ?? ctx?.data?.fahmProfile ?? null} />
       </div>
     );

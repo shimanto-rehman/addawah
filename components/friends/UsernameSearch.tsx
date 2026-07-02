@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { userProfilePath } from '@/lib/user-public-stats';
 import { sanitizeUsername } from '@/lib/validation';
+import { Shimmer } from '@/components/ui/Shimmer';
 
 const fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then((r) => r.json());
 
@@ -163,7 +164,18 @@ export function UsernameSearch({
       {showResults && (
         <div className="dawa-user-search__panel" role="listbox" id={`${listId}-listbox`}>
           {searching ? (
-            <p className="dawa-user-search__state">Searching…</p>
+            <div className="dawa-user-search__shimmer">
+              {Array.from({ length: 3 }, (_, i) => (
+                <div key={i} className="dawa-user-search__shimmer-row">
+                  <Shimmer variant="avatar" />
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <Shimmer variant="text" width="120px" />
+                    <Shimmer variant="text-sm" width="80px" />
+                  </div>
+                  <Shimmer variant="button" width="70px" />
+                </div>
+              ))}
+            </div>
           ) : results.length === 0 ? (
             <p className="dawa-user-search__state">
               No users found for <strong>@{debounced}</strong>
