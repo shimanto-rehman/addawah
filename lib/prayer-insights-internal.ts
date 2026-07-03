@@ -1,6 +1,9 @@
 import { PRAYERS, type PrayerName } from './constants';
 import {
+  formatDateKeyInTimezone,
+  getNowMinutesInTimezone,
   timeToMinutes,
+  zonedMinutesToDate,
   type PrayerSlot,
   type PrayerTimesPayload,
 } from './prayer-times';
@@ -32,14 +35,6 @@ function prayerWindow(
   return { start, end: prayers[idx + 1].minutes };
 }
 
-function windowEndDate(prayerDate: Date, endMinutes: number) {
-  const end = new Date(prayerDate);
-  const hours = Math.floor(endMinutes / 60);
-  const mins = endMinutes % 60;
-  end.setHours(hours, mins, 0, 0);
-  return end;
-}
-
 export function classifyPrayerForDay(
   prayerDate: Date,
   prayer: PrayerName,
@@ -49,15 +44,20 @@ export function classifyPrayerForDay(
   now: Date,
 ): SalahTimingStatus {
   const { start, end } = prayerWindow(prayer, times.prayers, times.sunrise);
-  const waktEnd = windowEndDate(prayerDate, end);
   const dayKey = formatDateKey(prayerDate);
-  const todayKey = formatDateKey(now);
+  const todayKey = formatDateKeyInTimezone(now, times.timeZone);
   const isToday = dayKey === todayKey;
 
   if (!completed) {
-    if (isToday && now < waktEnd) return 'pending';
-    if (now >= waktEnd || dayKey < todayKey) return 'missed';
-    return 'pending';
+    if (isToday) {
+      const { start, end } = prayerWindow(prayer, times.prayers, times.sunrise);
+      const nowMins = getNowMinutesInTimezone(now, times.timeZone);
+      if (nowMins < start) return 'pending';
+      const waktEnd = zonedMinutesToDate(now, end, times.timeZone);
+      if (now < waktEnd) return 'pending';
+      return 'missed';
+    }
+    return 'missed';
   }
 
   if (!loggedAt) return 'kaza';

@@ -10,18 +10,22 @@ import type { CoachingTip } from './analytics-coaching';
 import type { PrayerInsightsPayload } from './prayer-insights';
 import { computePrayerInsightsCached } from './salah-day-stats';
 import {
-  addDays,
+  addDaysToKey,
   computeLifetimeSinceJoin,
   computeLifetimeStats,
   computeStreak,
   countCompleted,
+  dateFromKey,
+  dateKeyFromDbDate,
   formatDateKey,
   isFardRecord,
-  startOfDay,
-  startOfWeek,
+  rollingWeekStartKey,
+  weekDayKeys,
+  weekRangeFromStartKey,
 } from './salah-utils';
 import { PRAYERS, PRAYER_LABELS, type PrayerName } from './constants';
 import { cappedLifetimeRecordStart, SALAH_RECORD_STATS_SELECT } from './salah-query';
+import { fetchPrayerTimes, formatDateKeyInTimezone } from './prayer-times';
 
 const SALAH_ANALYTICS_SELECT = SALAH_RECORD_STATS_SELECT;
 
@@ -77,24 +81,32 @@ export type AnalyticsSummaryPayload = {
 const payloadCache = new Map<string, { at: number; payload: AnalyticsPayload; complete: boolean }>();
 const PAYLOAD_CACHE_MS = 60_000;
 
-async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean): Promise<AnalyticsPayload> {
-  const today = startOfDay(new Date());
-  const weekStart = startOfWeek(today);
-  const weekEnd = addDays(weekStart, 6);
-  const insightStart = addDays(today, -13);
-  const moodStart = addDays(today, -13);
+export function invalidateAnalyticsCache(userId: string) {
+  payloadCache.delete(userId);
+}
 
+async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean): Promise<AnalyticsPayload> {
   const dbUser = await prisma.user.findUnique({
     where: { id: userId },
     select: { createdAt: true, city: true, country: true },
   });
   if (!dbUser) throw new Error('User not found');
 
-  const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, today);
+  const city = dbUser.city?.trim() || 'Dhaka';
+  const country = dbUser.country?.trim() || 'Bangladesh';
+  const now = new Date();
+  const prayerTimes = await fetchPrayerTimes(city, country, now);
+  const todayKey = formatDateKeyInTimezone(now, prayerTimes.timeZone);
+  const todayDate = dateFromKey(todayKey);
+  const weekStartKey = rollingWeekStartKey(prayerTimes.timeZone, now);
+  const { start: weekStart, end: weekEnd } = weekRangeFromStartKey(weekStartKey);
+  const insightStart = dateFromKey(addDaysToKey(todayKey, -13));
+
+  const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, todayDate);
 
   const [lifetimeRecords, weekRecords, insightRecords, moods] = await Promise.all([
     prisma.salahRecord.findMany({
-      where: { userId, date: { gte: recordStart, lte: today } },
+      where: { userId, date: { gte: recordStart, lte: todayDate } },
       select: SALAH_ANALYTICS_SELECT,
       orderBy: { date: 'asc' },
     }),
@@ -106,23 +118,20 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
       where: {
         userId,
         kind: 'FARD',
-        date: { gte: insightStart, lte: today },
+        date: { gte: insightStart, lte: todayDate },
       },
       select: { date: true, prayer: true, completed: true, updatedAt: true },
     }),
     includeCharts
       ? prisma.moodCheckIn.findMany({
-          where: { userId, date: { gte: moodStart, lte: today } },
+          where: { userId, date: { gte: insightStart, lte: todayDate } },
           orderBy: { date: 'asc' },
         })
       : Promise.resolve([]),
   ]);
 
-  const city = dbUser.city?.trim() || 'Dhaka';
-  const country = dbUser.country?.trim() || 'Bangladesh';
-
   const lifetime = computeLifetimeStats(lifetimeRecords);
-  const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords);
+  const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords, prayerTimes, now);
   const streak = computeStreak(lifetimeRecords);
   const insights = await computePrayerInsightsCached(userId, insightRecords, city, country, 14);
 
@@ -138,8 +147,8 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     label: PRAYER_LABELS[p.prayer as PrayerName],
   }));
 
-  const weekLabels = Array.from({ length: 7 }, (_, i) =>
-    addDays(weekStart, i).toLocaleDateString('en-US', { weekday: 'short' }),
+  const weekLabels = weekDayKeys(weekStartKey).map((key) =>
+    dateFromKey(key).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }),
   );
 
   const stackedWeek = insights.days.slice(-7).map((d) => ({
@@ -179,13 +188,11 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     perfectDays: sinceJoin.perfectDays,
   });
 
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const day = addDays(weekStart, i);
-    const key = formatDateKey(day);
-    return weekRecords.filter(
-      (r) => formatDateKey(r.date) === key && r.completed && isFardRecord(r),
-    ).length;
-  });
+  const weekDays = weekDayKeys(weekStartKey).map((key) =>
+    weekRecords.filter(
+      (r) => dateKeyFromDbDate(r.date) === key && r.completed && isFardRecord(r),
+    ).length,
+  );
 
   const kpis: AnalyticsKpis = {
     iman: insights.currentIman,

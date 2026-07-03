@@ -225,6 +225,53 @@
   height: 11px;
 }
 
+.dawa-metrics__missed {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+}
+
+.dawa-metrics__missed-summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  list-style: none;
+}
+
+.dawa-metrics__missed-summary::-webkit-details-marker {
+  display: none;
+}
+
+.dawa-metrics__missed-note {
+  margin: 10px 0 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.dawa-metrics__missed-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.dawa-metrics__missed-list li {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dawa-metrics__missed-list li:last-child {
+  border-bottom: none;
+}
+
 .dawa-metrics__beads--loading .dawa-metrics__bead {
   background: linear-gradient(
     90deg,

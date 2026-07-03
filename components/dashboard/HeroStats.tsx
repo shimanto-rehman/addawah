@@ -191,6 +191,29 @@ export function HeroStats() {
           </>
         )}
       </p>
+
+      {!isLoading && data.missedBreakdown?.length > 0 && (
+        <details className="dawa-metrics__missed">
+          <summary className="dawa-metrics__missed-summary">
+            Which wakts are counted as missed?
+          </summary>
+          <p className="dawa-metrics__missed-note">
+            Tracking since{' '}
+            <span className="dawa-num">{data.trackingSince}</span>
+            {' · '}
+            Today&apos;s in-progress wakts are excluded until their window ends.
+          </p>
+          <ul className="dawa-metrics__missed-list">
+            {data.missedBreakdown.map((slot) => (
+              <li key={`${slot.date}-${slot.prayer}`}>
+                <span className="dawa-num">{slot.date}</span>
+                {' — '}
+                {slot.label}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
     </section>
   );
 }

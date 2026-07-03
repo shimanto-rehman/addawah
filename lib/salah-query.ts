@@ -18,3 +18,8 @@ export function cappedLifetimeRecordStart(joinedAt: Date, today: Date) {
 export const DASHBOARD_CACHE_HEADERS = {
   'Cache-Control': 'private, max-age=60, stale-while-revalidate=120',
 };
+
+/** Salah grid must stay fresh — toggles are interactive. */
+export const SALAH_GRID_CACHE_HEADERS = {
+  'Cache-Control': 'private, no-store, must-revalidate',
+};

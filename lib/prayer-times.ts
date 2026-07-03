@@ -169,7 +169,7 @@ export function zonedMinutesToDate(anchor: Date, minutesFromMidnight: number, ti
   return candidate;
 }
 
-/** Wakt window for a fard prayer — Fajr runs until Dhuhr; others until the next fard. */
+/** Wakt window for a fard prayer — Fajr until sunrise; others until the next fard. */
 export function prayerWaktWindow(prayer: PrayerName, times: PrayerTimesPayload) {
   if (!isPrayerTimesPayload(times)) {
     return { start: 0, end: 24 * 60 };
@@ -178,7 +178,7 @@ export function prayerWaktWindow(prayer: PrayerName, times: PrayerTimesPayload) 
   const start = times.prayers[idx]?.minutes ?? 0;
 
   if (prayer === 'FAJR') {
-    return { start, end: times.prayers[idx + 1]?.minutes ?? 24 * 60 };
+    return { start, end: timeToMinutes(times.sunrise) };
   }
   if (prayer === 'ISHA') {
     return { start, end: 24 * 60 };

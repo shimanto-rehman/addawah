@@ -4,16 +4,19 @@ import {
   computeLifetimeSinceJoin,
   computeStreak,
   countCompleted,
-  formatDateKey,
-  startOfWeek,
-  addDays,
-  startOfDay,
+  dateFromKey,
+  dateKeyFromDbDate,
+  getLifetimeMissedBreakdown,
+  rollingWeekStartKey,
+  weekDayKeys,
+  weekRangeFromStartKey,
 } from './salah-utils';
 import { PRAYERS, PRAYER_LABELS, type PrayerName } from './constants';
 import { cappedLifetimeRecordStart, SALAH_RECORD_STATS_SELECT } from './salah-query';
 import { kvDel, kvGetJson, kvSetJson } from './kv';
+import { fetchPrayerTimes, formatDateKeyInTimezone } from './prayer-times';
 
-const STATS_CACHE_TTL_SECONDS = 60;
+const STATS_CACHE_TTL_SECONDS = 5;
 
 export type StatsPayload = {
   weekCompleted: number;
@@ -31,34 +34,48 @@ export type StatsPayload = {
   fajrMissed: number;
   bestPrayer: { prayer: PrayerName; label: string; rate: number } | null;
   loggedCompleted: number;
+  trackingSince: string | null;
+  missedBreakdown: { date: string; prayer: PrayerName; label: string }[];
 };
 
 function isStatsPayload(value: unknown): value is StatsPayload {
   return (
     Boolean(value) &&
     typeof value === 'object' &&
-    typeof (value as StatsPayload).lifetimeRate === 'number'
+    typeof (value as StatsPayload).lifetimeRate === 'number' &&
+    Array.isArray((value as StatsPayload).missedBreakdown)
   );
 }
 
-export async function buildStatsPayload(userId: string): Promise<StatsPayload> {
+export async function buildStatsPayload(
+  userId: string,
+  opts?: { skipCache?: boolean },
+): Promise<StatsPayload> {
   const cacheKey = `stats:${userId}`;
-  const cached = await kvGetJson<StatsPayload>(cacheKey);
-  if (isStatsPayload(cached)) return cached;
-  if (cached) await kvDel(cacheKey).catch(() => {});
-
-  const today = startOfDay(new Date());
-  const weekStart = startOfWeek(today);
-  const weekEnd = addDays(weekStart, 6);
-  const todayKey = formatDateKey(today);
+  if (!opts?.skipCache) {
+    const cached = await kvGetJson<StatsPayload>(cacheKey);
+    if (isStatsPayload(cached)) return cached;
+    if (cached) await kvDel(cacheKey).catch(() => {});
+  } else {
+    await kvDel(cacheKey).catch(() => {});
+  }
 
   const dbUser = await prisma.user.findUnique({
     where: { id: userId },
-    select: { createdAt: true },
+    select: { createdAt: true, city: true, country: true },
   });
   if (!dbUser) throw new Error('User not found');
 
-  const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, today);
+  const now = new Date();
+  const city = dbUser.city?.trim() || 'Dhaka';
+  const country = dbUser.country?.trim() || 'Bangladesh';
+  const prayerTimes = await fetchPrayerTimes(city, country, now);
+  const todayKey = formatDateKeyInTimezone(now, prayerTimes.timeZone);
+  const todayDate = dateFromKey(todayKey);
+  const weekStartKey = rollingWeekStartKey(prayerTimes.timeZone, now);
+  const { start: weekStart, end: weekEnd } = weekRangeFromStartKey(weekStartKey);
+
+  const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, todayDate);
 
   const [weekRecords, lifetimeRecords, todayRecords] = await Promise.all([
     prisma.salahRecord.findMany({
@@ -66,27 +83,32 @@ export async function buildStatsPayload(userId: string): Promise<StatsPayload> {
       select: SALAH_RECORD_STATS_SELECT,
     }),
     prisma.salahRecord.findMany({
-      where: { userId, date: { gte: recordStart, lte: today }, kind: 'FARD' },
+      where: { userId, date: { gte: recordStart, lte: todayDate }, kind: 'FARD' },
       select: SALAH_RECORD_STATS_SELECT,
       orderBy: { date: 'asc' },
     }),
     prisma.salahRecord.findMany({
-      where: { userId, date: today, kind: 'FARD' },
+      where: {
+        userId,
+        date: todayDate,
+        kind: 'FARD',
+      },
       select: SALAH_RECORD_STATS_SELECT,
     }),
   ]);
 
   const weekTotal = 7 * PRAYERS.length;
   const lifetime = computeLifetimeStats(lifetimeRecords);
-  const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords);
+  const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords, prayerTimes, now);
+  const { missed: missedBreakdown, trackingSince } = getLifetimeMissedBreakdown(
+    lifetimeRecords,
+    prayerTimes,
+    now,
+  );
 
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const day = addDays(weekStart, i);
-    const key = formatDateKey(day);
-    return weekRecords.filter(
-      (r) => formatDateKey(r.date) === key && r.completed,
-    ).length;
-  });
+  const weekDays = weekDayKeys(weekStartKey).map((key) =>
+    weekRecords.filter((r) => dateKeyFromDbDate(r.date) === key && r.completed).length,
+  );
 
   const payload: StatsPayload = {
     weekCompleted: countCompleted(weekRecords),
@@ -110,6 +132,8 @@ export async function buildStatsPayload(userId: string): Promise<StatsPayload> {
         }
       : null,
     loggedCompleted: lifetime.completed,
+    trackingSince,
+    missedBreakdown,
   };
 
   // Cache in Redis for 60 seconds

@@ -6,17 +6,18 @@ import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import {
   buildSalahGrid,
   dateFromKey,
-  formatDateKeyLocal,
-  rollingWeekStart,
+  rollingWeekStartKey,
   weekRangeFromStartKey,
 } from '@/lib/salah-utils';
-import { DASHBOARD_CACHE_HEADERS } from '@/lib/salah-query';
-import { fetchPrayerTimes } from '@/lib/prayer-times';
+import { SALAH_GRID_CACHE_HEADERS } from '@/lib/salah-query';
+import { fetchPrayerTimes, formatDateKeyInTimezone } from '@/lib/prayer-times';
 import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import { clearWaktReminderForPrayer } from '@/lib/notifications';
 import { triggerSync } from '@/lib/internal-sync';
 import { kvDel } from '@/lib/kv';
+import { buildStatsPayload } from '@/lib/stats-data';
+import { invalidateAnalyticsCache } from '@/lib/analytics-data';
 import { logger } from '@/lib/logger';
 import type { PrayerName } from '@/lib/constants';
 
@@ -25,10 +26,15 @@ export async function GET(req: NextRequest) {
   if (error) return error;
 
   const weekParam = req.nextUrl.searchParams.get('week');
-  const weekStartKey =
-    weekParam && /^\d{4}-\d{2}-\d{2}$/.test(weekParam)
-      ? weekParam
-      : formatDateKeyLocal(rollingWeekStart(new Date()));
+  let weekStartKey = weekParam && /^\d{4}-\d{2}-\d{2}$/.test(weekParam) ? weekParam : null;
+  if (!weekStartKey) {
+    const times = await fetchPrayerTimes(
+      user!.city?.trim() || 'Dhaka',
+      user!.country?.trim() || 'Bangladesh',
+      new Date(),
+    );
+    weekStartKey = rollingWeekStartKey(times.timeZone);
+  }
   const { start: weekStart, end: weekEnd } = weekRangeFromStartKey(weekStartKey);
 
   const records = await prisma.salahRecord.findMany({
@@ -45,7 +51,7 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  return jsonOk({ grid: buildSalahGrid(records) }, 200, DASHBOARD_CACHE_HEADERS);
+  return jsonOk({ grid: buildSalahGrid(records) }, 200, SALAH_GRID_CACHE_HEADERS);
 }
 
 const postSchema = z.object({
@@ -63,19 +69,16 @@ export async function POST(req: NextRequest) {
   try {
     const body = postSchema.parse(await req.json());
     const date = dateFromKey(body.date);
-    const todayLocal = formatDateKeyLocal(new Date());
-    if (body.date > todayLocal) return jsonError('Cannot log future prayers');
-
     const now = new Date();
-    const times = body.completed
-      ? await fetchPrayerTimes(
-          user!.city?.trim() || 'Dhaka',
-          user!.country?.trim() || 'Bangladesh',
-          now,
-        )
-      : null;
+    const times = await fetchPrayerTimes(
+      user!.city?.trim() || 'Dhaka',
+      user!.country?.trim() || 'Bangladesh',
+      now,
+    );
+    const todayKey = formatDateKeyInTimezone(now, times.timeZone);
+    if (body.date > todayKey) return jsonError('Cannot log future prayers');
 
-    if (body.completed && times) {
+    if (body.completed) {
       const markCheck = canMarkSalahCell(body.date, body.prayer as PrayerName, times, now);
       if (!markCheck.allowed) {
         if (markCheck.reason === 'wakt-not-started') {
@@ -117,7 +120,7 @@ export async function POST(req: NextRequest) {
             body.prayer as PrayerName,
             body.date,
             now,
-            times!,
+            times,
           ),
         ]);
         if (reward) {
@@ -129,10 +132,14 @@ export async function POST(req: NextRequest) {
       triggerSync('refresh-day-stat', user!.id, body.date);
     }
 
-    // Invalidate stats cache so metrics update instantly
-    await kvDel(`stats:${user!.id}`).catch(() => {});
+    let stats;
+    if (body.kind === 'FARD' && body.unit === 0) {
+      await kvDel(`stats:${user!.id}`).catch(() => {});
+      invalidateAnalyticsCache(user!.id);
+      stats = await buildStatsPayload(user!.id, { skipCache: true });
+    }
 
-    return jsonOk({ ok: true, coinsEarned });
+    return jsonOk({ ok: true, coinsEarned, stats });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError('Invalid input');
     logger.error({ route: '/api/salah', err: e }, 'Failed to save');

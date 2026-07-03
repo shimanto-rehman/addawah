@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import {
   PRAYERS,
   PRAYER_LABELS,
@@ -13,28 +13,40 @@ import {
   type SalahKind,
 } from '@/lib/constants';
 import {
-  addDays,
-  formatDateKeyLocal,
-  formatWeekLabel,
+  addDaysToKey,
+  dayNumberFromKey,
+  formatWeekLabelFromKeys,
   getSalahCell,
-  getWeekDays,
-  rollingWeekStart,
+  rollingWeekStartKey,
+  weekdayShortFromKey,
+  weekDayKeys,
   type SalahCell,
   type SalahGrid,
 } from '@/lib/salah-utils';
 import { fireCelebrationConfetti } from '@/lib/confetti';
 import type { StatsPayload } from '@/lib/stats-data';
-import { revalidateDashboardMetrics } from '@/lib/swr-revalidate';
 import { canMarkSalahCellLocal } from '@/lib/salah-mark-rules';
 import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import type { PrayerTimesPayload } from '@/lib/prayer-times';
 import { formatDateKeyInTimezone, isPrayerTimesPayload, prayerTimesFetcher } from '@/lib/prayer-times';
 import { Shimmer } from '@/components/ui/Shimmer';
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const DEFAULT_TIMEZONE = 'Asia/Dhaka';
+
+const fetcher = (url: string) =>
+  fetch(url, { cache: 'no-store' }).then((r) => {
+    if (!r.ok) throw new Error('Failed to load salah');
+    return r.json();
+  });
+
+type SalahPostResponse = {
+  ok: boolean;
+  coinsEarned?: number;
+  stats?: StatsPayload;
+};
 
 type ToggleArgs = {
-  date: Date;
+  dateKey: string;
   prayer: PrayerName;
   kind: SalahKind;
   unit?: number;
@@ -89,13 +101,25 @@ function SunnahToggle({
 
 export function SalahTracker() {
   const dashboard = useDashboardData();
-  const [weekStart, setWeekStart] = useState(() => rollingWeekStart(new Date()));
-  const weekKey = formatDateKeyLocal(weekStart);
+  const toggleBusyRef = useRef<string | null>(null);
+  const [busyCell, setBusyCell] = useState<string | null>(null);
+  const [weekStartKey, setWeekStartKey] = useState(() => rollingWeekStartKey(DEFAULT_TIMEZONE));
+
+  const { data: prayerTimes } = useSWR<PrayerTimesPayload>('/api/prayer-times', prayerTimesFetcher, {
+    refreshInterval: 60_000,
+    revalidateOnFocus: false,
+  });
+
+  const timeZone = isPrayerTimesPayload(prayerTimes) ? prayerTimes.timeZone : DEFAULT_TIMEZONE;
+  const todayKey = formatDateKeyInTimezone(new Date(), timeZone);
+  const currentWeekStartKey = rollingWeekStartKey(timeZone);
+  const dayKeys = weekDayKeys(weekStartKey);
+
   const hubGrid =
-    dashboard?.data?.weekKey === weekKey ? dashboard.data.grid : undefined;
+    dashboard?.data?.weekKey === weekStartKey ? dashboard.data.grid : undefined;
 
   const { data, mutate, isLoading } = useSWR<{ grid: SalahGrid }>(
-    `/api/salah?week=${weekKey}`,
+    `/api/salah?week=${weekStartKey}`,
     fetcher,
     {
       fallbackData: hubGrid ? { grid: hubGrid } : undefined,
@@ -104,26 +128,19 @@ export function SalahTracker() {
     },
   );
 
-  const { data: prayerTimes } = useSWR<PrayerTimesPayload>('/api/prayer-times', prayerTimesFetcher, {
-    refreshInterval: 60_000,
-    revalidateOnFocus: false,
-  });
-
   const grid = data?.grid ?? hubGrid ?? {};
   const gridLoading = isLoading && !data && !hubGrid;
-  const days = getWeekDays(weekStart);
-  const todayKey = isPrayerTimesPayload(prayerTimes)
-    ? formatDateKeyInTimezone(new Date(), prayerTimes.timeZone)
-    : formatDateKeyLocal(new Date());
-  const maxWeek = rollingWeekStart(new Date());
 
-  function isCellDisabled(day: Date, prayer: PrayerName) {
-    const key = formatDateKeyLocal(day);
-    return !canMarkSalahCellLocal(key, todayKey, prayer, prayerTimes);
+  function isCellDisabled(dateKey: string, prayer: PrayerName) {
+    return !canMarkSalahCellLocal(dateKey, todayKey, prayer, prayerTimes);
   }
 
-  async function toggle({ date, prayer, kind, unit = 0 }: ToggleArgs) {
-    const dateKey = formatDateKeyLocal(date);
+  async function toggle({ dateKey, prayer, kind, unit = 0 }: ToggleArgs) {
+    const opKey = `${dateKey}:${prayer}:${kind}:${unit}`;
+    if (toggleBusyRef.current) return;
+    toggleBusyRef.current = opKey;
+    setBusyCell(opKey);
+
     const cell = getSalahCell(grid, dateKey, prayer);
     const current =
       kind === 'FARD'
@@ -150,67 +167,54 @@ export function SalahTracker() {
       },
     };
 
-    // Optimistically update HeroStats instantly for FARD toggles
     const prevDashboard = dashboard?.data;
-    if (kind === 'FARD' && prevDashboard) {
-      const delta = markingComplete ? 1 : -1;
-      const isToday = dateKey === todayKey;
-      const s = { ...prevDashboard.stats } as Record<string, unknown>;
-      s.lifetimePrayed = (s.lifetimePrayed as number) + delta;
-      s.lifetimeMissed = Math.max(0, (s.lifetimeExpected as number) - (s.lifetimePrayed as number));
-      s.lifetimeRate = (s.lifetimeExpected as number)
-        ? Math.round(((s.lifetimePrayed as number) / (s.lifetimeExpected as number)) * 100)
-        : 0;
-      s.weekCompleted = (s.weekCompleted as number) + delta;
-      if (isToday) s.todayCompleted = (s.todayCompleted as number) + delta;
-      if (prayer === 'FAJR') {
-        s.fajrMissed = Math.max(0, (s.fajrMissed as number) - delta);
-      }
-      // Only adjust streak for today — past-date changes need full recomputation
-      if (isToday) {
-        if (markingComplete && (s.streak as number) === 0) s.streak = 1;
-        else if (!markingComplete && (s.streak as number) <= 1) s.streak = 0;
-      }
-      dashboard!.mutate(
-        { ...prevDashboard, stats: s as unknown as StatsPayload },
-        { revalidate: false },
-      );
-    }
 
     try {
-      await mutate(
-        async () => {
-          const res = await fetch('/api/salah', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              date: dateKey,
-              prayer,
-              kind,
-              unit,
-              completed: markingComplete,
-            }),
-          });
-          if (!res.ok) throw new Error('Failed to save salah');
-          if (markingComplete && kind === 'FARD') fireCelebrationConfetti();
-          const weekRes = await fetch(`/api/salah?week=${weekKey}`);
-          if (!weekRes.ok) throw new Error('Failed to refresh salah');
-          return weekRes.json();
-        },
-        {
-          optimisticData: { grid: optimistic },
-          rollbackOnError: true,
-          revalidate: true,
-        },
-      );
+      await mutate({ grid: optimistic }, { revalidate: false });
 
-      // Revalidate dashboard stats after successful save (non-blocking for grid)
-      if (kind === 'FARD') await revalidateDashboardMetrics();
+      const res = await fetch('/api/salah', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: dateKey,
+          prayer,
+          kind,
+          unit,
+          completed: markingComplete,
+        }),
+      });
+      const payload = (await res.json()) as SalahPostResponse & { error?: string };
+      if (!res.ok || !payload.ok) {
+        throw new Error(payload.error ?? 'Failed to save salah');
+      }
+
+      if (markingComplete && kind === 'FARD') fireCelebrationConfetti();
+
+      const weekRes = await fetch(`/api/salah?week=${weekStartKey}`, { cache: 'no-store' });
+      if (!weekRes.ok) throw new Error('Failed to refresh salah');
+      const weekData = (await weekRes.json()) as { grid: SalahGrid };
+
+      await mutate(weekData, { revalidate: false });
+
+      if (dashboard?.data) {
+        dashboard.mutate(
+          {
+            ...dashboard.data,
+            grid: weekData.grid,
+            weekKey: weekStartKey,
+            ...(kind === 'FARD' && payload.stats ? { stats: payload.stats } : {}),
+          },
+          { revalidate: false },
+        );
+      }
     } catch {
-      // Roll back dashboard optimistic update on server error
+      await mutate(undefined, { revalidate: true });
       if (kind === 'FARD' && prevDashboard) {
         dashboard!.mutate(prevDashboard, { revalidate: true });
       }
+    } finally {
+      toggleBusyRef.current = null;
+      setBusyCell(null);
     }
   }
 
@@ -228,17 +232,17 @@ export function SalahTracker() {
           <button
             type="button"
             className="dawa-salah__nav-btn"
-            onClick={() => setWeekStart((w) => addDays(w, -7))}
+            onClick={() => setWeekStartKey((k) => addDaysToKey(k, -7))}
             aria-label="Previous week"
           >
             ‹
           </button>
-          <span className="dawa-salah__week">{formatWeekLabel(weekStart)}</span>
+          <span className="dawa-salah__week">{formatWeekLabelFromKeys(weekStartKey)}</span>
           <button
             type="button"
             className="dawa-salah__nav-btn"
-            disabled={weekStart >= maxWeek}
-            onClick={() => setWeekStart((w) => addDays(w, 7))}
+            disabled={weekStartKey >= currentWeekStartKey}
+            onClick={() => setWeekStartKey((k) => addDaysToKey(k, 7))}
             aria-label="Next week"
           >
             ›
@@ -247,14 +251,12 @@ export function SalahTracker() {
         <div className="dawa-salah__body">
           {gridLoading ? (
             <div className="dawa-salah__shimmer">
-              {/* Header row */}
               <div className="dawa-salah__shimmer-row">
                 <Shimmer variant="text" width="60px" height="20px" />
                 {Array.from({ length: 7 }, (_, i) => (
                   <Shimmer key={i} variant="rect" width="32px" height="32px" borderRadius="4px" />
                 ))}
               </div>
-              {/* Prayer rows */}
               {Array.from({ length: 5 }, (_, row) => (
                 <div key={row} className="dawa-salah__shimmer-row">
                   <Shimmer variant="text" width="50px" height="16px" />
@@ -269,88 +271,84 @@ export function SalahTracker() {
               <thead>
                 <tr>
                   <th />
-                  {days.map((d) => {
-                    const key = formatDateKeyLocal(d);
-                    return (
-                      <th key={key}>
-                        <div className={`dawa-salah-day${key === todayKey ? ' is-today' : ''}`}>
-                          <span className="dawa-num">{d.getDate()}</span>
-                        </div>
-                        {d.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 1)}
-                      </th>
-                    );
-                  })}
+                  {dayKeys.map((key) => (
+                    <th key={key}>
+                      <div className={`dawa-salah-day${key === todayKey ? ' is-today' : ''}`}>
+                        <span className="dawa-num">{dayNumberFromKey(key)}</span>
+                      </div>
+                      {weekdayShortFromKey(key).slice(0, 1)}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {PRAYERS.map((prayer) => {
-                  return (
-                    <tr key={prayer}>
-                      <td className="dawa-salah-row-label">
-                        <span className="dawa-salah-row-en">{PRAYER_LABELS[prayer]}</span>
-                        <span className="dawa-salah-row-ar">{PRAYER_ARABIC[prayer]}</span>
-                      </td>
-                      {days.map((d) => {
-                        const key = formatDateKeyLocal(d);
-                        const cell = getSalahCell(grid, key, prayer);
-                        const disabled = isCellDisabled(d, prayer);
-                        return (
-                          <td key={key}>
-                            <div className="dawa-salah-cell">
-                              <div className="dawa-salah-cell__wing dawa-salah-cell__wing--before">
-                                {cell.sunnahBefore.map((done, unit) => (
-                                  <SunnahToggle
-                                    key={`b-${unit}`}
-                                    done={done}
-                                    disabled={disabled}
-                                    label={`${PRAYER_LABELS[prayer]} sunnah before ${key}`}
-                                    tip={`${SUNNAH_UNIT_RAKATS} Rakats Sunnah`}
-                                    onClick={() =>
-                                      toggle({ date: d, prayer, kind: 'SUNNAH_BEFORE', unit })
-                                    }
-                                  />
-                                ))}
-                              </div>
-                              <SalahHoverBubble label={`${FARD_RAKATS[prayer]} Rakats Fard`}>
-                                <motion.button
-                                  type="button"
-                                  className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}`}
-                                  disabled={disabled && !cell.fard}
-                                  onClick={() => toggle({ date: d, prayer, kind: 'FARD' })}
-                                  whileTap={{ scale: 0.88 }}
-                                  aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
-                                  title={
-                                    disabled && !cell.fard
-                                      ? key === todayKey
-                                        ? 'Wakt has not started yet'
-                                        : 'Future day'
-                                      : undefined
+                {PRAYERS.map((prayer) => (
+                  <tr key={prayer}>
+                    <td className="dawa-salah-row-label">
+                      <span className="dawa-salah-row-en">{PRAYER_LABELS[prayer]}</span>
+                      <span className="dawa-salah-row-ar">{PRAYER_ARABIC[prayer]}</span>
+                    </td>
+                    {dayKeys.map((key) => {
+                      const cell = getSalahCell(grid, key, prayer);
+                      const disabled = isCellDisabled(key, prayer);
+                      const cellKey = `${key}:${prayer}:FARD:0`;
+                      const isBusy = busyCell === cellKey;
+                      return (
+                        <td key={key}>
+                          <div className="dawa-salah-cell">
+                            <div className="dawa-salah-cell__wing dawa-salah-cell__wing--before">
+                              {cell.sunnahBefore.map((done, unit) => (
+                                <SunnahToggle
+                                  key={`b-${unit}`}
+                                  done={done}
+                                  disabled={disabled || busyCell === `${key}:${prayer}:SUNNAH_BEFORE:${unit}`}
+                                  label={`${PRAYER_LABELS[prayer]} sunnah before ${key}`}
+                                  tip={`${SUNNAH_UNIT_RAKATS} Rakats Sunnah`}
+                                  onClick={() =>
+                                    toggle({ dateKey: key, prayer, kind: 'SUNNAH_BEFORE', unit })
                                   }
-                                >
-                                  {cell.fard ? '✓' : '○'}
-                                </motion.button>
-                              </SalahHoverBubble>
-                              <div className="dawa-salah-cell__wing dawa-salah-cell__wing--after">
-                                {cell.sunnahAfter.map((done, unit) => (
-                                  <SunnahToggle
-                                    key={`a-${unit}`}
-                                    done={done}
-                                    disabled={disabled}
-                                    label={`${PRAYER_LABELS[prayer]} sunnah after ${key}`}
-                                    tip={`${SUNNAH_UNIT_RAKATS} Rakats Sunnah`}
-                                    onClick={() =>
-                                      toggle({ date: d, prayer, kind: 'SUNNAH_AFTER', unit })
-                                    }
-                                  />
-                                ))}
-                              </div>
+                                />
+                              ))}
                             </div>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
+                            <SalahHoverBubble label={`${FARD_RAKATS[prayer]} Rakats Fard`}>
+                              <motion.button
+                                type="button"
+                                className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}${isBusy ? ' is-busy' : ''}`}
+                                disabled={(disabled && !cell.fard) || isBusy}
+                                onClick={() => toggle({ dateKey: key, prayer, kind: 'FARD' })}
+                                whileTap={{ scale: 0.88 }}
+                                aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
+                                title={
+                                  disabled && !cell.fard
+                                    ? key === todayKey
+                                      ? 'Wakt has not started yet'
+                                      : 'Future day'
+                                    : undefined
+                                }
+                              >
+                                {cell.fard ? '✓' : '○'}
+                              </motion.button>
+                            </SalahHoverBubble>
+                            <div className="dawa-salah-cell__wing dawa-salah-cell__wing--after">
+                              {cell.sunnahAfter.map((done, unit) => (
+                                <SunnahToggle
+                                  key={`a-${unit}`}
+                                  done={done}
+                                  disabled={disabled || busyCell === `${key}:${prayer}:SUNNAH_AFTER:${unit}`}
+                                  label={`${PRAYER_LABELS[prayer]} sunnah after ${key}`}
+                                  tip={`${SUNNAH_UNIT_RAKATS} Rakats Sunnah`}
+                                  onClick={() =>
+                                    toggle({ dateKey: key, prayer, kind: 'SUNNAH_AFTER', unit })
+                                  }
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}
