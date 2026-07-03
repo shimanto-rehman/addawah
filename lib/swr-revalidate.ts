@@ -10,7 +10,7 @@ export const RUHANIAH_KEY = '/api/ruhaniah';
 export const RUHANIAH_HISTORY_KEY = '/api/ruhaniah/history';
 export const RUHANIAH_DUAS_KEY = '/api/ruhaniah/duas';
 
-/** Refresh dashboard metrics after salah changes. */
+/** Refresh dashboard metrics after salah changes (silent, no shimmer). */
 export async function revalidateDashboardMetrics() {
   await Promise.all([
     mutate(STATS_KEY),
@@ -24,18 +24,18 @@ export async function revalidateDashboardMetrics() {
 /** Refresh mood + analytics after a mood check-in. */
 export async function revalidateMoodAnalytics() {
   await Promise.all([
-    mutate(MOOD_KEY),
-    mutate(DASHBOARD_KEY),
-    mutate(ANALYTICS_KEY),
-    mutate(ANALYTICS_SUMMARY_KEY),
+    mutate(MOOD_KEY, undefined, { revalidate: true }),
+    mutate(DASHBOARD_KEY, undefined, { revalidate: true }),
+    mutate(ANALYTICS_KEY, undefined, { revalidate: true }),
+    mutate(ANALYTICS_SUMMARY_KEY, undefined, { revalidate: true }),
   ]);
 }
 
 /** Refresh Ruhaniah data after nightly submission. */
 export async function revalidateRuhaniah() {
   await Promise.all([
-    mutate(RUHANIAH_KEY),
-    mutate(RUHANIAH_HISTORY_KEY),
-    mutate(RUHANIAH_DUAS_KEY),
+    mutate(RUHANIAH_KEY, undefined, { revalidate: true }),
+    mutate(RUHANIAH_HISTORY_KEY, undefined, { revalidate: true }),
+    mutate(RUHANIAH_DUAS_KEY, undefined, { revalidate: true }),
   ]);
 }

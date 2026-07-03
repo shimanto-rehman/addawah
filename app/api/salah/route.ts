@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
+import type { Prayer, SalahKind } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import {
@@ -15,6 +16,7 @@ import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import { clearWaktReminderForPrayer } from '@/lib/notifications';
 import { triggerSync } from '@/lib/internal-sync';
+import { kvDel } from '@/lib/kv';
 import { logger } from '@/lib/logger';
 import type { PrayerName } from '@/lib/constants';
 
@@ -65,13 +67,15 @@ export async function POST(req: NextRequest) {
     if (body.date > todayLocal) return jsonError('Cannot log future prayers');
 
     const now = new Date();
+    const times = body.completed
+      ? await fetchPrayerTimes(
+          user!.city?.trim() || 'Dhaka',
+          user!.country?.trim() || 'Bangladesh',
+          now,
+        )
+      : null;
 
-    if (body.completed) {
-      const times = await fetchPrayerTimes(
-        user!.city?.trim() || 'Dhaka',
-        user!.country?.trim() || 'Bangladesh',
-        now,
-      );
+    if (body.completed && times) {
       const markCheck = canMarkSalahCell(body.date, body.prayer as PrayerName, times, now);
       if (!markCheck.allowed) {
         if (markCheck.reason === 'wakt-not-started') {
@@ -81,46 +85,41 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const existing = await prisma.salahRecord.findFirst({
+    await prisma.salahRecord.upsert({
       where: {
+        userId_date_prayer_kind_unit: {
+          userId: user!.id,
+          date,
+          prayer: body.prayer as Prayer,
+          kind: body.kind as SalahKind,
+          unit: body.unit,
+        },
+      },
+      create: {
         userId: user!.id,
         date,
         prayer: body.prayer,
         kind: body.kind,
         unit: body.unit,
+        completed: body.completed,
       },
+      update: { completed: body.completed },
     });
-
-    if (existing) {
-      await prisma.salahRecord.update({
-        where: { id: existing.id },
-        data: { completed: body.completed },
-      });
-    } else {
-      await prisma.salahRecord.create({
-        data: {
-          userId: user!.id,
-          date,
-          prayer: body.prayer,
-          kind: body.kind,
-          unit: body.unit,
-          completed: body.completed,
-        },
-      });
-    }
 
     let coinsEarned = 0;
     if (body.kind === 'FARD' && body.unit === 0) {
       if (body.completed) {
-        await clearWaktReminderForPrayer(user!.id, body.prayer, body.date);
-
-        const reward = await computePrayerReward(
-          user!.city,
-          user!.country,
-          body.prayer as PrayerName,
-          body.date,
-          now,
-        );
+        const [, reward] = await Promise.all([
+          clearWaktReminderForPrayer(user!.id, body.prayer, body.date),
+          computePrayerReward(
+            user!.city,
+            user!.country,
+            body.prayer as PrayerName,
+            body.date,
+            now,
+            times!,
+          ),
+        ]);
         if (reward) {
           await awardGoldCoins(user!.id, reward.amount);
           coinsEarned = reward.amount;
@@ -129,6 +128,9 @@ export async function POST(req: NextRequest) {
       triggerSync('refresh-snapshots', user!.id);
       triggerSync('refresh-day-stat', user!.id, body.date);
     }
+
+    // Invalidate stats cache so metrics update instantly
+    await kvDel(`stats:${user!.id}`).catch(() => {});
 
     return jsonOk({ ok: true, coinsEarned });
   } catch (e) {

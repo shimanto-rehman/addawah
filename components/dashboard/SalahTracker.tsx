@@ -23,6 +23,7 @@ import {
   type SalahGrid,
 } from '@/lib/salah-utils';
 import { fireCelebrationConfetti } from '@/lib/confetti';
+import type { StatsPayload } from '@/lib/stats-data';
 import { revalidateDashboardMetrics } from '@/lib/swr-revalidate';
 import { canMarkSalahCellLocal } from '@/lib/salah-mark-rules';
 import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
@@ -149,6 +150,33 @@ export function SalahTracker() {
       },
     };
 
+    // Optimistically update HeroStats instantly for FARD toggles
+    const prevDashboard = dashboard?.data;
+    if (kind === 'FARD' && prevDashboard) {
+      const delta = markingComplete ? 1 : -1;
+      const isToday = dateKey === todayKey;
+      const s = { ...prevDashboard.stats } as Record<string, unknown>;
+      s.lifetimePrayed = (s.lifetimePrayed as number) + delta;
+      s.lifetimeMissed = Math.max(0, (s.lifetimeExpected as number) - (s.lifetimePrayed as number));
+      s.lifetimeRate = (s.lifetimeExpected as number)
+        ? Math.round(((s.lifetimePrayed as number) / (s.lifetimeExpected as number)) * 100)
+        : 0;
+      s.weekCompleted = (s.weekCompleted as number) + delta;
+      if (isToday) s.todayCompleted = (s.todayCompleted as number) + delta;
+      if (prayer === 'FAJR') {
+        s.fajrMissed = Math.max(0, (s.fajrMissed as number) - delta);
+      }
+      // Only adjust streak for today — past-date changes need full recomputation
+      if (isToday) {
+        if (markingComplete && (s.streak as number) === 0) s.streak = 1;
+        else if (!markingComplete && (s.streak as number) <= 1) s.streak = 0;
+      }
+      dashboard!.mutate(
+        { ...prevDashboard, stats: s as unknown as StatsPayload },
+        { revalidate: false },
+      );
+    }
+
     try {
       await mutate(
         async () => {
@@ -165,7 +193,6 @@ export function SalahTracker() {
           });
           if (!res.ok) throw new Error('Failed to save salah');
           if (markingComplete && kind === 'FARD') fireCelebrationConfetti();
-          if (kind === 'FARD') await revalidateDashboardMetrics();
           const weekRes = await fetch(`/api/salah?week=${weekKey}`);
           if (!weekRes.ok) throw new Error('Failed to refresh salah');
           return weekRes.json();
@@ -176,8 +203,14 @@ export function SalahTracker() {
           revalidate: true,
         },
       );
+
+      // Revalidate dashboard stats after successful save (non-blocking for grid)
+      if (kind === 'FARD') await revalidateDashboardMetrics();
     } catch {
-      /* rollback handled by SWR */
+      // Roll back dashboard optimistic update on server error
+      if (kind === 'FARD' && prevDashboard) {
+        dashboard!.mutate(prevDashboard, { revalidate: true });
+      }
     }
   }
 

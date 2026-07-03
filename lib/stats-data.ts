@@ -5,7 +5,6 @@ import {
   computeStreak,
   countCompleted,
   formatDateKey,
-  isFardRecord,
   startOfWeek,
   addDays,
   startOfDay,
@@ -63,19 +62,16 @@ export async function buildStatsPayload(userId: string): Promise<StatsPayload> {
 
   const [weekRecords, lifetimeRecords, todayRecords] = await Promise.all([
     prisma.salahRecord.findMany({
-      where: { userId, date: { gte: weekStart, lte: weekEnd } },
+      where: { userId, date: { gte: weekStart, lte: weekEnd }, kind: 'FARD' },
       select: SALAH_RECORD_STATS_SELECT,
     }),
     prisma.salahRecord.findMany({
-      where: { userId, date: { gte: recordStart, lte: today } },
+      where: { userId, date: { gte: recordStart, lte: today }, kind: 'FARD' },
       select: SALAH_RECORD_STATS_SELECT,
       orderBy: { date: 'asc' },
     }),
     prisma.salahRecord.findMany({
-      where: {
-        userId,
-        date: today,
-      },
+      where: { userId, date: today, kind: 'FARD' },
       select: SALAH_RECORD_STATS_SELECT,
     }),
   ]);
@@ -88,20 +84,17 @@ export async function buildStatsPayload(userId: string): Promise<StatsPayload> {
     const day = addDays(weekStart, i);
     const key = formatDateKey(day);
     return weekRecords.filter(
-      (r) => formatDateKey(r.date) === key && r.completed && isFardRecord(r),
+      (r) => formatDateKey(r.date) === key && r.completed,
     ).length;
   });
 
-  const weekFard = weekRecords.filter(isFardRecord);
-  const todayFard = todayRecords.filter(isFardRecord);
-
   const payload: StatsPayload = {
-    weekCompleted: countCompleted(weekFard),
+    weekCompleted: countCompleted(weekRecords),
     weekTotal,
     weekDays,
     streak: computeStreak(lifetimeRecords),
     lifetimeRate: sinceJoin.lifetimeRate,
-    todayCompleted: countCompleted(todayFard),
+    todayCompleted: countCompleted(todayRecords),
     lifetimePrayed: sinceJoin.lifetimePrayed,
     lifetimeMissed: sinceJoin.lifetimeMissed,
     lifetimeExpected: sinceJoin.lifetimeExpected,

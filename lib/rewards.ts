@@ -120,13 +120,16 @@ export async function computePrayerReward(
   prayer: PrayerName,
   prayerDateKey: string,
   loggedAt = new Date(),
+  times?: PrayerTimesPayload,
 ) {
   try {
-    const times = await fetchPrayerTimes(
-      city?.trim() || 'Dhaka',
-      country?.trim() || 'Bangladesh',
-      loggedAt,
-    );
+    if (!times) {
+      times = await fetchPrayerTimes(
+        city?.trim() || 'Dhaka',
+        country?.trim() || 'Bangladesh',
+        loggedAt,
+      );
+    }
 
     const todayKey = formatDateKeyInTimezone(loggedAt, times.timeZone);
     if (prayerDateKey !== todayKey) return null;

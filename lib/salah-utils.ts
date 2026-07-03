@@ -132,27 +132,23 @@ export function countCompleted(records: { completed: boolean }[]) {
 
 export function computeStreak(records: { date: Date; completed: boolean; kind?: string }[]) {
   const fardRecords = records.filter(isFardRecord);
-  const byDay = new Map<string, { total: number; done: number }>();
+  const byDay = new Map<string, number>();
   for (const r of fardRecords) {
+    if (!r.completed) continue;
     const key = formatDateKey(r.date);
-    const cur = byDay.get(key) ?? { total: 0, done: 0 };
-    cur.total += 1;
-    if (r.completed) cur.done += 1;
-    byDay.set(key, cur);
+    byDay.set(key, (byDay.get(key) ?? 0) + 1);
   }
 
   let streak = 0;
   const today = startOfDay(new Date());
   for (let i = 0; i < 365; i++) {
-    const d = addDays(today, -i);
-    const key = formatDateKey(d);
-    const day = byDay.get(key);
-    if (!day || day.done === 0) {
-      if (i === 0) continue;
+    const key = formatDateKey(addDays(today, -i));
+    const done = byDay.get(key) ?? 0;
+    if (done < 3) {
+      if (i === 0) continue; // today may not be complete yet
       break;
     }
-    if (day.done >= 3) streak += 1;
-    else break;
+    streak += 1;
   }
   return streak;
 }
@@ -185,12 +181,8 @@ export function computeLifetimeSinceJoin(
 ) {
   const fardRecords = records.filter(isFardRecord);
   const today = startOfDay(new Date());
-  const start =
-    fardRecords.length > 0
-      ? startOfDay(
-          fardRecords.reduce((earliest, r) => (r.date < earliest ? r.date : earliest), fardRecords[0].date)
-        )
-      : startOfDay(joinedAt);
+  // Day after join — first full day where all 5 wakts were available
+  const firstFullDay = addDays(startOfDay(joinedAt), 1);
 
   const recordMap = new Map<string, boolean>();
   for (const r of fardRecords) {
@@ -199,12 +191,15 @@ export function computeLifetimeSinceJoin(
 
   let expected = 0;
   let prayed = 0;
-  let missed = 0;
   let activeDays = 0;
   let perfectDays = 0;
   const missedByPrayer = Object.fromEntries(PRAYERS.map((p) => [p, 0])) as Record<PrayerName, number>;
 
-  for (let d = new Date(start); d <= today; d = addDays(d, 1)) {
+  // All elapsed days including today — from first full day through today.
+  // Today is included so that optimistic UI updates and server agree on
+  // lifetimePrayed / lifetimeMissed, eliminating flash-after-toggle bugs.
+  const loopStart = firstFullDay > today ? today : firstFullDay;
+  for (let d = new Date(loopStart); d <= today; d = addDays(d, 1)) {
     const key = formatDateKey(d);
     let dayDone = 0;
 
@@ -217,7 +212,6 @@ export function computeLifetimeSinceJoin(
         prayed += 1;
         dayDone += 1;
       } else {
-        missed += 1;
         missedByPrayer[prayer] += 1;
       }
     }
@@ -226,7 +220,21 @@ export function computeLifetimeSinceJoin(
     if (dayDone === PRAYERS.length) perfectDays += 1;
   }
 
-  const daysOnApp = Math.max(1, Math.floor((today.getTime() - start.getTime()) / 86400000) + 1);
+  // Join day (if before first full day and not today): partial day — active/perfect only
+  const joinDayKey = formatDateKey(startOfDay(joinedAt));
+  const todayKey = formatDateKey(today);
+  if (joinDayKey !== todayKey && joinDayKey < formatDateKey(firstFullDay)) {
+    let dayDone = 0;
+    for (const prayer of PRAYERS) {
+      if (recordMap.get(`${joinDayKey}:${prayer}`) === true) {
+        dayDone += 1;
+      }
+    }
+    if (dayDone > 0) activeDays += 1;
+    if (dayDone === PRAYERS.length) perfectDays += 1;
+  }
+
+  const daysOnApp = Math.max(1, Math.floor((today.getTime() - startOfDay(joinedAt).getTime()) / 86400000) + 1);
   const byPrayer = PRAYERS.map((prayer) => {
     const subset = fardRecords.filter((r) => r.prayer === prayer);
     const done = countCompleted(subset);
@@ -244,7 +252,7 @@ export function computeLifetimeSinceJoin(
 
   return {
     lifetimePrayed: prayed,
-    lifetimeMissed: missed,
+    lifetimeMissed: Math.max(0, expected - prayed),
     lifetimeExpected: expected,
     lifetimeRate: expected ? Math.round((prayed / expected) * 100) : 0,
     activeDays,
