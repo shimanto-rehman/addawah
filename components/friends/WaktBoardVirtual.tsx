@@ -201,6 +201,66 @@ function WaktStatusCell({ row }: { row: BoardRow }) {
   );
 }
 
+function MobileWaktInfo({ row }: { row: BoardRow }) {
+  const { wakt } = row;
+  const remainingSeconds = useWaktCountdown(wakt);
+  const isLowTime = remainingSeconds <= 5 * 60;
+
+  let statusText: React.ReactNode = null;
+  let statusClass = 'dawa-social-board__mobile-status';
+
+  if (wakt.isPrivate) {
+    statusText = 'Private';
+    statusClass += ' dawa-social-board__mobile-status--private';
+  } else if (wakt.phase === 'prayed' || wakt.salahStatus === 'on-time') {
+    statusText = '✓ Prayed';
+    statusClass += ' dawa-social-board__mobile-status--ok';
+  } else if (wakt.phase === 'passed' || wakt.salahStatus === 'missed') {
+    statusText = 'Passed';
+    statusClass += ' dawa-social-board__mobile-status--missed';
+  } else if (wakt.phase === 'upcoming') {
+    statusText = (
+      <>
+        <span className={`dawa-social-board__mobile-timer${isLowTime ? ' dawa-social-board__mobile-timer--danger' : ''}`}>
+          {formatCountdownHms(remainingSeconds)}
+        </span>
+      </>
+    );
+    statusClass += ' dawa-social-board__mobile-status--wait';
+  } else if (wakt.forbiddenNow) {
+    statusText = (
+      <span className="dawa-social-board__mobile-timer">
+        {formatCountdownHms(remainingSeconds)}
+      </span>
+    );
+    statusClass += ' dawa-social-board__mobile-status--forbidden';
+  } else {
+    statusText = (
+      <span className={`dawa-social-board__mobile-timer${isLowTime ? ' dawa-social-board__mobile-timer--danger' : ''}`}>
+        {formatCountdownHms(remainingSeconds)}
+      </span>
+    );
+    statusClass += ' dawa-social-board__mobile-status--active';
+  }
+
+  return (
+    <div className="dawa-social-board__mobile-info">
+      <span className="dawa-social-board__mobile-name">{row.name}</span>
+      <div className="dawa-social-board__mobile-sub">
+        {row.badge && (
+          <span className="dawa-social-board__mobile-badge">
+            {row.badge.icon} {row.badge.name}
+          </span>
+        )}
+        {row.badge && <span className="dawa-social-board__mobile-dot" aria-hidden />}
+        <span className="dawa-social-board__mobile-prayer">{wakt.prayerLabel}</span>
+        <span className="dawa-social-board__mobile-dot" aria-hidden />
+        <span className={statusClass}>{statusText}</span>
+      </div>
+    </div>
+  );
+}
+
 function BoardRowView({
   row,
   pokeBusy,
@@ -239,6 +299,7 @@ function BoardRowView({
           )}
         </div>
       </UserProfileLink>
+      <MobileWaktInfo row={row} />
       <div className="dawa-social-board__prayer">
         <span className="dawa-social-board__prayer-label">{row.wakt.prayerLabel}</span>
       </div>

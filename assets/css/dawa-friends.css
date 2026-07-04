@@ -640,7 +640,7 @@
   text-align: center;
 }
 .dawa-social__empty { margin: 0; font-size: 14px; color: var(--text-soft); text-align: center; padding: 24px 12px; }
-.dawa-social-board { display: flex; flex-direction: column; gap: 6px; overflow-x: auto; }
+.dawa-social-board { display: flex; flex-direction: column; gap: 6px; overflow-x: visible; }
 .dawa-social-board--virtual .dawa-social-board__viewport {
   position: relative;
   max-height: min(420px, 55vh);
@@ -747,6 +747,113 @@
 }
 .dawa-social-board__done { font-size: 11px; font-weight: 700; color: var(--success, #3ecf8e); }
 .dawa-social-board__muted { color: var(--text-dim); font-size: 12px; }
+
+/* Mobile info line — hidden on desktop, replaces separate columns on mobile */
+.dawa-social-board__mobile-info { display: none; }
+
+/* ─── Wakt Board: compact mobile layout ─── */
+@media (max-width: 640px) {
+  /* Drop the column headers on mobile */
+  .dawa-social-board__head { display: none; }
+
+  /* Switch from grid to flex single-line */
+  .dawa-social-board__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 10px 10px 10px 8px;
+  }
+
+  /* Friend cell: just avatar, no text */
+  .dawa-social-board__friend { flex-shrink: 0; }
+  .dawa-social-board__friend-info { display: none; }
+
+  /* Mobile info: two lines — name on top, badge · prayer · status below */
+  .dawa-social-board__mobile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .dawa-social-board__mobile-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .dawa-social-board__mobile-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .dawa-social-board__mobile-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+  .dawa-social-board__mobile-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .dawa-social-board__mobile-prayer {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-bright);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .dawa-social-board__mobile-status {
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .dawa-social-board__mobile-status--ok { color: var(--success, #3ecf8e); }
+  .dawa-social-board__mobile-status--missed { color: var(--danger); }
+  .dawa-social-board__mobile-status--active { color: var(--accent-bright); }
+  .dawa-social-board__mobile-status--wait { color: var(--text-dim); }
+  .dawa-social-board__mobile-status--forbidden { color: var(--text-dim); }
+  .dawa-social-board__mobile-status--private { color: var(--text-dim); }
+  .dawa-social-board__mobile-timer {
+    font-family: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .dawa-social-board__mobile-timer--danger { color: var(--danger); }
+
+  /* Hide the separate prayer and status cells on mobile */
+  .dawa-social-board__prayer,
+  .dawa-social-board__status { display: none; }
+
+  /* Action cell: compact, right-aligned */
+  .dawa-social-board__action {
+    flex-shrink: 0;
+    margin-left: auto;
+    min-height: 0;
+  }
+  .dawa-social-board__action .dawa-poke {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
 .dawa-social__circle { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .dawa-social__circle-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--surface-2) 45%, transparent); border: 1px solid var(--border-soft); }
 .dawa-social__circle-name { margin: 0; font-size: 14px; font-weight: 700; color: var(--text); }
