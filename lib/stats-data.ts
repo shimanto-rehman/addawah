@@ -1,6 +1,5 @@
 import { prisma } from './prisma';
 import {
-  computeLifetimeStats,
   computeLifetimeSinceJoin,
   computeStreak,
   countCompleted,
@@ -31,7 +30,8 @@ export type StatsPayload = {
   activeDays: number;
   perfectDays: number;
   daysOnApp: number;
-  fajrMissed: number;
+  sunnahPrayed: number;
+  sunnahTotal: number;
   bestPrayer: { prayer: PrayerName; label: string; rate: number } | null;
   loggedCompleted: number;
   trackingSince: string | null;
@@ -49,7 +49,11 @@ function isStatsPayload(value: unknown): value is StatsPayload {
 
 export async function buildStatsPayload(
   userId: string,
-  opts?: { skipCache?: boolean },
+  opts?: {
+    skipCache?: boolean;
+    /** Pre-fetched user info to avoid a duplicate DB query. */
+    userInfo?: { createdAt: Date; city: string | null; country: string | null };
+  },
 ): Promise<StatsPayload> {
   const cacheKey = `stats:${userId}`;
   if (!opts?.skipCache) {
@@ -60,7 +64,7 @@ export async function buildStatsPayload(
     await kvDel(cacheKey).catch(() => {});
   }
 
-  const dbUser = await prisma.user.findUnique({
+  const dbUser = opts?.userInfo ?? await prisma.user.findUnique({
     where: { id: userId },
     select: { createdAt: true, city: true, country: true },
   });
@@ -77,7 +81,9 @@ export async function buildStatsPayload(
 
   const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, todayDate);
 
-  const [weekRecords, lifetimeRecords, todayRecords] = await Promise.all([
+  const sunnahWhere = { userId, date: { gte: recordStart, lte: todayDate }, kind: { in: ['SUNNAH_BEFORE' as const, 'SUNNAH_AFTER' as const] } };
+
+  const [weekRecords, lifetimeRecords, todayRecords, sunnahPrayed, sunnahTotal] = await Promise.all([
     prisma.salahRecord.findMany({
       where: { userId, date: { gte: weekStart, lte: weekEnd }, kind: 'FARD' },
       select: SALAH_RECORD_STATS_SELECT,
@@ -95,15 +101,17 @@ export async function buildStatsPayload(
       },
       select: SALAH_RECORD_STATS_SELECT,
     }),
+    prisma.salahRecord.count({ where: { ...sunnahWhere, completed: true } }),
+    prisma.salahRecord.count({ where: sunnahWhere }),
   ]);
 
   const weekTotal = 7 * PRAYERS.length;
-  const lifetime = computeLifetimeStats(lifetimeRecords);
   const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords, prayerTimes, now);
   const { missed: missedBreakdown, trackingSince } = getLifetimeMissedBreakdown(
     lifetimeRecords,
     prayerTimes,
     now,
+    sinceJoin.missedByPrayer,
   );
 
   const weekDays = weekDayKeys(weekStartKey).map((key) =>
@@ -123,7 +131,8 @@ export async function buildStatsPayload(
     activeDays: sinceJoin.activeDays,
     perfectDays: sinceJoin.perfectDays,
     daysOnApp: sinceJoin.daysOnApp,
-    fajrMissed: sinceJoin.missedByPrayer.FAJR,
+    sunnahPrayed,
+    sunnahTotal,
     bestPrayer: sinceJoin.bestPrayer
       ? {
           prayer: sinceJoin.bestPrayer.prayer as PrayerName,
@@ -131,7 +140,7 @@ export async function buildStatsPayload(
           rate: sinceJoin.bestPrayer.rate,
         }
       : null,
-    loggedCompleted: lifetime.completed,
+    loggedCompleted: sinceJoin.lifetimePrayed,
     trackingSince,
     missedBreakdown,
   };

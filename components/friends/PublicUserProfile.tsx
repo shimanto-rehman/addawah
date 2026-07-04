@@ -170,7 +170,7 @@ export function PublicUserProfile({ username }: { username: string }) {
               <StatCard label="Perfect days" value={String(stats.perfectDays)} />
               <StatCard label="Active days" value={String(stats.activeDays)} />
               <StatCard label="Days on Addawah" value={String(stats.daysOnApp)} />
-              <StatCard label="Fajr missed" value={String(stats.fajrMissed)} />
+              <StatCard label="Sunnah prayed" value={`${stats.sunnahPrayed}/${stats.sunnahTotal}`} />
               {stats.bestPrayer && (
                 <StatCard
                   label="Strongest prayer"

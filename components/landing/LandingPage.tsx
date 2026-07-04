@@ -22,6 +22,7 @@ const FEATURES = [
 const NAV_LINKS = [
   { href: '#features', label: 'Features' },
   { href: '#journey', label: 'Journey' },
+  { href: '/handbook', label: 'Handbook' },
 ];
 
 export function LandingPage() {

@@ -35,7 +35,8 @@ export type PublicUserStats = {
   perfectDays: number;
   activeDays: number;
   daysOnApp: number;
-  fajrMissed: number;
+  sunnahPrayed: number;
+  sunnahTotal: number;
   bestPrayer: { prayer: PrayerName; label: string; rate: number } | null;
   goldCoins: number;
   isDemoFilled: boolean;
@@ -73,6 +74,8 @@ function demoStatsForUser(userId: string): Omit<PublicUserStats, 'goldCoins' | '
   const lifetimeMissed = Math.max(0, lifetimeExpected - lifetimePrayed);
   const prayerIdx = seededInt(next(), 0, PRAYERS.length - 1);
   const bestPrayerName = PRAYERS[prayerIdx];
+  const sunnahTotal = daysOnApp * 6; // 6 sunnah units per day
+  const sunnahPrayed = Math.round((seededInt(next(), 30, 75) / 100) * sunnahTotal);
 
   return {
     weekRate,
@@ -85,7 +88,8 @@ function demoStatsForUser(userId: string): Omit<PublicUserStats, 'goldCoins' | '
     perfectDays: seededInt(next(), 8, 64),
     activeDays: seededInt(next(), 20, daysOnApp),
     daysOnApp,
-    fajrMissed: seededInt(next(), 2, 48),
+    sunnahPrayed,
+    sunnahTotal,
     bestPrayer: {
       prayer: bestPrayerName,
       label: PRAYER_LABELS[bestPrayerName],
@@ -121,6 +125,16 @@ export function buildPublicUserStats(
   const weekTotal = 7 * PRAYERS.length;
   const weekCompleted = countCompleted(weekRecords);
 
+  // Count sunnah from existing records
+  let sunnahPrayed = 0;
+  let sunnahTotal = 0;
+  for (const r of records) {
+    if (!isFardRecord(r)) {
+      sunnahTotal += 1;
+      if (r.completed) sunnahPrayed += 1;
+    }
+  }
+
   return {
     weekRate: weekTotal ? Math.round((weekCompleted / weekTotal) * 100) : 0,
     weekCompleted,
@@ -132,7 +146,8 @@ export function buildPublicUserStats(
     perfectDays: sinceJoin.perfectDays,
     activeDays: sinceJoin.activeDays,
     daysOnApp: sinceJoin.daysOnApp,
-    fajrMissed: sinceJoin.missedByPrayer.FAJR,
+    sunnahPrayed,
+    sunnahTotal,
     bestPrayer: sinceJoin.bestPrayer
       ? {
           prayer: sinceJoin.bestPrayer.prayer as PrayerName,
@@ -205,6 +220,10 @@ export function buildPublicUserStatsFromDayStats(
   // Best prayer: not available from day stats, use null
   const bestPrayer = null;
 
+  // Sunnah data not available from day stats — use0
+  const sunnahPrayed = 0;
+  const sunnahTotal = 0;
+
   const lifetimeRate = totalPrayersInStats > 0
     ? Math.round((totalPrayed / totalPrayersInStats) * 100)
     : 0;
@@ -220,7 +239,8 @@ export function buildPublicUserStatsFromDayStats(
     perfectDays,
     activeDays,
     daysOnApp,
-    fajrMissed,
+    sunnahPrayed,
+    sunnahTotal,
     bestPrayer,
     goldCoins,
     isDemoFilled: false,

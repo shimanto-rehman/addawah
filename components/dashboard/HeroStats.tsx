@@ -45,7 +45,7 @@ export function HeroStats() {
   const stream = [
     { value: fmt(data?.lifetimePrayed), label: 'fard prayers prayed · since tracking' },
     { value: fmt(data?.streak), label: 'day streak' },
-    { value: fmt(data?.fajrMissed), label: 'fajr missed' },
+    { value: data ? `${fmt(data.sunnahPrayed)}/${fmt(data.sunnahTotal)}` : '', label: 'sunnah prayed' },
     { value: fmt(data?.perfectDays), label: 'perfect days' },
     { value: data ? `${data.todayCompleted}/5` : '', label: 'today' },
   ];

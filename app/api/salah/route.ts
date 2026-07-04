@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
         }
       }
       triggerSync('refresh-snapshots', user!.id);
-      triggerSync('refresh-day-stat', user!.id, body.date);
+      // Day-stat refresh handled lazily by ensureSalahDayStats (stale detection via updatedAt)
     }
 
     let stats;

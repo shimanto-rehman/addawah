@@ -12,7 +12,6 @@ import { computePrayerInsightsCached } from './salah-day-stats';
 import {
   addDaysToKey,
   computeLifetimeSinceJoin,
-  computeLifetimeStats,
   computeStreak,
   countCompleted,
   dateFromKey,
@@ -40,6 +39,8 @@ export type AnalyticsKpis = {
   lifetimeRate: number;
   perfectDays: number;
   fajrMissed: number;
+  sunnahPrayed: number;
+  sunnahTotal: number;
   totalCompleted: number;
 };
 
@@ -130,9 +131,18 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
       : Promise.resolve([]),
   ]);
 
-  const lifetime = computeLifetimeStats(lifetimeRecords);
   const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords, prayerTimes, now);
   const streak = computeStreak(lifetimeRecords);
+
+  // Count sunnah from existing lifetimeRecords (already fetched — no extra query)
+  let sunnahPrayed = 0;
+  let sunnahTotal = 0;
+  for (const r of lifetimeRecords) {
+    if (!isFardRecord(r)) {
+      sunnahTotal += 1;
+      if (r.completed) sunnahPrayed += 1;
+    }
+  }
   const insights = await computePrayerInsightsCached(userId, insightRecords, city, country, 14);
 
   const weekFard = weekRecords.filter(isFardRecord);
@@ -141,7 +151,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     ? Math.round((countCompleted(weekFard) / weekTotal) * 100)
     : 0;
 
-  const byPrayer = lifetime.byPrayer.map((p) => ({
+  const byPrayer = sinceJoin.byPrayer.map((p) => ({
     ...p,
     prayer: p.prayer as PrayerName,
     label: PRAYER_LABELS[p.prayer as PrayerName],
@@ -201,7 +211,9 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     lifetimeRate: sinceJoin.lifetimeRate,
     perfectDays: sinceJoin.perfectDays,
     fajrMissed: sinceJoin.missedByPrayer.FAJR,
-    totalCompleted: lifetime.completed,
+    sunnahPrayed,
+    sunnahTotal,
+    totalCompleted: sinceJoin.lifetimePrayed,
   };
 
   return {

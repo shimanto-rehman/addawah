@@ -235,6 +235,8 @@ export function getLifetimeMissedBreakdown(
   records: { date: Date; prayer: string; completed: boolean; kind?: string }[],
   prayerTimes: PrayerTimesPayload,
   now = new Date(),
+  /** When provided, only generate detailed slots for these prayers (optimization). */
+  missedByPrayer?: Record<PrayerName, number>,
 ): { missed: MissedWaktSlot[]; trackingSince: string | null } {
   const fardRecords = records.filter(isFardRecord);
   const todayKey = formatDateKeyInTimezone(now, prayerTimes.timeZone);
@@ -251,10 +253,15 @@ export function getLifetimeMissedBreakdown(
 
   if (!firstTrackingKey) return { missed: [], trackingSince: null };
 
+  // Only iterate prayers that have missed instances (O(missed) instead of O(days×5))
+  const prayersToScan = missedByPrayer
+    ? PRAYERS.filter((p) => (missedByPrayer[p] ?? 0) > 0)
+    : PRAYERS;
+
   const missed: MissedWaktSlot[] = [];
 
   for (let key = firstTrackingKey; key <= todayKey; key = addDaysToKey(key, 1)) {
-    for (const prayer of PRAYERS) {
+    for (const prayer of prayersToScan) {
       const logged = recordMap.get(`${key}:${prayer}`);
       const isToday = key === todayKey;
 
@@ -382,6 +389,8 @@ export function computeLifetimeTracking(
     daysOnApp,
     missedByPrayer,
     bestPrayer,
+    firstTrackingKey,
+    byPrayer,
   };
 }
 
@@ -420,6 +429,13 @@ function emptyLifetimeTracking() {
       total: number;
       rate: number;
     } | null,
+    firstTrackingKey: null as string | null,
+    byPrayer: [] as {
+      prayer: string;
+      completed: number;
+      total: number;
+      rate: number;
+    }[],
   };
 }
 
@@ -502,6 +518,8 @@ function computeLifetimeTrackingLegacy(
     daysOnApp,
     missedByPrayer,
     bestPrayer,
+    firstTrackingKey,
+    byPrayer,
   };
 }
 

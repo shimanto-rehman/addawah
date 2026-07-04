@@ -43,6 +43,18 @@ async function computePrayerInsightsInline(
 
   const fardRecords = records.filter((r) => PRAYERS.includes(r.prayer as PrayerName));
 
+  // Pre-index records for O(1) lookup by date+prayer
+  const recordIndex = new Map<string, Map<string, FardRecord>>();
+  for (const r of fardRecords) {
+    const dateKey = formatDateKey(r.date);
+    let byPrayer = recordIndex.get(dateKey);
+    if (!byPrayer) {
+      byPrayer = new Map();
+      recordIndex.set(dateKey, byPrayer);
+    }
+    byPrayer.set(r.prayer, r);
+  }
+
   const timesCache = new Map<string, Awaited<ReturnType<typeof fetchPrayerTimes>>>();
   const dates: Date[] = [];
   for (let d = new Date(start); d <= today; d = addDays(d, 1)) {
@@ -69,6 +81,7 @@ async function computePrayerInsightsInline(
     const times = timesCache.get(key);
     if (!times) continue;
 
+    const byPrayer = recordIndex.get(key);
     let onTime = 0;
     let kaza = 0;
     let missed = 0;
@@ -76,9 +89,7 @@ async function computePrayerInsightsInline(
     const missedPrayers: PrayerName[] = [];
 
     for (const prayer of PRAYERS) {
-      const rec = fardRecords.find(
-        (r) => formatDateKey(r.date) === key && r.prayer === prayer,
-      );
+      const rec = byPrayer?.get(prayer);
       const completed = rec?.completed ?? false;
       const loggedAt = completed && rec ? rec.updatedAt : null;
       const status = classifyPrayerForDay(d, prayer, completed, loggedAt, times, now);

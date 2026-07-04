@@ -56,15 +56,16 @@ async function fetchSalahGrid(userId: string, weekStartKey: string): Promise<Sal
 export async function buildDashboardPayload(userId: string): Promise<DashboardPayload> {
   const dbUser = await prisma.user.findUnique({
     where: { id: userId },
-    select: { city: true, country: true },
+    select: { createdAt: true, city: true, country: true },
   });
-  const city = dbUser?.city?.trim() || 'Dhaka';
-  const country = dbUser?.country?.trim() || 'Bangladesh';
+  if (!dbUser) throw new Error('User not found');
+  const city = dbUser.city?.trim() || 'Dhaka';
+  const country = dbUser.country?.trim() || 'Bangladesh';
   const times = await fetchPrayerTimes(city, country, new Date());
   const weekKey = rollingWeekStartKey(times.timeZone);
 
   const [stats, todayMood, grid] = await Promise.all([
-    buildStatsPayload(userId),
+    buildStatsPayload(userId, { userInfo: dbUser }),
     fetchTodayMood(userId),
     fetchSalahGrid(userId, weekKey),
   ]);
