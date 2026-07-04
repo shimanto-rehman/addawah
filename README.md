@@ -2,35 +2,81 @@
 
 **Pray Together. Grow Together. Inspire Each Other.**
 
-Free Islamic web platform for salah tracking, accountability, daily inspiration, spiritual growth, and community support — built per the ADDAWAH BRD v4.0.
+Free Islamic web platform for salah tracking, accountability, daily inspiration, spiritual growth, and community support — built per the ADDAWAH BRD v4.23.
 
 ## Features
 
 ### Core
-- Public landing page with mission & tutorial
+- Public landing page with mission, tutorial video & people feedback
+- **Handbook page** — PDF reader with thumbnail preview, fullscreen viewer, and download
 - Authentication (email + password sessions)
+- Password reset via OTP (email-based)
+- Account deletion with OTP verification
 - Weekly Salah tracker with ornate arch frame background
-- Hero statistics card (today, week, streak, lifetime)
+- Hero statistics card (today, week, streak, lifetime, sunnah prayed, perfect days)
 - Hijri calendar display
 - Lifetime analytics charts
 - Friend system with gentle reminder (poke)
+- Live wakt board with virtual scrolling & compact mobile layout
 - Daily Islamic inspiration
 - 6 theme colors (Green, Blue, Gold, Purple, Silver, Pink)
 - Dark & Light modes
 - Framer Motion animations throughout
+- SEO: JSON-LD, sitemap, robots.txt, Open Graph metadata
+
+### Salah Tracking
+- 5 prayers × 7 days with Fard, Sunnah before, Sunnah after
+- On-time vs kaza vs missed classification
+- Iman meter calculation (on-time boost, kaza/missed lower)
+- Prayer time awareness (prevents marking before wakt starts)
+- Missed fard bead visualization (33 beads)
+- Celebration confetti on completion
+- Sun path arc showing prayer times visually
+- Prayer insights with trend analysis & coaching tips
+- Precomputed per-day stats (`UserSalahDayStat`) for fast analytics
+
+### Friends & Brotherhood
+- Friend system with connection requests & suggestions
+- Wakt board — live salah status of friends (virtualized list)
+- Precomputed wakt snapshots (`UserWaktSnapshot`) for fast board reads
+- Gentle reminder (poke) system with cooldown
+- Gold coin economy — earn coins for wakt salah & dawah
+- Badge tiers (Seedling → Scholar) based on coin balance
+- Username search with availability checking
+- Public user profiles (`/u/[username]`) with prayer charts & insights
+- Friend week rate & privacy controls
 
 ### Ruhaniah (Spiritual Check-in)
 - **Taqwa Pulse** — daily self-assessment slider (Ghaflah → Ihsan)
-- **Fahm Test** — psychometric exam with 320 questions across 8 categories (Qadr, Truth, Dawah, Nafs, Akhirah, Sabr/Shukr, Ilm, Social)
+- **Fahm Test** — psychometric exam with 320 questions across 8 categories
 - **Barakah Meter** — rate barakah in Time, Rizq, Health, Heart
-- **Dua Log** — track and manage personal duas
+- **Dua Log** — track and manage personal duas with categories & status
 - **Quran Verse Selection** — 300 tagged verses matched to user's spiritual state
 - **Insights Dashboard** — Fahm Radar, Taqwa Trend, Barakah Trend, Dua Timeline
+- **Spiritual Weakness Analysis** — severity-ranked areas needing attention (critical/high/moderate)
+
+### Analytics
+- KPI cards (Iman meter, streak, week rate, lifetime rate)
+- Iman meter line chart (14-day trend)
+- Missed salah area chart (14-day overview)
+- Wakt breakdown doughnut (on-time vs kaza vs missed)
+- On-time bar chart (weekly)
+- Mood history tracking
+- Personal coaching tips
+
+### Notifications
+- Real-time notification panel with unread count badge
+- Notification types: connection requests, pokes, reminders, wakt reminders, ruhaniah reminders
+- Mark as read / mark all read
+- Deduplication via `dedupeKey`
 
 ### UX Polish
 - **Shimmer/Skeleton Loading** — smooth loading placeholders across all data-fetching components
 - Consistent gradient animation system with `prefers-reduced-motion` support
 - Loading states for: stats, charts, notifications, connections, profiles, search results
+- App preloader animation on first visit
+- Wakt countdown clock in header
+- Notification bell with live unread count
 
 ## Stack
 
@@ -41,6 +87,11 @@ Free Islamic web platform for salah tracking, accountability, daily inspiration,
 - Session auth (JWT cookie)
 - Chart.js (via react-chartjs-2)
 - SWR for data fetching
+- Zod for validation
+- Pino for logging
+- Resend for transactional email
+- Vercel Blob for avatar storage
+- TanStack Virtual for virtualized lists
 
 ## Setup
 
@@ -67,17 +118,7 @@ For local dev, [Neon](https://neon.tech) free tier works well.
 npm run db:push
 ```
 
-4. **Add gate arch image**
-
-Place your ornate arch PNG at:
-
-```
-public/images/gate-arch.png
-```
-
-This is used as the Salah tracker card background.
-
-5. **Run dev server**
+4. **Run dev server**
 
 ```bash
 npm run dev
@@ -102,27 +143,55 @@ app/
     profile/          # User profile + privacy settings
     ruhaniah/         # Spiritual check-in flow
     notifications/    # Notification panel
-    settings/         # Themes + account
+    settings/         # Themes + account deletion
+    u/[username]/     # Public user profile
+  (public)/           # Unauthenticated pages
+    page.tsx          # Landing page
+    login/            # Auth page
+    handbook/         # Handbook PDF reader page
+    reset-password/   # Password reset flow
   api/                # REST endpoints
-  login/              # Auth page
-  page.tsx            # Landing page
+    auth/             # Login, register, logout, me, reset-password, check-availability
+    salah/            # Salah record CRUD
+    stats/            # Dashboard stats
+    dashboard/        # Dashboard aggregated data
+    analytics/        # Analytics summary
+    friends/          # Friend system, board, hub, search, suggestions, connections
+    pokes/            # Poke system
+    notifications/    # Notifications + count
+    ruhaniah/         # Ruhaniah flow + duas + history
+    insights/         # Prayer insights
+    prayer-times/     # Prayer times API
+    profile/          # Profile + avatar
+    users/[username]/ # Public user profile + insights
+    avatars/          # Avatar serving
+    rewards/          # Gold coin rewards
+    mood/             # Mood check-in
+    account/          # Account deletion
+    internal/         # Internal sync + ruhaniah verse
 components/
-  dashboard/          # HeroStats, SalahTracker, PrayerInsights, SunPathArc, MoodCheckIn
+  dashboard/          # HeroStats, SalahTracker, PrayerInsights, SunPathArc, MoodCheckIn, HijriCalendar
   analytics/          # AnalyticsHub, AnalyticsChartsGrid
-  friends/            # FriendsHub, WaktBoard, UsernameSearch, ManageConnections
-  ruhaniah/           # RuhaniahFlow, TaqwaPulse, FahmTest, BarakahMeter, DuaLog, Insights
+  friends/            # FriendsHub, WaktBoardVirtual, UsernameSearch, ManageConnections, PublicUserProfile
+  landing/            # LandingPage, PeopleFeedback, DeveloperCredit, PublicShell, LandingBackdrop
+  ruhaniah/           # RuhaniahFlow, TaqwaPulse, FahmTest, BarakahMeter, DuaLog, Insights,
+                      # RuhaniahVerse, SpiritualWeakness, FahmRadar, TaqwaTrend, BarakahTrend, DuaTimeline
   notifications/      # NotificationPanel, useNotifications
   profile/            # UserAvatar, ProfilePrayerCharts, ProfilePrivacyMatrix
-  layout/             # AppHeader, PageHeader, WaktCountdownClock, NotificationBell
-  ui/                 # Shimmer, GoldCoin, ConfirmModal, Modal, StarRating
-  auth/               # LoginPageClient, PhoneInput, ValidatedField, PasswordField
+  layout/             # AppHeader, PageHeader, WaktCountdownClock, NotificationBell, LiveClock, UserMenu
+  ui/                 # Shimmer, GoldCoin, ConfirmModal, Modal, StarRating, ThemeSwitcher
+  auth/               # LoginPageClient, PhoneInput, ValidatedField, PasswordField, OtpField
   providers/          # AppProvider, ThemeProvider, ThemeSync
-lib/                  # Auth, prisma, salah utils, ruhaniah logic, chart theme
+  preloader/          # Addawah preloader animation
+  seo/                # JsonLd
+  settings/           # DeleteAccountSection
+lib/                  # Auth, prisma, salah utils, ruhaniah logic, chart theme, wakt snapshot, rewards
 prisma/               # Database schema
 public/
   data/               # ayah-pool.json (300 verses), fahm-questions.json (320 questions)
-  assets/             # Images, icons
-  fonts/              # Islamic fonts
+  assets/             # Images, PDFs, videos, icons
+  fonts/              # Islamic fonts (Amiri, Cormorant Garamond, DM Sans)
+  uploads/            # User avatar uploads
 ```
 
 ## Key Data Files
@@ -131,6 +200,7 @@ public/
 |------|---------|---------|
 | `public/data/ayah-pool.json` | 300 Quran verses | Verse selection engine for Ruhaniah |
 | `public/data/fahm-questions.json` | 320 questions | Fahm psychometric test (40 per category × 8) |
+| `docs/FAHM_QUESTION_BANK.md` | Human-readable question bank | Reference for Fahm test categories & scoring |
 
 ## Verse Selection Engine
 
@@ -145,6 +215,26 @@ The Ruhaniah system gathers spiritual signals from 7 sources and converts them t
 7. **Prayer streak** — `strong_streak`, `relapse`, `needs_hope`
 
 Verses are scored against tags (primary +3, secondary +1) and the best match is selected.
+
+## Database Models
+
+| Model | Purpose |
+|-------|---------|
+| `User` | User account with profile, theme, coins, privacy |
+| `Session` | JWT session tokens |
+| `SalahRecord` | Individual prayer records (Fard/Sunnah, on-time/kaza) |
+| `UserSalahDayStat` | Precomputed daily stats for fast analytics |
+| `UserWaktSnapshot` | Precomputed live wakt status for friends board |
+| `Friendship` | Friend connections (pending/accepted) |
+| `Poke` | Gentle reminders between friends |
+| `Notification` | All notification types |
+| `MoodCheckIn` | Daily mood tracking |
+| `TaqwaPulse` | Daily spiritual self-assessment |
+| `FahmResponse` | Fahm test answers |
+| `UserFahmProfile` | Aggregated Fahm scores & trends |
+| `BarakahLog` | Daily barakah ratings |
+| `DuaEntry` | Personal duas with status tracking |
+| `RuhaniahVerse` | Daily personalized Quran verse |
 
 ## License
 
