@@ -8,6 +8,7 @@ import {
   PRAYER_LABELS,
   PRAYER_ARABIC,
   FARD_RAKATS,
+  SUNNAH_SLOTS,
   SUNNAH_UNIT_RAKATS,
   type PrayerName,
   type SalahKind,
@@ -30,6 +31,7 @@ import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import type { PrayerTimesPayload } from '@/lib/prayer-times';
 import { formatDateKeyInTimezone, isPrayerTimesPayload, prayerTimesFetcher } from '@/lib/prayer-times';
 import { Shimmer } from '@/components/ui/Shimmer';
+import { SalahMarkModal } from '@/components/dashboard/SalahMarkModal';
 
 const DEFAULT_TIMEZONE = 'Asia/Dhaka';
 
@@ -104,6 +106,7 @@ export function SalahTracker() {
   const toggleBusyRef = useRef<string | null>(null);
   const [busyCell, setBusyCell] = useState<string | null>(null);
   const [weekStartKey, setWeekStartKey] = useState(() => rollingWeekStartKey(DEFAULT_TIMEZONE));
+  const [modalData, setModalData] = useState<{ dateKey: string; prayer: PrayerName } | null>(null);
 
   const { data: prayerTimes } = useSWR<PrayerTimesPayload>('/api/prayer-times', prayerTimesFetcher, {
     refreshInterval: 60_000,
@@ -218,6 +221,71 @@ export function SalahTracker() {
     }
   }
 
+  async function handleBatchConfirm(
+    dateKey: string,
+    prayer: PrayerName,
+    updates: { kind: SalahKind; unit: number; completed: boolean }[],
+  ) {
+    if (!updates.length) return;
+
+    // Build optimistic grid
+    const cell = getSalahCell(grid, dateKey, prayer);
+    const optimisticCell: SalahCell = {
+      fard: cell.fard,
+      sunnahBefore: [...cell.sunnahBefore],
+      sunnahAfter: [...cell.sunnahAfter],
+    };
+    for (const u of updates) {
+      if (u.kind === 'FARD') optimisticCell.fard = u.completed;
+      else if (u.kind === 'SUNNAH_BEFORE') optimisticCell.sunnahBefore[u.unit] = u.completed;
+      else optimisticCell.sunnahAfter[u.unit] = u.completed;
+    }
+
+    const optimistic: SalahGrid = {
+      ...grid,
+      [dateKey]: { ...grid[dateKey], [prayer]: optimisticCell },
+    };
+    const prevDashboard = dashboard?.data;
+
+    try {
+      await mutate({ grid: optimistic }, { revalidate: false });
+
+      await Promise.all(
+        updates.map((u) =>
+          fetch('/api/salah', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              date: dateKey,
+              prayer,
+              kind: u.kind,
+              unit: u.unit,
+              completed: u.completed,
+            }),
+          }).then((r) => {
+            if (!r.ok) throw new Error('Failed to save salah');
+          }),
+        ),
+      );
+
+      const weekRes = await fetch(`/api/salah?week=${weekStartKey}`, { cache: 'no-store' });
+      if (!weekRes.ok) throw new Error('Failed to refresh salah');
+      const weekData = (await weekRes.json()) as { grid: SalahGrid };
+      await mutate(weekData, { revalidate: false });
+
+      if (dashboard?.data) {
+        dashboard.mutate(
+          { ...dashboard.data, grid: weekData.grid, weekKey: weekStartKey },
+          { revalidate: false },
+        );
+      }
+    } catch {
+      await mutate(undefined, { revalidate: true });
+      if (prevDashboard) dashboard!.mutate(prevDashboard, { revalidate: true });
+      throw new Error('Failed to save salah');
+    }
+  }
+
   return (
     <section className="dawa-salah">
       <div className="dawa-salah__card">
@@ -315,7 +383,13 @@ export function SalahTracker() {
                                 type="button"
                                 className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}${isBusy ? ' is-busy' : ''}`}
                                 disabled={(disabled && !cell.fard) || isBusy}
-                                onClick={() => toggle({ dateKey: key, prayer, kind: 'FARD' })}
+                                onClick={() => {
+                                  if (window.matchMedia('(max-width: 960px)').matches) {
+                                    setModalData({ dateKey: key, prayer });
+                                  } else {
+                                    toggle({ dateKey: key, prayer, kind: 'FARD' });
+                                  }
+                                }}
                                 whileTap={{ scale: 0.88 }}
                                 aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
                                 title={
@@ -354,6 +428,19 @@ export function SalahTracker() {
           )}
         </div>
       </div>
+
+      {modalData && (
+        <SalahMarkModal
+          open
+          onClose={() => setModalData(null)}
+          prayer={modalData.prayer}
+          dateKey={modalData.dateKey}
+          cell={getSalahCell(grid, modalData.dateKey, modalData.prayer)}
+          onConfirm={(updates) =>
+            handleBatchConfirm(modalData.dateKey, modalData.prayer, updates)
+          }
+        />
+      )}
     </section>
   );
 }
