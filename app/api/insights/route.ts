@@ -24,6 +24,7 @@ export async function GET() {
         prayer: true,
         completed: true,
         updatedAt: true,
+        completedOnTime: true,
       },
     });
 

@@ -59,7 +59,15 @@ function computeDayInsight(
     const rec = byPrayer?.get(prayer);
     const completed = rec?.completed ?? false;
     const loggedAt = completed && rec ? rec.updatedAt : null;
-    const status = classifyPrayerForDay(date, prayer, completed, loggedAt, times, now);
+    const status = classifyPrayerForDay(
+      date,
+      prayer,
+      completed,
+      loggedAt,
+      times,
+      now,
+      rec?.completedOnTime ?? false,
+    );
 
     if (status === 'on-time') {
       onTime += 1;
@@ -268,7 +276,7 @@ export async function refreshSalahDayStatForUser(userId: string, dateKey: string
 
   const records = await prisma.salahRecord.findMany({
     where: { userId, kind: 'FARD', date },
-    select: { date: true, prayer: true, completed: true, updatedAt: true },
+    select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
   });
 
   const prior = await prisma.userSalahDayStat.findFirst({

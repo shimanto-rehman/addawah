@@ -92,7 +92,15 @@ async function computePrayerInsightsInline(
       const rec = byPrayer?.get(prayer);
       const completed = rec?.completed ?? false;
       const loggedAt = completed && rec ? rec.updatedAt : null;
-      const status = classifyPrayerForDay(d, prayer, completed, loggedAt, times, now);
+      const status = classifyPrayerForDay(
+        d,
+        prayer,
+        completed,
+        loggedAt,
+        times,
+        now,
+        rec?.completedOnTime ?? false,
+      );
 
       if (status === 'on-time') {
         onTime += 1;

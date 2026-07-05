@@ -200,7 +200,7 @@ export async function refreshSnapshotsForSalahUser(userId: string, now = new Dat
   const today = startOfDay(now);
   const records = await prisma.salahRecord.findMany({
     where: { userId, kind: 'FARD', date: today },
-    select: { prayer: true, completed: true, updatedAt: true },
+    select: { prayer: true, completed: true, updatedAt: true, completedOnTime: true },
   });
 
   await refreshUserWaktSnapshot(userId, user.city, user.country, records, now);

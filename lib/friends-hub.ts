@@ -197,13 +197,13 @@ export async function buildFriendsHubPayload(
     pageFriendIds.length > 0
       ? prisma.salahRecord.findMany({
           where: { userId: { in: pageFriendIds }, kind: 'FARD', date: today },
-          select: { userId: true, prayer: true, completed: true, updatedAt: true },
+          select: { userId: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
         })
       : Promise.resolve([]),
     needsSummaryRefresh && allFriendIds.length > 0
       ? prisma.salahRecord.findMany({
           where: { userId: { in: allFriendIds }, kind: 'FARD', date: today },
-          select: { userId: true, prayer: true, completed: true, updatedAt: true },
+          select: { userId: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
         })
       : Promise.resolve([]),
     pageFriendIds.length > 0
@@ -318,7 +318,7 @@ export async function buildBoardSummary(viewerId: string) {
 
   const allRecords = await prisma.salahRecord.findMany({
     where: { userId: { in: allFriendIds }, kind: 'FARD', date: today },
-    select: { userId: true, prayer: true, completed: true, updatedAt: true },
+    select: { userId: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
   });
   const allRecordsByUser = groupRecordsByUser(allRecords);
 

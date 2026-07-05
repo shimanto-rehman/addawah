@@ -7,6 +7,7 @@ import { swrFetcher } from '@/lib/swr-fetcher';
 import type { StatsPayload } from '@/lib/stats-data';
 
 const BEADS = 33;
+const MISSED_BREAKDOWN_PREVIEW = 5;
 
 type Stats = StatsPayload;
 
@@ -204,13 +205,16 @@ export function HeroStats() {
             Today&apos;s in-progress wakts are excluded until their window ends.
           </p>
           <ul className="dawa-metrics__missed-list">
-            {data.missedBreakdown.map((slot) => (
+            {data.missedBreakdown.slice(0, MISSED_BREAKDOWN_PREVIEW).map((slot) => (
               <li key={`${slot.date}-${slot.prayer}`}>
                 <span className="dawa-num">{slot.date}</span>
                 {' — '}
                 {slot.label}
               </li>
             ))}
+            {data.missedBreakdown.length > MISSED_BREAKDOWN_PREVIEW && (
+              <li className="dawa-metrics__missed-more">… and more …</li>
+            )}
           </ul>
         </details>
       )}

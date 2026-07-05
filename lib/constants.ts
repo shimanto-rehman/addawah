@@ -57,6 +57,7 @@ export const THEME_COLOR_LABELS: Record<ThemeColor, string> = {
 };
 
 export const SITE_LOGO_SRC = '/assets/images/Logo.webp';
+export const GOLD_COIN_SRC = '/assets/images/gold.webp';
 export const LANDING_HERO_SRC = '/assets/images/landing.webp';
 export const LANDING_VIDEO_SRC = '/assets/videos/landing.webm';
 export const LANDING_VIDEO_MP4_SRC = '/assets/videos/landing.mp4';

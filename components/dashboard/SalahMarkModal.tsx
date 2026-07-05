@@ -9,6 +9,7 @@ import {
   SUNNAH_SLOTS,
   SUNNAH_UNIT_RAKATS,
   FARD_RAKATS,
+  SITE_LOGO_SRC,
   type PrayerName,
   type SalahKind,
 } from '@/lib/constants';
@@ -18,6 +19,33 @@ const HEADER_ID = 'salah-mark-modal-title';
 
 type Update = { kind: SalahKind; unit: number; completed: boolean };
 
+function formatRakats(count: number) {
+  return `${count} Rakat`;
+}
+
+function BeadCaption({
+  prayerKind,
+  rakats,
+  checked,
+  wide,
+}: {
+  prayerKind: 'sunnah' | 'fard';
+  rakats: number;
+  checked: boolean;
+  wide?: boolean;
+}) {
+  return (
+    <span
+      className={`dawa-salah-modal__bead-caption dawa-salah-modal__bead-caption--${prayerKind}${checked ? ' dawa-salah-modal__bead-caption--on' : ''}${wide ? ' dawa-salah-modal__bead-caption--wide' : ''}`}
+    >
+      {prayerKind === 'sunnah' && (
+        <span className="dawa-salah-modal__bead-caption-kind">Sunnah</span>
+      )}
+      <span className="dawa-salah-modal__bead-caption-rakats">{formatRakats(rakats)}</span>
+    </span>
+  );
+}
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -26,6 +54,39 @@ type Props = {
   cell: SalahCell;
   onConfirm: (updates: Update[]) => Promise<void>;
 };
+
+function BeadButton({
+  checked,
+  rakats,
+  unit,
+  variant,
+  onToggle,
+}: {
+  checked: boolean;
+  rakats: number;
+  unit?: number;
+  variant: 'sunnah' | 'fard';
+  onToggle: () => void;
+}) {
+  const label =
+    variant === 'fard'
+      ? `${rakats} rakats fard`
+      : `Sunnah unit ${(unit ?? 0) + 1}, ${rakats} rakats`;
+
+  return (
+    <button
+      type="button"
+      className={`dawa-salah-modal__bead dawa-salah-modal__bead--${variant}${checked ? ' dawa-salah-modal__bead--on' : ''}`}
+      onClick={onToggle}
+      aria-pressed={checked}
+      aria-label={label}
+    >
+      <span className="dawa-salah-modal__bead-core" aria-hidden>
+        {rakats}
+      </span>
+    </button>
+  );
+}
 
 export function SalahMarkModal({
   open,
@@ -43,7 +104,6 @@ export function SalahMarkModal({
   const [initialized, setInitialized] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // Sync state when modal opens or cell changes
   useMemo(() => {
     if (open) {
       setSunnahBefore([...cell.sunnahBefore]);
@@ -69,13 +129,18 @@ export function SalahMarkModal({
     }
   }, [dateKey]);
 
+  const totalUnits = slots.before + 1 + slots.after;
+  const doneCount =
+    sunnahBefore.filter(Boolean).length +
+    (fard ? 1 : 0) +
+    sunnahAfter.filter(Boolean).length;
+
   const handleConfirm = useCallback(async () => {
     if (busy) return;
     setBusy(true);
 
     const updates: Update[] = [];
 
-    // Sunnah before
     sunnahBefore.forEach((checked, unit) => {
       const wasDone = cell.sunnahBefore[unit] ?? false;
       if (checked !== wasDone) {
@@ -83,7 +148,6 @@ export function SalahMarkModal({
       }
     });
 
-    // Sunnah after
     sunnahAfter.forEach((checked, unit) => {
       const wasDone = cell.sunnahAfter[unit] ?? false;
       if (checked !== wasDone) {
@@ -91,7 +155,6 @@ export function SalahMarkModal({
       }
     });
 
-    // Fard
     if (fard !== cell.fard) {
       updates.push({ kind: 'FARD', unit: 0, completed: fard });
     }
@@ -114,7 +177,6 @@ export function SalahMarkModal({
   return (
     <div className="dawa-salah-modal">
       <Modal open={open} onClose={onClose} labelledBy={HEADER_ID}>
-        {/* Header */}
         <div className="dawa-salah-modal__header">
           <button
             type="button"
@@ -127,7 +189,9 @@ export function SalahMarkModal({
           >
             ✕
           </button>
-          <div className="dawa-salah-modal__icon">☪</div>
+          <div className="dawa-salah-modal__icon">
+            <img src={SITE_LOGO_SRC} alt="" width={32} height={32} />
+          </div>
           <h3 className="dawa-salah-modal__prayer-name" id={HEADER_ID}>
             {PRAYER_LABELS[prayer]}
             <span className="dawa-salah-modal__prayer-arabic">
@@ -137,129 +201,132 @@ export function SalahMarkModal({
           <p className="dawa-salah-modal__date">{formattedDate}</p>
         </div>
 
-        {/* Body */}
         <div className="dawa-salah-modal__body">
-          {/* Sunnah Before */}
-          {slots.before > 0 && (
-            <div className="dawa-salah-modal__section">
-              <span className="dawa-salah-modal__section-label">
-                Sunnah Before
-              </span>
-              {Array.from({ length: slots.before }, (_, unit) => (
-                <label
-                  key={`before-${unit}`}
-                  className={`dawa-salah-modal__item${sunnahBefore[unit] ? ' dawa-salah-modal__item--checked' : ''}`}
-                >
-                  <span className="dawa-salah-modal__checkbox">
-                    <input
-                      type="checkbox"
-                      checked={sunnahBefore[unit] ?? false}
-                      onChange={() => {
-                        setSunnahBefore((prev) => {
-                          const next = [...prev];
-                          next[unit] = !next[unit];
-                          return next;
-                        });
-                      }}
-                    />
-                    <span className="dawa-salah-modal__check-visual">✓</span>
-                  </span>
-                  <span className="dawa-salah-modal__item-text">
-                    <span className="dawa-salah-modal__item-label">
-                      {SUNNAH_UNIT_RAKATS} Rakats Sunnah
-                    </span>
-                    <span className="dawa-salah-modal__item-desc">
-                      Unit {unit + 1} of {slots.before}
-                    </span>
-                  </span>
-                  <span className="dawa-salah-modal__rakat">
-                    {SUNNAH_UNIT_RAKATS}R
-                  </span>
-                </label>
-              ))}
+          <div className="dawa-salah-modal__stage">
+            <div className="dawa-salah-modal__meter" aria-live="polite">
+              <div className="dawa-salah-modal__meter-track" aria-hidden>
+                {Array.from({ length: totalUnits }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`dawa-salah-modal__meter-dot${i < doneCount ? ' dawa-salah-modal__meter-dot--on' : ''}`}
+                  />
+                ))}
+              </div>
+              <p className="dawa-salah-modal__meter-label">
+                <span className="dawa-num">{doneCount}</span>
+                <span className="dawa-salah-modal__meter-sep">/</span>
+                <span className="dawa-num">{totalUnits}</span>
+                {' '}marked
+              </p>
             </div>
-          )}
 
-          {/* Fard */}
-          <div className="dawa-salah-modal__section">
-            <span className="dawa-salah-modal__section-label">
-              Fard Prayer
-            </span>
-            <label
-              className={`dawa-salah-modal__item${fard ? ' dawa-salah-modal__item--checked' : ''}`}
+            <div className="dawa-salah-modal__strand" role="group" aria-label="Prayer units">
+              <div className="dawa-salah-modal__strand-rail" aria-hidden />
+
+              {slots.before > 0 && (
+                <div className="dawa-salah-modal__strand-zone dawa-salah-modal__strand-zone--before">
+                  <span className="dawa-salah-modal__zone-tag">Before</span>
+                  <div className="dawa-salah-modal__bead-track">
+                    <div className="dawa-salah-modal__bead-group">
+                      {Array.from({ length: slots.before }, (_, unit) => (
+                        <BeadButton
+                          key={`before-${unit}`}
+                          variant="sunnah"
+                          rakats={SUNNAH_UNIT_RAKATS}
+                          unit={unit}
+                          checked={sunnahBefore[unit] ?? false}
+                          onToggle={() => {
+                            setSunnahBefore((prev) => {
+                              const next = [...prev];
+                              next[unit] = !next[unit];
+                              return next;
+                            });
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="dawa-salah-modal__rakat-row">
+                    {Array.from({ length: slots.before }, (_, unit) => (
+                      <BeadCaption
+                        key={`before-r-${unit}`}
+                        prayerKind="sunnah"
+                        rakats={SUNNAH_UNIT_RAKATS}
+                        checked={sunnahBefore[unit] ?? false}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="dawa-salah-modal__strand-zone dawa-salah-modal__strand-zone--fard">
+                <span className="dawa-salah-modal__zone-tag">Fard</span>
+                <div className="dawa-salah-modal__bead-track">
+                  <BeadButton
+                    variant="fard"
+                    rakats={FARD_RAKATS[prayer]}
+                    checked={fard}
+                    onToggle={() => setFard((prev) => !prev)}
+                  />
+                </div>
+                <div className="dawa-salah-modal__rakat-row">
+                  <BeadCaption
+                    prayerKind="fard"
+                    rakats={FARD_RAKATS[prayer]}
+                    checked={fard}
+                    wide
+                  />
+                </div>
+              </div>
+
+              {slots.after > 0 && (
+                <div className="dawa-salah-modal__strand-zone dawa-salah-modal__strand-zone--after">
+                  <span className="dawa-salah-modal__zone-tag">After</span>
+                  <div className="dawa-salah-modal__bead-track">
+                    <div className="dawa-salah-modal__bead-group">
+                      {Array.from({ length: slots.after }, (_, unit) => (
+                        <BeadButton
+                          key={`after-${unit}`}
+                          variant="sunnah"
+                          rakats={SUNNAH_UNIT_RAKATS}
+                          unit={unit}
+                          checked={sunnahAfter[unit] ?? false}
+                          onToggle={() => {
+                            setSunnahAfter((prev) => {
+                              const next = [...prev];
+                              next[unit] = !next[unit];
+                              return next;
+                            });
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="dawa-salah-modal__rakat-row">
+                    {Array.from({ length: slots.after }, (_, unit) => (
+                      <BeadCaption
+                        key={`after-r-${unit}`}
+                        prayerKind="sunnah"
+                        rakats={SUNNAH_UNIT_RAKATS}
+                        checked={sunnahAfter[unit] ?? false}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <p className="dawa-salah-modal__hint">Tap each bead as you complete it</p>
+
+            <button
+              type="button"
+              className={`dawa-salah-modal__confirm${busy ? ' dawa-salah-modal__confirm--busy' : ''}`}
+              disabled={busy}
+              onClick={handleConfirm}
             >
-              <span className="dawa-salah-modal__checkbox">
-                <input
-                  type="checkbox"
-                  checked={fard}
-                  onChange={() => setFard((prev) => !prev)}
-                />
-                <span className="dawa-salah-modal__check-visual">✓</span>
-              </span>
-              <span className="dawa-salah-modal__item-text">
-                <span className="dawa-salah-modal__item-label">
-                  {FARD_RAKATS[prayer]} Rakats Fard
-                </span>
-                <span className="dawa-salah-modal__item-desc">
-                  Obligatory prayer
-                </span>
-              </span>
-              <span className="dawa-salah-modal__rakat">
-                {FARD_RAKATS[prayer]}R
-              </span>
-            </label>
+              {busy ? 'Marking…' : 'Mark'}
+            </button>
           </div>
-
-          {/* Sunnah After */}
-          {slots.after > 0 && (
-            <div className="dawa-salah-modal__section">
-              <span className="dawa-salah-modal__section-label">
-                Sunnah After
-              </span>
-              {Array.from({ length: slots.after }, (_, unit) => (
-                <label
-                  key={`after-${unit}`}
-                  className={`dawa-salah-modal__item${sunnahAfter[unit] ? ' dawa-salah-modal__item--checked' : ''}`}
-                >
-                  <span className="dawa-salah-modal__checkbox">
-                    <input
-                      type="checkbox"
-                      checked={sunnahAfter[unit] ?? false}
-                      onChange={() => {
-                        setSunnahAfter((prev) => {
-                          const next = [...prev];
-                          next[unit] = !next[unit];
-                          return next;
-                        });
-                      }}
-                    />
-                    <span className="dawa-salah-modal__check-visual">✓</span>
-                  </span>
-                  <span className="dawa-salah-modal__item-text">
-                    <span className="dawa-salah-modal__item-label">
-                      {SUNNAH_UNIT_RAKATS} Rakats Sunnah
-                    </span>
-                    <span className="dawa-salah-modal__item-desc">
-                      Unit {unit + 1} of {slots.after}
-                    </span>
-                  </span>
-                  <span className="dawa-salah-modal__rakat">
-                    {SUNNAH_UNIT_RAKATS}R
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {/* Confirm Button */}
-          <button
-            type="button"
-            className={`dawa-salah-modal__confirm${busy ? ' dawa-salah-modal__confirm--busy' : ''}`}
-            disabled={busy}
-            onClick={handleConfirm}
-          >
-            {busy ? 'Saving…' : '✓ Confirm Prayers'}
-          </button>
         </div>
       </Modal>
     </div>

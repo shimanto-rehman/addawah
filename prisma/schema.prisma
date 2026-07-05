@@ -107,6 +107,8 @@ model SalahRecord {
   kind      SalahKind @default(FARD)
   unit      Int       @default(0)
   completed Boolean   @default(false)
+  /// Sticky: set when first marked inside wakt; survives uncheck/remark.
+  completedOnTime Boolean @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)

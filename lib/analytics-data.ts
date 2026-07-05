@@ -121,7 +121,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
         kind: 'FARD',
         date: { gte: insightStart, lte: todayDate },
       },
-      select: { date: true, prayer: true, completed: true, updatedAt: true },
+      select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
     }),
     includeCharts
       ? prisma.moodCheckIn.findMany({

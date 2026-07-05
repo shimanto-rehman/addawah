@@ -12,6 +12,7 @@ import {
 import { SALAH_GRID_CACHE_HEADERS } from '@/lib/salah-query';
 import { fetchPrayerTimes, formatDateKeyInTimezone } from '@/lib/prayer-times';
 import { canMarkSalahCell } from '@/lib/salah-mark-rules';
+import { classifySalahMark, isMarkWithinWakt } from '@/lib/prayer-insights-internal';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
 import { clearWaktReminderForPrayer } from '@/lib/notifications';
 import { triggerSync } from '@/lib/internal-sync';
@@ -88,16 +89,37 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const recordKey = {
+      userId: user!.id,
+      date,
+      prayer: body.prayer as Prayer,
+      kind: body.kind as SalahKind,
+      unit: body.unit,
+    };
+
+    const existing = await prisma.salahRecord.findUnique({
+      where: { userId_date_prayer_kind_unit: recordKey },
+      select: { completedOnTime: true },
+    });
+
+    const prayerDayTimes =
+      body.kind === 'FARD' && body.unit === 0
+        ? await fetchPrayerTimes(
+            user!.city?.trim() || 'Dhaka',
+            user!.country?.trim() || 'Bangladesh',
+            date,
+          )
+        : null;
+
+    const markedInWakt =
+      body.completed &&
+      prayerDayTimes != null &&
+      isMarkWithinWakt(now, body.date, body.prayer as PrayerName, prayerDayTimes);
+
+    const completedOnTime = markedInWakt || (existing?.completedOnTime ?? false);
+
     await prisma.salahRecord.upsert({
-      where: {
-        userId_date_prayer_kind_unit: {
-          userId: user!.id,
-          date,
-          prayer: body.prayer as Prayer,
-          kind: body.kind as SalahKind,
-          unit: body.unit,
-        },
-      },
+      where: { userId_date_prayer_kind_unit: recordKey },
       create: {
         userId: user!.id,
         date,
@@ -105,13 +127,26 @@ export async function POST(req: NextRequest) {
         kind: body.kind,
         unit: body.unit,
         completed: body.completed,
+        completedOnTime: body.completed ? completedOnTime : false,
       },
-      update: { completed: body.completed },
+      update: body.completed
+        ? { completed: true, completedOnTime }
+        : { completed: false },
     });
 
     let coinsEarned = 0;
+    let timing: 'on-time' | 'kaza' | null = null;
+
     if (body.kind === 'FARD' && body.unit === 0) {
       if (body.completed) {
+        timing = classifySalahMark(
+          body.date,
+          body.prayer as PrayerName,
+          now,
+          prayerDayTimes!,
+          completedOnTime,
+        );
+
         const [, reward] = await Promise.all([
           clearWaktReminderForPrayer(user!.id, body.prayer, body.date),
           computePrayerReward(
@@ -139,7 +174,7 @@ export async function POST(req: NextRequest) {
       stats = await buildStatsPayload(user!.id, { skipCache: true });
     }
 
-    return jsonOk({ ok: true, coinsEarned, stats });
+    return jsonOk({ ok: true, coinsEarned, timing, stats });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError('Invalid input');
     logger.error({ route: '/api/salah', err: e }, 'Failed to save');

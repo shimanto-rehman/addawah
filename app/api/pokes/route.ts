@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     if (prayer) {
       const records = await prisma.salahRecord.findMany({
         where: { userId: friend.id, kind: 'FARD', date: today },
-        select: { prayer: true, completed: true, updatedAt: true },
+        select: { prayer: true, completed: true, updatedAt: true, completedOnTime: true },
       });
       const wakt = await buildFriendWaktRow(friend.id, friend.city, friend.country, records);
 

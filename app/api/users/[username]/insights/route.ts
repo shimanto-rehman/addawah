@@ -48,7 +48,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
         kind: 'FARD',
         date: { gte: start, lte: today },
       },
-      select: { date: true, prayer: true, completed: true, updatedAt: true },
+      select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
     });
 
     const city = profileUser.city?.trim() || 'Dhaka';

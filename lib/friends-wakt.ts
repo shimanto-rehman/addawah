@@ -36,6 +36,7 @@ type FardRecord = {
   prayer: string;
   completed: boolean;
   updatedAt: Date;
+  completedOnTime?: boolean;
 };
 
 function classifyToday(
@@ -44,6 +45,7 @@ function classifyToday(
   loggedAt: Date | null,
   times: PrayerTimesPayload,
   now: Date,
+  completedOnTime = false,
 ): FriendWaktRow['salahStatus'] {
   const { start, end } = prayerWaktWindow(prayer, times);
   const mins = getNowMinutesInTimezone(now, times.timeZone);
@@ -54,6 +56,8 @@ function classifyToday(
     if (now >= endsAt || mins >= end) return 'missed';
     return 'none';
   }
+
+  if (completedOnTime) return 'on-time';
 
   if (!loggedAt) return 'kaza';
 
@@ -195,7 +199,7 @@ export function buildFriendWaktRowFromTimes(
   const rec = records.find((r) => r.prayer === active);
   const completed = rec?.completed ?? false;
   const loggedAt = completed && rec ? rec.updatedAt : null;
-  const status = classifyToday(active, completed, loggedAt, times, now);
+  const status = classifyToday(active, completed, loggedAt, times, now, rec?.completedOnTime ?? false);
   const { start, end } = prayerWaktWindow(active, times);
   const timing = buildTimingFields(start, end, now, tz);
   const forbiddenNow = isForbiddenForPoke(times, nowMins, active);
