@@ -6,20 +6,20 @@ import { useDashboardData } from '@/components/dashboard/DashboardDataProvider';
 import type { ChallengeTaskState, DailyChallengeState } from '@/lib/challenge-data';
 import { CHALLENGE_KEY } from '@/lib/swr-revalidate';
 import { useMidnightRefresh } from '@/lib/use-midnight-refresh';
-
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+import { swrFetcher } from '@/lib/swr-fetcher';
+import { Shimmer } from '@/components/ui/Shimmer';
 
 export function DailyChallenge() {
   const dashboard = useDashboardData();
   const useRemote = !dashboard;
   const { data: remote, mutate: remoteMutate } = useSWR<DailyChallengeState>(
     useRemote ? CHALLENGE_KEY : null,
-    fetcher,
+    swrFetcher,
     { revalidateOnFocus: false },
   );
 
   const data = dashboard?.data?.challenge ?? remote;
-
+  const isLoading = dashboard ? dashboard.isLoading && !data : !data && useRemote;
   const [saving, setSaving] = useState<number | null>(null);
 
   const refresh = useCallback(() => {
@@ -34,7 +34,6 @@ export function DailyChallenge() {
     setSaving(taskIndex);
     const prev = data;
 
-    // Optimistic: flip the task locally.
     const optimistic: DailyChallengeState = {
       ...prev,
       tasks: prev.tasks.map((t) =>
@@ -58,7 +57,7 @@ export function DailyChallenge() {
         body: JSON.stringify({ taskIndex }),
       });
       if (!res.ok) throw new Error('Failed to toggle challenge task');
-      const next: DailyChallengeState = await res.json().then((j) => j.data);
+      const next = (await res.json()) as DailyChallengeState;
       if (dashboard) {
         await dashboard.mutate(
           (current) => (current ? { ...current, challenge: next } : current),
@@ -68,7 +67,6 @@ export function DailyChallenge() {
         await remoteMutate(next, { revalidate: false });
       }
     } catch {
-      // Revert on failure.
       if (dashboard) await dashboard.mutate();
       else await remoteMutate();
     } finally {
@@ -78,28 +76,55 @@ export function DailyChallenge() {
 
   const tasks: ChallengeTaskState[] = data?.tasks ?? [];
   const completed = data?.completed ?? 0;
-  const total = data?.total ?? tasks.length;
+  const total = data?.total ?? Math.max(tasks.length, 5);
   const allDone = completed === total && total > 0;
-  const consistency = data?.consistency ?? 0;
-  const consistencyPct = Math.round(consistency * 100);
+  /** Visual segments between title and count — denser rainbow track */
+  const SEGMENTS = 14;
+  const litCount = total > 0 ? Math.round((completed / total) * SEGMENTS) : 0;
+
+  if (isLoading && !data) {
+    return (
+      <section className="dawa-challenge" aria-label="Daily Muslim challenge" aria-busy="true">
+        <div className="dawa-challenge__head">
+          <Shimmer variant="text" width="140px" height="18px" />
+          <div className="dawa-challenge__meter" aria-hidden>
+            {Array.from({ length: 14 }, (_, i) => (
+              <span key={i} className="dawa-challenge__seg" />
+            ))}
+          </div>
+          <Shimmer variant="text-sm" width="28px" />
+        </div>
+        <ul className="dawa-challenge__list">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <li key={i} className="dawa-challenge__skel-row">
+              <Shimmer variant="circle" width="18px" height="18px" />
+              <Shimmer variant="text" width={i % 2 ? '70%' : '55%'} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
 
   return (
-    <section className="dawa-challenge" aria-label="Daily Muslim challenge">
+    <section className={`dawa-challenge${allDone ? ' is-complete' : ''}`} aria-label="Daily Muslim challenge">
       <header className="dawa-challenge__head">
-        <div>
-          <p className="dawa-challenge__eyebrow">Today&apos;s challenge</p>
-          <h3 className="dawa-challenge__title">
-            {allDone ? 'Masha\u2019Allah — all five done' : `${completed} of ${total} small deeds`}
-          </h3>
+        <h3 className="dawa-challenge__title">Today&apos;s challenge</h3>
+        <div
+          className="dawa-challenge__meter"
+          role="img"
+          aria-label={`${completed} of ${total} complete`}
+        >
+          {Array.from({ length: SEGMENTS }, (_, i) => (
+            <span
+              key={i}
+              className={`dawa-challenge__seg${i < litCount ? ' is-lit' : ''}`}
+            />
+          ))}
         </div>
-        {data && (
-          <span
-            className={`dawa-challenge__streak${consistencyPct >= 70 ? ' is-strong' : ''}`}
-            title="7-day completion rate"
-          >
-            {consistencyPct}%
-          </span>
-        )}
+        <span className="dawa-challenge__count">
+          <span className="dawa-num">{completed}</span>/{total}
+        </span>
       </header>
 
       <ul className="dawa-challenge__list">
@@ -112,28 +137,25 @@ export function DailyChallenge() {
               disabled={saving !== null && saving !== t.index}
               onClick={() => toggle(t.index)}
             >
-              <span className="dawa-challenge__emoji" aria-hidden>
-                {t.emoji}
+              <span className={`dawa-challenge__check${t.done ? ' is-checked' : ''}`} aria-hidden>
+                {t.done && (
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none">
+                    <path
+                      d="M5 12.5l4.5 4.5L19 7"
+                      stroke="currentColor"
+                      strokeWidth="2.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
               </span>
               <span className="dawa-challenge__body">
-                <span className="dawa-challenge__task-title">{t.title}</span>
-                <span className="dawa-challenge__subtitle">{t.subtitle}</span>
-              </span>
-              <span className={`dawa-challenge__check${t.done ? ' is-checked' : ''}`} aria-hidden>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
-                  <path
-                    d="M5 12.5l4.5 4.5L19 7"
-                    stroke="currentColor"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <span className="dawa-challenge__task">{t.title}</span>
+                {!t.done && <span className="dawa-challenge__hint">{t.subtitle}</span>}
+                {t.done && <span className="dawa-challenge__hadith">{t.hadith}</span>}
               </span>
             </button>
-            {t.done && (
-              <p className="dawa-challenge__hadith">{t.hadith}</p>
-            )}
           </li>
         ))}
       </ul>

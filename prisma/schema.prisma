@@ -9,46 +9,45 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  username     String?  @unique
-  email        String   @unique
-  mobile       String?  @unique
-  passwordHash String
-  gender       Gender?
-  avatarColor  String   @default("#d4af37")
-  avatarUrl    String?
-  themeColor   String   @default("gold")
-  themeMode    String   @default("dark")
-  city         String?
-  country      String?
-  latitude     Float?
-  longitude    Float?
-  timeZone     String?
-  goldCoins    Int      @default(0)
-  profilePrivacy Json   @default("{}")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  sessions     Session[]
-  salahRecords SalahRecord[]
-  sentFriends  Friendship[] @relation("SentFriendships")
-  recvFriends  Friendship[] @relation("RecvFriendships")
-  sentPokes    Poke[]       @relation("SentPokes")
-  recvPokes    Poke[]       @relation("RecvPokes")
-  deletionOtp  AccountDeletionOtp?
+  id               String              @id @default(cuid())
+  name             String
+  email            String              @unique
+  passwordHash     String
+  avatarColor      String              @default("#d4af37")
+  themeColor       String              @default("gold")
+  themeMode        String              @default("dark")
+  city             String?
+  country          String
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  mobile           String?             @unique
+  username         String?             @unique
+  avatarUrl        String?
+  goldCoins        Int                 @default(0)
+  profilePrivacy   Json                @default("{}")
+  latitude         Float?
+  longitude        Float?
+  timeZone         String?
+  gender           Gender?
+  deletionOtp      AccountDeletionOtp?
+  barakahLogs      BarakahLog[]
+  dailyChallenges  DailyChallenge[]
+  duaEntries       DuaEntry[]
+  fahmResponses    FahmResponse[]
+  recvFriends      Friendship[]        @relation("RecvFriendships")
+  sentFriends      Friendship[]        @relation("SentFriendships")
+  moodCheckIns     MoodCheckIn[]
+  notifications    Notification[]
   passwordResetOtp PasswordResetOtp?
-  moodCheckIns MoodCheckIn[]
-  notifications Notification[]
-  waktSnapshot UserWaktSnapshot?
-  salahDayStats UserSalahDayStat[]
-  taqwaPulses   TaqwaPulse[]
-  fahmResponses FahmResponse[]
-  fahmProfile   UserFahmProfile?
-  barakahLogs   BarakahLog[]
-  duaEntries    DuaEntry[]
-  ruhaniahVerses RuhaniahVerse[]
-  dailyChallenges DailyChallenge[]
+  sentPokes        Poke[]              @relation("SentPokes")
+  recvPokes        Poke[]              @relation("RecvPokes")
+  ruhaniahVerses   RuhaniahVerse[]
+  salahRecords     SalahRecord[]
+  sessions         Session[]
+  taqwaPulses      TaqwaPulse[]
+  fahmProfile      UserFahmProfile?
+  salahDayStats    UserSalahDayStat[]
+  waktSnapshot     UserWaktSnapshot?
 }
 
 model PasswordResetOtp {
@@ -105,21 +104,21 @@ model Session {
 }
 
 model SalahRecord {
-  id        String    @id @default(cuid())
-  userId    String
-  date      DateTime  @db.Date
-  prayer    Prayer
-  kind      SalahKind @default(FARD)
-  unit      Int       @default(0)
-  completed Boolean   @default(false)
+  id              String    @id @default(cuid())
+  userId          String
+  date            DateTime  @db.Date
+  prayer          Prayer
+  completed       Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  kind            SalahKind @default(FARD)
+  unit            Int       @default(0)
   /// Sticky: set when first marked inside wakt; survives uncheck/remark.
-  completedOnTime Boolean @default(false)
+  completedOnTime Boolean   @default(false)
   /// Prayed in Jamat (males) or Awal Wakt (females) — gender-labelled in UI.
   /// Resets to false when fard is unmarked.
-  inJamat   Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inJamat         Boolean   @default(false)
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date, prayer, kind, unit])
   @@index([userId, date])
@@ -133,8 +132,8 @@ model Friendship {
   status    FriendshipStatus @default(PENDING)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
-  user      User             @relation("SentFriendships", fields: [userId], references: [id], onDelete: Cascade)
   friend    User             @relation("RecvFriendships", fields: [friendId], references: [id], onDelete: Cascade)
+  user      User             @relation("SentFriendships", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, friendId])
   @@index([friendId])
@@ -147,22 +146,14 @@ model Poke {
   fromUserId String
   toUserId   String
   message    String    @default("Don't forget your salah today 🤲")
-  prayer     Prayer?
   readAt     DateTime?
   createdAt  DateTime  @default(now())
+  prayer     Prayer?
   fromUser   User      @relation("SentPokes", fields: [fromUserId], references: [id], onDelete: Cascade)
   toUser     User      @relation("RecvPokes", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@index([toUserId, readAt])
   @@index([toUserId, createdAt])
-}
-
-enum NotificationType {
-  DAWAH_POKE
-  CONNECTION_REQUEST
-  CONNECTION_ACCEPTED
-  WAKT_REMINDER
-  RUHANIAH_REMINDER
 }
 
 model Notification {
@@ -182,6 +173,164 @@ model Notification {
   @@index([userId, readAt])
   @@index([userId, createdAt])
   @@index([userId, type, readAt])
+}
+
+model UserWaktSnapshot {
+  userId           String    @id
+  dateKey          String
+  prayer           Prayer?
+  phase            String
+  salahStatus      String
+  prayerLabel      String    @default("—")
+  canPoke          Boolean   @default(false)
+  forbiddenNow     Boolean   @default(false)
+  remainingSeconds Int       @default(0)
+  elapsedSeconds   Int       @default(0)
+  waktStartedAt    DateTime?
+  waktEndsAt       DateTime?
+  waktEndLabel     String?
+  timeZone         String    @default("Asia/Dhaka")
+  refreshedAt      DateTime  @default(now())
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([dateKey, phase])
+  @@index([refreshedAt])
+}
+
+model UserSalahDayStat {
+  userId        String
+  date          DateTime @db.Date
+  onTime        Int      @default(0)
+  kaza          Int      @default(0)
+  missed        Int      @default(0)
+  pending       Int      @default(0)
+  iman          Int      @default(68)
+  missedPrayers Json     @default("[]")
+  refreshedAt   DateTime @default(now())
+  jamat         Int      @default(0)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, date])
+  @@index([userId, date])
+}
+
+model TaqwaPulse {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  score     Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model FahmQuestion {
+  id        String   @id @default(cuid())
+  category  String
+  text      String
+  options   Json
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([category, active])
+}
+
+model FahmResponse {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @db.Date
+  questionId  String
+  answerIndex Int
+  weight      Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date, questionId])
+  @@index([userId, date])
+  @@index([userId, createdAt])
+}
+
+model UserFahmProfile {
+  userId         String   @id
+  totalQuestions Int      @default(0)
+  categoryScores Json     @default("{}")
+  overallQAS     Float    @default(0)
+  strongest      String?
+  weakest        String?
+  trend          String   @default("NEW")
+  updatedAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BarakahLog {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @db.Date
+  timeScore   Int
+  rizqScore   Int
+  healthScore Int
+  heartScore  Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model DuaEntry {
+  id           String    @id @default(cuid())
+  userId       String
+  text         String
+  category     String
+  status       String    @default("WAITING")
+  context      String?
+  dateStarted  DateTime  @db.Date
+  dateResolved DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+}
+
+model RuhaniahVerse {
+  id             String   @id @default(cuid())
+  userId         String
+  date           DateTime @db.Date
+  ayahRef        String
+  reflectionText String
+  dawahText      String
+  signals        Json
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model DailyChallenge {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  mask      Int      @default(0)
+  completed Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+enum NotificationType {
+  DAWAH_POKE
+  CONNECTION_REQUEST
+  CONNECTION_ACCEPTED
+  WAKT_REMINDER
+  RUHANIAH_REMINDER
 }
 
 enum Prayer {
@@ -206,161 +355,4 @@ enum Gender {
 enum FriendshipStatus {
   PENDING
   ACCEPTED
-}
-
-// Precomputed live wakt status — refreshed on salah change and when stale on read.
-model UserWaktSnapshot {
-  userId           String    @id
-  dateKey          String
-  prayer           Prayer?
-  phase            String
-  salahStatus      String
-  prayerLabel      String    @default("—")
-  canPoke          Boolean   @default(false)
-  forbiddenNow     Boolean   @default(false)
-  remainingSeconds Int       @default(0)
-  elapsedSeconds   Int       @default(0)
-  waktStartedAt    DateTime?
-  waktEndsAt       DateTime?
-  waktEndLabel     String?
-  timeZone         String    @default("Asia/Dhaka")
-  refreshedAt      DateTime  @default(now())
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([dateKey, phase])
-  @@index([refreshedAt])
-}
-
-// Precomputed per-day on-time / kaza / missed / iman for fast analytics reads.
-model UserSalahDayStat {
-  userId        String
-  date          DateTime @db.Date
-  onTime        Int      @default(0)
-  kaza          Int      @default(0)
-  missed        Int      @default(0)
-  pending       Int      @default(0)
-  // Count of fard prayers prayed in Jamat (males) / Awal Wakt (females).
-  jamat         Int      @default(0)
-  iman          Int      @default(68)
-  missedPrayers Json     @default("[]")
-  refreshedAt   DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([userId, date])
-  @@index([userId, date])
-}
-
-// ─── Ruhaniah — The Inner Deen Suite ───
-
-model TaqwaPulse {
-  id        String   @id @default(cuid())
-  userId    String
-  date      DateTime @db.Date
-  score     Int      // 1-5
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, date])
-  @@index([userId, date])
-}
-
-model FahmQuestion {
-  id        String   @id @default(cuid())
-  category  String   // QADR, TRUTH, DAWAH, NAFS, AKHIRAH, SABR_SHUKR, ILM, SOCIAL
-  text      String
-  options   Json     // [{text, weight}]
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-
-  @@index([category, active])
-}
-
-model FahmResponse {
-  id          String   @id @default(cuid())
-  userId      String
-  date        DateTime @db.Date
-  questionId  String   // References static JSON — no FK to FahmQuestion
-  answerIndex Int
-  weight      Int      // QAS weight (1-4)
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, date, questionId])
-  @@index([userId, date])
-  @@index([userId, createdAt])
-}
-
-model UserFahmProfile {
-  userId         String   @id
-  totalQuestions Int      @default(0)
-  categoryScores Json     @default("{}") // { QADR: 3.2, TRUTH: 2.8, ... }
-  overallQAS     Float    @default(0)
-  strongest      String?
-  weakest        String?
-  trend          String   @default("NEW") // IMPROVING, STABLE, DECLINING, NEW
-  updatedAt      DateTime @default(now())
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model BarakahLog {
-  id          String   @id @default(cuid())
-  userId      String
-  date        DateTime @db.Date
-  timeScore   Int      // 1-5
-  rizqScore   Int      // 1-5
-  healthScore Int      // 1-5
-  heartScore  Int      // 1-5
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, date])
-  @@index([userId, date])
-}
-
-model DuaEntry {
-  id           String    @id @default(cuid())
-  userId       String
-  text         String
-  category     String    // RIZQ, HEALTH, RELATIONSHIPS, GUIDANCE, FORGIVENESS, JANNAH, DUNYA, CUSTOM
-  status       String    @default("WAITING") // ANSWERED_SAME, ANSWERED_DIFFERENT, WAITING, STORED_AKHIRAH
-  context      String?
-  dateStarted  DateTime  @db.Date
-  dateResolved DateTime? @db.Date
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, status])
-  @@index([userId, createdAt])
-}
-
-model RuhaniahVerse {
-  id             String   @id @default(cuid())
-  userId         String
-  date           DateTime @db.Date
-  ayahRef        String   // e.g., "65:2-3"
-  reflectionText String
-  dawahText      String
-  signals        Json     // snapshot of all input signals
-  createdAt      DateTime @default(now())
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, date])
-  @@index([userId, date])
-}
-
-// Daily Muslim Challenge — 5 daily good deeds, marked off by the user.
-model DailyChallenge {
-  id        String   @id @default(cuid())
-  userId    String
-  date      DateTime @db.Date
-  // Bitmap of the 5 tasks (bit i = task i done). 0..31.
-  mask      Int      @default(0)
-  completed Int      @default(0) // count of done tasks 0..5
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, date])
-  @@index([userId, date])
 }
