@@ -21,7 +21,7 @@ ${ADDAWAH_PRELOADER_SLIDES.map(
 const EXIT_MS = 200;
 const CAROUSEL_MS = 350;
 const FADE_OUT_MS = 800;
-const RESOURCE_SETTLE_MS = 1500;
+const RESOURCE_SETTLE_MS = 400;
 
 type PreloaderProps = {
   /** Fired once images, fonts, and page load have settled */

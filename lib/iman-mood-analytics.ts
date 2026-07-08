@@ -11,6 +11,8 @@ export type ImanMoodDay = {
   moodLabel: string | null;
   moodScore: number | null;
   moodColor: string | null;
+  /** Daily challenge tasks completed that day (0–5), or null if no data. */
+  deeds: number | null;
 };
 
 export function pearsonCorrelation(xs: number[], ys: number[]): number | null {
@@ -56,6 +58,8 @@ export function buildImanMoodSeries(
   }[],
   moods: { date: Date; moodId: string }[],
   formatDateKey: (d: Date) => string,
+  /** Optional daily-challenge completion (deeds) keyed by UTC date string. */
+  deedsByDate?: Map<string, number>,
 ): { series: ImanMoodDay[]; correlation: number | null } {
   const moodByDate = new Map(moods.map((m) => [formatDateKey(m.date), m.moodId]));
 
@@ -73,6 +77,7 @@ export function buildImanMoodSeries(
       moodLabel: mood?.label ?? null,
       moodScore: moodId ? moodScore(moodId) : null,
       moodColor: mood?.color ?? null,
+      deeds: deedsByDate?.get(d.date) ?? null,
     };
   });
 

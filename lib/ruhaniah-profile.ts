@@ -2,7 +2,7 @@ import { prisma } from './prisma';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { kvGetJson, kvSetJson } from './kv';
-import { getChallengeFahmSignal, blendFahmScore } from './challenge-data';
+import { getChallengeFahmSignal, blendFahmScore, type ChallengeFahmSignal } from './challenge-data';
 
 const CATEGORIES = [
   'QADR',
@@ -46,9 +46,13 @@ export type FahmProfile = {
   weakest: string | null;
   trend: 'IMPROVING' | 'STABLE' | 'DECLINING' | 'NEW';
 };
-/** Compute Fahm profile from raw responses — called async after submission */
-export async function computeFahmProfile(userId: string): Promise<FahmProfile> {
-  const [recent, categoryMap, challengeSignal] = await Promise.all([
+/** Compute Fahm profile from raw responses — called async after submission.
+ *  Pass a pre-fetched challengeSignal to skip the redundant getChallengeFahmSignal query. */
+export async function computeFahmProfile(
+  userId: string,
+  challengeSignal?: ChallengeFahmSignal,
+): Promise<FahmProfile> {
+  const [recent, categoryMap, signal] = await Promise.all([
     prisma.fahmResponse.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -56,8 +60,9 @@ export async function computeFahmProfile(userId: string): Promise<FahmProfile> {
       select: { questionId: true, weight: true, createdAt: true },
     }),
     getQuestionCategoryMap(),
-    getChallengeFahmSignal(userId),
+    challengeSignal ?? getChallengeFahmSignal(userId),
   ]);
+
 
 
   if (recent.length === 0) {
@@ -92,7 +97,7 @@ export async function computeFahmProfile(userId: string): Promise<FahmProfile> {
     // Soft behavioral blend from challenge completion. Refines, never dominates.
     categoryScores[cat] = blendFahmScore(
       explicit,
-      challengeSignal.scores[cat as keyof typeof challengeSignal.scores],
+      signal.scores[cat as keyof typeof signal.scores],
     );
   }
 

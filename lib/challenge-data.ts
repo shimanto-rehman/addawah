@@ -126,28 +126,27 @@ function maskToTasks(mask: number): ChallengeTaskState[] {
   }));
 }
 
-/** Fetch today's challenge state, creating an empty row if absent. */
+/** Fetch today's challenge state, creating an empty row only on first hit of the day. */
 export async function getDailyChallenge(
   userId: string,
   now = new Date(),
 ): Promise<DailyChallengeState> {
   const today = startOfDay(now);
   const dateKey = today.toISOString().slice(0, 10);
-
-  const row = await prisma.dailyChallenge.upsert({
-    where: { userId_date: { userId, date: today } },
-    create: { userId, date: today, mask: 0, completed: 0 },
-    update: {},
-    select: { mask: true, completed: true },
-  });
-
-  // Rolling 7-day consistency: completed count / (5 * 7) across last 7 days.
-  // Includes today. Days without a row count as 0.
   const weekAgo = startOfDay(new Date(now.getTime() - 6 * 86_400_000));
-  const week = await prisma.dailyChallenge.findMany({
-    where: { userId, date: { gte: weekAgo, lte: today } },
-    select: { completed: true },
-  });
+
+  // Read today's row and the rolling 7-day history in parallel.
+  // Unlike an upsert-with-empty-update, this only writes on an actual miss
+  // (first dashboard load of a new day), avoiding write amplification on
+  // the hot read path.
+  const [row, week] = await Promise.all([
+    ensureTodayRow(userId, today),
+    prisma.dailyChallenge.findMany({
+      where: { userId, date: { gte: weekAgo, lte: today } },
+      select: { completed: true },
+    }),
+  ]);
+
   const weekDone = week.reduce((sum, r) => sum + r.completed, 0);
   const consistency = Math.min(1, weekDone / (CHALLENGE_TASK_COUNT * 7));
 
@@ -158,6 +157,35 @@ export async function getDailyChallenge(
     consistency,
     tasks: maskToTasks(row.mask),
   };
+}
+
+/**
+ * Get today's row, creating an empty one on miss. Handles the unique-constraint
+ * race: two concurrent first-loads of a new day could both miss then both try to
+ * create; the loser falls back to a read.
+ */
+async function ensureTodayRow(
+  userId: string,
+  today: Date,
+): Promise<{ mask: number; completed: number }> {
+  const existing = await prisma.dailyChallenge.findUnique({
+    where: { userId_date: { userId, date: today } },
+    select: { mask: true, completed: true },
+  });
+  if (existing) return existing;
+  try {
+    return await prisma.dailyChallenge.create({
+      data: { userId, date: today, mask: 0, completed: 0 },
+      select: { mask: true, completed: true },
+    });
+  } catch {
+    // P2002 race: another request created the row. Read it back.
+    const fallback = await prisma.dailyChallenge.findUnique({
+      where: { userId_date: { userId, date: today } },
+      select: { mask: true, completed: true },
+    });
+    return fallback ?? { mask: 0, completed: 0 };
+  }
 }
 
 /** Toggle a task. Returns the new state. */
@@ -172,16 +200,19 @@ export async function toggleChallengeTask(
 
   const today = startOfDay(now);
   const dateKey = today.toISOString().slice(0, 10);
+  const weekAgo = startOfDay(new Date(now.getTime() - 6 * 86_400_000));
 
-  // Read-then-write inside a transaction. Contention is per-user-per-day —
-  // a single row — so this is safe; two concurrent toggles would serialize.
-  const updated = await prisma.$transaction(async (tx) => {
+  // Read-modify-write plus the 7-day consistency read, all inside one
+  // transaction. The consistency query sees today's just-written row and
+  // avoids a second roundtrip after commit. Contention is per-user-per-day
+  // (a single row), so this is safe; concurrent toggles serialize.
+  const { mask, completed, weekDone } = await prisma.$transaction(async (tx) => {
     const existing = await tx.dailyChallenge.findUnique({
       where: { userId_date: { userId, date: today } },
       select: { mask: true, completed: true },
     });
-    const mask = existing?.mask ?? 0;
-    const { mask: nextMask, delta } = toggleBit(mask, taskIndex);
+    const currentMask = existing?.mask ?? 0;
+    const { mask: nextMask, delta } = toggleBit(currentMask, taskIndex);
     const nextCompleted = Math.max(0, (existing?.completed ?? 0) + delta);
 
     await tx.dailyChallenge.upsert({
@@ -190,24 +221,26 @@ export async function toggleChallengeTask(
       update: { mask: nextMask, completed: nextCompleted },
     });
 
-    return { mask: nextMask, completed: nextCompleted };
+    const week = await tx.dailyChallenge.findMany({
+      where: { userId, date: { gte: weekAgo, lte: today } },
+      select: { completed: true },
+    });
+
+    return {
+      mask: nextMask,
+      completed: nextCompleted,
+      weekDone: week.reduce((sum, r) => sum + r.completed, 0),
+    };
   });
 
-  // Recompute consistency for the response.
-  const weekAgo = startOfDay(new Date(now.getTime() - 6 * 86_400_000));
-  const week = await prisma.dailyChallenge.findMany({
-    where: { userId, date: { gte: weekAgo, lte: today } },
-    select: { completed: true },
-  });
-  const weekDone = week.reduce((sum, r) => sum + r.completed, 0) ;
   const consistency = Math.min(1, weekDone / (CHALLENGE_TASK_COUNT * 7));
 
   return {
     date: dateKey,
-    completed: updated.completed,
+    completed,
     total: CHALLENGE_TASK_COUNT,
     consistency,
-    tasks: maskToTasks(updated.mask),
+    tasks: maskToTasks(mask),
   };
 }
 

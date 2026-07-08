@@ -52,9 +52,39 @@ export async function createSession(userId: string) {
     .setIssuedAt()
     .sign(getSecret());
 
-  await prisma.session.create({
-    data: { userId, token, expiresAt },
-  });
+  // Create the session row and fetch the full user record in parallel so we
+  // can pre-seed the Redis session cache. Without this, the very first
+  // /api/auth/me after login suffers a cold Redis miss → jwtVerify → DB join
+  // (~100-300ms cross-region). Seeding here makes that first read a hit.
+  const [, dbUser] = await Promise.all([
+    prisma.session.create({
+      data: { userId, token, expiresAt },
+    }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        mobile: true,
+        gender: true,
+        avatarColor: true,
+        avatarUrl: true,
+        themeColor: true,
+        themeMode: true,
+        city: true,
+        country: true,
+        latitude: true,
+        longitude: true,
+        timeZone: true,
+      },
+    }),
+  ]);
+
+  if (dbUser) {
+    await kvSetJson(`session:${tokenHash(token)}`, dbUser, SESSION_CACHE_TTL_S).catch(() => {});
+  }
 
   cookies().set(COOKIE_NAME, token, {
     httpOnly: true,

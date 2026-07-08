@@ -57,6 +57,7 @@ export type AnalyticsPayload = {
   }>;
   stackedWeek: Array<{ label: string; onTime: number; kaza: number; missed: number; jamat: number }>;
   weekDays: number[];
+  weekDeeds: (number | null)[];
   weekLabels: string[];
   moodHistory: Array<{
     date: string;
@@ -105,7 +106,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
 
   const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, todayDate);
 
-  const [lifetimeRecords, weekRecords, insightRecords, moods] = await Promise.all([
+  const [lifetimeRecords, weekRecords, insightRecords, moods, challengeRows] = await Promise.all([
     prisma.salahRecord.findMany({
       where: { userId, date: { gte: recordStart, lte: todayDate } },
       select: SALAH_ANALYTICS_SELECT,
@@ -129,7 +130,23 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
           orderBy: { date: 'asc' },
         })
       : Promise.resolve([]),
+    // Daily-challenge rows for the insight window (14d) — covers both the 7-day
+    // week grid and the iman-mood series. Gated on includeCharts; only select
+    // what both surfaces need: date + completed count.
+    includeCharts
+      ? prisma.dailyChallenge.findMany({
+          where: { userId, date: { gte: insightStart, lte: todayDate } },
+          select: { date: true, completed: true },
+        })
+      : Promise.resolve([]),
   ]);
+
+  // Daily-challenge completion keyed by UTC date string. Powers the deeds
+  // overlay on the week chart and the per-day enrichment in the iman-mood
+  // series. One 14-day query feeds both surfaces.
+  const deedsByDate = new Map<string, number>(
+    challengeRows.map((r) => [formatDateKey(r.date), r.completed]),
+  );
 
   const sinceJoin = computeLifetimeSinceJoin(dbUser.createdAt, lifetimeRecords, prayerTimes, now);
   const streak = computeStreak(lifetimeRecords);
@@ -181,9 +198,8 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
         };
       })
     : [];
-
   const imanMood = includeCharts
-    ? buildImanMoodSeries(insights.days, moods, formatDateKey)
+    ? buildImanMoodSeries(insights.days, moods, formatDateKey, deedsByDate)
     : { series: [], correlation: null };
 
   const weakestPrayer = summarizeWeakest(byPrayer);
@@ -205,6 +221,11 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     ).length,
   );
 
+  // Daily-challenge deeds aligned to the same 7-day week grid as weekDays.
+  // null = no challenge row that day (user didn't interact); 0 = row exists but
+  // nothing completed. The deeds line renders only on days with a value.
+  const weekDeeds = weekDayKeys(weekStartKey).map((key) => deedsByDate.get(key) ?? null);
+
   const kpis: AnalyticsKpis = {
     iman: insights.currentIman,
     streak,
@@ -224,6 +245,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     byPrayer,
     stackedWeek,
     weekDays,
+    weekDeeds,
     weekLabels,
     moodHistory,
     imanMoodSeries: imanMood.series,

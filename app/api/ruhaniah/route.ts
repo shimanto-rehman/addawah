@@ -3,7 +3,7 @@ import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { startOfDay, addDays } from '@/lib/salah-utils';
 import { ruhaniahSubmissionSchema } from '@/lib/ruhaniah-validation';
-import { getOrComputeVerse } from '@/lib/ruhaniah-verse';
+import { getOrComputeVerse, type VerseResult } from '@/lib/ruhaniah-verse';
 import { getRuhaniahToday } from '@/lib/ruhaniah-data';
 import { computeFahmProfile } from '@/lib/ruhaniah-profile';
 import { analyzeWeaknesses, type Weakness } from '@/lib/ruhaniah-weakness';
@@ -307,19 +307,23 @@ export async function POST(req: Request) {
     )
     .catch(() => {});
 
-  // Fire-and-forget: recompute Fahm profile (non-blocking)
-  computeFahmProfile(userId).catch((err) => logger.error({ route: '/api/ruhaniah', err }, 'Fahm profile recompute failed'));
+  // Fetch the challenge signal once and reuse it for both the Fahm profile
+  // recompute (fire-and-forget) and the weakness analysis below — avoids a
+  // redundant 14-day DailyChallenge query per POST.
+  const challengeSignal = await getChallengeFahmSignal(userId);
+
+  // Fire-and-forget: recompute Fahm profile (non-blocking), reusing the signal.
+  computeFahmProfile(userId, challengeSignal).catch((err) => logger.error({ route: '/api/ruhaniah', err }, 'Fahm profile recompute failed'));
 
   // Compute verse + insights (these read from DB, not write)
-  let verse: Awaited<ReturnType<typeof getOrComputeVerse>> | null = null;
+  let verse: VerseResult | null = null;
   let insightsPayload: Record<string, unknown> | null = null;
   let weaknesses: Weakness[] = [];
 
   try {
-    const [verseResult, historyData, challengeSignal] = await Promise.all([
+    const [verseResult, historyData] = await Promise.all([
       getOrComputeVerse(userId, today),
       getInsightsData(userId),
-      getChallengeFahmSignal(userId),
     ]);
 
     verse = verseResult;

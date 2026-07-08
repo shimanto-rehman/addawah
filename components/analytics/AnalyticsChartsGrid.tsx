@@ -51,6 +51,7 @@ export type AnalyticsChartsData = {
   byPrayer: { prayer: PrayerName; label: string; completed: number; total: number; rate: number }[];
   stackedWeek: { label: string; onTime: number; kaza: number; missed: number }[];
   weekDays: number[];
+  weekDeeds: (number | null)[];
   weekLabels: string[];
   moodHistory: { date: string; moodId: string; label: string; iman: number | null }[];
   imanMoodSeries: ImanMoodDay[];
@@ -249,24 +250,38 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
 
         <article className="dawa-analytics__card dawa-glass">
           <h3 className="dawa-analytics__card-title">Week completion</h3>
-          <p className="dawa-analytics__card-sub">Fard count per day</p>
+          <p className="dawa-analytics__card-sub">Fard prayers vs daily deeds per day</p>
           <div className="dawa-analytics__chart">
             <Line
               data={{
                 labels: data.weekLabels,
-                datasets: [{
-                  label: 'Fard',
-                  data: data.weekDays,
-                  borderColor: theme.accent,
-                  backgroundColor: theme.accentSoft,
-                  fill: true,
-                  tension: 0.4,
-                  pointRadius: 4,
-                  borderWidth: 2,
-                }],
+                datasets: [
+                  {
+                    label: 'Fard',
+                    data: data.weekDays,
+                    borderColor: theme.accent,
+                    backgroundColor: theme.accentSoft,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    borderWidth: 2,
+                  },
+                  {
+                    label: 'Deeds',
+                    data: data.weekDeeds,
+                    borderColor: theme.success,
+                    backgroundColor: 'transparent',
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    borderWidth: 2,
+                    borderDash: [5, 4],
+                    spanGaps: true,
+                  },
+                ],
               }}
               options={{
-                ...chartOpts(theme, true),
+                ...chartOpts(theme),
                 scales: {
                   x: { ticks: { color: theme.text, font: { size: 10 } }, grid: { display: false } },
                   y: { min: 0, max: 5, ticks: { color: theme.text, stepSize: 1 }, grid: { color: theme.grid } },
@@ -333,7 +348,8 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
                             `On time: ${day.onTime}`,
                             `Kaza: ${day.kaza}`,
                             `Missed: ${day.missed}`,
-                          ];
+                            day.deeds != null ? `Deeds: ${day.deeds}/5` : '',
+                          ].filter(Boolean);
                           return parts.join(' · ');
                         },
                       },

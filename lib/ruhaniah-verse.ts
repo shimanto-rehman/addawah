@@ -16,7 +16,7 @@ type AyahEntry = {
   dawahTags: string[];
 };
 
-type VerseResult = {
+export type VerseResult = {
   id?: string;
   ayahRef: string;
   arabic: string;
