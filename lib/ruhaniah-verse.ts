@@ -116,6 +116,20 @@ function getDefaultPool(): AyahEntry[] {
       secondaryTags: ['needs_comfort'],
       dawahTags: ['needs_courage'],
     },
+    {
+      ref: '2:43',
+      arabic: 'وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ وَارْكَعُوا مَعَ الرَّاكِعِينَ',
+      translation: 'Establish prayer, give zakat, and bow with those who bow.',
+      tafsir:
+        'The command to "bow with those who bow" is a direct call to congregation — sincerity made visible in community.',
+      reflectionTemplate:
+        'You are praying, but alone. There is a higher station — bowing with those who bow. The congregation is where sincerity meets commitment.',
+      dawahTemplate:
+        'Share this with a friend who prays at home. The mosque is not just a place; it is a belonging.',
+      tags: ['sincere', 'devoted', 'jamat_strong', 'jamat_some', 'needs_jamat', 'solo_prayer'],
+      secondaryTags: ['obedient', 'consistent'],
+      dawahTags: ['sincere', 'devoted'],
+    },
   ];
 }
 
@@ -133,7 +147,7 @@ async function gatherSignals(
       // 1. Salah completion today
       prisma.salahRecord.findMany({
         where: { userId, date: today, kind: 'FARD', completed: true },
-        select: { prayer: true },
+        select: { prayer: true, inJamat: true },
       }),
       // 2. Taqwa pulse
       prisma.taqwaPulse.findUnique({
@@ -178,6 +192,15 @@ async function gatherSignals(
   signals.todaySalah = completed;
   if (completed >= 4) tags.push('obedient', 'consistent');
   if (completed <= 2) tags.push('neglectful', 'needs_reminder');
+
+  // Jamat / Awal Wakt — sincerity signal. Praying in congregation (men) or at
+  // the opening of the wakt (women) is a strong marker of seriousness. The more
+  // of today's fard prayed this way, the higher the sincerity read.
+  const jamatCount = salahRecords.filter((r) => r.inJamat).length;
+  signals.todayJamat = jamatCount;
+  if (jamatCount >= 3) tags.push('sincere', 'devoted', 'jamat_strong');
+  else if (jamatCount >= 1) tags.push('sincere', 'jamat_some');
+  if (completed >= 4 && jamatCount === 0) tags.push('solo_prayer', 'needs_jamat');
 
   // Taqwa
   const taqwaScore = taqwa?.score ?? 3;

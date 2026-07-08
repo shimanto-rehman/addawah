@@ -6,6 +6,7 @@ export const ANALYTICS_KEY = '/api/analytics';
 export const ANALYTICS_SUMMARY_KEY = '/api/analytics/summary';
 export const INSIGHTS_KEY = '/api/insights';
 export const MOOD_KEY = '/api/mood';
+export const CHALLENGE_KEY = '/api/challenge';
 export const RUHANIAH_KEY = '/api/ruhaniah';
 export const RUHANIAH_HISTORY_KEY = '/api/ruhaniah/history';
 export const RUHANIAH_DUAS_KEY = '/api/ruhaniah/duas';

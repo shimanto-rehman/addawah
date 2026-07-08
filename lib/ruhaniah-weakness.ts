@@ -17,6 +17,8 @@ export type Weakness = {
 
 type Signals = {
   todaySalah?: number;
+  todayJamat?: number;
+  gender?: 'MALE' | 'FEMALE' | null;
   taqwaScore?: number;
   fahmWeakest?: string | null;
   barakah?: {
@@ -30,6 +32,7 @@ type Signals = {
   mood?: string | null;
   streak?: number;
   broken?: boolean;
+  challengeConsistency?: number; // 0..1 rolling completion rate
 };
 
 type FahmProfile = {
@@ -134,6 +137,32 @@ export function analyzeWeaknesses(
         icon: '🕌',
       },
       priority: 50,
+    });
+  }
+
+  // 1b. Jamat / Awal Wakt — sincerity gap.
+  // Only surfaces for users who ARE praying (salahCount >= 4) but never in
+  // congregation / opening wakt. Gendered framing: men → jamat (mosque),
+  // women → awal wakt (earliest part of the prayer window). Both stored under
+  // the same inJamat flag.
+  const jamatCount = signals.todayJamat ?? 0;
+  const isMale = signals.gender === 'MALE';
+  if (salahCount >= 4 && jamatCount === 0) {
+    candidates.push({
+      weakness: {
+        id: 'jamat-absent',
+        title: isMale ? 'Praying alone — missing the jamat' : 'Praying late — missing awal wakt',
+        arabicTitle: isMale ? 'ترك الجماعة' : 'تأخير الصلاة',
+        description: isMale
+          ? 'You prayed all five today, ma sha Allah — but alone. The Prophet ﷺ said: "Prayer in congregation is 27 times better than praying alone." The jamat is where sincerity becomes commitment.'
+          : 'You prayed all five today, ma sha Allah — but not in the opening of the wakt. The Prophet ﷺ was asked which deed is most beloved to Allah; he said: "Prayer at its earliest time." Awal wakt carries the same sincerity signal jamat does for men.',
+        advice: isMale
+          ? 'For just one prayer tomorrow, go to the mosque. You don\'t have to commit to all five — start with one. The walk there is itself reward.'
+          : 'For just one prayer tomorrow, pray as soon as the adhan enters. Set a one-minute alarm from the adhan. Awal wakt is a station — claim it once.',
+        severity: 'moderate',
+        icon: isMale ? '🕌' : '🌅',
+      },
+      priority: 42,
     });
   }
 
@@ -316,6 +345,28 @@ export function analyzeWeaknesses(
         icon: '🔥',
       },
       priority: 40,
+    });
+  }
+
+  // 12. Daily challenge drift — soft behavioral signal.
+  // Only surfaces when the user has been on the app long enough for the 14-day
+  // window to mean something, and completion is genuinely low. This is a
+  // "you've stopped showing up for the small things" read — never preachy.
+  const challengeRate = signals.challengeConsistency;
+  if (challengeRate !== undefined && challengeRate <= 0.2) {
+    candidates.push({
+      weakness: {
+        id: 'challenge-drift',
+        title: 'The small deeds have slipped',
+        arabicTitle: 'تقصير في الأعمال الصغيرة',
+        description:
+          'Over the last two weeks, the daily challenge has been mostly untouched. The small deeds — a smile, a kind word, holding back one sin — are where character is built. They are easy to miss precisely because they are small.',
+        advice:
+          'Pick just one challenge task for tomorrow. Not all five — one. The Prophet ﷺ said the most beloved deeds to Allah are those done consistently, even if small. Start there.',
+        severity: 'moderate',
+        icon: '🌱',
+      },
+      priority: 32,
     });
   }
 

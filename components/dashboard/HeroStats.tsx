@@ -48,6 +48,7 @@ export function HeroStats() {
     { value: fmt(data?.streak), label: 'day streak' },
     { value: data ? `${fmt(data.sunnahPrayed)}/${fmt(data.sunnahTotal)}` : '', label: 'sunnah prayed' },
     { value: fmt(data?.perfectDays), label: 'perfect days' },
+    { value: fmt(data?.lifetimeJamat), label: 'in jamat / awal wakt' },
     { value: data ? `${data.todayCompleted}/5` : '', label: 'today' },
   ];
 

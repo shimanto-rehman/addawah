@@ -1,4 +1,5 @@
 import { apiRequireAuth, jsonOk, jsonError } from '@/lib/api-helpers';
+import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { startOfDay, addDays } from '@/lib/salah-utils';
 import { ruhaniahSubmissionSchema } from '@/lib/ruhaniah-validation';
@@ -6,8 +7,9 @@ import { getOrComputeVerse } from '@/lib/ruhaniah-verse';
 import { getRuhaniahToday } from '@/lib/ruhaniah-data';
 import { computeFahmProfile } from '@/lib/ruhaniah-profile';
 import { analyzeWeaknesses, type Weakness } from '@/lib/ruhaniah-weakness';
+import { getChallengeFahmSignal } from '@/lib/challenge-data';
 import { clearRuhaniahReminderForDate } from '@/lib/notifications';
-import { fetchPrayerTimes, formatDateKeyInTimezone } from '@/lib/prayer-times';
+import { fetchPrayerTimesFor, formatDateKeyInTimezone, prayerLocationFromUser } from '@/lib/prayer-times';
 import { kvGetJson, kvSetJson, kvDel } from '@/lib/kv';
 
 /** Redis cache helpers */
@@ -284,8 +286,8 @@ export async function POST(req: Request) {
 
     await prisma.$transaction(transactionOps);
   } catch (txErr) {
-    console.error('[ruhaniah] Transaction failed:', txErr);
-    return jsonError(`Transaction failed: ${txErr instanceof Error ? txErr.message : 'unknown'}`, 500);
+    logger.error({ route: '/api/ruhaniah', err: txErr }, 'Transaction failed');
+    return jsonError('Transaction failed', 500);
   }
 
   // Invalidate Redis cache (fire-and-forget)
@@ -294,15 +296,19 @@ export async function POST(req: Request) {
 
   // Fire-and-forget: clear end-of-day reminder notification (non-blocking)
   prisma.user
-    .findUnique({ where: { id: userId }, select: { city: true, country: true } })
-    .then((u) =>
-      fetchPrayerTimes(u?.city?.trim() || 'Dhaka', u?.country?.trim() || 'Bangladesh', today),
+    .findUnique({
+      where: { id: userId },
+      select: { city: true, country: true, latitude: true, longitude: true },
+    })
+    .then((u) => (u ? prayerLocationFromUser(u) : null))
+    .then((loc) => (loc ? fetchPrayerTimesFor(loc, today) : null))
+    .then((times) =>
+      times ? clearRuhaniahReminderForDate(userId, formatDateKeyInTimezone(today, times.timeZone)) : undefined,
     )
-    .then((times) => clearRuhaniahReminderForDate(userId, formatDateKeyInTimezone(today, times.timeZone)))
     .catch(() => {});
 
   // Fire-and-forget: recompute Fahm profile (non-blocking)
-  computeFahmProfile(userId).catch(console.error);
+  computeFahmProfile(userId).catch((err) => logger.error({ route: '/api/ruhaniah', err }, 'Fahm profile recompute failed'));
 
   // Compute verse + insights (these read from DB, not write)
   let verse: Awaited<ReturnType<typeof getOrComputeVerse>> | null = null;
@@ -310,9 +316,10 @@ export async function POST(req: Request) {
   let weaknesses: Weakness[] = [];
 
   try {
-    const [verseResult, historyData] = await Promise.all([
+    const [verseResult, historyData, challengeSignal] = await Promise.all([
       getOrComputeVerse(userId, today),
       getInsightsData(userId),
+      getChallengeFahmSignal(userId),
     ]);
 
     verse = verseResult;
@@ -349,19 +356,23 @@ export async function POST(req: Request) {
     weaknesses = analyzeWeaknesses(
       {
         todaySalah: vSignals.todaySalah as number | undefined,
+        todayJamat: vSignals.todayJamat as number | undefined,
+        gender: user!.gender,
         taqwaScore: (vSignals.taqwaScore as number | undefined) ?? taqwaScore,
         fahmWeakest: vSignals.fahmWeakest as string | undefined,
-        barakah: (vSignals.barakah as any) ?? barakahScores,
+        barakah:
+          (vSignals.barakah as
+            | { timeScore: number; rizqScore: number; healthScore: number; heartScore: number }
+            | undefined) ?? barakahScores,
         activeDuas: vSignals.activeDuas as number | undefined,
-        recentlyAnswered: vSignals.recentlyAnswered as number | undefined,
-        mood: vSignals.mood as string | undefined,
         streak: vSignals.streak as number | undefined,
+        challengeConsistency: challengeSignal.consistency,
       },
-      insightsPayload?.fahmProfile as { categoryScores: Record<string, number>; overallQAS: number; weakest?: string | null; trend: string } | null ?? null,
+      insightsPayload?.fahmProfile as { categoryScores: Record<string, number>; overallQAS: number; weakest?: string | null; trend: string } | null | undefined ?? null,
       historyData.duaStats,
     );
   } catch (verseErr) {
-    console.error('[ruhaniah] Verse/insights computation failed:', verseErr);
+    logger.error({ route: '/api/ruhaniah', err: verseErr }, 'Verse/insights computation failed');
     // Data was saved — verse/insights will be available on next page load
   }
 

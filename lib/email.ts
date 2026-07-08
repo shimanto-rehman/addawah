@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
+import { logger } from './logger';
 import { SITE_NAME, SITE_URL } from './constants';
 
 function getResend() {
@@ -43,8 +44,9 @@ function resolveResendFrom() {
   const configured = process.env.RESEND_FROM || process.env.SMTP_FROM;
   if (!configured) return RESEND_SANDBOX_FROM;
   if (isUnverifiableResendFrom(configured)) {
-    console.warn(
-      `[email] RESEND_FROM "${configured}" uses a host Resend cannot verify — using ${RESEND_SANDBOX_FROM}`,
+    logger.warn(
+      { module: 'email', from: configured, sandbox: RESEND_SANDBOX_FROM },
+      'RESEND_FROM uses a host Resend cannot verify — using sandbox sender',
     );
     return RESEND_SANDBOX_FROM;
   }
@@ -150,13 +152,13 @@ async function deliverEmail(opts: {
     let { error } = await send(from);
 
     if (error && isDomainVerificationError(error) && from !== RESEND_SANDBOX_FROM) {
-      console.warn(`[email] Retrying with ${RESEND_SANDBOX_FROM} after domain verification failure`);
+      logger.warn({ module: 'email', sandbox: RESEND_SANDBOX_FROM }, 'Retrying with sandbox sender after domain verification failure');
       from = RESEND_SANDBOX_FROM;
       ({ error } = await send(from));
     }
 
     if (error) {
-      console.error('[email] Resend error:', error);
+      logger.error({ module: 'email', err: error }, 'Resend send failed');
       return false;
     }
     return true;
@@ -165,7 +167,7 @@ async function deliverEmail(opts: {
   const from = getFromAddress();
   const transporter = getSmtpTransporter();
   if (!transporter) {
-    console.warn('[email] No email provider configured');
+    logger.warn({ module: 'email' }, 'No email provider configured');
     return false;
   }
 
@@ -186,7 +188,7 @@ export async function sendWelcomeEmail(opts: {
   username: string;
 }) {
   if (!isEmailConfigured()) {
-    console.warn('[email] Email not configured — skipping welcome email');
+    logger.warn({ module: 'email' }, 'Email not configured — skipping welcome email');
     return false;
   }
 

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { chartTheme, accentRgba } from '@/lib/chart-theme';
 
 type Props = {
   score: number | null;
@@ -16,13 +17,7 @@ const LABELS: { arabic: string; en: string }[] = [
   { arabic: 'إحسان', en: 'Ihsan — Excellence in Worship' },
 ];
 
-const GLOWS = [
-  'rgba(201,162,39,0.0)',
-  'rgba(201,162,39,0.15)',
-  'rgba(201,162,39,0.30)',
-  'rgba(201,162,39,0.55)',
-  'rgba(201,162,39,0.85)',
-];
+const GLOW_ALPHA = [0.0, 0.15, 0.3, 0.55, 0.85];
 
 // Breathing speed: higher score = faster, more alive
 const BREATHE_DUR = ['3s', '3.5s', '2.8s', '2.2s', '1.6s'];
@@ -40,8 +35,9 @@ export function TaqwaPulse({ score, onChange }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const [burstKey, setBurstKey] = useState(0);
+  const theme = chartTheme();
   const current = score ?? 0;
-
+  const glows = useMemo(() => GLOW_ALPHA.map((a) => accentRgba(theme, a)), [theme]);
   const posToScore = useCallback(
     (clientX: number) => {
       const track = trackRef.current;
@@ -127,7 +123,7 @@ export function TaqwaPulse({ score, onChange }: Props) {
           }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
           style={{
-            background: `radial-gradient(circle, ${GLOWS[current]} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${glows[current]} 0%, transparent 70%)`,
           }}
         />
 
@@ -220,7 +216,7 @@ export function TaqwaPulse({ score, onChange }: Props) {
             animate={{ left: `${pct}%` }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             style={{
-              boxShadow: `0 0 ${8 + current * 4}px ${GLOWS[current]}, 0 2px 8px rgba(0,0,0,0.3)`,
+              boxShadow: `0 0 ${8 + current * 4}px ${glows[current]}, 0 2px 8px rgba(0,0,0,0.3)`,
             }}
           />
         )}

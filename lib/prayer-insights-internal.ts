@@ -17,6 +17,7 @@ export type InsightFardRecord = {
   completed: boolean;
   updatedAt: Date;
   completedOnTime?: boolean;
+  inJamat?: boolean;
 };
 
 function prayerWindow(

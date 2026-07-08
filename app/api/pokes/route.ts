@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { type PrayerName } from '@/lib/constants';
 import { buildFriendWaktRow } from '@/lib/friends-wakt';
+import { prayerLocationFromUser } from '@/lib/prayer-times';
 import { startOfDay } from '@/lib/salah-utils';
 import {
   awardGoldCoins,
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const friend = await prisma.user.findUnique({
       where: { id: body.friendId },
-      select: { id: true, city: true, country: true },
+      select: { id: true, city: true, country: true, latitude: true, longitude: true },
     });
     if (!friend) return jsonError('User not found', 404);
 
@@ -100,7 +101,8 @@ export async function POST(req: NextRequest) {
 
     let coinsEarned = 0;
     if (prayer) {
-      const reward = await computeDawahReward(friend.city, friend.country, prayer);
+      const friendLocation = prayerLocationFromUser(friend);
+      const reward = await computeDawahReward(friendLocation, prayer);
       if (reward) {
         await awardGoldCoins(user!.id, reward.amount);
         coinsEarned = reward.amount;

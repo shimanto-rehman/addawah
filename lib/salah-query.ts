@@ -6,6 +6,7 @@ export const SALAH_RECORD_STATS_SELECT = {
   prayer: true,
   kind: true,
   completed: true,
+  inJamat: true,
 } as const;
 
 /** Cap lifetime scans to 12 months or account age — keeps queries bounded. */

@@ -11,7 +11,6 @@ import { useFieldAvailability } from '@/hooks/useFieldAvailability';
 import { AVATAR_COLORS } from '@/lib/constants';
 import { MAX_AVATAR_LABEL, validateAvatarFile } from '@/lib/avatar-limits';
 import { prepareAvatarFile } from '@/lib/avatar-prepare';
-import { PHONE_COUNTRIES } from '@/lib/phone-countries';
 import {
   DEFAULT_PROFILE_PRIVACY,
   type ProfilePrivacy,
@@ -22,6 +21,9 @@ import { isValidEmail, sanitizeEmail, sanitizeName } from '@/lib/validation';
 import Link from 'next/link';
 import { ProfilePrayerCharts } from '@/components/profile/ProfilePrayerCharts';
 import { Shimmer } from '@/components/ui/Shimmer';
+import { LocationPicker } from '@/components/location/LocationPicker';
+import type { ResolvedLocation } from '@/lib/location';
+import { GenderPicker, type Gender } from '@/components/auth/GenderPicker';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -32,9 +34,13 @@ type Profile = {
   email: string;
   mobile: string | null;
   avatarColor: string;
+  gender: 'MALE' | 'FEMALE' | null;
   avatarUrl: string | null;
   city: string | null;
   country: string;
+  latitude: number | null;
+  longitude: number | null;
+  timeZone: string | null;
   profilePrivacy: ProfilePrivacy;
 };
 
@@ -49,6 +55,9 @@ export default function ProfilePage() {
   const [mobile, setMobile] = useState('');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
+  const [location, setLocation] = useState<ResolvedLocation | null>(null);
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [locationPickerOpen, setLocationPickerOpen] = useState(false);
   const [avatarColor, setAvatarColor] = useState('#d4af37');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [profilePrivacy, setProfilePrivacy] = useState<ProfilePrivacy>(DEFAULT_PROFILE_PRIVACY);
@@ -59,11 +68,22 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!profile) return;
     setName(profile.name);
-    setEmail(profile.email);
-    setMobile(profile.mobile ?? '');
     setCity(profile.city ?? '');
     setCountry(profile.country);
-    setAvatarColor(profile.avatarColor);
+    setGender(profile.gender);
+    setMobile(profile.mobile ?? '');
+    setLocation(
+      typeof profile.latitude === 'number' && typeof profile.longitude === 'number'
+        ? {
+            latitude: profile.latitude,
+            longitude: profile.longitude,
+            timeZone: profile.timeZone ?? '',
+            city: profile.city ?? '',
+            country: profile.country,
+            countryCode: '',
+          }
+        : null,
+    );
     setAvatarUrl(profile.avatarUrl);
     setProfilePrivacy(profile.profilePrivacy ?? DEFAULT_PROFILE_PRIVACY);
   }, [profile]);
@@ -145,10 +165,21 @@ export default function ProfilePage() {
         name: sanitizeName(name),
         email: cleanEmail,
         mobile,
+        gender,
         city,
         country,
         avatarColor,
         profilePrivacy,
+        location: location
+          ? {
+              latitude: location.latitude,
+              longitude: location.longitude,
+              timeZone: location.timeZone,
+              city: location.city,
+              country: location.country,
+              countryCode: location.countryCode,
+            }
+          : null,
       }),
     });
     const json = await res.json();
@@ -336,31 +367,36 @@ export default function ProfilePage() {
             />
 
             <div className="dawa-field">
-              <label className="dawa-label" htmlFor="profile-city">City</label>
-              <input
-                id="profile-city"
-                className="dawa-input"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Dhaka"
-                maxLength={80}
-              />
+              <label className="dawa-label">Gender</label>
+              <GenderPicker value={gender} onChange={setGender} />
             </div>
 
             <div className="dawa-field">
-              <label className="dawa-label" htmlFor="profile-country">Country</label>
-              <select
-                id="profile-country"
-                className="dawa-input"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-              >
-                {PHONE_COUNTRIES.map((c) => (
-                  <option key={c.iso} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              <label className="dawa-label">Location</label>
+              <div className="dawa-location-summary">
+                {location ? (
+                  <>
+                    <span className="dawa-location-summary__label">
+                      {location.city || 'Unknown city'}
+                      {location.country ? `, ${location.country}` : ''}
+                    </span>
+                    {location.timeZone ? (
+                      <span className="dawa-location-summary__tz">{location.timeZone}</span>
+                    ) : null}
+                  </>
+                ) : (
+                  <span className="dawa-location-summary__placeholder">
+                    No location set — prayer times need one.
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className="dawa-btn dawa-btn--ghost"
+                  onClick={() => setLocationPickerOpen(true)}
+                >
+                  {location ? 'Change' : 'Set location'}
+                </button>
+              </div>
             </div>
 
           </section>
@@ -386,6 +422,28 @@ export default function ProfilePage() {
           </section>
         </form>
       )}
+      <LocationPicker
+        open={locationPickerOpen}
+        onClose={() => setLocationPickerOpen(false)}
+        onConfirm={(loc) => {
+          setLocation(loc);
+          setCity(loc.city);
+          setCountry(loc.country);
+          setLocationPickerOpen(false);
+        }}
+        initial={
+          location
+            ? {
+                latitude: location.latitude,
+                longitude: location.longitude,
+                timeZone: location.timeZone,
+                city: location.city,
+                country: location.country,
+                countryCode: location.countryCode,
+              }
+            : undefined
+        }
+      />
 
       {!isLoading && profile?.username && (
         <ProfilePrayerCharts insightsUrl="/api/insights" title="Your prayer charts" />

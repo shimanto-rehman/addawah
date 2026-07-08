@@ -2,6 +2,7 @@ import { prisma } from './prisma';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { kvGetJson, kvSetJson } from './kv';
+import { getChallengeFahmSignal, blendFahmScore } from './challenge-data';
 
 const CATEGORIES = [
   'QADR',
@@ -45,10 +46,9 @@ export type FahmProfile = {
   weakest: string | null;
   trend: 'IMPROVING' | 'STABLE' | 'DECLINING' | 'NEW';
 };
-
 /** Compute Fahm profile from raw responses — called async after submission */
 export async function computeFahmProfile(userId: string): Promise<FahmProfile> {
-  const [recent, categoryMap] = await Promise.all([
+  const [recent, categoryMap, challengeSignal] = await Promise.all([
     prisma.fahmResponse.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -56,7 +56,9 @@ export async function computeFahmProfile(userId: string): Promise<FahmProfile> {
       select: { questionId: true, weight: true, createdAt: true },
     }),
     getQuestionCategoryMap(),
+    getChallengeFahmSignal(userId),
   ]);
+
 
   if (recent.length === 0) {
     return {
@@ -86,7 +88,12 @@ export async function computeFahmProfile(userId: string): Promise<FahmProfile> {
   const categoryScores: Record<string, number> = {};
   for (const cat of CATEGORIES) {
     const { sum, count } = categoryTotals[cat];
-    categoryScores[cat] = count > 0 ? Math.round((sum / count) * 10) / 10 : 0;
+    const explicit = count > 0 ? Math.round((sum / count) * 10) / 10 : 0;
+    // Soft behavioral blend from challenge completion. Refines, never dominates.
+    categoryScores[cat] = blendFahmScore(
+      explicit,
+      challengeSignal.scores[cat as keyof typeof challengeSignal.scores],
+    );
   }
 
   // Overall QAS

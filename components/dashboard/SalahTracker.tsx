@@ -32,6 +32,7 @@ import type { PrayerTimesPayload } from '@/lib/prayer-times';
 import { formatDateKeyInTimezone, isPrayerTimesPayload, prayerTimesFetcher } from '@/lib/prayer-times';
 import { Shimmer } from '@/components/ui/Shimmer';
 import { SalahMarkModal } from '@/components/dashboard/SalahMarkModal';
+import { useApp } from '@/components/providers/AppProvider';
 
 const DEFAULT_TIMEZONE = 'Asia/Dhaka';
 
@@ -46,12 +47,12 @@ type SalahPostResponse = {
   coinsEarned?: number;
   stats?: StatsPayload;
 };
-
 type ToggleArgs = {
   dateKey: string;
   prayer: PrayerName;
   kind: SalahKind;
   unit?: number;
+  inJamat?: boolean;
 };
 
 function SalahHoverBubble({
@@ -102,6 +103,8 @@ function SunnahToggle({
 }
 
 export function SalahTracker() {
+  const { user } = useApp();
+  const gender = user?.gender ?? null;
   const dashboard = useDashboardData();
   const toggleBusyRef = useRef<string | null>(null);
   const [busyCell, setBusyCell] = useState<string | null>(null);
@@ -138,7 +141,7 @@ export function SalahTracker() {
     return !canMarkSalahCellLocal(dateKey, todayKey, prayer, prayerTimes);
   }
 
-  async function toggle({ dateKey, prayer, kind, unit = 0 }: ToggleArgs) {
+  async function toggle({ dateKey, prayer, kind, unit = 0, inJamat = false }: ToggleArgs) {
     const opKey = `${dateKey}:${prayer}:${kind}:${unit}`;
     if (toggleBusyRef.current) return;
     toggleBusyRef.current = opKey;
@@ -155,11 +158,14 @@ export function SalahTracker() {
 
     const nextCell: SalahCell = {
       fard: cell.fard,
+      inJamat: cell.inJamat,
       sunnahBefore: [...cell.sunnahBefore],
       sunnahAfter: [...cell.sunnahAfter],
     };
-    if (kind === 'FARD') nextCell.fard = markingComplete;
-    else if (kind === 'SUNNAH_BEFORE') nextCell.sunnahBefore[unit] = markingComplete;
+    if (kind === 'FARD') {
+      nextCell.fard = markingComplete;
+      nextCell.inJamat = markingComplete ? inJamat : false;
+    } else if (kind === 'SUNNAH_BEFORE') nextCell.sunnahBefore[unit] = markingComplete;
     else nextCell.sunnahAfter[unit] = markingComplete;
 
     const optimistic: SalahGrid = {
@@ -184,6 +190,7 @@ export function SalahTracker() {
           kind,
           unit,
           completed: markingComplete,
+          inJamat: kind === 'FARD' ? (markingComplete ? inJamat : false) : false,
         }),
       });
       const payload = (await res.json()) as SalahPostResponse & { error?: string };
@@ -224,7 +231,7 @@ export function SalahTracker() {
   async function handleBatchConfirm(
     dateKey: string,
     prayer: PrayerName,
-    updates: { kind: SalahKind; unit: number; completed: boolean }[],
+    updates: { kind: SalahKind; unit: number; completed: boolean; inJamat?: boolean }[],
   ) {
     if (!updates.length) return;
 
@@ -232,12 +239,15 @@ export function SalahTracker() {
     const cell = getSalahCell(grid, dateKey, prayer);
     const optimisticCell: SalahCell = {
       fard: cell.fard,
+      inJamat: cell.inJamat,
       sunnahBefore: [...cell.sunnahBefore],
       sunnahAfter: [...cell.sunnahAfter],
     };
     for (const u of updates) {
-      if (u.kind === 'FARD') optimisticCell.fard = u.completed;
-      else if (u.kind === 'SUNNAH_BEFORE') optimisticCell.sunnahBefore[u.unit] = u.completed;
+      if (u.kind === 'FARD') {
+        optimisticCell.fard = u.completed;
+        optimisticCell.inJamat = u.completed ? (u.inJamat ?? false) : false;
+      } else if (u.kind === 'SUNNAH_BEFORE') optimisticCell.sunnahBefore[u.unit] = u.completed;
       else optimisticCell.sunnahAfter[u.unit] = u.completed;
     }
 
@@ -261,6 +271,7 @@ export function SalahTracker() {
               kind: u.kind,
               unit: u.unit,
               completed: u.completed,
+              inJamat: u.kind === 'FARD' ? (u.completed ? (u.inJamat ?? false) : false) : false,
             }),
           }).then((r) => {
             if (!r.ok) throw new Error('Failed to save salah');
@@ -283,6 +294,65 @@ export function SalahTracker() {
       await mutate(undefined, { revalidate: true });
       if (prevDashboard) dashboard!.mutate(prevDashboard, { revalidate: true });
       throw new Error('Failed to save salah');
+    }
+  }
+
+  async function toggleJamat(dateKey: string, prayer: PrayerName) {
+    const cell = getSalahCell(grid, dateKey, prayer);
+    if (!cell.fard) return; // jamat only applies once fard is marked
+    const opKey = `${dateKey}:${prayer}:FARD:0`;
+    if (toggleBusyRef.current) return;
+    toggleBusyRef.current = opKey;
+    setBusyCell(opKey);
+
+    const nextJamat = !cell.inJamat;
+    const nextCell: SalahCell = {
+      fard: true,
+      inJamat: nextJamat,
+      sunnahBefore: [...cell.sunnahBefore],
+      sunnahAfter: [...cell.sunnahAfter],
+    };
+    const optimistic: SalahGrid = {
+      ...grid,
+      [dateKey]: { ...grid[dateKey], [prayer]: nextCell },
+    };
+    const prevDashboard = dashboard?.data;
+
+    try {
+      await mutate({ grid: optimistic }, { revalidate: false });
+      const res = await fetch('/api/salah', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: dateKey,
+          prayer,
+          kind: 'FARD',
+          unit: 0,
+          completed: true,
+          inJamat: nextJamat,
+        }),
+      });
+      const payload = (await res.json()) as SalahPostResponse & { error?: string };
+      if (!res.ok || !payload.ok) {
+        throw new Error(payload.error ?? 'Failed to save salah');
+      }
+
+      const weekRes = await fetch(`/api/salah?week=${weekStartKey}`, { cache: 'no-store' });
+      if (!weekRes.ok) throw new Error('Failed to refresh salah');
+      const weekData = (await weekRes.json()) as { grid: SalahGrid };
+      await mutate(weekData, { revalidate: false });
+      if (dashboard?.data) {
+        dashboard.mutate(
+          { ...dashboard.data, grid: weekData.grid, weekKey: weekStartKey, ...(payload.stats ? { stats: payload.stats } : {}) },
+          { revalidate: false },
+        );
+      }
+    } catch {
+      await mutate(undefined, { revalidate: true });
+      if (prevDashboard) dashboard!.mutate(prevDashboard, { revalidate: true });
+    } finally {
+      toggleBusyRef.current = null;
+      setBusyCell(null);
     }
   }
 
@@ -378,31 +448,60 @@ export function SalahTracker() {
                                 />
                               ))}
                             </div>
-                            <SalahHoverBubble label={`${FARD_RAKATS[prayer]} Rakats Fard`}>
-                              <motion.button
-                                type="button"
-                                className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}${isBusy ? ' is-busy' : ''}`}
-                                disabled={(disabled && !cell.fard) || isBusy}
-                                onClick={() => {
-                                  if (window.matchMedia('(max-width: 960px)').matches) {
-                                    setModalData({ dateKey: key, prayer });
-                                  } else {
-                                    toggle({ dateKey: key, prayer, kind: 'FARD' });
+                            <div className="dawa-salah-prayer-wrap">
+                              <SalahHoverBubble label={`${FARD_RAKATS[prayer]} Rakats Fard`}>
+                                <motion.button
+                                  type="button"
+                                  className={`dawa-salah-prayer${cell.fard ? ' is-done' : ''}${disabled && !cell.fard ? ' is-locked' : ''}${isBusy ? ' is-busy' : ''}`}
+                                  disabled={(disabled && !cell.fard) || isBusy}
+                                  onClick={() => {
+                                    if (window.matchMedia('(max-width: 960px)').matches) {
+                                      setModalData({ dateKey: key, prayer });
+                                    } else {
+                                      toggle({ dateKey: key, prayer, kind: 'FARD' });
+                                    }
+                                  }}
+                                  whileTap={{ scale: 0.88 }}
+                                  aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
+                                  title={
+                                    disabled && !cell.fard
+                                      ? key === todayKey
+                                        ? 'Wakt has not started yet'
+                                        : 'Future day'
+                                      : undefined
                                   }
-                                }}
-                                whileTap={{ scale: 0.88 }}
-                                aria-label={`${PRAYER_LABELS[prayer]} fard ${key}`}
-                                title={
-                                  disabled && !cell.fard
-                                    ? key === todayKey
-                                      ? 'Wakt has not started yet'
-                                      : 'Future day'
-                                    : undefined
-                                }
-                              >
-                                {cell.fard ? '✓' : '○'}
-                              </motion.button>
-                            </SalahHoverBubble>
+                                >
+                                  {cell.fard ? '✓' : '○'}
+                                </motion.button>
+                              </SalahHoverBubble>
+                              {cell.fard && (
+                                <SalahHoverBubble
+                                  label={gender === 'FEMALE' ? 'Prayed in Awal Wakt' : 'Prayed in Jamat'}
+                                >
+                                  <button
+                                    type="button"
+                                    className={`dawa-salah-jamat${cell.inJamat ? ' is-on' : ''}`}
+                                    disabled={isBusy}
+                                    onClick={() => toggleJamat(key, prayer)}
+                                    aria-label={`${gender === 'FEMALE' ? 'Awal wakt' : 'Jamat'} ${prayer} ${key}`}
+                                    aria-pressed={cell.inJamat}
+                                  >
+                                    {gender === 'FEMALE' ? (
+                                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" />
+                                        <path d="M12 7.5V12l3 1.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                      </svg>
+                                    ) : (
+                                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <circle cx="8" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.6" />
+                                        <circle cx="16" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.6" />
+                                        <path d="M3.5 18c0-2.4 2-3.8 4.5-3.8s4.5 1.4 4.5 3.8M12.5 18c0-2.4 2-3.8 4.5-3.8s4.5 1.4 4.5 3.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                                      </svg>
+                                    )}
+                                  </button>
+                                </SalahHoverBubble>
+                              )}
+                            </div>
                             <div className="dawa-salah-cell__wing dawa-salah-cell__wing--after">
                               {cell.sunnahAfter.map((done, unit) => (
                                 <SunnahToggle
@@ -436,6 +535,7 @@ export function SalahTracker() {
           prayer={modalData.prayer}
           dateKey={modalData.dateKey}
           cell={getSalahCell(grid, modalData.dateKey, modalData.prayer)}
+          gender={gender}
           onConfirm={(updates) =>
             handleBatchConfirm(modalData.dateKey, modalData.prayer, updates)
           }

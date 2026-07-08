@@ -15,12 +15,16 @@ model User {
   email        String   @unique
   mobile       String?  @unique
   passwordHash String
+  gender       Gender?
   avatarColor  String   @default("#d4af37")
   avatarUrl    String?
   themeColor   String   @default("gold")
   themeMode    String   @default("dark")
   city         String?
-  country      String   @default("Bangladesh")
+  country      String?
+  latitude     Float?
+  longitude    Float?
+  timeZone     String?
   goldCoins    Int      @default(0)
   profilePrivacy Json   @default("{}")
   createdAt    DateTime @default(now())
@@ -44,6 +48,7 @@ model User {
   barakahLogs   BarakahLog[]
   duaEntries    DuaEntry[]
   ruhaniahVerses RuhaniahVerse[]
+  dailyChallenges DailyChallenge[]
 }
 
 model PasswordResetOtp {
@@ -109,6 +114,9 @@ model SalahRecord {
   completed Boolean   @default(false)
   /// Sticky: set when first marked inside wakt; survives uncheck/remark.
   completedOnTime Boolean @default(false)
+  /// Prayed in Jamat (males) or Awal Wakt (females) — gender-labelled in UI.
+  /// Resets to false when fard is unmarked.
+  inJamat   Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -190,6 +198,11 @@ enum SalahKind {
   SUNNAH_AFTER
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 enum FriendshipStatus {
   PENDING
   ACCEPTED
@@ -226,6 +239,8 @@ model UserSalahDayStat {
   kaza          Int      @default(0)
   missed        Int      @default(0)
   pending       Int      @default(0)
+  // Count of fard prayers prayed in Jamat (males) / Awal Wakt (females).
+  jamat         Int      @default(0)
   iman          Int      @default(68)
   missedPrayers Json     @default("[]")
   refreshedAt   DateTime @default(now())
@@ -329,6 +344,22 @@ model RuhaniahVerse {
   signals        Json     // snapshot of all input signals
   createdAt      DateTime @default(now())
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Daily Muslim Challenge — 5 daily good deeds, marked off by the user.
+model DailyChallenge {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  // Bitmap of the 5 tasks (bit i = task i done). 0..31.
+  mask      Int      @default(0)
+  completed Int      @default(0) // count of done tasks 0..5
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date])
   @@index([userId, date])

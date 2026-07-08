@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
     return jsonOk({ profile: formatProfile(profile) });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Upload failed';
-    console.error('[avatar upload]', e);
+    logger.error({ route: '/api/profile/avatar', err: e }, 'Avatar upload failed');
     return jsonError(message, 400);
   }
 }

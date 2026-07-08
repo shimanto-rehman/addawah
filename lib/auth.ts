@@ -24,12 +24,16 @@ export type SessionUser = {
   username: string | null;
   email: string;
   mobile: string | null;
+  gender: 'MALE' | 'FEMALE' | null;
   avatarColor: string;
   avatarUrl: string | null;
   themeColor: string;
   themeMode: string;
   city: string | null;
-  country: string;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  timeZone: string | null;
 };
 
 function asSessionUser(value: unknown): SessionUser | null {
@@ -99,12 +103,16 @@ export async function getSessionUser(): Promise<SessionUser | null> {
             username: true,
             email: true,
             mobile: true,
+            gender: true,
             avatarColor: true,
             avatarUrl: true,
             themeColor: true,
             themeMode: true,
             city: true,
             country: true,
+            latitude: true,
+            longitude: true,
+            timeZone: true,
           },
         },
       },

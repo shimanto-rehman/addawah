@@ -16,6 +16,13 @@ export function prayerTimesCacheKey(city: string, country: string, dateKey: stri
   return `${normalizeLocation(city)}|${normalizeLocation(country)}|${dateKey}`;
 }
 
+export function prayerTimesCoordsCacheKey(lat: number, lng: number, dateKey: string) {
+  // 2 decimal places ≈ 1.1 km — well within Aladhan's calculation granularity.
+  const latKey = lat.toFixed(2);
+  const lngKey = lng.toFixed(2);
+  return `coords:${latKey},${lngKey}|${dateKey}`;
+}
+
 function evictIfNeeded() {
   if (cache.size <= MAX_ENTRIES) return;
   const oldest = cache.keys().next().value;

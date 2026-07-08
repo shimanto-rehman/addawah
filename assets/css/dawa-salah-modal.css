@@ -646,6 +646,73 @@
     color: #fff;
     box-shadow: 0 6px 20px color-mix(in srgb, var(--accent-dim) 32%, transparent);
   }
+  /* ── Jamat / Awal Wakt toggle — borderless inline row ── */
+
+  .dawa-salah-modal__jamat {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 8px 0 0;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* Custom checkbox drawn from a styled input */
+  .dawa-salah-modal__jamat input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+    margin: 0;
+    border-radius: 5px;
+    border: 1.5px solid color-mix(in srgb, var(--text-soft) 45%, var(--border-soft));
+    background: color-mix(in srgb, var(--surface-2) 40%, transparent);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+
+  /* Checkmark drawn from borders */
+  .dawa-salah-modal__jamat input::after {
+    content: '';
+    width: 8px;
+    height: 5px;
+    border-left: 2px solid var(--accent-text);
+    border-bottom: 2px solid var(--accent-text);
+    transform: rotate(-45deg) scale(0);
+    transition: transform 0.18s var(--ease);
+  }
+
+  .dawa-salah-modal__jamat input:checked {
+    border-color: var(--accent);
+    background: linear-gradient(145deg, var(--accent-bright), var(--accent-dim));
+    box-shadow: 0 2px 8px var(--accent-glow);
+  }
+
+  .dawa-salah-modal__jamat input:checked::after {
+    transform: rotate(-45deg) scale(1);
+  }
+
+  .dawa-salah-modal__jamat:has(input:checked) {
+    color: var(--accent-bright);
+  }
+
+  [data-theme='light'] .dawa-salah-modal__jamat input {
+    border-color: color-mix(in srgb, var(--accent-dim) 45%, var(--border));
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  [data-theme='light'] .dawa-salah-modal__jamat:has(input:checked) {
+    color: var(--accent-dim);
+  }
+
+
 }
 
 /* Desktop: hide the modal completely */

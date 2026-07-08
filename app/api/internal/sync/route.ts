@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { jsonOk, jsonError } from '@/lib/api-helpers';
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     return jsonOk({ ok: true });
   } catch (e) {
-    console.error('[internal/sync]', e);
+    logger.error({ route: '/api/internal/sync', err: e }, 'Sync failed');
     return jsonError('Sync failed', 500);
   }
 }

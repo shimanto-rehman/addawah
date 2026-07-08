@@ -1,12 +1,13 @@
 import { PRAYER_LABELS, type PrayerName } from './constants';
 import { prisma } from './prisma';
 import {
-  fetchPrayerTimes,
+  fetchPrayerTimesFor,
   formatDateKeyInTimezone,
   getNowMinutesInTimezone,
   isForbiddenForPoke,
   isPrayerTimesPayload,
   prayerWaktWindow,
+  type PrayerLocation,
   type PrayerTimesPayload,
 } from './prayer-times';
 
@@ -40,6 +41,11 @@ export const PRAYER_REWARD = {
 export const REWARD_POINTS = {
   DAWAH_IN_WAKT: 5,
 } as const;
+
+/** Flat bonus layered on top of the wakt reward when the fard was prayed in
+ *  Jamat (males) or Awal Wakt (females). Single constant for both — the
+ *  gendered labelling is purely a UI concern. */
+export const JAMAT_BONUS_COINS = 5;
 
 export function getBadgeForCoins(coins: number): BadgeTier {
   let badge = BADGE_TIERS[0];
@@ -96,15 +102,14 @@ export function computeWaktPrayerCoins(
   const amount = Math.round(PRAYER_REWARD.MAX - (PRAYER_REWARD.MAX - PRAYER_REWARD.MIN) * curved);
   return Math.max(PRAYER_REWARD.MIN, amount);
 }
-
 export async function computeDawahReward(
-  city: string | null | undefined,
-  country: string | null | undefined,
+  location: PrayerLocation | null,
   prayer: PrayerName,
   at = new Date(),
 ) {
+  if (!location) return null;
   try {
-    const times = await fetchPrayerTimes(city?.trim() || 'Dhaka', country?.trim() || 'Bangladesh', at);
+    const times = await fetchPrayerTimesFor(location, at);
     if (!isWithinWakt(at, prayer, times)) return null;
     const mins = getNowMinutesInTimezone(at, times.timeZone);
     if (isForbiddenForPoke(times, mins, prayer)) return null;
@@ -115,30 +120,29 @@ export async function computeDawahReward(
 }
 
 export async function computePrayerReward(
-  city: string | null | undefined,
-  country: string | null | undefined,
+  location: PrayerLocation | null,
   prayer: PrayerName,
   prayerDateKey: string,
   loggedAt = new Date(),
   times?: PrayerTimesPayload,
+  inJamat = false,
 ) {
   try {
     if (!times) {
-      times = await fetchPrayerTimes(
-        city?.trim() || 'Dhaka',
-        country?.trim() || 'Bangladesh',
-        loggedAt,
-      );
+      if (!location) return null;
+      times = await fetchPrayerTimesFor(location, loggedAt);
     }
 
     const todayKey = formatDateKeyInTimezone(loggedAt, times.timeZone);
     if (prayerDateKey !== todayKey) return null;
 
-    const amount = computeWaktPrayerCoins(loggedAt, prayer, times);
-    if (amount == null) return null;
+    const baseAmount = computeWaktPrayerCoins(loggedAt, prayer, times);
+    if (baseAmount == null) return null;
 
-    const label =
-      amount >= PRAYER_REWARD.MAX
+    const amount = inJamat ? baseAmount + JAMAT_BONUS_COINS : baseAmount;
+    const label = inJamat
+      ? `${PRAYER_LABELS[prayer]} in Jamat/Awal Wakt`
+      : amount >= PRAYER_REWARD.MAX
         ? `${PRAYER_LABELS[prayer]} at wakt start`
         : `${PRAYER_LABELS[prayer]} in wakt`;
 

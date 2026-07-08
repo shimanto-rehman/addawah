@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import useSWR from 'swr';
+import { chartTheme, type ChartTheme } from '@/lib/chart-theme';
 import { PRAYER_LABELS } from '@/lib/constants';
 import type { PrayerInsightsPayload } from '@/lib/prayer-insights';
 import { useChartResize } from '@/lib/use-chart-resize';
@@ -20,28 +21,6 @@ import { Shimmer, ChartShimmer } from '@/components/ui/Shimmer';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
-function chartTheme() {
-  if (typeof window === 'undefined') {
-    return {
-      accent: '#e8c547',
-      accentSoft: 'rgba(201, 162, 39, 0.12)',
-      accentGlow: 'rgba(201, 162, 39, 0.35)',
-      surface: '#121824',
-      text: '#8a8070',
-      grid: 'rgba(128, 128, 128, 0.14)',
-    };
-  }
-  const s = getComputedStyle(document.documentElement);
-  return {
-    accent: s.getPropertyValue('--accent-bright').trim() || '#e8c547',
-    accentSoft: s.getPropertyValue('--accent-soft').trim() || 'rgba(201, 162, 39, 0.12)',
-    accentGlow: s.getPropertyValue('--accent-glow').trim() || 'rgba(201, 162, 39, 0.35)',
-    surface: s.getPropertyValue('--surface-2').trim() || '#121824',
-    text: s.getPropertyValue('--text-dim').trim() || '#8a8070',
-    grid: 'rgba(128, 128, 128, 0.14)',
-  };
-}
 
 function trendLabel(trend: PrayerInsightsPayload['trend']) {
   if (trend === 'up') return 'Rising — prayers in wakt are lifting your meter';
@@ -54,7 +33,7 @@ function MissedAreaChart({
   theme,
 }: {
   data: PrayerInsightsPayload;
-  theme: ReturnType<typeof chartTheme>;
+  theme: ChartTheme;
 }) {
   const labels = data.days.map((_, i) => String(i + 1).padStart(2, '0'));
   const missedValues = data.days.map((d) => d.missed);
@@ -256,7 +235,7 @@ export function PrayerInsights({
                         afterLabel(ctx) {
                           const day = data?.days[ctx.dataIndex];
                           if (!day) return '';
-                          return `On time ${day.onTime} · Kaza ${day.kaza} · Missed ${day.missed}`;
+                          return `On time ${day.onTime} · Kaza ${day.kaza} · Missed ${day.missed} · Jamat ${day.jamat ?? 0}`;
                         },
                       },
                     },
@@ -284,6 +263,10 @@ export function PrayerInsights({
                 <li>
                   <span className="dawa-insights__dot dawa-insights__dot--bad" />
                   Missed <strong className="dawa-num">{data.totals.missed}</strong>
+                </li>
+                <li>
+                  <span className="dawa-insights__dot dawa-insights__dot--jamat" />
+                  Jamat/Awal wakt <strong className="dawa-num">{data.totals.jamat}</strong>
                 </li>
               </ul>
               <p className={`dawa-insights__trend dawa-insights__trend--${data.trend}`}>

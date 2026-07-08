@@ -3,9 +3,48 @@ import {
   getCachedPrayerTimes,
   prayerTimesCacheKey,
   prayerTimesCacheTtlMs,
+  prayerTimesCoordsCacheKey,
   setCachedPrayerTimes,
 } from './prayer-times-cache';
 import { kvGetJson, kvSetJson } from './kv';
+
+/**
+ * Canonical prayer-time lookup location. Coords are preferred (more accurate);
+ * the named form is the legacy fallback for accounts without migrated coords.
+ * The owning module for `fetchPrayerTimes` is the natural home for this type.
+ */
+export type PrayerLocation =
+  | { kind: 'coords'; latitude: number; longitude: number }
+  | { kind: 'named'; city: string; country: string };
+
+/** Helper: call fetchPrayerTimes with a PrayerLocation. */
+export async function fetchPrayerTimesFor(
+  loc: PrayerLocation,
+  onDate = new Date(),
+): Promise<PrayerTimesPayload> {
+  return loc.kind === 'coords'
+    ? fetchPrayerTimes(loc.latitude, loc.longitude, onDate)
+    : fetchPrayerTimes(loc.city, loc.country, onDate);
+}
+
+/**
+ * Build a PrayerLocation from a user row, preferring stored coords.
+ * Returns null when neither coords nor a complete city/country pair is set,
+ * so callers can fail closed instead of silently defaulting to Dhaka.
+ */
+export function prayerLocationFromUser(user: {
+  latitude?: number | null;
+  longitude?: number | null;
+  city?: string | null;
+  country?: string | null;
+}): PrayerLocation | null {
+  if (typeof user.latitude === 'number' && typeof user.longitude === 'number') {
+    return { kind: 'coords', latitude: user.latitude, longitude: user.longitude };
+  }
+  const city = user.city?.trim();
+  const country = user.country?.trim();
+  return city && country ? { kind: 'named', city, country } : null;
+}
 
 export type PrayerSlot = {
   prayer: PrayerName;
@@ -278,9 +317,17 @@ function prayerDateParam(onDate: Date) {
   return `${onDate.getDate()}-${onDate.getMonth() + 1}-${onDate.getFullYear()}`;
 }
 
-export async function fetchPrayerTimes(city: string, country: string, onDate = new Date()): Promise<PrayerTimesPayload> {
+export async function fetchPrayerTimes(
+  cityOrLat: string | number,
+  countryOrLng: string | number,
+  onDate = new Date(),
+): Promise<PrayerTimesPayload> {
   const dateParam = prayerDateParam(onDate);
-  const cacheKey = prayerTimesCacheKey(city, country, dateParam);
+  const useCoords = typeof cityOrLat === 'number' && typeof countryOrLng === 'number';
+
+  const cacheKey = useCoords
+    ? prayerTimesCoordsCacheKey(cityOrLat as number, countryOrLng as number, dateParam)
+    : prayerTimesCacheKey(cityOrLat as string, countryOrLng as string, dateParam);
   const cached = getCachedPrayerTimes(cacheKey);
   if (cached && isPrayerTimesPayload(cached)) return cached;
 
@@ -291,12 +338,23 @@ export async function fetchPrayerTimes(city: string, country: string, onDate = n
     return fromKv;
   }
 
-  const url = new URL('https://api.aladhan.com/v1/timingsByCity');
-  url.searchParams.set('city', city);
-  url.searchParams.set('country', country);
+  const url = new URL(
+    useCoords
+      ? 'https://api.aladhan.com/v1/timings'
+      : 'https://api.aladhan.com/v1/timingsByCity',
+  );
   url.searchParams.set('method', '1');
   url.searchParams.set('school', '1');
   url.searchParams.set('date', dateParam);
+  if (useCoords) {
+    url.searchParams.set('latitude', String(cityOrLat));
+    url.searchParams.set('longitude', String(countryOrLng));
+  } else {
+    // Legacy path — city/country name lookup. Kept for the ruhaniah recompute
+    // job until it migrates to coords; Aladhan deprecates this endpoint slowly.
+    url.searchParams.set('city', cityOrLat as string);
+    url.searchParams.set('country', countryOrLng as string);
+  }
 
   const res = await fetch(url.toString(), { next: { revalidate: 1800 } });
   if (!res.ok) throw new Error('Prayer times unavailable');
@@ -307,11 +365,11 @@ export async function fetchPrayerTimes(city: string, country: string, onDate = n
 
   const prayers = buildPrayerSlots(timings);
   const timeZone =
-    (json?.data?.meta?.timezone as string | undefined)?.trim() || 'Asia/Dhaka';
+    (json?.data?.meta?.timezone as string | undefined)?.trim() || 'UTC';
 
   const payload: PrayerTimesPayload = {
-    city,
-    country,
+    city: useCoords ? '' : (cityOrLat as string),
+    country: useCoords ? '' : (countryOrLng as string),
     date: json?.data?.date?.readable ?? dateParam,
     prayers,
     forbidden: buildForbiddenWindows(timings),

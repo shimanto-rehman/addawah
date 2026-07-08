@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -65,7 +66,7 @@ export async function DELETE(req: NextRequest) {
     if (e instanceof z.ZodError) {
       return jsonError('Confirm all requirements before deleting your account', 400);
     }
-    console.error(e);
+    logger.error({ route: '/api/account/delete', err: e }, 'Could not delete account');
     return jsonError('Could not delete account', 500);
   }
 }

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { jsonError, jsonOk } from '@/lib/api-helpers';
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
     return jsonOk({ ok: true, message: 'Password updated successfully' });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0]?.message ?? 'Invalid input');
-    console.error(e);
+    logger.error({ route: '/api/auth/reset-password/confirm', err: e }, 'Could not reset password');
     return jsonError('Could not reset password', 500);
   }
 }

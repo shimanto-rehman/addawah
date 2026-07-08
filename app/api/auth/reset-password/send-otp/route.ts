@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { jsonError, jsonOk } from '@/lib/api-helpers';
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0]?.message ?? 'Invalid input');
-    console.error(e);
+    logger.error({ route: '/api/auth/reset-password/send-otp', err: e }, 'Could not send verification code');
     return jsonError('Could not send verification code', 500);
   }
 }

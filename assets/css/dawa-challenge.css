@@ -1,0 +1,214 @@
+/* ── Daily Muslim challenge (dashboard) ──
+ * Modern, calm card. Frosted glass rows. Green accent for completion
+ * (a universal "good deed done" signal — same across all theme palettes,
+ * not the user's accent color, so the reward reads the same in every theme).
+ */
+
+.dawa-challenge {
+  margin-bottom: clamp(24px, 4vw, 36px);
+  padding: clamp(18px, 3vw, 24px);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+}
+
+.dawa-challenge__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: clamp(14px, 2vw, 18px);
+}
+
+.dawa-challenge__eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.dawa-challenge__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2.6vw, 20px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.dawa-challenge__streak {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+  background: var(--accent-soft);
+  border: 1px solid var(--border-soft);
+  transition: all 0.25s var(--ease);
+}
+.dawa-challenge__streak.is-strong {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.25);
+}
+
+.dawa-challenge__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dawa-challenge__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  transition:
+    background 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    transform 0.15s var(--ease);
+}
+.dawa-challenge__row:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--border);
+}
+.dawa-challenge__row:active:not(:disabled) {
+  transform: scale(0.992);
+}
+.dawa-challenge__row:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.dawa-challenge__row.is-done {
+  background: rgba(22, 163, 74, 0.08);
+  border-color: rgba(22, 163, 74, 0.18);
+}
+
+.dawa-challenge__emoji {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-size: 17px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+}
+.dawa-challenge__row.is-done .dawa-challenge__emoji {
+  background: rgba(22, 163, 74, 0.14);
+  border-color: rgba(22, 163, 74, 0.22);
+}
+
+.dawa-challenge__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dawa-challenge__task-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+}
+.dawa-challenge__row.is-done .dawa-challenge__task-title {
+  color: var(--text-soft);
+  text-decoration: line-through;
+  text-decoration-color: rgba(22, 163, 74, 0.5);
+  text-decoration-thickness: 1.5px;
+}
+
+.dawa-challenge__subtitle {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.dawa-challenge__check {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  color: transparent;
+  background: transparent;
+  transition: all 0.2s var(--ease);
+}
+.dawa-challenge__check.is-checked {
+  border-color: #16a34a;
+  background: #16a34a;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.dawa-challenge__hadith {
+  margin: 4px 0 8px 14px;
+  padding: 8px 12px 8px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--text-soft);
+  border-left: 2px solid #16a34a;
+  background: rgba(22, 163, 74, 0.05);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  animation: dawa-challenge-fade-in 0.3s var(--ease);
+}
+
+@keyframes dawa-challenge-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dawa-challenge__row,
+  .dawa-challenge__check,
+  .dawa-challenge__streak {
+    transition: none;
+  }
+  .dawa-challenge__hadith { animation: none; }
+}
+
+/* Light mode refinements — the green reward stays, but surfaces soften */
+[data-theme='light'] .dawa-challenge {
+  background: var(--surface-2);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+[data-theme='light'] .dawa-challenge__row {
+  background: color-mix(in srgb, var(--bg-soft) 60%, var(--surface-2));
+}
+[data-theme='light'] .dawa-challenge__row:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface-2));
+}
+[data-theme='light'] .dawa-challenge__row.is-done {
+  background: rgba(22, 163, 74, 0.06);
+}
+[data-theme='light'] .dawa-challenge__emoji {
+  background: var(--surface-2);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+[data-theme='light'] .dawa-challenge__check {
+  border-color: var(--border);
+}
+[data-theme='light'] .dawa-challenge__streak {
+  background: var(--surface-2);
+}

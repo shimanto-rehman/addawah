@@ -1,6 +1,11 @@
 import type { PrayerName } from './constants';
 import { PRAYERS } from './constants';
-import { fetchPrayerTimes, type PrayerTimesPayload } from './prayer-times';
+import {
+  fetchPrayerTimesFor,
+  prayerLocationFromUser,
+  type PrayerLocation,
+  type PrayerTimesPayload,
+} from './prayer-times';
 import type { DayInsight, PrayerInsightsPayload } from './prayer-insights';
 import {
   classifyPrayerForDay,
@@ -18,6 +23,7 @@ type DayStatRow = {
   kaza: number;
   missed: number;
   pending: number;
+  jamat: number;
   iman: number;
   missedPrayers: unknown;
   refreshedAt: Date;
@@ -35,6 +41,7 @@ function statToDayInsight(row: DayStatRow, date: Date): DayInsight {
     kaza: row.kaza,
     missed: row.missed,
     pending: row.pending,
+    jamat: row.jamat ?? 0,
     missedPrayers,
   };
 }
@@ -53,6 +60,7 @@ function computeDayInsight(
   let kaza = 0;
   let missed = 0;
   let pending = 0;
+  let jamat = 0;
   const missedPrayers: PrayerName[] = [];
 
   for (const prayer of PRAYERS) {
@@ -82,6 +90,12 @@ function computeDayInsight(
     } else {
       pending += 1;
     }
+
+    // Jamat / Awal Wakt is a sincerity multiplier — counts only on completed fard.
+    if (completed && rec?.inJamat) {
+      jamat += 1;
+      iman += 1.5; // sincerity bonus
+    }
   }
 
   iman = clampIman(iman);
@@ -94,6 +108,7 @@ function computeDayInsight(
       kaza,
       missed,
       pending,
+      jamat,
       missedPrayers,
     },
     imanEnd: iman,
@@ -106,8 +121,9 @@ function buildPayloadFromDays(days: DayInsight[]): PrayerInsightsPayload {
       onTime: acc.onTime + d.onTime,
       kaza: acc.kaza + d.kaza,
       missed: acc.missed + d.missed,
+      jamat: acc.jamat + d.jamat,
     }),
-    { onTime: 0, kaza: 0, missed: 0 },
+    { onTime: 0, kaza: 0, missed: 0, jamat: 0 },
   );
 
   const currentIman = days.at(-1)?.iman ?? 68;
@@ -121,8 +137,7 @@ function buildPayloadFromDays(days: DayInsight[]): PrayerInsightsPayload {
 export async function ensureSalahDayStats(
   userId: string,
   records: InsightFardRecord[],
-  city: string,
-  country: string,
+  location: PrayerLocation,
   dayCount = 14,
 ): Promise<DayInsight[]> {
   const now = new Date();
@@ -175,10 +190,10 @@ export async function ensureSalahDayStats(
     datesNeedingTimes.map(async (d) => {
       const key = formatDateKey(d);
       try {
-        timesCache.set(key, await fetchPrayerTimes(city, country, d));
+        timesCache.set(key, await fetchPrayerTimesFor(location, d));
       } catch {
         if (!timesCache.has(todayKey)) {
-          timesCache.set(todayKey, await fetchPrayerTimes(city, country, today));
+          timesCache.set(todayKey, await fetchPrayerTimesFor(location, today));
         }
         timesCache.set(key, timesCache.get(todayKey)!);
       }
@@ -231,6 +246,7 @@ export async function ensureSalahDayStats(
             kaza: insight.kaza,
             missed: insight.missed,
             pending: insight.pending,
+            jamat: insight.jamat,
             iman: insight.iman,
             missedPrayers: insight.missedPrayers,
             refreshedAt: now,
@@ -240,6 +256,7 @@ export async function ensureSalahDayStats(
             kaza: insight.kaza,
             missed: insight.missed,
             pending: insight.pending,
+            jamat: insight.jamat,
             iman: insight.iman,
             missedPrayers: insight.missedPrayers,
             refreshedAt: now,
@@ -255,28 +272,26 @@ export async function ensureSalahDayStats(
 export async function computePrayerInsightsCached(
   userId: string,
   records: InsightFardRecord[],
-  city: string,
-  country: string,
+  location: PrayerLocation,
   dayCount = 14,
 ): Promise<PrayerInsightsPayload> {
-  const days = await ensureSalahDayStats(userId, records, city, country, dayCount);
+  const days = await ensureSalahDayStats(userId, records, location, dayCount);
   return buildPayloadFromDays(days);
 }
 
 export async function refreshSalahDayStatForUser(userId: string, dateKey: string, now = new Date()) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { city: true, country: true },
+    select: { city: true, country: true, latitude: true, longitude: true },
   });
   if (!user) return;
-
-  const city = user.city?.trim() || 'Dhaka';
-  const country = user.country?.trim() || 'Bangladesh';
+  const location = prayerLocationFromUser(user);
+  if (!location) return; // nothing to compute against
   const date = new Date(`${dateKey}T12:00:00`);
 
   const records = await prisma.salahRecord.findMany({
     where: { userId, kind: 'FARD', date },
-    select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
+    select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true, inJamat: true },
   });
 
   const prior = await prisma.userSalahDayStat.findFirst({
@@ -284,7 +299,7 @@ export async function refreshSalahDayStatForUser(userId: string, dateKey: string
     orderBy: { date: 'desc' },
   });
 
-  const times = await fetchPrayerTimes(city, country, date);
+  const times = await fetchPrayerTimesFor(location, date);
   // Build record index for O(1) lookup
   const recordIndex = new Map<string, Map<string, InsightFardRecord>>();
   const byPrayer = new Map<string, InsightFardRecord>();
@@ -310,6 +325,7 @@ export async function refreshSalahDayStatForUser(userId: string, dateKey: string
       kaza: insight.kaza,
       missed: insight.missed,
       pending: insight.pending,
+      jamat: insight.jamat,
       iman: insight.iman,
       missedPrayers: insight.missedPrayers,
       refreshedAt: now,
@@ -319,6 +335,7 @@ export async function refreshSalahDayStatForUser(userId: string, dateKey: string
       kaza: insight.kaza,
       missed: insight.missed,
       pending: insight.pending,
+      jamat: insight.jamat,
       iman: insight.iman,
       missedPrayers: insight.missedPrayers,
       refreshedAt: now,

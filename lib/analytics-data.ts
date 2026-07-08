@@ -24,7 +24,7 @@ import {
 } from './salah-utils';
 import { PRAYERS, PRAYER_LABELS, type PrayerName } from './constants';
 import { cappedLifetimeRecordStart, SALAH_RECORD_STATS_SELECT } from './salah-query';
-import { fetchPrayerTimes, formatDateKeyInTimezone } from './prayer-times';
+import { fetchPrayerTimesFor, formatDateKeyInTimezone, prayerLocationFromUser } from './prayer-times';
 
 const SALAH_ANALYTICS_SELECT = SALAH_RECORD_STATS_SELECT;
 
@@ -42,6 +42,7 @@ export type AnalyticsKpis = {
   sunnahPrayed: number;
   sunnahTotal: number;
   totalCompleted: number;
+  lifetimeJamat: number;
 };
 
 export type AnalyticsPayload = {
@@ -54,7 +55,7 @@ export type AnalyticsPayload = {
     total: number;
     rate: number;
   }>;
-  stackedWeek: Array<{ label: string; onTime: number; kaza: number; missed: number }>;
+  stackedWeek: Array<{ label: string; onTime: number; kaza: number; missed: number; jamat: number }>;
   weekDays: number[];
   weekLabels: string[];
   moodHistory: Array<{
@@ -89,14 +90,13 @@ export function invalidateAnalyticsCache(userId: string) {
 async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean): Promise<AnalyticsPayload> {
   const dbUser = await prisma.user.findUnique({
     where: { id: userId },
-    select: { createdAt: true, city: true, country: true },
+    select: { createdAt: true, city: true, country: true, latitude: true, longitude: true },
   });
   if (!dbUser) throw new Error('User not found');
-
-  const city = dbUser.city?.trim() || 'Dhaka';
-  const country = dbUser.country?.trim() || 'Bangladesh';
+  const location = prayerLocationFromUser(dbUser);
+  if (!location) throw new Error('Location not set');
   const now = new Date();
-  const prayerTimes = await fetchPrayerTimes(city, country, now);
+  const prayerTimes = await fetchPrayerTimesFor(location, now);
   const todayKey = formatDateKeyInTimezone(now, prayerTimes.timeZone);
   const todayDate = dateFromKey(todayKey);
   const weekStartKey = rollingWeekStartKey(prayerTimes.timeZone, now);
@@ -121,7 +121,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
         kind: 'FARD',
         date: { gte: insightStart, lte: todayDate },
       },
-      select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
+      select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true, inJamat: true },
     }),
     includeCharts
       ? prisma.moodCheckIn.findMany({
@@ -143,7 +143,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
       if (r.completed) sunnahPrayed += 1;
     }
   }
-  const insights = await computePrayerInsightsCached(userId, insightRecords, city, country, 14);
+  const insights = await computePrayerInsightsCached(userId, insightRecords, location, 14);
 
   const weekFard = weekRecords.filter(isFardRecord);
   const weekTotal = 7 * PRAYERS.length;
@@ -166,6 +166,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     onTime: d.onTime,
     kaza: d.kaza,
     missed: d.missed,
+    jamat: d.jamat ?? 0,
   }));
 
   const moodHistory = includeCharts
@@ -214,6 +215,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     sunnahPrayed,
     sunnahTotal,
     totalCompleted: sinceJoin.lifetimePrayed,
+    lifetimeJamat: sinceJoin.lifetimeJamat,
   };
 
   return {

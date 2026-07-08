@@ -1,20 +1,27 @@
+import { logger } from '@/lib/logger';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
-import { fetchPrayerTimes } from '@/lib/prayer-times';
+import { fetchPrayerTimesFor, prayerLocationFromUser } from '@/lib/prayer-times';
 
 export async function GET() {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
 
-  const city = user!.city?.trim() || 'Dhaka';
-  const country = user!.country?.trim() || 'Bangladesh';
+  // Coords are the source of truth; city/country is the legacy fallback.
+  // No location at all → fail closed so the client prompts to set one
+  // instead of silently serving Dhaka times.
+  const location = prayerLocationFromUser(user!);
+  if (!location) {
+    return jsonError('Location not set. Please set your city to load prayer times.', 400);
+  }
+
 
   try {
-    const data = await fetchPrayerTimes(city, country);
+    const data = await fetchPrayerTimesFor(location);
     return jsonOk(data, 200, {
       'Cache-Control': 'private, max-age=1800, stale-while-revalidate=3600',
     });
   } catch (e) {
-    console.error(e);
+    logger.error({ route: '/api/prayer-times', err: e }, 'Could not load prayer times');
     return jsonError('Could not load prayer times', 502);
   }
 }

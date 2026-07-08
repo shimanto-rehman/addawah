@@ -17,7 +17,7 @@ import type { SalahCell } from '@/lib/salah-utils';
 
 const HEADER_ID = 'salah-mark-modal-title';
 
-type Update = { kind: SalahKind; unit: number; completed: boolean };
+type Update = { kind: SalahKind; unit: number; completed: boolean; inJamat?: boolean };
 
 function formatRakats(count: number) {
   return `${count} Rakat`;
@@ -52,6 +52,7 @@ type Props = {
   prayer: PrayerName;
   dateKey: string;
   cell: SalahCell;
+  gender: 'MALE' | 'FEMALE' | null;
   onConfirm: (updates: Update[]) => Promise<void>;
 };
 
@@ -94,6 +95,7 @@ export function SalahMarkModal({
   prayer,
   dateKey,
   cell,
+  gender,
   onConfirm,
 }: Props) {
   const slots = SUNNAH_SLOTS[prayer];
@@ -101,6 +103,7 @@ export function SalahMarkModal({
   const [sunnahBefore, setSunnahBefore] = useState<boolean[]>(() => []);
   const [sunnahAfter, setSunnahAfter] = useState<boolean[]>(() => []);
   const [fard, setFard] = useState(false);
+  const [inJamat, setInJamat] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -109,12 +112,13 @@ export function SalahMarkModal({
       setSunnahBefore([...cell.sunnahBefore]);
       setSunnahAfter([...cell.sunnahAfter]);
       setFard(cell.fard);
+      setInJamat(cell.inJamat ?? false);
       setInitialized(true);
     } else {
       setInitialized(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, cell.fard, cell.sunnahBefore.length, cell.sunnahAfter.length]);
+  }, [open, cell.fard, cell.inJamat, cell.sunnahBefore.length, cell.sunnahAfter.length]);
 
   const formattedDate = useMemo(() => {
     try {
@@ -155,8 +159,8 @@ export function SalahMarkModal({
       }
     });
 
-    if (fard !== cell.fard) {
-      updates.push({ kind: 'FARD', unit: 0, completed: fard });
+    if (fard !== cell.fard || inJamat !== (cell.inJamat ?? false)) {
+      updates.push({ kind: 'FARD', unit: 0, completed: fard, inJamat: fard ? inJamat : false });
     }
 
     try {
@@ -170,7 +174,7 @@ export function SalahMarkModal({
     } finally {
       setBusy(false);
     }
-  }, [busy, sunnahBefore, sunnahAfter, fard, cell, onConfirm, onClose]);
+  }, [busy, sunnahBefore, sunnahAfter, fard, inJamat, cell, onConfirm, onClose]);
 
   if (!initialized) return null;
 
@@ -315,6 +319,17 @@ export function SalahMarkModal({
                 </div>
               )}
             </div>
+
+            {fard && (
+              <label className="dawa-salah-modal__jamat">
+                <input
+                  type="checkbox"
+                  checked={inJamat}
+                  onChange={(e) => setInJamat(e.target.checked)}
+                />
+                {gender === 'FEMALE' ? 'Prayed in Awal Wakt' : 'Prayed in Jamat'}
+              </label>
+            )}
 
             <p className="dawa-salah-modal__hint">Tap each bead as you complete it</p>
 

@@ -23,6 +23,18 @@ const schema = z.object({
   email: z.string().email(),
   mobile: z.string().min(8),
   password: z.string().min(6).max(100),
+  gender: z.enum(['MALE', 'FEMALE']),
+  location: z
+    .object({
+      latitude: z.number().min(-90).max(90),
+      longitude: z.number().min(-180).max(180),
+      timeZone: z.string().min(2).max(64),
+      city: z.string().min(1).max(80),
+      country: z.string().min(1).max(80),
+      countryCode: z.string().min(2).max(2).optional(),
+    })
+    .nullable()
+    .optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -43,7 +55,6 @@ export async function POST(req: NextRequest) {
 
     const email = sanitizeEmail(body.email);
     if (!isValidEmail(email)) return jsonError('Enter a valid email address', 400);
-
     const [existingUsername, existingEmail, existingMobile] = await Promise.all([
       prisma.user.findUnique({ where: { username } }),
       prisma.user.findUnique({ where: { email } }),
@@ -53,7 +64,6 @@ export async function POST(req: NextRequest) {
     if (existingUsername) return jsonError('This username is already taken', 409);
     if (existingEmail) return jsonError('This email is already in use', 409);
     if (existingMobile) return jsonError('This phone number is already in use', 409);
-
     const user = await prisma.user.create({
       data: {
         name,
@@ -61,6 +71,16 @@ export async function POST(req: NextRequest) {
         email,
         mobile,
         passwordHash: await hashPassword(body.password),
+        gender: body.gender,
+        ...(body.location
+          ? {
+              latitude: body.location.latitude,
+              longitude: body.location.longitude,
+              timeZone: body.location.timeZone,
+              city: body.location.city,
+              country: body.location.country,
+            }
+          : {}),
       },
     });
 

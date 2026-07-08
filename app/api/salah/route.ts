@@ -10,7 +10,7 @@ import {
   weekRangeFromStartKey,
 } from '@/lib/salah-utils';
 import { SALAH_GRID_CACHE_HEADERS } from '@/lib/salah-query';
-import { fetchPrayerTimes, formatDateKeyInTimezone } from '@/lib/prayer-times';
+import { fetchPrayerTimesFor, formatDateKeyInTimezone, prayerLocationFromUser } from '@/lib/prayer-times';
 import { canMarkSalahCell } from '@/lib/salah-mark-rules';
 import { classifySalahMark, isMarkWithinWakt } from '@/lib/prayer-insights-internal';
 import { awardGoldCoins, computePrayerReward } from '@/lib/rewards';
@@ -22,6 +22,8 @@ import { invalidateAnalyticsCache } from '@/lib/analytics-data';
 import { logger } from '@/lib/logger';
 import type { PrayerName } from '@/lib/constants';
 
+
+
 export async function GET(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
@@ -29,11 +31,11 @@ export async function GET(req: NextRequest) {
   const weekParam = req.nextUrl.searchParams.get('week');
   let weekStartKey = weekParam && /^\d{4}-\d{2}-\d{2}$/.test(weekParam) ? weekParam : null;
   if (!weekStartKey) {
-    const times = await fetchPrayerTimes(
-      user!.city?.trim() || 'Dhaka',
-      user!.country?.trim() || 'Bangladesh',
-      new Date(),
-    );
+    const location = prayerLocationFromUser(user!);
+    if (!location) {
+      return jsonError('Location not set. Please set your city to load salah times.', 400);
+    }
+    const times = await fetchPrayerTimesFor(location, new Date());
     weekStartKey = rollingWeekStartKey(times.timeZone);
   }
   const { start: weekStart, end: weekEnd } = weekRangeFromStartKey(weekStartKey);
@@ -49,6 +51,7 @@ export async function GET(req: NextRequest) {
       kind: true,
       unit: true,
       completed: true,
+      inJamat: true,
     },
   });
 
@@ -61,6 +64,7 @@ const postSchema = z.object({
   kind: z.enum(['FARD', 'SUNNAH_BEFORE', 'SUNNAH_AFTER']).default('FARD'),
   unit: z.number().int().min(0).max(3).default(0),
   completed: z.boolean(),
+  inJamat: z.boolean().optional().default(false),
 });
 
 export async function POST(req: NextRequest) {
@@ -71,11 +75,11 @@ export async function POST(req: NextRequest) {
     const body = postSchema.parse(await req.json());
     const date = dateFromKey(body.date);
     const now = new Date();
-    const times = await fetchPrayerTimes(
-      user!.city?.trim() || 'Dhaka',
-      user!.country?.trim() || 'Bangladesh',
-      now,
-    );
+    const location = prayerLocationFromUser(user!);
+    if (!location) {
+      return jsonError('Location not set. Please set your city to log salah.', 400);
+    }
+    const times = await fetchPrayerTimesFor(location, now);
     const todayKey = formatDateKeyInTimezone(now, times.timeZone);
     if (body.date > todayKey) return jsonError('Cannot log future prayers');
 
@@ -99,16 +103,12 @@ export async function POST(req: NextRequest) {
 
     const existing = await prisma.salahRecord.findUnique({
       where: { userId_date_prayer_kind_unit: recordKey },
-      select: { completedOnTime: true },
+      select: { completedOnTime: true, inJamat: true },
     });
 
     const prayerDayTimes =
       body.kind === 'FARD' && body.unit === 0
-        ? await fetchPrayerTimes(
-            user!.city?.trim() || 'Dhaka',
-            user!.country?.trim() || 'Bangladesh',
-            date,
-          )
+        ? await fetchPrayerTimesFor(location, date)
         : null;
 
     const markedInWakt =
@@ -128,10 +128,11 @@ export async function POST(req: NextRequest) {
         unit: body.unit,
         completed: body.completed,
         completedOnTime: body.completed ? completedOnTime : false,
+        inJamat: body.completed ? body.inJamat : false,
       },
       update: body.completed
-        ? { completed: true, completedOnTime }
-        : { completed: false },
+        ? { completed: true, completedOnTime, inJamat: body.inJamat }
+        : { completed: false, inJamat: false },
     });
 
     let coinsEarned = 0;
@@ -150,12 +151,12 @@ export async function POST(req: NextRequest) {
         const [, reward] = await Promise.all([
           clearWaktReminderForPrayer(user!.id, body.prayer, body.date),
           computePrayerReward(
-            user!.city,
-            user!.country,
+            location,
             body.prayer as PrayerName,
             body.date,
             now,
             times,
+            body.inJamat,
           ),
         ]);
         if (reward) {

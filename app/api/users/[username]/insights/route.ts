@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { apiRequireAuth, jsonError, jsonOk } from '@/lib/api-helpers';
 import { getConnectionBetween } from '@/lib/friendship';
@@ -7,6 +8,7 @@ import {
   profileViewerFromConnection,
 } from '@/lib/profile-privacy';
 import { computePrayerInsights } from '@/lib/prayer-insights';
+import { prayerLocationFromUser } from '@/lib/prayer-times';
 import { addDays, startOfDay } from '@/lib/salah-utils';
 
 type RouteParams = { params: { username: string } };
@@ -24,6 +26,8 @@ export async function GET(_req: Request, { params }: RouteParams) {
       id: true,
       city: true,
       country: true,
+      latitude: true,
+      longitude: true,
       profilePrivacy: true,
     },
   });
@@ -50,13 +54,12 @@ export async function GET(_req: Request, { params }: RouteParams) {
       },
       select: { date: true, prayer: true, completed: true, updatedAt: true, completedOnTime: true },
     });
-
-    const city = profileUser.city?.trim() || 'Dhaka';
-    const country = profileUser.country?.trim() || 'Bangladesh';
-    const insights = await computePrayerInsights(records, city, country, 14, profileUser.id);
+    const location = prayerLocationFromUser(profileUser);
+    if (!location) return jsonError('Location not set for this user.', 400);
+    const insights = await computePrayerInsights(records, location, 14, profileUser.id);
     return jsonOk(insights);
   } catch (e) {
-    console.error(e);
+    logger.error({ route: '/api/users/[username]/insights', err: e }, 'Could not load prayer insights');
     return jsonError('Could not load prayer insights', 502);
   }
 }

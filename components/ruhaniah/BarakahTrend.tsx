@@ -36,8 +36,6 @@ const AREAS = [
   { key: 'heartScore', label: 'Heart', icon: '🤍' },
 ] as const;
 
-const AREA_COLORS = ['#e8c547', '#3ecf8e', '#0ea5e9', '#f06bab'];
-
 export function BarakahTrend({ history }: Props) {
   const theme = chartTheme();
 
@@ -52,20 +50,23 @@ export function BarakahTrend({ history }: Props) {
 
     return {
       labels,
-      datasets: AREAS.map((area, i) => ({
-        label: `${area.icon} ${area.label}`,
-        data: sorted.map((e) => e[area.key]),
-        borderColor: AREA_COLORS[i],
-        backgroundColor: `${AREA_COLORS[i]}18`,
-        borderWidth: 2,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        pointBackgroundColor: AREA_COLORS[i],
-        pointBorderColor: theme.surface,
-        pointBorderWidth: 1.5,
-        fill: false,
-        tension: 0.35,
-      })),
+      datasets: AREAS.map((area, i) => {
+        const color = theme.categorical[i] ?? theme.accent;
+        return {
+          label: `${area.icon} ${area.label}`,
+          data: sorted.map((e) => e[area.key]),
+          borderColor: color,
+          backgroundColor: `${color}18`,
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: color,
+          pointBorderColor: theme.surface,
+          pointBorderWidth: 1.5,
+          fill: false,
+          tension: 0.35,
+        };
+      }),
     };
   }, [history, theme]);
 
@@ -150,7 +151,7 @@ export function BarakahTrend({ history }: Props) {
           {AREAS.map((area, i) => (
             <div key={area.key} className="dawa-insight-stat">
               <span className="dawa-insight-stat__label">{area.icon} {area.label}</span>
-              <span className="dawa-insight-stat__value" style={{ color: AREA_COLORS[i] }}>
+              <span className="dawa-insight-stat__value" style={{ color: theme.categorical[i] ?? theme.accent }}>
                 {averages[area.key]}
               </span>
             </div>

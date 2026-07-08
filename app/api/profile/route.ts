@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -30,24 +31,39 @@ const patchSchema = z.object({
   name: z.string().min(2).max(80).optional(),
   email: z.string().email().optional(),
   mobile: z.string().min(8).optional(),
+  gender: z.enum(['MALE', 'FEMALE']).optional(),
   city: z.string().max(80).optional(),
   country: z.string().min(2).max(80).optional(),
   avatarColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
   themeColor: z.enum(['green', 'blue', 'gold', 'purple', 'silver', 'pink']).optional(),
   themeMode: z.enum(['dark', 'light']).optional(),
   profilePrivacy: privacySchema.optional(),
+  location: z
+    .object({
+      latitude: z.number().min(-90).max(90),
+      longitude: z.number().min(-180).max(180),
+      timeZone: z.string().min(2).max(64),
+      city: z.string().min(1).max(80),
+      country: z.string().min(1).max(80),
+      countryCode: z.string().min(2).max(2).optional(),
+    })
+    .nullable()
+    .optional(),
 });
-
 const profileSelect = {
   id: true,
   name: true,
   username: true,
   email: true,
   mobile: true,
+  gender: true,
   avatarColor: true,
   avatarUrl: true,
   city: true,
   country: true,
+  latitude: true,
+  longitude: true,
+  timeZone: true,
   themeColor: true,
   themeMode: true,
   profilePrivacy: true,
@@ -81,10 +97,9 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
   const { user, error } = await apiRequireAuth();
   if (error) return error;
-
   try {
     const body = patchSchema.parse(await req.json());
-    const data: Record<string, string | null | object> = {};
+    const data: Record<string, string | number | null | object> = {};
 
     if (body.name !== undefined) {
       data.name = sanitizeName(body.name);
@@ -112,12 +127,35 @@ export async function PATCH(req: NextRequest) {
       data.mobile = mobile;
     }
 
+    if (body.gender !== undefined) {
+      data.gender = body.gender;
+    }
+
     if (body.city !== undefined) {
       data.city = body.city.trim() || null;
     }
 
     if (body.country !== undefined) {
       data.country = body.country.trim();
+    }
+
+    if (body.location !== undefined) {
+      // Picker resolved a precise location — overwrite coords/timezone + sync
+      // display labels. A `null` body clears all five fields (used if we ever
+      // ship a "clear location" affordance).
+      if (body.location === null) {
+        data.latitude = null;
+        data.longitude = null;
+        data.timeZone = null;
+        data.city = null;
+        data.country = null;
+      } else {
+        data.latitude = body.location.latitude;
+        data.longitude = body.location.longitude;
+        data.timeZone = body.location.timeZone;
+        data.city = body.location.city;
+        data.country = body.location.country;
+      }
     }
 
     if (body.avatarColor !== undefined) {
@@ -153,7 +191,7 @@ export async function PATCH(req: NextRequest) {
     return jsonOk({ profile: formatProfile(profile) });
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0]?.message ?? 'Invalid input', 400);
-    console.error(e);
+    logger.error({ route: '/api/profile', err: e }, 'Failed to update profile');
     return jsonError('Failed to update profile', 500);
   }
 }

@@ -13,7 +13,7 @@ import {
 import { PRAYERS, PRAYER_LABELS, type PrayerName } from './constants';
 import { cappedLifetimeRecordStart, SALAH_RECORD_STATS_SELECT } from './salah-query';
 import { kvDel, kvGetJson, kvSetJson } from './kv';
-import { fetchPrayerTimes, formatDateKeyInTimezone } from './prayer-times';
+import { fetchPrayerTimesFor, formatDateKeyInTimezone, prayerLocationFromUser } from './prayer-times';
 
 const STATS_CACHE_TTL_SECONDS = 5;
 
@@ -27,6 +27,7 @@ export type StatsPayload = {
   lifetimePrayed: number;
   lifetimeMissed: number;
   lifetimeExpected: number;
+  lifetimeJamat: number;
   activeDays: number;
   perfectDays: number;
   daysOnApp: number;
@@ -52,7 +53,7 @@ export async function buildStatsPayload(
   opts?: {
     skipCache?: boolean;
     /** Pre-fetched user info to avoid a duplicate DB query. */
-    userInfo?: { createdAt: Date; city: string | null; country: string | null };
+    userInfo?: { createdAt: Date; city: string | null; country: string | null; latitude: number | null; longitude: number | null };
   },
 ): Promise<StatsPayload> {
   const cacheKey = `stats:${userId}`;
@@ -66,14 +67,13 @@ export async function buildStatsPayload(
 
   const dbUser = opts?.userInfo ?? await prisma.user.findUnique({
     where: { id: userId },
-    select: { createdAt: true, city: true, country: true },
+    select: { createdAt: true, city: true, country: true, latitude: true, longitude: true },
   });
   if (!dbUser) throw new Error('User not found');
-
+  const location = prayerLocationFromUser(dbUser);
+  if (!location) throw new Error('Location not set');
   const now = new Date();
-  const city = dbUser.city?.trim() || 'Dhaka';
-  const country = dbUser.country?.trim() || 'Bangladesh';
-  const prayerTimes = await fetchPrayerTimes(city, country, now);
+  const prayerTimes = await fetchPrayerTimesFor(location, now);
   const todayKey = formatDateKeyInTimezone(now, prayerTimes.timeZone);
   const todayDate = dateFromKey(todayKey);
   const weekStartKey = rollingWeekStartKey(prayerTimes.timeZone, now);
@@ -128,6 +128,7 @@ export async function buildStatsPayload(
     lifetimePrayed: sinceJoin.lifetimePrayed,
     lifetimeMissed: sinceJoin.lifetimeMissed,
     lifetimeExpected: sinceJoin.lifetimeExpected,
+    lifetimeJamat: sinceJoin.lifetimeJamat,
     activeDays: sinceJoin.activeDays,
     perfectDays: sinceJoin.perfectDays,
     daysOnApp: sinceJoin.daysOnApp,

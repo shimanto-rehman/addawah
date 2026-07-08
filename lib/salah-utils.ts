@@ -111,6 +111,7 @@ export function formatWeekLabel(weekStart: Date) {
 
 export type SalahCell = {
   fard: boolean;
+  inJamat: boolean;
   sunnahBefore: boolean[];
   sunnahAfter: boolean[];
 };
@@ -121,6 +122,7 @@ export function emptySalahCell(prayer: PrayerName): SalahCell {
   const slots = SUNNAH_SLOTS[prayer];
   return {
     fard: false,
+    inJamat: false,
     sunnahBefore: Array.from({ length: slots.before }, () => false),
     sunnahAfter: Array.from({ length: slots.after }, () => false),
   };
@@ -137,9 +139,8 @@ export function getSalahCell(
 export function isFardRecord(record: { kind?: string }) {
   return !record.kind || record.kind === 'FARD';
 }
-
 export function buildSalahGrid(
-  records: { date: Date; prayer: string; kind?: string; unit?: number; completed: boolean }[],
+  records: { date: Date; prayer: string; kind?: string; unit?: number; completed: boolean; inJamat?: boolean }[],
 ): SalahGrid {
   const grid: SalahGrid = {};
   for (const r of records) {
@@ -155,6 +156,7 @@ export function buildSalahGrid(
 
     if (isFardRecord(r)) {
       cell.fard = r.completed;
+      if (typeof r.inJamat === 'boolean') cell.inJamat = r.inJamat;
     } else if (r.kind === 'SUNNAH_BEFORE' && unit < cell.sunnahBefore.length) {
       cell.sunnahBefore[unit] = r.completed;
     } else if (r.kind === 'SUNNAH_AFTER' && unit < cell.sunnahAfter.length) {
@@ -215,7 +217,7 @@ export function computeLifetimeStats(records: { completed: boolean; prayer: stri
 
 export function computeLifetimeSinceJoin(
   _joinedAt: Date,
-  records: { date: Date; prayer: string; completed: boolean; kind?: string }[],
+  records: { date: Date; prayer: string; completed: boolean; kind?: string; inJamat?: boolean }[],
   prayerTimes?: PrayerTimesPayload | null,
   now = new Date(),
 ) {
@@ -268,9 +270,9 @@ export function getLifetimeMissedBreakdown(
       if (isToday) {
         if (isSlotStillPending(key, prayer, prayerTimes, now)) continue;
         if (logged === true) continue;
-        if (logged === false) {
-          missed.push({ date: key, prayer, label: PRAYER_LABELS[prayer] });
-        }
+        // Wakt passed and not completed → missed (covers both `false` and
+        // `undefined` — untouched prayers have no row).
+        missed.push({ date: key, prayer, label: PRAYER_LABELS[prayer] });
         continue;
       }
 
@@ -289,7 +291,7 @@ export function getLifetimeMissedBreakdown(
 
 /** Wakt-aware lifetime stats from the first day the user logged a fard prayer. */
 export function computeLifetimeTracking(
-  records: { date: Date; prayer: string; completed: boolean; kind?: string }[],
+  records: { date: Date; prayer: string; completed: boolean; kind?: string; inJamat?: boolean }[],
   prayerTimes: PrayerTimesPayload,
   now = new Date(),
 ) {
@@ -297,11 +299,13 @@ export function computeLifetimeTracking(
   const todayKey = formatDateKeyInTimezone(now, prayerTimes.timeZone);
 
   const recordMap = new Map<string, boolean>();
+  const jamatMap = new Map<string, boolean>();
   let firstTrackingKey: string | null = null;
 
   for (const r of fardRecords) {
     const key = dateKeyFromDbDate(r.date);
     recordMap.set(`${key}:${r.prayer}`, r.completed);
+    if (r.inJamat) jamatMap.set(`${key}:${r.prayer}`, true);
     if (r.completed && (!firstTrackingKey || key < firstTrackingKey)) {
       firstTrackingKey = key;
     }
@@ -313,6 +317,7 @@ export function computeLifetimeTracking(
 
   let expected = 0;
   let prayed = 0;
+  let jamatCount = 0;
   let activeDays = 0;
   let perfectDays = 0;
   const missedByPrayer = Object.fromEntries(PRAYERS.map((p) => [p, 0])) as Record<PrayerName, number>;
@@ -330,9 +335,10 @@ export function computeLifetimeTracking(
         if (logged === true) {
           expected += 1;
           prayed += 1;
+          if (jamatMap.get(`${key}:${prayer}`)) jamatCount += 1;
           dayDone += 1;
           dayAccountable += 1;
-        } else if (logged === false) {
+        } else {
           expected += 1;
           dayAccountable += 1;
           missedByPrayer[prayer] += 1;
@@ -343,6 +349,7 @@ export function computeLifetimeTracking(
       if (logged === true) {
         expected += 1;
         prayed += 1;
+        if (jamatMap.get(`${key}:${prayer}`)) jamatCount += 1;
         dayDone += 1;
         dayAccountable += 1;
         continue;
@@ -384,6 +391,7 @@ export function computeLifetimeTracking(
     lifetimeMissed: Math.max(0, expected - prayed),
     lifetimeExpected: expected,
     lifetimeRate: expected ? Math.round((prayed / expected) * 100) : 0,
+    lifetimeJamat: jamatCount,
     activeDays,
     perfectDays,
     daysOnApp,
@@ -419,6 +427,7 @@ function emptyLifetimeTracking() {
     lifetimeMissed: 0,
     lifetimeExpected: 0,
     lifetimeRate: 0,
+    lifetimeJamat: 0,
     activeDays: 0,
     perfectDays: 0,
     daysOnApp: 0,
@@ -513,6 +522,7 @@ function computeLifetimeTrackingLegacy(
     lifetimeMissed: Math.max(0, expected - prayed),
     lifetimeExpected: expected,
     lifetimeRate: expected ? Math.round((prayed / expected) * 100) : 0,
+    lifetimeJamat: 0, // legacy path — prayer times unavailable, jamat not tracked
     activeDays,
     perfectDays,
     daysOnApp,

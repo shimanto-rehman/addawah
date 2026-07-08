@@ -48,12 +48,6 @@ const STATUS_LABELS: Record<string, string> = {
   STORED_AKHIRAH: 'Stored for Akhirah',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  ANSWERED_SAME: '#3ecf8e',
-  ANSWERED_DIFFERENT: '#2eb88a',
-  WAITING: '#e8b923',
-  STORED_AKHIRAH: '#9b7bf7',
-};
 
 type Props = {
   duaTimeline: DuaTimelineEntry[];
@@ -63,6 +57,12 @@ type Props = {
 
 export function DuaTimeline({ duaTimeline, duaList, duaStats }: Props) {
   const theme = chartTheme();
+  const statusColors: Record<string, string> = {
+    ANSWERED_SAME: theme.success,
+    ANSWERED_DIFFERENT: '#2eb88a',
+    WAITING: theme.warn,
+    STORED_AKHIRAH: '#9b7bf7',
+  };
 
   // Bar chart: acceptance duration for answered duas
   const barData = useMemo(() => {
@@ -140,10 +140,10 @@ export function DuaTimeline({ duaTimeline, duaList, duaStats }: Props) {
     datasets: [{
       data: [duaStats.answered, duaStats.total - duaStats.answered - duaStats.waiting - duaStats.stored, duaStats.waiting, duaStats.stored],
       backgroundColor: [
-        STATUS_COLORS.ANSWERED_SAME,
-        STATUS_COLORS.ANSWERED_DIFFERENT,
-        STATUS_COLORS.WAITING,
-        STATUS_COLORS.STORED_AKHIRAH,
+        statusColors.ANSWERED_SAME,
+        statusColors.ANSWERED_DIFFERENT,
+        statusColors.WAITING,
+        statusColors.STORED_AKHIRAH,
       ],
       borderColor: theme.surface,
       borderWidth: 3,
@@ -165,21 +165,21 @@ export function DuaTimeline({ duaTimeline, duaList, duaStats }: Props) {
       {/* Status breakdown - visual pills */}
       <div className="dawa-dua-status-row">
         {duaStats.answered > 0 && (
-          <div className="dawa-dua-status-pill" style={{ borderColor: STATUS_COLORS.ANSWERED_SAME }}>
+          <div className="dawa-dua-status-pill" style={{ borderColor: statusColors.ANSWERED_SAME }}>
             <span>🌸</span>
             <span className="dawa-dua-status-pill__count">{duaStats.answered}</span>
             <span className="dawa-dua-status-pill__label">Answered</span>
           </div>
         )}
         {duaStats.waiting > 0 && (
-          <div className="dawa-dua-status-pill" style={{ borderColor: STATUS_COLORS.WAITING }}>
+          <div className="dawa-dua-status-pill" style={{ borderColor: statusColors.WAITING }}>
             <span>🕋</span>
             <span className="dawa-dua-status-pill__count">{duaStats.waiting}</span>
             <span className="dawa-dua-status-pill__label">Waiting</span>
           </div>
         )}
         {duaStats.stored > 0 && (
-          <div className="dawa-dua-status-pill" style={{ borderColor: STATUS_COLORS.STORED_AKHIRAH }}>
+          <div className="dawa-dua-status-pill" style={{ borderColor: statusColors.STORED_AKHIRAH }}>
             <span>✨</span>
             <span className="dawa-dua-status-pill__count">{duaStats.stored}</span>
             <span className="dawa-dua-status-pill__label">For Akhirah</span>

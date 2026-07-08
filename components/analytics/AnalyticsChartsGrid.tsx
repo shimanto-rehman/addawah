@@ -176,10 +176,10 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
                   data: data.byPrayer.map((p) => p.rate),
                   backgroundColor: [
                     theme.accentGlow,
-                    'rgba(46, 184, 138, 0.45)',
-                    'rgba(59, 158, 255, 0.45)',
-                    'rgba(155, 123, 247, 0.45)',
-                    'rgba(240, 107, 171, 0.45)',
+                    `${theme.categorical[1]}73`,
+                    `${theme.categorical[2]}73`,
+                    `${theme.categorical[3]}73`,
+                    `${theme.categorical[4]}73`,
                   ],
                   borderRadius: 8,
                   borderSkipped: false,
@@ -285,7 +285,7 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
                 labels: data.byPrayer.map((p) => p.label),
                 datasets: [{
                   data: data.byPrayer.map((p) => p.completed),
-                  backgroundColor: ['#c9a227', '#2eb88a', '#3b9eff', '#9b7bf7', '#f06bab'],
+                  backgroundColor: theme.categorical,
                   borderWidth: 0,
                   hoverOffset: 8,
                 }],

@@ -12,6 +12,9 @@ import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle';
 import { useFieldAvailability } from '@/hooks/useFieldAvailability';
 import { useSigninAvailability } from '@/hooks/useSigninAvailability';
+import { LocationPicker } from '@/components/location/LocationPicker';
+import type { ResolvedLocation } from '@/lib/location';
+import { GenderPicker, type Gender } from '@/components/auth/GenderPicker';
 import {
   isValidEmail,
   sanitizeEmail,
@@ -32,6 +35,9 @@ export function LoginPageClient() {
   const [email, setEmail] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [mobile, setMobile] = useState('');
+  const [location, setLocation] = useState<ResolvedLocation | null>(null);
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [locationPickerOpen, setLocationPickerOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -77,7 +83,6 @@ export function LoginPageClient() {
   const passwordValid = password.length >= 6;
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
   const confirmPasswordMismatch = confirmPassword.length > 0 && password !== confirmPassword;
-
   const registerReady =
     mode === 'register' &&
     name.trim().length >= 2 &&
@@ -85,7 +90,9 @@ export function LoginPageClient() {
     emailAvailability.showTick &&
     mobileAvailability.showTick &&
     passwordValid &&
-    passwordsMatch;
+    passwordsMatch &&
+    gender !== null &&
+    location !== null;
 
   function switchMode(next: AuthMode) {
     setMode(next);
@@ -111,7 +118,7 @@ export function LoginPageClient() {
     setLoading(true);
 
     const endpoint = mode === 'signin' ? '/api/auth/login' : '/api/auth/register';
-    let payload: Record<string, string>;
+    let payload: Record<string, string | number | boolean | null | undefined | object>;
 
     if (mode === 'signin') {
       if (signInMethod === 'identifier') {
@@ -138,6 +145,17 @@ export function LoginPageClient() {
         email: cleanEmail,
         mobile,
         password: passwordVal,
+        gender,
+        location: location
+          ? {
+              latitude: location.latitude,
+              longitude: location.longitude,
+              timeZone: location.timeZone,
+              city: location.city,
+              country: location.country,
+              countryCode: location.countryCode,
+            }
+          : null,
       };
     }
 
@@ -383,6 +401,43 @@ export function LoginPageClient() {
                 />
               )}
 
+
+              {mode === 'register' && (
+                <div className="dawa-field">
+                  <label className="dawa-label">Gender</label>
+                  <GenderPicker value={gender} onChange={setGender} />
+                </div>
+              )}
+              {mode === 'register' && (
+                <div className="dawa-field">
+                  <label className="dawa-label">Location</label>
+                  <div className="dawa-location-summary">
+                    {location ? (
+                      <>
+                        <span className="dawa-location-summary__label">
+                          {location.city || 'Unknown city'}
+                          {location.country ? `, ${location.country}` : ''}
+                        </span>
+                        {location.timeZone ? (
+                          <span className="dawa-location-summary__tz">{location.timeZone}</span>
+                        ) : null}
+                      </>
+                    ) : (
+                      <span className="dawa-location-summary__placeholder">
+                        No location set — prayer times need one.
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      className="dawa-btn dawa-btn--ghost"
+                      onClick={() => setLocationPickerOpen(true)}
+                    >
+                      {location ? 'Change' : 'Set location'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {info && <p className="dawa-auth__info">{info}</p>}
               {error && <p className="dawa-error">{error}</p>}
 
@@ -394,6 +449,15 @@ export function LoginPageClient() {
                 {loading ? 'Please wait…' : mode === 'signin' ? 'Sign in' : 'Create account'}
               </button>
             </form>
+
+            <LocationPicker
+              open={locationPickerOpen}
+              onClose={() => setLocationPickerOpen(false)}
+              onConfirm={(loc) => {
+                setLocation(loc);
+                setLocationPickerOpen(false);
+              }}
+            />
 
             <p className="dawa-auth__mobile-home">
               <a href="/">← Back to home</a>

@@ -1,5 +1,9 @@
 import { PRAYERS, type PrayerName } from './constants';
-import { fetchPrayerTimes } from './prayer-times';
+import {
+  fetchPrayerTimesFor,
+  type PrayerLocation,
+  type PrayerTimesPayload,
+} from './prayer-times';
 import { computePrayerInsightsCached } from './salah-day-stats';
 import { addDays, formatDateKey, startOfDay } from './salah-utils';
 import {
@@ -19,6 +23,7 @@ export type DayInsight = {
   kaza: number;
   missed: number;
   pending: number;
+  jamat: number;
   missedPrayers: PrayerName[];
 };
 
@@ -26,15 +31,14 @@ export type PrayerInsightsPayload = {
   days: DayInsight[];
   currentIman: number;
   trend: 'up' | 'down' | 'steady';
-  totals: { onTime: number; kaza: number; missed: number };
+  totals: { onTime: number; kaza: number; missed: number; jamat: number };
 };
 
 type FardRecord = InsightFardRecord;
 
 async function computePrayerInsightsInline(
   records: FardRecord[],
-  city: string,
-  country: string,
+  location: PrayerLocation,
   dayCount = 14,
 ): Promise<PrayerInsightsPayload> {
   const now = new Date();
@@ -55,7 +59,7 @@ async function computePrayerInsightsInline(
     byPrayer.set(r.prayer, r);
   }
 
-  const timesCache = new Map<string, Awaited<ReturnType<typeof fetchPrayerTimes>>>();
+  const timesCache = new Map<string, PrayerTimesPayload>();
   const dates: Date[] = [];
   for (let d = new Date(start); d <= today; d = addDays(d, 1)) {
     dates.push(new Date(d));
@@ -65,10 +69,10 @@ async function computePrayerInsightsInline(
     dates.map(async (d) => {
       const key = formatDateKey(d);
       try {
-        const times = await fetchPrayerTimes(city, country, d);
+        const times = await fetchPrayerTimesFor(location, d);
         timesCache.set(key, times);
       } catch {
-        timesCache.set(key, await fetchPrayerTimes(city, country, today));
+        timesCache.set(key, await fetchPrayerTimesFor(location, today));
       }
     }),
   );
@@ -86,6 +90,7 @@ async function computePrayerInsightsInline(
     let kaza = 0;
     let missed = 0;
     let pending = 0;
+    let jamat = 0;
     const missedPrayers: PrayerName[] = [];
 
     for (const prayer of PRAYERS) {
@@ -115,6 +120,8 @@ async function computePrayerInsightsInline(
       } else {
         pending += 1;
       }
+
+      if (completed && rec?.inJamat) jamat += 1;
     }
 
     iman = clampIman(iman);
@@ -126,6 +133,7 @@ async function computePrayerInsightsInline(
       kaza,
       missed,
       pending,
+      jamat,
       missedPrayers,
     });
   }
@@ -135,8 +143,9 @@ async function computePrayerInsightsInline(
       onTime: acc.onTime + d.onTime,
       kaza: acc.kaza + d.kaza,
       missed: acc.missed + d.missed,
+      jamat: acc.jamat + (d.jamat ?? 0),
     }),
-    { onTime: 0, kaza: 0, missed: 0 },
+    { onTime: 0, kaza: 0, missed: 0, jamat: 0 },
   );
 
   const currentIman = days.at(-1)?.iman ?? 68;
@@ -149,13 +158,12 @@ async function computePrayerInsightsInline(
 
 export async function computePrayerInsights(
   records: FardRecord[],
-  city: string,
-  country: string,
+  location: PrayerLocation,
   dayCount = 14,
   userId?: string,
 ): Promise<PrayerInsightsPayload> {
   if (userId) {
-    return computePrayerInsightsCached(userId, records, city, country, dayCount);
+    return computePrayerInsightsCached(userId, records, location, dayCount);
   }
-  return computePrayerInsightsInline(records, city, country, dayCount);
+  return computePrayerInsightsInline(records, location, dayCount);
 }

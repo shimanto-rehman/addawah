@@ -10,10 +10,11 @@ import {
 } from './notification-format';
 import { prisma } from './prisma';
 import {
-  fetchPrayerTimes,
+  fetchPrayerTimesFor,
   formatDateKeyInTimezone,
   getDatePartsInTimezone,
   getNowMinutesInTimezone,
+  prayerLocationFromUser,
   prayerWaktWindow,
 } from './prayer-times';
 import { activePrayerForNow } from './rewards';
@@ -299,18 +300,16 @@ async function syncConnectionRequestNotifications(userId: string) {
 async function syncWaktReminderNotification(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { city: true, country: true },
+    select: { city: true, country: true, latitude: true, longitude: true },
   });
   if (!user) return;
+  const location = prayerLocationFromUser(user);
+  if (!location) return;
 
   const now = new Date();
   let times;
   try {
-    times = await fetchPrayerTimes(
-      user.city?.trim() || 'Dhaka',
-      user.country?.trim() || 'Bangladesh',
-      now,
-    );
+    times = await fetchPrayerTimesFor(location, now);
   } catch {
     return;
   }
@@ -388,20 +387,18 @@ const RUHANIAH_REMINDER_MINUTE = 40;
 async function syncRuhaniahReminderNotification(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { city: true, country: true },
+    select: { city: true, country: true, latitude: true, longitude: true },
   });
   if (!user) return;
+  const location = prayerLocationFromUser(user);
+  if (!location) return;
 
   const now = new Date();
   let timeZone: string;
   let dateKey: string;
 
   try {
-    const times = await fetchPrayerTimes(
-      user.city?.trim() || 'Dhaka',
-      user.country?.trim() || 'Bangladesh',
-      now,
-    );
+    const times = await fetchPrayerTimesFor(location, now);
     timeZone = times.timeZone;
     dateKey = formatDateKeyInTimezone(now, times.timeZone);
   } catch {
