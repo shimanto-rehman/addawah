@@ -72,13 +72,13 @@ export async function POST(req: NextRequest) {
         mobile,
         passwordHash: await hashPassword(body.password),
         gender: body.gender,
+        country: body.location?.country ?? 'Bangladesh',
         ...(body.location
           ? {
               latitude: body.location.latitude,
               longitude: body.location.longitude,
               timeZone: body.location.timeZone,
               city: body.location.city,
-              country: body.location.country,
             }
           : {}),
       },
