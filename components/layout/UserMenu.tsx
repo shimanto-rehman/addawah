@@ -13,7 +13,7 @@ const PANEL_GAP = 10;
 const VIEWPORT_PAD = 12;
 
 type MenuItem =
-  | { type: 'link'; href: string; label: string; icon: 'profile' | 'settings' | 'analytics' }
+  | { type: 'link'; href: string; label: string; icon: 'profile' | 'settings' | 'analytics' | 'notifications' }
   | { type: 'action'; label: string; icon: 'logout'; onClick: () => void };
 
 function MenuIcon({ name }: { name: MenuItem['icon'] }) {
@@ -53,6 +53,13 @@ function MenuIcon({ name }: { name: MenuItem['icon'] }) {
           <path d="M22 20V8" />
         </svg>
       );
+    case 'notifications':
+      return (
+        <svg {...props}>
+          <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5" />
+          <path d="M10 20a2 2 0 0 0 4 0" />
+        </svg>
+      );
     case 'logout':
       return (
         <svg {...props}>
@@ -69,6 +76,7 @@ function buildMenuItems(logout: () => Promise<void>): MenuItem[] {
     { type: 'link', href: '/profile', label: 'Profile', icon: 'profile' },
     { type: 'link', href: '/settings', label: 'Settings', icon: 'settings' },
     { type: 'link', href: '/analytics', label: 'Analytics', icon: 'analytics' },
+    { type: 'link', href: '/notifications', label: 'Notifications', icon: 'notifications' },
     { type: 'action', label: 'Sign out', icon: 'logout', onClick: () => void logout() },
   ];
 }

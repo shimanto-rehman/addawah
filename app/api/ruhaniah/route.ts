@@ -8,6 +8,7 @@ import { getRuhaniahToday } from '@/lib/ruhaniah-data';
 import { computeFahmProfile } from '@/lib/ruhaniah-profile';
 import { analyzeWeaknesses, type Weakness } from '@/lib/ruhaniah-weakness';
 import { getChallengeFahmSignal } from '@/lib/challenge-data';
+import { getCalendarConsistency } from '@/lib/islamic-calendar';
 import { clearRuhaniahReminderForDate } from '@/lib/notifications';
 import { fetchPrayerTimesFor, formatDateKeyInTimezone, prayerLocationFromUser } from '@/lib/prayer-times';
 import { kvGetJson, kvSetJson, kvDel } from '@/lib/kv';
@@ -309,8 +310,10 @@ export async function POST(req: Request) {
 
   // Fetch the challenge signal once and reuse it for both the Fahm profile
   // recompute (fire-and-forget) and the weakness analysis below — avoids a
-  // redundant 14-day DailyChallenge query per POST.
-  const challengeSignal = await getChallengeFahmSignal(userId);
+  const [challengeSignal, calendarConsistency] = await Promise.all([
+    getChallengeFahmSignal(userId),
+    getCalendarConsistency(userId),
+  ]);
 
   // Fire-and-forget: recompute Fahm profile (non-blocking), reusing the signal.
   computeFahmProfile(userId, challengeSignal).catch((err) => logger.error({ route: '/api/ruhaniah', err }, 'Fahm profile recompute failed'));
@@ -371,6 +374,7 @@ export async function POST(req: Request) {
         activeDuas: vSignals.activeDuas as number | undefined,
         streak: vSignals.streak as number | undefined,
         challengeConsistency: challengeSignal.consistency,
+        calendarConsistency,
       },
       insightsPayload?.fahmProfile as { categoryScores: Record<string, number>; overallQAS: number; weakest?: string | null; trend: string } | null | undefined ?? null,
       historyData.duaStats,

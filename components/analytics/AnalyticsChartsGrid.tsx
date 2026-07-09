@@ -52,6 +52,7 @@ export type AnalyticsChartsData = {
   stackedWeek: { label: string; onTime: number; kaza: number; missed: number }[];
   weekDays: number[];
   weekDeeds: (number | null)[];
+  weekCalendarDeeds: (number | null)[];
   weekLabels: string[];
   moodHistory: { date: string; moodId: string; label: string; iman: number | null }[];
   imanMoodSeries: ImanMoodDay[];
@@ -250,7 +251,7 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
 
         <article className="dawa-analytics__card dawa-glass">
           <h3 className="dawa-analytics__card-title">Week completion</h3>
-          <p className="dawa-analytics__card-sub">Fard prayers vs daily deeds per day</p>
+          <p className="dawa-analytics__card-sub">Fard prayers vs deeds &amp; sunnah actions</p>
           <div className="dawa-analytics__chart">
             <Line
               data={{
@@ -276,6 +277,18 @@ export function AnalyticsChartsGrid({ data }: { data: AnalyticsChartsData }) {
                     pointRadius: 3,
                     borderWidth: 2,
                     borderDash: [5, 4],
+                    spanGaps: true,
+                  },
+                  {
+                    label: 'Sunnah',
+                    data: data.weekCalendarDeeds,
+                    borderColor: theme.accent,
+                    backgroundColor: 'transparent',
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    borderWidth: 1.5,
+                    borderDash: [2, 3],
                     spanGaps: true,
                   },
                 ],

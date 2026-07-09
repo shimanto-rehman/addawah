@@ -63,6 +63,18 @@ Free Islamic web platform for salah tracking, accountability, daily inspiration,
 - On-time bar chart (weekly)
 - Mood history tracking
 - Personal coaching tips
+- **Daily Challenge** — 5 rotating tasks with deed tracking + iman integration
+- Calendar sunnah deeds integrated into week completion chart
+
+### Islamic Calendar (Hijri)
+- **Month grid** — Gregorian calendar with Hijri date annotations and event significance dots
+- **Today's events** — automatic detection of special Islamic days (Ashura, Mawlid, Ramadan, Eid, etc.)
+- **Sunnah checklist** — per-event action items with gold coin rewards (5–15 coins per action)
+- **Countdown** — days until next sacred day with Hijri date target
+- **Story of the day** — significance and history of each event with Quran references
+- **Consistency tracking** — 14-day rolling completion rate feeds Ruhaniah weakness analysis
+- Weekly Jumu'ah recurring events; static event data in `public/data/islamic-events.json` (zero DB queries)
+- Mobile: replaces notifications in bottom navbar; notifications moved to avatar menu
 
 ### Notifications
 - Real-time notification panel with unread count badge
@@ -142,6 +154,7 @@ app/
     analytics/        # Lifetime charts + KPIs
     profile/          # User profile + privacy settings
     ruhaniah/         # Spiritual check-in flow
+    calendar/         # Islamic Hijri calendar + sunnah checklist
     notifications/    # Notification panel
     settings/         # Themes + account deletion
     u/[username]/     # Public user profile
@@ -156,6 +169,7 @@ app/
     stats/            # Dashboard stats
     dashboard/        # Dashboard aggregated data
     analytics/        # Analytics summary
+    calendar/         # Calendar payload + sunnah action toggle
     friends/          # Friend system, board, hub, search, suggestions, connections
     pokes/            # Poke system
     notifications/    # Notifications + count
@@ -171,6 +185,7 @@ app/
     internal/         # Internal sync + ruhaniah verse
 components/
   dashboard/          # HeroStats, SalahTracker, PrayerInsights, SunPathArc, MoodCheckIn, HijriCalendar
+  calendar/           # IslamicCalendar (month grid, sunnah checklist, countdown, stories)
   analytics/          # AnalyticsHub, AnalyticsChartsGrid
   friends/            # FriendsHub, WaktBoardVirtual, UsernameSearch, ManageConnections, PublicUserProfile
   landing/            # LandingPage, PeopleFeedback, DeveloperCredit, PublicShell, LandingBackdrop
@@ -185,7 +200,7 @@ components/
   preloader/          # Addawah preloader animation
   seo/                # JsonLd
   settings/           # DeleteAccountSection
-lib/                  # Auth, prisma, salah utils, ruhaniah logic, chart theme, wakt snapshot, rewards
+lib/                  # Auth, prisma, salah utils, ruhaniah logic, islamic calendar, chart theme, wakt snapshot, rewards
 prisma/               # Database schema
 public/
   data/               # ayah-pool.json (300 verses), fahm-questions.json (320 questions)
@@ -200,6 +215,7 @@ public/
 |------|---------|---------|
 | `public/data/ayah-pool.json` | 300 Quran verses | Verse selection engine for Ruhaniah |
 | `public/data/fahm-questions.json` | 320 questions | Fahm psychometric test (40 per category × 8) |
+| `public/data/islamic-events.json` | 19 Islamic events | Hijri calendar events with sunnah actions & Quran refs |
 | `docs/FAHM_QUESTION_BANK.md` | Human-readable question bank | Reference for Fahm test categories & scoring |
 
 ## Verse Selection Engine
@@ -235,6 +251,8 @@ Verses are scored against tags (primary +3, secondary +1) and the best match is 
 | `BarakahLog` | Daily barakah ratings |
 | `DuaEntry` | Personal duas with status tracking |
 | `RuhaniahVerse` | Daily personalized Quran verse |
+| `DailyChallenge` | Daily rotating challenge tasks with bitmap mask |
+| `CalendarTaskCompletion` | Islamic calendar sunnah action completions (bitmap mask per day) |
 
 ## License
 

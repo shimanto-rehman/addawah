@@ -1,0 +1,1669 @@
+{
+  "events": [
+    {
+      "id": "jumuah",
+      "hijriMonth": 0,
+      "hijriDay": 0,
+      "title": "Friday (Jumu'ah)",
+      "arabicTitle": "يوم الجمعة",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "Friday is the best day on which the sun rises — the day Adam was created, admitted to Paradise, and removed from it. The Prophet ﷺ said it is the master of days, containing an hour in which supplication is answered.",
+      "quranRefs": [
+        {
+          "surah": "Al-Jumu'ah",
+          "surahNumber": 62,
+          "ayah": 9
+        },
+        {
+          "surah": "Al-Jumu'ah",
+          "surahNumber": 62,
+          "ayah": 10
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🛁",
+          "title": "Perform Ghusl",
+          "subtitle": "Bath and grooming, as the Prophet ﷺ recommended",
+          "reward": 5
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Recite Surah Al-Kahf",
+          "subtitle": "A light between this Friday and the next",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🕌",
+          "title": "Go early to Jumu'ah prayer",
+          "subtitle": "Send abundant salawat upon the Prophet ﷺ",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:848"
+    },
+    {
+      "id": "hijri-new-year",
+      "hijriMonth": 1,
+      "hijriDay": 1,
+      "title": "Islamic New Year (Hijri)",
+      "arabicTitle": "رأس السنة الهجرية",
+      "category": "reflection",
+      "significance": "medium",
+      "shortStory": "The Hijri calendar was instituted by Umar ibn al-Khattab (RA) in 638 CE, beginning from the Prophet's migration (Hijrah) from Makkah to Madinah — the event that transformed a persecuted community into a society built on faith.",
+      "quranRefs": [
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 40
+        },
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 36
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌙",
+          "title": "Reflect on the meaning of Hijrah",
+          "subtitle": "Migrating from sin to obedience, inwardly and outwardly",
+          "reward": 8
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Renew your intentions",
+          "subtitle": "Set spiritual goals for the new year, as Umar (RA) took account of himself",
+          "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "📿",
+          "title": "Fast the first day",
+          "subtitle": "A voluntary fast to begin the year in worship",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://quran.com/9:40"
+    },
+    {
+      "id": "tasua",
+      "hijriMonth": 1,
+      "hijriDay": 9,
+      "title": "Day of Tasu'a",
+      "arabicTitle": "يوم تاسوعاء",
+      "category": "fasting",
+      "significance": "medium",
+      "shortStory": "The Prophet ﷺ intended to fast the 9th of Muharram alongside the 10th to distinguish the Muslim practice from the People of the Book. Fasting Tasu'a with Ashura is a recommended sunnah.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 183
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Fast the 9th of Muharram",
+          "subtitle": "Pair it with the 10th (Ashura) to differ from previous nations",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Make dua for the Ummah",
+          "subtitle": "Remember Musa's gratitude and Allah's deliverance",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:1134"
+    },
+    {
+      "id": "ashura",
+      "hijriMonth": 1,
+      "hijriDay": 10,
+      "title": "Day of Ashura",
+      "arabicTitle": "يوم عاشوراء",
+      "category": "fasting",
+      "significance": "high",
+      "shortStory": "On this day Allah saved Musa (AS) and the Children of Israel from Pharaoh by parting the sea, drowning the oppressor. When the Prophet ﷺ arrived in Madinah, he found the Jews fasting this day and said, 'We have more right to Musa than you,' and he fasted it and ordered others to fast.",
+      "quranRefs": [
+        {
+          "surah": "Yunus",
+          "surahNumber": 10,
+          "ayah": 90
+        },
+        {
+          "surah": "Ta-Ha",
+          "surahNumber": 20,
+          "ayah": 77
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Fast on Ashura",
+          "subtitle": "The Prophet ﷺ fasted it; it expiates the past year's sins",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "📅",
+          "title": "Fast the 9th or 11th too",
+          "subtitle": "Distinguish from the People of the Book",
+          "reward": 8
+        },
+        {
+          "index": 2,
+          "emoji": "🍽️",
+          "title": "Be generous to your family",
+          "subtitle": "The Prophet ﷺ said generosity on Ashura brings barakah all year",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "🤲",
+          "title": "Reflect on Musa's deliverance",
+          "subtitle": "Gratitude for Allah rescuing the believers",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:1132a"
+    },
+    {
+      "id": "mawlid-an-nabi",
+      "hijriMonth": 3,
+      "hijriDay": 12,
+      "title": "Mawlid an-Nabi",
+      "arabicTitle": "المولد النبوي",
+      "category": "celebration",
+      "significance": "medium",
+      "shortStory": "The Prophet Muhammad ﷺ was born in the Year of the Elephant (570 CE) in Makkah, a mercy to the worlds through whom Allah completed His message. Believers honor his birth by increasing love for him and following his sunnah.",
+      "quranRefs": [
+        {
+          "surah": "Al-Anbiya",
+          "surahNumber": 21,
+          "ayah": 107
+        },
+        {
+          "surah": "Aal-E-Imran",
+          "surahNumber": 3,
+          "ayah": 164
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Send abundant salawat",
+          "subtitle": "Invoke blessings upon the Prophet ﷺ throughout the day",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📚",
+          "title": "Read his biography (Seerah)",
+          "subtitle": "Learn one new detail about his character and emulate it",
+          "reward": 8
+        },
+        {
+          "index": 2,
+          "emoji": "❤️",
+          "title": "Revive a forgotten sunnah",
+          "subtitle": "Choose one practice he ﷺ did and adopt it today",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://quran.com/21:107"
+    },
+    {
+      "id": "isra-miraj",
+      "hijriMonth": 7,
+      "hijriDay": 27,
+      "title": "Isra and Mi'raj",
+      "arabicTitle": "الإسراء والمعراج",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "In one miraculous night, Allah took His Prophet ﷺ from al-Masjid al-Haram to al-Masjid al-Aqsa, then ascended through the heavens where he met earlier prophets and received the gift of the five daily prayers — the mi'raj of the believers.",
+      "quranRefs": [
+        {
+          "surah": "Al-Isra",
+          "surahNumber": 17,
+          "ayah": 1
+        },
+        {
+          "surah": "An-Najm",
+          "surahNumber": 53,
+          "ayah": 13
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕌",
+          "title": "Pray all five daily prayers on time",
+          "subtitle": "The gift given on this night — guard it",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "🕋",
+          "title": "Pray in congregation",
+          "subtitle": "27× reward over praying alone",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Make the Night Journey dua",
+          "subtitle": "Reflect on the mirage of dunya and the reality of the akhirah",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "📖",
+          "title": "Reflect on Al-Isra (17:1)",
+          "subtitle": "Ponder the blessed precincts of Masjid al-Aqsa",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/17:1"
+    },
+    {
+      "id": "laylat-al-baraat",
+      "hijriMonth": 8,
+      "hijriDay": 15,
+      "title": "Laylat al-Bara'at",
+      "arabicTitle": "ليلة البراءة",
+      "category": "prayer",
+      "significance": "medium",
+      "shortStory": "On the 15th night of Sha'ban, Allah's mercy descends; He forgives all except the idolater and the one who harbors hatred. It is a night of seeking forgiveness and turning back to Allah before the arrival of Ramadan.",
+      "quranRefs": [
+        {
+          "surah": "Ad-Dukhan",
+          "surahNumber": 44,
+          "ayah": 3
+        },
+        {
+          "surah": "Ad-Dukhan",
+          "surahNumber": 44,
+          "ayah": 4
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌙",
+          "title": "Pray during the night",
+          "subtitle": "Stand in voluntary prayer seeking Allah's forgiveness",
+          "reward": 12
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Seek forgiveness (Istighfar)",
+          "subtitle": "Allah forgives abundantly on this blessed night",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🕊️",
+          "title": "Fast the 15th of Sha'ban",
+          "subtitle": "A recommended voluntary fast",
+          "reward": 8
+        },
+        {
+          "index": 3,
+          "emoji": "🤝",
+          "title": "Reconcile broken ties",
+          "subtitle": "Allah withholds forgiveness from those who harbor hatred",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/ibnmajah:1390"
+    },
+    {
+      "id": "ramadan-1",
+      "hijriMonth": 9,
+      "hijriDay": 1,
+      "title": "First Day of Ramadan",
+      "arabicTitle": "أول رمضان",
+      "category": "fasting",
+      "significance": "high",
+      "shortStory": "Ramadan is the month in which the Quran was revealed — a guidance for humanity. Allah prescribed fasting upon this Ummah as He did upon those before, that we may attain taqwa. The gates of Paradise open and the devils are chained.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 185
+        },
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 183
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌅",
+          "title": "Make the intention to fast",
+          "subtitle": "Resolve each night before dawn to fast for Allah",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📜",
+          "title": "Set a Quran completion goal",
+          "subtitle": "Ramadan is the month of the Quran — recite daily",
+          "reward": 8
+        },
+        {
+          "index": 2,
+          "emoji": "🍞",
+          "title": "Take Sahur",
+          "subtitle": "A blessed meal; delay it before Fajr",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "🤲",
+          "title": "Make dua at the start of Ramadan",
+          "subtitle": "Ask Allah for acceptance and strength to complete it",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/2:185"
+    },
+    {
+      "id": "laylat-al-qadr-21",
+      "hijriMonth": 9,
+      "hijriDay": 21,
+      "title": "Laylat al-Qadr (21st Night)",
+      "arabicTitle": "ليلة القدر",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "The Night of Decree is better than a thousand months — worship on it equals 83 years. The Prophet ﷺ said to seek it in the odd last ten nights of Ramadan. It is the night the Quran was first revealed.",
+      "quranRefs": [
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 1
+        },
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 3
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌙",
+          "title": "Stand the night in prayer",
+          "subtitle": "Qiyam/Taraweeh with faith, seeking Allah's reward",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Recite the Qadr dua",
+          "subtitle": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Recite Surah Al-Qadr",
+          "subtitle": "Ponder its promise of peace until dawn",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2014"
+    },
+    {
+      "id": "laylat-al-qadr-23",
+      "hijriMonth": 9,
+      "hijriDay": 23,
+      "title": "Laylat al-Qadr (23rd Night)",
+      "arabicTitle": "ليلة القدر",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "Seek Laylat al-Qadr in the odd nights of the last ten. Many scholars highlight the 27th, yet the Prophet ﷺ did not specify, telling his companions to seek it in the odd nights. Worship here outshines a thousand months.",
+      "quranRefs": [
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 3
+        },
+        {
+          "surah": "Ad-Dukhan",
+          "surahNumber": 44,
+          "ayah": 4
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌙",
+          "title": "Pray the entire night",
+          "subtitle": "Qiyam with iman and ihtisab",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Recite the Qadr dua",
+          "subtitle": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Make sincere dua",
+          "subtitle": "Prioritize forgiveness for yourself and your parents",
+          "reward": 9
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2014"
+    },
+    {
+      "id": "laylat-al-qadr-25",
+      "hijriMonth": 9,
+      "hijriDay": 25,
+      "title": "Laylat al-Qadr (25th Night)",
+      "arabicTitle": "ليلة القدر",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "One of the odd nights to seek Laylat al-Qadr. The angels and the Spirit descend by permission of their Lord with every decree — peace until the emergence of dawn.",
+      "quranRefs": [
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 4
+        },
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 5
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌙",
+          "title": "Stand in Qiyam",
+          "subtitle": "Worship the whole night in hope of catching Laylat al-Qadr",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Recite the Qadr dua",
+          "subtitle": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Increase Quran recitation",
+          "subtitle": "Reflect on the night the Quran was sent down",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2014"
+    },
+    {
+      "id": "laylat-al-qadr",
+      "hijriMonth": 9,
+      "hijriDay": 27,
+      "title": "Laylat al-Qadr (27th Night)",
+      "arabicTitle": "ليلة القدر",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "The most widely cited candidate for Laylat al-Qadr, the night the Quran first descended to the lowest heaven. It is better than a thousand months; worship on it exceeds eighty years of devotion.",
+      "quranRefs": [
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 1
+        },
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 3
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🌙",
+          "title": "Stand the entire night in worship",
+          "subtitle": "Qiyam out of faith and in hope of reward — past sins forgiven",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Recite the Qadr dua abundantly",
+          "subtitle": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "reward": 15
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Reflect on Surah Al-Qadr",
+          "subtitle": "Meditate on its promise of peace until dawn",
+          "reward": 9
+        },
+        {
+          "index": 3,
+          "emoji": "🤲",
+          "title": "Make a list of duas",
+          "subtitle": "This is the night destinies are written — ask without limit",
+          "reward": 10
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:1262"
+    },
+    {
+      "id": "eid-al-fitr",
+      "hijriMonth": 10,
+      "hijriDay": 1,
+      "title": "Eid al-Fitr",
+      "arabicTitle": "عيد الفطر",
+      "category": "celebration",
+      "significance": "high",
+      "shortStory": "The festival of breaking the fast, marking the end of Ramadan. The Prophet ﷺ would take a bath, eat dates before going out, lead the Eid prayer in the open, and the day is a reward from Allah for those who fasted.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 185
+        },
+        {
+          "surah": "Al-Jumu'ah",
+          "surahNumber": 62,
+          "ayah": 10
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🛁",
+          "title": "Perform Ghusl for Eid",
+          "subtitle": "Purify yourself before going to prayer",
+          "reward": 7
+        },
+        {
+          "index": 1,
+          "emoji": "🌿",
+          "title": "Eat an odd number of dates",
+          "subtitle": "Before the Eid prayer, as the Prophet ﷺ did",
+          "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "🕌",
+          "title": "Attend Eid prayer",
+          "subtitle": "Listen to the khutbah; take one route there and another back",
+          "reward": 12
+        },
+        {
+          "index": 3,
+          "emoji": "💵",
+          "title": "Give Zakat al-Fitr",
+          "subtitle": "Before the prayer, purifying the fasting person",
+          "reward": 10
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:953"
+    },
+    {
+      "id": "shawwal-six-fasts",
+      "hijriMonth": 10,
+      "hijriDay": 2,
+      "title": "Six Fasts of Shawwal",
+      "arabicTitle": "صيام ست من شوال",
+      "category": "fasting",
+      "significance": "medium",
+      "shortStory": "Whoever fasts Ramadan and then follows it with six days of Shawwal, it is as if they fasted the entire year — for a good deed is multiplied by ten. The Prophet ﷺ encouraged these voluntary fasts after Eid.",
+      "quranRefs": [
+        {
+          "surah": "Al-An'am",
+          "surahNumber": 6,
+          "ayah": 160
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "📅",
+          "title": "Plan to fast six days",
+          "subtitle": "Schedule them across Shawwal; together with Ramadan equals a year",
+          "reward": 12
+        },
+        {
+          "index": 1,
+          "emoji": "🕊️",
+          "title": "Begin fasting today",
+          "subtitle": "Resume voluntary fasting after Eid day",
+          "reward": 8
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Thank Allah for Ramadan",
+          "subtitle": "Acknowledge the blessing of completed worship",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:1164a"
+    },
+    {
+      "id": "dhul-hijjah-ten-days",
+      "hijriMonth": 12,
+      "hijriDay": 1,
+      "title": "First Ten Days of Dhul-Hijjah",
+      "arabicTitle": "العشر الأوائل من ذي الحجة",
+      "category": "fasting",
+      "significance": "high",
+      "shortStory": "The Prophet ﷺ said there are no days in which righteous deeds are more beloved to Allah than these ten days. They combine every major act of worship — prayer, fasting, charity, and Hajj — and Allah swears by them in the Quran.",
+      "quranRefs": [
+        {
+          "surah": "Al-Fajr",
+          "surahNumber": 89,
+          "ayah": 1
+        },
+        {
+          "surah": "Al-Fajr",
+          "surahNumber": 89,
+          "ayah": 2
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🗣️",
+          "title": "Recite Takbeer frequently",
+          "subtitle": "Allahu Akbar, Allahu Akbar, la ilaha illallah... loud and often",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "🕊️",
+          "title": "Fast the first nine days",
+          "subtitle": "Especially the Day of Arafah; deeds are multiplied here",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Increase all good deeds",
+          "subtitle": "Charity, dhikr, Quran — multiply worship these ten days",
+          "reward": 8
+        },
+        {
+          "index": 3,
+          "emoji": "✂️",
+          "title": "Do not cut hair/nails (if sacrificing)",
+          "subtitle": "Sunnah for those intending Udhiyah/Qurbani",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:969"
+    },
+    {
+      "id": "day-of-tarwiyah",
+      "hijriMonth": 12,
+      "hijriDay": 8,
+      "title": "Day of Tarwiyah (Hajj Begins)",
+      "arabicTitle": "يوم التروية",
+      "category": "history",
+      "significance": "medium",
+      "shortStory": "The 8th of Dhul-Hijjah marks the official beginning of the Hajj rites, when pilgrims move to Mina and prepare for the standing at Arafah. The pilgrims enter the state of Ihram and follow the footsteps of Ibrahim (AS).",
+      "quranRefs": [
+        {
+          "surah": "Al-Hajj",
+          "surahNumber": 22,
+          "ayah": 27
+        },
+        {
+          "surah": "Al-Hajj",
+          "surahNumber": 22,
+          "ayah": 28
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Make dua for the pilgrims",
+          "subtitle": "Supplicate for those beginning their Hajj journey",
+          "reward": 8
+        },
+        {
+          "index": 1,
+          "emoji": "🕊️",
+          "title": "Fast if not on Hajj",
+          "subtitle": "Continue fasting the first ten days",
+          "reward": 9
+        },
+        {
+          "index": 2,
+          "emoji": "📿",
+          "title": "Reflect on Ibrahim's submission",
+          "subtitle": "His Hajj was the answer to Allah's command",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/22:27"
+    },
+    {
+      "id": "day-of-arafah",
+      "hijriMonth": 12,
+      "hijriDay": 9,
+      "title": "Day of Arafah",
+      "arabicTitle": "يوم عرفة",
+      "category": "fasting",
+      "significance": "high",
+      "shortStory": "The pinnacle of Hajj, when pilgrims stand on the plain of Arafah seeking Allah's mercy. On this day Allah perfected the religion (5:3). For non-pilgrims, fasting it expiates the sins of the previous and coming year.",
+      "quranRefs": [
+        {
+          "surah": "Al-Ma'idah",
+          "surahNumber": 5,
+          "ayah": 3
+        },
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 200
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Fast the Day of Arafah (non-pilgrims)",
+          "subtitle": "Expiates the past year and the coming year's sins",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Make abundant dua",
+          "subtitle": "The Prophet ﷺ said this is the best day for supplication",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "📿",
+          "title": "Recite the Arafah dua",
+          "subtitle": "La ilaha illallah wahdahu... the words of the Prophet ﷺ",
+          "reward": 8
+        },
+        {
+          "index": 3,
+          "emoji": "🤝",
+          "title": "Give extra charity",
+          "subtitle": "Join the pilgrims in devotion through generosity",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:1162b"
+    },
+    {
+      "id": "eid-al-adha",
+      "hijriMonth": 12,
+      "hijriDay": 10,
+      "title": "Eid al-Adha",
+      "arabicTitle": "عيد الأضحى",
+      "category": "celebration",
+      "significance": "high",
+      "shortStory": "The Festival of Sacrifice, commemorating Ibrahim's (AS) willingness to sacrifice his son Ismail in obedience to Allah, who ransomed him with a great ram. Pilgrims cast the Jamarat and sacrifice animals; the Ummah worldwide joins in Udhiyah.",
+      "quranRefs": [
+        {
+          "surah": "As-Saffat",
+          "surahNumber": 37,
+          "ayah": 102
+        },
+        {
+          "surah": "As-Saffat",
+          "surahNumber": 37,
+          "ayah": 107
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🛁",
+          "title": "Perform Ghusl for Eid",
+          "subtitle": "Bathe and wear your best clothes",
+          "reward": 7
+        },
+        {
+          "index": 1,
+          "emoji": "🕌",
+          "title": "Attend Eid prayer",
+          "subtitle": "Delay eating until after the sacrifice, opposite of Fitr",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "🐑",
+          "title": "Arrange your Udhiyah (Qurbani)",
+          "subtitle": "Following the sunnah of Ibrahim (AS)",
+          "reward": 13
+        },
+        {
+          "index": 3,
+          "emoji": "🗣️",
+          "title": "Recite Takbeer of Tashriq",
+          "subtitle": "Allahu Akbar after each prayer these days",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:968"
+    },
+    {
+      "id": "days-of-tashriq",
+      "hijriMonth": 12,
+      "hijriDay": 11,
+      "title": "Days of Tashriq",
+      "arabicTitle": "أيام التشريق",
+      "category": "celebration",
+      "significance": "medium",
+      "shortStory": "The 11th, 12th, and 13th of Dhul-Hijjah are the Days of Tashriq — days of eating, drinking, and remembrance of Allah. The Prophet ﷺ said they are days of Eid and worship, not of fasting (for non-pilgrims).",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 203
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🗣️",
+          "title": "Recite Takbeer daily",
+          "subtitle": "Continue the Takbeer of Tashriq after every prayer",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "🤝",
+          "title": "Share your Qurbani meat",
+          "subtitle": "Distribute to family, friends, and the needy",
+          "reward": 8
+        },
+        {
+          "index": 2,
+          "emoji": "📿",
+          "title": "Remember Allah abundantly",
+          "subtitle": "Eat, drink, and glorify Allah as the Prophet ﷺ taught",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/2:203"
+    },
+    {
+      "id": "white-days",
+      "hijriMonth": 0,
+      "hijriDay": 13,
+      "title": "Ayyam al-Biyd (White Days)",
+      "arabicTitle": "أيام البيض",
+      "category": "fasting",
+      "significance": "low",
+      "shortStory": "The 13th, 14th, and 15th of every Hijri month are the White Days, when the moon is full and bright. The Prophet ﷺ fasted these days regularly and encouraged his companions to do so. Fasting three days each month is equivalent to fasting a lifetime.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 184
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Fast the White Days",
+          "subtitle": "The 13th, 14th, and 15th of this Hijri month — a lifelong sunnah",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Recite Surah Al-Mulk",
+          "subtitle": "The Prophet ﷺ recommended it for protection",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/nasai:2356"
+    },
+    {
+      "id": "safar-reflection",
+      "hijriMonth": 2,
+      "hijriDay": 1,
+      "title": "Month of Safar",
+      "arabicTitle": "صفر",
+      "category": "reflection",
+      "significance": "low",
+      "shortStory": "Safar is the second month of the Hijri calendar. In pre-Islamic times, people feared it as unlucky, but the Prophet ﷺ rejected superstition and taught that no month brings misfortune. This is a day to renew trust in Allah's decree (qadar).",
+      "quranRefs": [
+        {
+          "surah": "Al-Hadid",
+          "surahNumber": 57,
+          "ayah": 22
+        },
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 51
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Reject superstition",
+          "subtitle": "Affirm that Allah alone controls all good and harm",
+          "reward": 6
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Recite Surah Al-Fatihah 7×",
+          "subtitle": "Seek Allah's protection from all afflictions",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:5757"
+    },
+    {
+      "id": "rabi-thani-start",
+      "hijriMonth": 4,
+      "hijriDay": 1,
+      "title": "Rabi al-Thani Begins",
+      "arabicTitle": "ربيع الثاني",
+      "category": "reflection",
+      "significance": "low",
+      "shortStory": "The fourth month of the Hijri calendar, following the month of the Prophet's birth. It is a time to continue practicing the sunnah habits you began in Rabi al-Awwal — consistency is the most beloved deed to Allah.",
+      "quranRefs": [
+        {
+          "surah": "Al-Ankabut",
+          "surahNumber": 29,
+          "ayah": 69
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🔄",
+          "title": "Audit your daily habits",
+          "subtitle": "Check which sunnah practices you've maintained this year",
+          "reward": 6
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Pray Istighfar 100×",
+          "subtitle": "The Prophet ﷺ sought Allah's forgiveness 100 times a day",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:2702"
+    },
+    {
+      "id": "jumada-awwal-start",
+      "hijriMonth": 5,
+      "hijriDay": 1,
+      "title": "Jumada al-Awwal Begins",
+      "arabicTitle": "جمادى الأولى",
+      "category": "reflection",
+      "significance": "low",
+      "shortStory": "The fifth month of the Hijri calendar, historically the month of frost. It is a quiet month in the Islamic year — an opportunity to strengthen daily worship, increase charity, and maintain spiritual momentum.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 277
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤝",
+          "title": "Give regular charity (Sadaqah)",
+          "subtitle": "Even a smile is charity — give something today",
+          "reward": 7
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Recite Surah Al-Kahf",
+          "subtitle": "A weekly sunnah that brings light between Fridays",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/2:277"
+    },
+    {
+      "id": "battle-of-mutah",
+      "hijriMonth": 5,
+      "hijriDay": 5,
+      "title": "Battle of Mu'tah",
+      "arabicTitle": "غزوة مؤتة",
+      "category": "history",
+      "significance": "low",
+      "shortStory": "In Jumada al-Awwal of the 8th year after Hijrah, a small Muslim army of 3,000 faced a Byzantine force of 100,000+ at Mu'tah. Three commanders were martyred, then Khalid ibn al-Walid took command and executed a brilliant tactical withdrawal. The Prophet ﷺ called him 'Sword of Allah'.",
+      "quranRefs": [
+        {
+          "surah": "Muhammad",
+          "surahNumber": 47,
+          "ayah": 7
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Remember the martyrs in your dua",
+          "subtitle": "Zayd, Ja'far, and Abdullah — the three commanders of Mu'tah",
+          "reward": 7
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Reflect on courage and faith",
+          "subtitle": "Few can prevail against many when Allah grants His aid",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:4261"
+    },
+    {
+      "id": "jumada-thani-start",
+      "hijriMonth": 6,
+      "hijriDay": 1,
+      "title": "Jumada al-Thani Begins",
+      "arabicTitle": "جمادى الآخرة",
+      "category": "reflection",
+      "significance": "low",
+      "shortStory": "The sixth month of the Hijri calendar. Historically, Fatimah (RA), the beloved daughter of the Prophet ﷺ, married Ali ibn Abi Talib (RA) in this month. It is a reminder of the simple, faith-centered family life taught by the Prophet ﷺ.",
+      "quranRefs": [
+        {
+          "surah": "Ar-Rum",
+          "surahNumber": 30,
+          "ayah": 21
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "❤️",
+          "title": "Strengthen family ties (Silat al-Rahm)",
+          "subtitle": "Call or visit a family member you haven't spoken to recently",
+          "reward": 8
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Make dua for your parents",
+          "subtitle": "My Lord, have mercy upon them as they brought me up (17:24)",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/30:21"
+    },
+    {
+      "id": "rajab-sacred-month",
+      "hijriMonth": 7,
+      "hijriDay": 1,
+      "title": "Rajab — Sacred Month Begins",
+      "arabicTitle": "رجب الحرام",
+      "category": "reflection",
+      "significance": "medium",
+      "shortStory": "Rajab is one of the four sacred months in which fighting is forbidden. The Prophet ﷺ would say: 'O Allah, bless us in Rajab and Sha'ban, and let us reach Ramadan.' It is a month to prepare the heart for the arrival of Ramadan.",
+      "quranRefs": [
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 36
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Recite the Rajab dua",
+          "subtitle": "Allahumma barik lana fi Rajab wa Sha'ban wa ballighna Ramadan",
+          "reward": 8
+        },
+        {
+          "index": 1,
+          "emoji": "🕊️",
+          "title": "Fast voluntarily in Rajab",
+          "subtitle": "Increase voluntary fasting in this sacred month",
+          "reward": 7
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Begin Quran review",
+          "subtitle": "Prepare for Ramadan by building a daily recitation habit now",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/ahmad:2346"
+    },
+    {
+      "id": "battle-of-tabuk",
+      "hijriMonth": 7,
+      "hijriDay": 1,
+      "title": "Expedition of Tabuk",
+      "arabicTitle": "غزوة تبوك",
+      "category": "history",
+      "significance": "low",
+      "shortStory": "In Rajab of the 9th year after Hijrah, the Prophet ﷺ marched with 30,000 companions to Tabuk to confront the Byzantine army. Though no battle occurred, it was a test of faith in the scorching heat — and several hypocrites made excuses to avoid going.",
+      "quranRefs": [
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 38
+        },
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 42
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "💪",
+          "title": "Reflect on sacrifice for faith",
+          "subtitle": "The companions gave wealth and endured hardship willingly",
+          "reward": 7
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read Surah At-Tawbah 38-42",
+          "subtitle": "Allah tests who will strive with wealth and lives",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://quran.com/9:38"
+    },
+    {
+      "id": "dhu-al-qidah-start",
+      "hijriMonth": 11,
+      "hijriDay": 1,
+      "title": "Dhu al-Qidah — Sacred Month",
+      "arabicTitle": "ذو القعدة الحرام",
+      "category": "reflection",
+      "significance": "low",
+      "shortStory": "Dhu al-Qidah is one of the four sacred months (2:194). Fighting is forbidden in it. The Treaty of Hudaybiyyah was concluded in this month, and the Prophet ﷺ performed Umrah during it — a time of peace and pilgrimage.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 194
+        },
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 36
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Reflect on peace and truce",
+          "subtitle": "The sacred months are for reconciliation and worship",
+          "reward": 6
+        },
+        {
+          "index": 1,
+          "emoji": "🤝",
+          "title": "Reconcile a broken relationship",
+          "subtitle": "Hudaybiyyah teaches that peace can be a greater victory",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://quran.com/9:36"
+    },
+    {
+      "id": "conquest-of-makkah",
+      "hijriMonth": 9,
+      "hijriDay": 20,
+      "title": "Conquest of Makkah",
+      "arabicTitle": "فتح مكة",
+      "category": "history",
+      "significance": "medium",
+      "shortStory": "On the 20th of Ramadan in the 8th year after Hijrah, the Prophet ﷺ returned to Makkah with 10,000 companions and conquered it almost without bloodshed. He forgave his enemies with the words of Yusuf (AS): 'No blame will there be upon you today.' He cleansed the Ka'bah of 360 idols.",
+      "quranRefs": [
+        {
+          "surah": "An-Nasr",
+          "surahNumber": 110,
+          "ayah": 1
+        },
+        {
+          "surah": "An-Nasr",
+          "surahNumber": 110,
+          "ayah": 2
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤝",
+          "title": "Forgive someone today",
+          "subtitle": "Emulate the Prophet's forgiveness of his worst enemies",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read Surah An-Nasr",
+          "subtitle": "The chapter revealed prophesying this conquest",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://quran.com/110:1"
+    },
+    {
+      "id": "battle-of-badr",
+      "hijriMonth": 9,
+      "hijriDay": 17,
+      "title": "Day of Badr",
+      "arabicTitle": "يوم بدر",
+      "category": "history",
+      "significance": "medium",
+      "shortStory": "On the 17th of Ramadan in the 2nd year after Hijrah, 313 Muslims led by the Prophet ﷺ defeated a Makkan army of nearly 1,000 at Badr. Allah sent angels to aid the believers. It was the turning point that established the Muslim community in Arabia.",
+      "quranRefs": [
+        {
+          "surah": "Al-Anfal",
+          "surahNumber": 8,
+          "ayah": 9
+        },
+        {
+          "surah": "Al-Anfal",
+          "surahNumber": 8,
+          "ayah": 17
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Reflect on Allah's help",
+          "subtitle": "Victory comes from Allah, not from numbers or strength",
+          "reward": 8
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read Surah Al-Anfal",
+          "subtitle": "Allah's own account of the Battle of Badr",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://quran.com/8:9"
+    },
+    {
+      "id": "monday-thursday-fast",
+      "hijriMonth": 0,
+      "hijriDay": 12,
+      "title": "Mondays & Thursdays — Fast of the Prophet ﷺ",
+      "arabicTitle": "صيام الإثنين والخميس",
+      "category": "fasting",
+      "significance": "low",
+      "shortStory": "The Prophet ﷺ fasted on Mondays and Thursdays, saying: 'The deeds of people are presented to Allah on Monday and Thursday, and I like my deeds to be presented while I am fasting.' These are days of increased dhikr and spiritual reflection.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 184
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Fast today (if Monday or Thursday)",
+          "subtitle": "The Prophet's weekly sunnah fasting",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Increase your dhikr",
+          "subtitle": "Subhanallah, Alhamdulillah, Allahu Akbar — 33× each",
+          "reward": 6
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/tirmidhi:747"
+    }
+  ],
+  "monthNames": [
+    "Muharram",
+    "Safar",
+    "Rabi al-Awwal",
+    "Rabi al-Thani",
+    "Jumada al-Awwal",
+    "Jumada al-Thani",
+    "Rajab",
+    "Shaban",
+    "Ramadan",
+    "Shawwal",
+    "Dhu al-Qidah",
+    "Dhu al-Hijjah"
+  ],
+  "historicalEvents": [
+    {
+      "id": "h-hijrah",
+      "hijriMonth": 1,
+      "hijriDay": 1,
+      "year": "1 AH",
+      "title": "The Hijrah — Migration to Madinah",
+      "description": "After 13 years of persecution in Makkah, the Prophet ﷺ migrated to Madinah. This event is so pivotal that the Islamic calendar begins from it. The Hijrah was not escape — it was the foundation of the first Islamic state, a society built on faith, justice, and brotherhood.",
+      "quranRef": {
+        "surah": "At-Tawbah",
+        "surahNumber": 9,
+        "ayah": 40
+      },
+      "referenceUrl": "https://quran.com/9:40"
+    },
+    {
+      "id": "h-uhud",
+      "hijriMonth": 3,
+      "hijriDay": 15,
+      "year": "3 AH",
+      "title": "Battle of Uhud",
+      "description": "The Muslims initially prevailed at Uhud but were defeated when archers disobeyed the Prophet's order and left their posts. 70 companions were martyred including Hamzah ibn Abd al-Muttalib (RA), uncle of the Prophet ﷺ. It was a lesson in discipline and obedience.",
+      "quranRef": {
+        "surah": "Al Imran",
+        "surahNumber": 3,
+        "ayah": 152
+      },
+      "referenceUrl": "https://quran.com/3:152"
+    },
+    {
+      "id": "h-fatima-death",
+      "hijriMonth": 3,
+      "hijriDay": 2,
+      "year": "11 AH",
+      "title": "Passing of Fatimah (RA)",
+      "description": "Fatimah (RA), the beloved daughter of the Prophet ﷺ and wife of Ali (RA), passed away six months after her father. The Prophet ﷺ said: 'She is the leader of the women of Paradise.' She was known for her night prayers and deep devotion.",
+      "quranRef": {
+        "surah": "Al-Ahzab",
+        "surahNumber": 33,
+        "ayah": 35
+      },
+      "referenceUrl": "https://quran.com/33:35"
+    },
+    {
+      "id": "h-abu-bakr-death",
+      "hijriMonth": 3,
+      "hijriDay": 22,
+      "year": "13 AH",
+      "title": "Passing of Abu Bakr as-Siddiq (RA)",
+      "description": "Abu Bakr (RA), the first caliph and closest companion of the Prophet ﷺ, passed away after a 15-day illness. Before his death he appointed Umar ibn al-Khattab (RA) as his successor. His final words were: 'O Allah, let me die as a Muslim and join me with the righteous.'",
+      "quranRef": {
+        "surah": "An-Nisa",
+        "surahNumber": 4,
+        "ayah": 69
+      },
+      "referenceUrl": "https://quran.com/4:69"
+    },
+    {
+      "id": "h-malik-death",
+      "hijriMonth": 4,
+      "hijriDay": 14,
+      "year": "179 AH",
+      "title": "Passing of Imam Malik ibn Anas",
+      "description": "Imam Malik ibn Anas, founder of the Maliki school of jurisprudence and author of Al-Muwatta — the earliest hadith compilation — passed away in Madinah. He spent his entire life in the city of the Prophet ﷺ, teaching from the very mosque the Prophet built.",
+      "quranRef": {
+        "surah": "An-Nisa",
+        "surahNumber": 4,
+        "ayah": 59
+      },
+      "referenceUrl": "https://quran.com/4:59"
+    },
+    {
+      "id": "h-mutah",
+      "hijriMonth": 5,
+      "hijriDay": 5,
+      "year": "8 AH",
+      "title": "Battle of Mu'tah",
+      "description": "3,000 Muslims faced 100,000 Byzantine and Arab allies at Mu'tah. Three commanders were martyred: Zayd ibn Harithah, Ja'far ibn Abi Talib, and Abdullah ibn Rawahah. Khalid ibn al-Walid took command and saved the army, earning the title 'Sword of Allah'.",
+      "quranRef": {
+        "surah": "Muhammad",
+        "surahNumber": 47,
+        "ayah": 7
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:4261"
+    },
+    {
+      "id": "h-isra-miraj",
+      "hijriMonth": 7,
+      "hijriDay": 27,
+      "year": "Before Hijrah",
+      "title": "Isra and Mi'raj — The Night Journey",
+      "description": "One year before the Hijrah, Allah took His Prophet ﷺ in a single night from Makkah to Jerusalem (Isra) and then through the seven heavens (Mi'raj). There he met earlier prophets and received the gift of the five daily prayers.",
+      "quranRef": {
+        "surah": "Al-Isra",
+        "surahNumber": 17,
+        "ayah": 1
+      },
+      "referenceUrl": "https://quran.com/17:1"
+    },
+    {
+      "id": "h-khandaq",
+      "hijriMonth": 8,
+      "hijriDay": 1,
+      "year": "5 AH",
+      "title": "Battle of the Trench (Khandaq)",
+      "description": "A confederate army of 10,000 besieged Madinah. On Salman al-Farisi's advice, the Muslims dug a trench around the city. The siege lasted weeks and ended when Allah sent a storm that scattered the enemy.",
+      "quranRef": {
+        "surah": "Al-Ahzab",
+        "surahNumber": 33,
+        "ayah": 9
+      },
+      "referenceUrl": "https://quran.com/33:9"
+    },
+    {
+      "id": "h-jerusalem-conquest",
+      "hijriMonth": 8,
+      "hijriDay": 15,
+      "year": "15 AH",
+      "title": "Liberation of Jerusalem (Bayt al-Maqdis)",
+      "description": "Under Caliph Umar (RA), the Muslims liberated Jerusalem from Byzantine rule without bloodshed. Umar entered the city on foot, signed a treaty of peace with its Christian inhabitants, and cleared the site of Masjid al-Aqsa to build a mosque.",
+      "quranRef": {
+        "surah": "Al-Isra",
+        "surahNumber": 17,
+        "ayah": 1
+      },
+      "referenceUrl": "https://quran.com/17:1"
+    },
+    {
+      "id": "h-spain-conquest",
+      "hijriMonth": 8,
+      "hijriDay": 28,
+      "year": "92 AH",
+      "title": "Crossing into Al-Andalus (Spain)",
+      "description": "Tariq ibn Ziyad, under the Umayyad Caliphate, crossed the strait (later named Jabal Tariq → Gibraltar) and began the liberation of Spain. This led to nearly 800 years of Islamic civilization in Europe — preserving and advancing knowledge during Europe's Dark Ages.",
+      "quranRef": {
+        "surah": "Az-Zumar",
+        "surahNumber": 39,
+        "ayah": 10
+      },
+      "referenceUrl": "https://quran.com/39:10"
+    },
+    {
+      "id": "h-quran-revelation-start",
+      "hijriMonth": 9,
+      "hijriDay": 24,
+      "year": "Before Hijrah",
+      "title": "First Revelation of the Quran",
+      "description": "In the Cave of Hira during the last ten nights of Ramadan, Angel Jibril appeared to Prophet Muhammad ﷺ and said 'Read!' The first verses of Surah Al-Alaq were revealed: 'Read in the name of your Lord who created' (96:1). This began 23 years of revelation.",
+      "quranRef": {
+        "surah": "Al-Alaq",
+        "surahNumber": 96,
+        "ayah": 1
+      },
+      "referenceUrl": "https://quran.com/96:1"
+    },
+    {
+      "id": "h-badr",
+      "hijriMonth": 9,
+      "hijriDay": 17,
+      "year": "2 AH",
+      "title": "Battle of Badr",
+      "description": "313 Muslims led by the Prophet ﷺ defeated nearly 1,000 Makkan warriors at the wells of Badr. Allah sent 1,000 angels to aid the believers. It was the first major military victory for Islam and a turning point in history.",
+      "quranRef": {
+        "surah": "Al-Anfal",
+        "surahNumber": 8,
+        "ayah": 9
+      },
+      "referenceUrl": "https://quran.com/8:9"
+    },
+    {
+      "id": "h-quran-compilation",
+      "hijriMonth": 9,
+      "hijriDay": 1,
+      "year": "25 AH",
+      "title": "Compilation of the Quran under Uthman (RA)",
+      "description": "Concerned by different recitations across the expanding empire, Caliph Uthman (RA) ordered a standardized master copy of the Quran. Copies were sent to every major city. This unified manuscript is the basis of every Quran read today.",
+      "quranRef": {
+        "surah": "Al-Hijr",
+        "surahNumber": 15,
+        "ayah": 9
+      },
+      "referenceUrl": "https://quran.com/15:9"
+    },
+    {
+      "id": "h-conquest-makkah",
+      "hijriMonth": 9,
+      "hijriDay": 20,
+      "year": "8 AH",
+      "title": "Conquest of Makkah (Fath Makkah)",
+      "description": "After the Quraysh broke the Hudaybiyyah treaty, the Prophet ﷺ marched on Makkah with 10,000 men. He entered almost without bloodshed, destroyed 360 idols in the Ka'bah, and forgave his enemies: 'No blame on you today.'",
+      "quranRef": {
+        "surah": "An-Nasr",
+        "surahNumber": 110,
+        "ayah": 1
+      },
+      "referenceUrl": "https://quran.com/110:1"
+    },
+    {
+      "id": "h-ali-death",
+      "hijriMonth": 9,
+      "hijriDay": 21,
+      "year": "40 AH",
+      "title": "Passing of Ali ibn Abi Talib (RA)",
+      "description": "Ali (RA), the fourth caliph, cousin and son-in-law of the Prophet ﷺ, was struck by a poisoned sword while leading Fajr prayer in Kufa. He passed away two days later. Known for his knowledge and courage, the Prophet ﷺ said: 'I am the city of knowledge and Ali is its gate.'",
+      "quranRef": {
+        "surah": "Az-Zumar",
+        "surahNumber": 39,
+        "ayah": 9
+      },
+      "referenceUrl": "https://quran.com/39:9"
+    },
+    {
+      "id": "h-hunayn",
+      "hijriMonth": 10,
+      "hijriDay": 6,
+      "year": "8 AH",
+      "title": "Battle of Hunayn",
+      "description": "Right after the conquest of Makkah, the tribes of Hawazin and Thaqif attacked. Though the Muslims were 12,000, they nearly lost when they felt overconfident in their numbers. Allah sent tranquility (Sakinah) and the Muslims prevailed.",
+      "quranRef": {
+        "surah": "At-Tawbah",
+        "surahNumber": 9,
+        "ayah": 25
+      },
+      "referenceUrl": "https://quran.com/9:25"
+    },
+    {
+      "id": "h-bukhari-death",
+      "hijriMonth": 10,
+      "hijriDay": 1,
+      "year": "256 AH",
+      "title": "Passing of Imam al-Bukhari",
+      "description": "Muhammad ibn Isma'il al-Bukhari, compiler of Sahih al-Bukhari — the most authentic book after the Quran — passed away in Samarkand on the night of Eid al-Fitr. He memorized over 600,000 hadith and verified each of the 7,564 in his collection.",
+      "quranRef": {
+        "surah": "An-Nisa",
+        "surahNumber": 4,
+        "ayah": 59
+      },
+      "referenceUrl": "https://quran.com/4:59"
+    },
+    {
+      "id": "h-hudaybiyyah",
+      "hijriMonth": 11,
+      "hijriDay": 1,
+      "year": "6 AH",
+      "title": "Treaty of Hudaybiyyah",
+      "description": "The Prophet ﷺ and 1,400 companions set out for Umrah but were stopped at Hudaybiyyah. A 10-year peace treaty was signed with Makkah. Though seemingly unfavorable, Allah called it a 'clear victory' (Fath Mubin) in Surah Al-Fath.",
+      "quranRef": {
+        "surah": "Al-Fath",
+        "surahNumber": 48,
+        "ayah": 1
+      },
+      "referenceUrl": "https://quran.com/48:1"
+    },
+    {
+      "id": "h-farewell-pilgrimage",
+      "hijriMonth": 12,
+      "hijriDay": 9,
+      "year": "10 AH",
+      "title": "The Farewell Pilgrimage (Hajjat al-Wada)",
+      "description": "The Prophet ﷺ performed his only Hajj with over 100,000 companions. On the Day of Arafah he delivered the Farewell Sermon on Jabal al-Rahmah, declaring human brotherhood, women's rights, and the completion of the religion (5:3).",
+      "quranRef": {
+        "surah": "Al-Ma'idah",
+        "surahNumber": 5,
+        "ayah": 3
+      },
+      "referenceUrl": "https://quran.com/5:3"
+    },
+    {
+      "id": "h-umar-death",
+      "hijriMonth": 12,
+      "hijriDay": 26,
+      "year": "23 AH",
+      "title": "Passing of Umar ibn al-Khattab (RA)",
+      "description": "Umar (RA), the second caliph under whose reign Islam spread from Persia to Egypt, was assassinated by a Persian slave while leading Fajr prayer. His 10-year reign shaped Islamic civilization. His final advice was to hold fast to the Quran.",
+      "quranRef": {
+        "surah": "Al-Furqan",
+        "surahNumber": 25,
+        "ayah": 74
+      },
+      "referenceUrl": "https://quran.com/25:74"
+    },
+    {
+      "id": "h-uthman-death",
+      "hijriMonth": 12,
+      "hijriDay": 18,
+      "year": "35 AH",
+      "title": "Passing of Uthman ibn Affan (RA)",
+      "description": "Uthman (RA), the third caliph who unified the Quran into a single manuscript, was martyred while reading the Quran in his home during a siege. He was 82. The Prophet ﷺ had said of him: 'Would it not please you to be counted among the martyrs?'",
+      "quranRef": {
+        "surah": "Al-Baqarah",
+        "surahNumber": 2,
+        "ayah": 137
+      },
+      "referenceUrl": "https://quran.com/2:137"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ export const CHALLENGE_KEY = '/api/challenge';
 export const RUHANIAH_KEY = '/api/ruhaniah';
 export const RUHANIAH_HISTORY_KEY = '/api/ruhaniah/history';
 export const RUHANIAH_DUAS_KEY = '/api/ruhaniah/duas';
+export const CALENDAR_KEY = '/api/calendar';
 
 /** Refresh dashboard metrics after salah changes (silent, no shimmer). */
 export async function revalidateDashboardMetrics() {

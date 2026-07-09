@@ -1,0 +1,687 @@
+/* ===========================================================================
+   Islamic Calendar — dawa-calendar
+   Ultra-modern, theme-aware, mobile-first. BEM dawa-calendar-* classes.
+   Full-width two-column desktop layout. Uses var(--accent) / var(--surface) /
+   var(--border) tokens — never hex.
+   =========================================================================== */
+
+.dawa-calendar {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.5vw, 24px);
+}
+
+/* ===========================================================================
+   Two-column responsive grid
+   =========================================================================== */
+
+.dawa-calendar__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2.5vw, 24px);
+}
+
+@media (min-width: 1024px) {
+  .dawa-calendar__grid {
+    grid-template-columns: minmax(360px, 420px) 1fr;
+    align-items: start;
+  }
+}
+
+.dawa-calendar__col-left,
+.dawa-calendar__col-right {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.5vw, 24px);
+}
+
+/* ===========================================================================
+   Countdown card
+   =========================================================================== */
+
+.dawa-calendar__countdown {
+  padding: clamp(18px, 3vw, 24px);
+  position: relative;
+  overflow: hidden;
+}
+
+.dawa-calendar__countdown::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at top right, var(--accent-glow), transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.dawa-calendar__countdown-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.dawa-calendar__countdown-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.dawa-calendar__countdown-days {
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 700;
+  color: var(--text);
+  margin-left: auto;
+}
+
+.dawa-calendar__countdown-days .dawa-num {
+  color: var(--accent-bright);
+  font-size: 1.15em;
+}
+
+.dawa-calendar__countdown-title {
+  font-size: clamp(16px, 2vw, 18px);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  position: relative;
+}
+
+.dawa-calendar__countdown-arabic {
+  font-size: clamp(15px, 2vw, 17px);
+  color: var(--accent-bright);
+  margin: 4px 0 0;
+  direction: rtl;
+  position: relative;
+}
+
+.dawa-calendar__countdown-target {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 6px 0 0;
+  position: relative;
+}
+
+/* ===========================================================================
+   Month grid
+   =========================================================================== */
+
+.dawa-calendar__month {
+  padding: clamp(14px, 2.5vw, 20px);
+}
+
+.dawa-calendar__month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dawa-calendar__dow {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  padding-bottom: 4px;
+}
+
+.dawa-calendar__cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 8px;
+  position: relative;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dawa-calendar__cell-greg {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1;
+}
+
+.dawa-calendar__cell-hijri {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-soft);
+  line-height: 1;
+}
+
+.dawa-calendar__cell.is-today {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.dawa-calendar__cell.is-today .dawa-calendar__cell-hijri {
+  color: var(--accent-bright);
+}
+
+.dawa-calendar__cell.has-event {
+  cursor: default;
+}
+
+.dawa-calendar__cell.sig-high {
+  background: color-mix(in srgb, var(--accent-glow) 18%, transparent);
+}
+
+.dawa-calendar__cell.sig-high .dawa-calendar__cell-hijri {
+  color: var(--accent-bright);
+}
+
+.dawa-calendar__cell.sig-medium {
+  background: color-mix(in srgb, var(--accent-soft) 80%, transparent);
+}
+
+.dawa-calendar__cell-dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 7px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+/* ===========================================================================
+   Progress bar
+   =========================================================================== */
+
+.dawa-calendar__progress {
+  padding: clamp(16px, 2.5vw, 20px);
+}
+
+.dawa-calendar__progress-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dawa-calendar__progress-count {
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 800;
+  color: var(--accent-bright);
+  line-height: 1;
+}
+
+.dawa-calendar__progress-total {
+  font-size: 0.5em;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.dawa-calendar__progress-label {
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-left: auto;
+  text-align: right;
+}
+
+.dawa-calendar__progress-bar {
+  height: 6px;
+  background: var(--accent-soft);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dawa-calendar__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ===========================================================================
+   Event card
+   =========================================================================== */
+
+.dawa-calendar__event {
+  padding: clamp(18px, 3vw, 24px);
+  position: relative;
+  overflow: hidden;
+}
+
+.dawa-calendar__event::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--accent), var(--accent-dim));
+}
+
+.dawa-calendar__event-head {
+  margin-bottom: clamp(12px, 2vw, 16px);
+}
+
+.dawa-calendar__event-cat {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  background: var(--accent-soft);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.dawa-calendar__event-title {
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.dawa-calendar__event-arabic {
+  font-size: clamp(16px, 2vw, 18px);
+  color: var(--accent-bright);
+  margin: 4px 0 0;
+  direction: rtl;
+}
+
+/* --- Story --- */
+
+.dawa-calendar__story-text {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin: 0 0 clamp(12px, 2vw, 16px);
+}
+
+/* --- Quran references --- */
+
+.dawa-calendar__refs {
+  margin-bottom: clamp(12px, 2vw, 16px);
+}
+
+.dawa-calendar__refs-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.dawa-calendar__refs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dawa-calendar__ref-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-soft);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dawa-calendar__ref-chip:hover {
+  background: color-mix(in srgb, var(--accent-soft) 60%, var(--accent-glow));
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* --- Plan / checklist --- */
+
+.dawa-calendar__plan {
+  margin-bottom: clamp(8px, 1.5vw, 12px);
+}
+
+.dawa-calendar__plan-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+
+.dawa-calendar__checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dawa-calendar__action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dawa-calendar__action:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.dawa-calendar__action.is-done {
+  background: color-mix(in srgb, var(--accent-soft) 50%, transparent);
+  border-color: var(--accent);
+}
+
+.dawa-calendar__action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dawa-calendar__action-emoji {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: grayscale(0.3);
+  transition: filter 0.2s ease;
+}
+
+.dawa-calendar__action.is-done .dawa-calendar__action-emoji {
+  filter: grayscale(0);
+}
+
+.dawa-calendar__action-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dawa-calendar__action-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dawa-calendar__action.is-done .dawa-calendar__action-title {
+  text-decoration: line-through;
+  color: var(--text-soft);
+}
+
+.dawa-calendar__action-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
+
+.dawa-calendar__action-reward {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-bright);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.dawa-calendar__action-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: transparent;
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.dawa-calendar__action-check.is-checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.dawa-calendar__action-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent-bright);
+  border-radius: 50%;
+  animation: dawa-calendar-spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes dawa-calendar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Source link --- */
+
+.dawa-calendar__source {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  text-decoration: none;
+  margin-top: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.dawa-calendar__source:hover {
+  opacity: 0.75;
+}
+
+/* ===========================================================================
+   On This Day in Islamic History
+   =========================================================================== */
+
+.dawa-calendar__history {
+  padding: clamp(18px, 3vw, 24px);
+}
+
+.dawa-calendar__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(15px, 2vw, 17px);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 clamp(14px, 2vw, 18px);
+}
+
+.dawa-calendar__section-icon {
+  font-size: 1.1em;
+}
+
+.dawa-calendar__history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dawa-calendar__history-card {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-2) 50%, transparent);
+  border: 1px solid var(--border-soft);
+  transition: border-color 0.2s ease;
+}
+
+.dawa-calendar__history-card:hover {
+  border-color: var(--border);
+}
+
+.dawa-calendar__history-year {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent-bright);
+  background: var(--accent-soft);
+  padding: 6px 10px;
+  border-radius: 8px;
+  height: fit-content;
+  white-space: nowrap;
+}
+
+.dawa-calendar__history-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dawa-calendar__history-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.dawa-calendar__history-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-soft);
+  margin: 0 0 8px;
+}
+
+.dawa-calendar__history-ref {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.dawa-calendar__history-ref:hover {
+  opacity: 0.75;
+}
+
+/* ===========================================================================
+   No events message
+   =========================================================================== */
+
+.dawa-calendar__no-events {
+  padding: clamp(28px, 5vw, 40px) clamp(18px, 3vw, 24px);
+  text-align: center;
+}
+
+.dawa-calendar__no-events-icon {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.dawa-calendar__no-events-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-soft);
+  margin: 0 0 16px;
+}
+
+.dawa-calendar__no-events-hint {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  display: inline-block;
+}
+
+/* ===========================================================================
+   Toast (coins earned)
+   =========================================================================== */
+
+.dawa-calendar__toast {
+  position: fixed;
+  bottom: calc(var(--tabbar-h, 0px) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  margin: 0;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--accent-bright);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--accent-glow) 60%, transparent);
+  pointer-events: none;
+}
+
+/* ===========================================================================
+   Loading shimmer
+   =========================================================================== */
+
+.dawa-calendar--loading .dawa-glass {
+  padding: 20px;
+}
+
+.dawa-calendar--loading .dawa-calendar__month-grid {
+  gap: 4px;
+}
+
+/* ===========================================================================
+   Light mode overrides
+   =========================================================================== */
+
+[data-theme='light'] .dawa-calendar__countdown {
+  background: color-mix(in srgb, var(--accent-soft) 25%, var(--surface-2));
+}
+
+[data-theme='light'] .dawa-calendar__action {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+[data-theme='light'] .dawa-calendar__toast {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+/* ===========================================================================
+   Reduced motion
+   =========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .dawa-calendar__action,
+  .dawa-calendar__action-emoji,
+  .dawa-calendar__action-check,
+  .dawa-calendar__action-check.is-checked,
+  .dawa-calendar__cell,
+  .dawa-calendar__ref-chip,
+  .dawa-calendar__history-card,
+  .dawa-calendar__progress-fill,
+  .dawa-calendar__source,
+  .dawa-calendar__history-ref {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

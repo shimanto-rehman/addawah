@@ -157,12 +157,25 @@ Gathers spiritual signals from 7 sources → converts to semantic tags → score
 - Account deletion (with OTP verification)
 - Profile privacy matrix
 
+### 11. Islamic Calendar (Hijri)
+- Month grid view: Gregorian calendar with Hijri date annotations and event significance indicators
+- Today's events: automatic detection of special Islamic days (Jumu'ah weekly, Hijri New Year, Ashura, Mawlid, Isra/Mi'raj, Ramadan, Eid al-Fitr, Eid al-Adha, Day of Arafah, Days of Tashriq, Laylat al-Qadr, etc.)
+- Sunnah checklist: per-event action items (fasting, prayer, charity, reflection) with gold coin rewards (5–15 coins per action)
+- Countdown to next sacred day with Hijri date target
+- Story of the day: significance, short history, and Quran references for each event
+- Consistency tracking: 14-day rolling completion rate feeds Ruhaniah spiritual weakness analysis
+- Calendar sunnah deeds displayed in analytics week completion chart
+- Static event data in `public/data/islamic-events.json` (19 events, zero DB queries for reads)
+- Bitmap mask storage (`CalendarTaskCompletion`) — one row per user per day, consistent with DailyChallenge pattern
+- Mobile navigation: calendar replaces notifications in bottom tab bar; notifications moved to avatar menu
+
 ## Data Files
 
 | File | Content | Purpose |
 |------|---------|---------|
 | `public/data/ayah-pool.json` | 300 Quran verses | Verse selection for Ruhaniah |
 | `public/data/fahm-questions.json` | 320 questions | Fahm psychometric test |
+| `public/data/islamic-events.json` | 19 Islamic events | Hijri calendar events with sunnah actions, rewards & Quran refs |
 | `docs/FAHM_QUESTION_BANK.md` | Human-readable question bank | Reference for categories & scoring |
 
 ## Verse Pool Coverage (30 Tags)
@@ -222,6 +235,8 @@ Each verse has:
 | `MoodCheckIn` | Daily mood tracking |
 | `AccountDeletionOtp` | OTP for account deletion |
 | `PasswordResetOtp` | OTP for password reset |
+| `DailyChallenge` | Daily rotating challenge tasks with bitmap mask |
+| `CalendarTaskCompletion` | Islamic calendar sunnah action completions (bitmap mask per day) |
 
 ## Shimmer Loading System
 

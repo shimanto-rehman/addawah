@@ -58,6 +58,7 @@ export type AnalyticsPayload = {
   stackedWeek: Array<{ label: string; onTime: number; kaza: number; missed: number; jamat: number }>;
   weekDays: number[];
   weekDeeds: (number | null)[];
+  weekCalendarDeeds: (number | null)[];
   weekLabels: string[];
   moodHistory: Array<{
     date: string;
@@ -106,7 +107,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
 
   const recordStart = cappedLifetimeRecordStart(dbUser.createdAt, todayDate);
 
-  const [lifetimeRecords, weekRecords, insightRecords, moods, challengeRows] = await Promise.all([
+  const [lifetimeRecords, weekRecords, insightRecords, moods, challengeRows, calendarRows] = await Promise.all([
     prisma.salahRecord.findMany({
       where: { userId, date: { gte: recordStart, lte: todayDate } },
       select: SALAH_ANALYTICS_SELECT,
@@ -137,6 +138,15 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
       ? prisma.dailyChallenge.findMany({
           where: { userId, date: { gte: insightStart, lte: todayDate } },
           select: { date: true, completed: true },
+        })
+      : Promise.resolve([]),
+    // Calendar sunnah-action completions for the 14-day insight window.
+    // Mask is a bitmap; we store it keyed by date and compute counts at
+    // render time using the static events data.
+    includeCharts
+      ? prisma.calendarTaskCompletion.findMany({
+          where: { userId, date: { gte: insightStart, lte: todayDate } },
+          select: { date: true, mask: true },
         })
       : Promise.resolve([]),
   ]);
@@ -226,6 +236,18 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
   // nothing completed. The deeds line renders only on days with a value.
   const weekDeeds = weekDayKeys(weekStartKey).map((key) => deedsByDate.get(key) ?? null);
 
+  // Calendar sunnah completions aligned to the same 7-day week grid.
+  // Uses popcount of the mask — raw completed count regardless of how many
+  // actions were available that day. null = no calendar row that day.
+  const calendarMaskByDate = new Map<string, number>(
+    calendarRows.map((r) => [formatDateKey(r.date), r.mask]),
+  );
+  const weekCalendarDeeds = weekDayKeys(weekStartKey).map((key) => {
+    const mask = calendarMaskByDate.get(key);
+    if (mask === undefined) return null;
+    return mask.toString(2).replace(/0/g, '').length;
+  });
+
   const kpis: AnalyticsKpis = {
     iman: insights.currentIman,
     streak,
@@ -246,6 +268,7 @@ async function buildAnalyticsPayloadInner(userId: string, includeCharts: boolean
     stackedWeek,
     weekDays,
     weekDeeds,
+    weekCalendarDeeds,
     weekLabels,
     moodHistory,
     imanMoodSeries: imanMood.series,

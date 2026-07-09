@@ -33,6 +33,7 @@ type Signals = {
   streak?: number;
   broken?: boolean;
   challengeConsistency?: number; // 0..1 rolling completion rate
+  calendarConsistency?: number; // 0..1 rolling sunnah action completion rate
 };
 
 type FahmProfile = {
@@ -367,6 +368,28 @@ export function analyzeWeaknesses(
         icon: '🌱',
       },
       priority: 32,
+    });
+  }
+
+  // 13. Calendar sunnah drift — the user is ignoring the sunnah actions tied to
+  // Islamic calendar events (fasting on Ashura/Arafah, Eid prayer, etc.).
+  // These are high-value seasonal deeds — missing them consistently signals
+  // disconnection from the rhythm of the Islamic year.
+  const calendarRate = signals.calendarConsistency;
+  if (calendarRate !== undefined && calendarRate <= 0.2) {
+    candidates.push({
+      weakness: {
+        id: 'calendar-drift',
+        title: 'Missing the sacred days',
+        arabicTitle: 'تفويت الأيام المباركة',
+        description:
+          'The sunnah actions tied to Islamic calendar events — fasting on Ashura, the Day of Arafah, Eid prayers — have been mostly untouched. These are the seasonal deeds the Prophet ﷺ never missed. They carry immense reward precisely because they are rare.',
+        advice:
+          'Open the Calendar page and check today\'s sunnah actions. Even one act — a fast, a dua, a salawat — reconnects you to the rhythm of the Islamic year.',
+        severity: 'moderate',
+        icon: '📅',
+      },
+      priority: 30,
     });
   }
 

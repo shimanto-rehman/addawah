@@ -78,6 +78,7 @@ export function AnalyticsHub() {
         stackedWeek: full.stackedWeek,
         weekDays: full.weekDays,
         weekDeeds: full.weekDeeds,
+        weekCalendarDeeds: full.weekCalendarDeeds,
         weekLabels: full.weekLabels,
         moodHistory: full.moodHistory,
         imanMoodSeries: full.imanMoodSeries,

@@ -10,13 +10,14 @@ import { NotificationBell } from '@/components/layout/NotificationBell';
 import { useNotificationCount } from '@/components/notifications/useNotifications';
 import { useApp } from '@/components/providers/AppProvider';
 
-type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notifications' | 'ruhaniah';
+type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notifications' | 'ruhaniah' | 'calendar';
 
 const DESKTOP_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/dashboard', label: 'Home', icon: 'home' },
   { href: '/ruhaniah', label: 'Ruhaniah', icon: 'ruhaniah' },
   { href: '/friends', label: 'Friends', icon: 'friends' },
   { href: '/analytics', label: 'Analytics', icon: 'analytics' },
+  { href: '/calendar', label: 'Calendar', icon: 'calendar' },
   { href: '/settings', label: 'Settings', icon: 'settings' },
 ];
 
@@ -25,7 +26,7 @@ const MOBILE_TAB_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/ruhaniah', label: 'Ruhaniah', icon: 'ruhaniah' },
   { href: '/friends', label: 'Friends', icon: 'friends' },
   { href: '/analytics', label: 'Analytics', icon: 'analytics' },
-  { href: '/notifications', label: 'Alerts', icon: 'notifications' },
+  { href: '/calendar', label: 'Calendar', icon: 'calendar' },
 ];
 
 function NavIcon({ name }: { name: NavIconName }) {
@@ -85,6 +86,14 @@ function NavIcon({ name }: { name: NavIconName }) {
       return (
         <svg {...props}>
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      );
+    case 'calendar':
+      return (
+        <svg {...props}>
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M3 9h18M8 2v4M16 2v4" />
+          <path d="M8 14l2.5 2.5L15 12" />
         </svg>
       );
   }
