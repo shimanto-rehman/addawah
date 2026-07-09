@@ -1035,6 +1035,20 @@
   color: var(--text-soft);
   margin: 0;
 }
+.dawa-verse--shimmer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.dawa-verse--shimmer .dawa-shimmer {
+  margin: 4px 0;
+}
+
+.dawa-verse--shimmer .dawa-verse__divider {
+  margin: 8px auto;
+}
 
 /* ═══════════════════════════════════════════════════════════
    SPIRITUAL WEAKNESS — Post-verse analysis

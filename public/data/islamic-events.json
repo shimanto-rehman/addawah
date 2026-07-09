@@ -13,12 +13,55 @@
         {
           "surah": "Al-Jumu'ah",
           "surahNumber": 62,
-          "ayah": 9
+          "ayah": 9,
+          "text": "O you who have believed, when the adhan is called for the prayer on the day of Jumu'ah, then proceed to the remembrance of Allah and leave trade. That is better for you, if you only knew."
         },
         {
           "surah": "Al-Jumu'ah",
           "surahNumber": 62,
-          "ayah": 10
+          "ayah": 10,
+          "text": "And when the prayer has been concluded, disperse within the land and seek from the bounty of Allah, and remember Allah often that you may succeed."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih Muslim",
+          "number": "848",
+          "narrator": "Abu Hurayra (RA)",
+          "text": "The best day on which the sun has risen is Friday; on it Adam was created, on it he was entered into Paradise, and on it he was expelled from it.",
+          "url": "https://sunnah.com/muslim:848"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "893",
+          "narrator": "Abu Hurayra (RA)",
+          "text": "Whoever takes a bath on Friday, purifies himself as much as he can, then oils his hair or applies perfume, then proceeds to the mosque and does not separate two persons, then prays as much as Allah has written for him, then remains silent when the Imam speaks, his sins between that Friday and the next will be forgiven.",
+          "url": "https://sunnah.com/bukhari:893"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "852",
+          "narrator": "Abu Hurayra (RA)",
+          "text": "There is an hour on Friday when a Muslim, while standing in prayer, asks Allah for something, and Allah gives it to him.",
+          "url": "https://sunnah.com/muslim:852"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-jumuah-1",
+          "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ",
+          "transliteration": "Allahumma salli ala Muhammad wa ala aali Muhammad",
+          "translation": "O Allah, send blessings upon Muhammad and the family of Muhammad",
+          "source": "Sahih al-Bukhari 6357",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-jumuah-2",
+          "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً",
+          "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanah",
+          "translation": "Our Lord, give us in this world good and in the Hereafter good",
+          "source": "Quran 2:201",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -42,6 +85,13 @@
           "title": "Go early to Jumu'ah prayer",
           "subtitle": "Send abundant salawat upon the Prophet ﷺ",
           "reward": 8
+        },
+        {
+          "index": 3,
+          "emoji": "🤲",
+          "title": "Send salawat upon the Prophet ﷺ",
+          "subtitle": "The most salawat on Friday brings the closest to the Prophet ﷺ",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://sunnah.com/muslim:848"
@@ -54,17 +104,53 @@
       "arabicTitle": "رأس السنة الهجرية",
       "category": "reflection",
       "significance": "medium",
-      "shortStory": "The Hijri calendar was instituted by Umar ibn al-Khattab (RA) in 638 CE, beginning from the Prophet's migration (Hijrah) from Makkah to Madinah — the event that transformed a persecuted community into a society built on faith.",
+      "shortStory": "The Hijri calendar was instituted by Umar ibn al-Khattab (RA) in 638 CE, beginning from the Prophet's migration (Hijrah) from Makkah to Madinah — the event that transformed a persecuted community into a society built on faith. The Hijrah was not merely a physical relocation but a spiritual turning point: leaving behind all that displeases Allah for all that pleases Him. Each new year invites the believer to renew that inward migration, taking account of the soul as Umar (RA) famously did of himself before the day's end.",
       "quranRefs": [
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 40
+          "ayah": 40,
+          "text": "If you do not aid him, Allah has already aided him when those who disbelieved had driven him out, and the second of two, when they were in the cave, and he said to his companion: Do not grieve; indeed Allah is with us."
         },
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 36
+          "ayah": 36,
+          "text": "Indeed, the number of months with Allah is twelve months in the register of Allah from the day He created the heavens and the earth; of these, four are sacred. That is the correct religion, so do not wrong yourselves during them."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "text": "Actions are but by intentions, and every man shall have only that which he intended. Thus whoever migrated for Allah and His Messenger, his migration was for Allah and His Messenger.",
+          "url": "https://sunnah.com/bukhari:1"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3197",
+          "narrator": "Abu Bakrah (RA)",
+          "text": "The Prophet ﷺ said: The year is twelve months, of which four are sacred: Dhul-Qa'dah, Dhul-Hijjah, Muharram, and Rajab of Mudar.",
+          "url": "https://sunnah.com/bukhari:3197"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-hijri-new-year-1",
+          "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+          "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
+          "translation": "Our Lord, give us in this world good and in the Hereafter good, and protect us from the punishment of the Fire.",
+          "source": "Quran 2:201",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-hijri-new-year-2",
+          "arabic": "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا",
+          "transliteration": "Rabbana la tu'akhidhna in nasina ak akhta'na",
+          "translation": "Our Lord, do not impose blame upon us if we forget or err.",
+          "source": "Quran 2:286",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -100,12 +186,47 @@
       "arabicTitle": "يوم تاسوعاء",
       "category": "fasting",
       "significance": "medium",
-      "shortStory": "The Prophet ﷺ intended to fast the 9th of Muharram alongside the 10th to distinguish the Muslim practice from the People of the Book. Fasting Tasu'a with Ashura is a recommended sunnah.",
+      "shortStory": "The Prophet ﷺ intended to fast the 9th of Muharram alongside the 10th to distinguish the Muslim practice from the People of the Book. When he was told that the Jews fasted the 10th alone, he declared: If I live until next year, I will surely fast the 9th. Fasting Tasu'a together with Ashura is therefore a recommended sunnah that honors the Prophet's wish to differ from previous nations in devotion.",
       "quranRefs": [
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 183
+          "ayah": 183,
+          "text": "O you who have believed, decreed upon you is fasting as it was decreed upon those before you, that you may become righteous."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih Muslim",
+          "number": "1134",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "text": "When the Prophet ﷺ fasted the day of Ashura and ordered it to be fasted, they said: O Messenger of Allah, it is a day the Jews and Christians venerate. He said: Then next year, if Allah wills, we will fast the ninth.",
+          "url": "https://sunnah.com/muslim:1134"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1163",
+          "narrator": "Abu Qatadah (RA)",
+          "text": "The Prophet ﷺ was asked about fasting on the day of Ashura, and he said: It expiates the sins of the previous year.",
+          "url": "https://sunnah.com/muslim:1163"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-tasua-1",
+          "arabic": "رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
+          "transliteration": "Rabbana zalamna anfusana wa in lam taghfir lana wa tarhamna lanakunanna minal-khasirin",
+          "translation": "Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.",
+          "source": "Quran 7:23",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-tasua-2",
+          "arabic": "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ، دِقَّهُ وَجِلَّهُ، وَأَوَّلَهُ وَآخِرَهُ، وَعَلَانِيَتَهُ وَسِرَّهُ",
+          "transliteration": "Allahummaghfir li dhanbi kullahu, diqqahu wa jillahu, wa awwalahu wa akhirahu, wa 'alaniyatahu wa sirrahu",
+          "translation": "O Allah, forgive me all my sins — the small and the great, the first and the last, the open and the hidden.",
+          "source": "Sahih Muslim 2703",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -122,6 +243,13 @@
           "title": "Make dua for the Ummah",
           "subtitle": "Remember Musa's gratitude and Allah's deliverance",
           "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Read the story of Musa (AS)",
+          "subtitle": "Reflect on the deliverance of Bani Isra'il from Fir'awn",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://sunnah.com/muslim:1134"
@@ -139,12 +267,48 @@
         {
           "surah": "Yunus",
           "surahNumber": 10,
-          "ayah": 90
+          "ayah": 90,
+          "text": "And We took the Children of Israel across the sea, and Pharaoh and his soldiers pursued them in tyranny and enmity until, when drowning overtook him, he said, 'I believe there is no deity except that in whom the Children of Israel believe, and I am of the Muslims.'"
         },
         {
           "surah": "Ta-Ha",
           "surahNumber": 20,
-          "ayah": 77
+          "ayah": 77,
+          "text": "And We had inspired to Moses, 'Travel by night with My servants and strike for them a dry path through the sea; you will not fear being overtaken nor be afraid.'"
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih Muslim",
+          "number": "1132a",
+          "narrator": "Ibn Abbas (RA)",
+          "text": "The Prophet ﷺ came to Madinah and found the Jews fasting the day of Ashura. He said: 'We have more right to Musa than you.' So he fasted it and ordered it to be fasted.",
+          "url": "https://sunnah.com/muslim:1132a"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1162b",
+          "narrator": "Abu Qatada (RA)",
+          "text": "The Prophet ﷺ was asked about fasting on the day of Ashura and said: 'It expiates the sins of the previous year.'",
+          "url": "https://sunnah.com/muslim:1162b"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-ashura-1",
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي نَجَّانَا مِنَ الْقَوْمِ الظَّالِمِينَ",
+          "transliteration": "Alhamdu lillahil-ladhi najjana minal-qawmid-dzalimin",
+          "translation": "Praise be to Allah who saved us from the wrongdoing people",
+          "source": "Quran 23:28",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-ashura-2",
+          "arabic": "رَبِّ إِنِّي لِمَا أَنزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+          "transliteration": "Rabbi inni lima anzalta ilayya min khayrin faqir",
+          "translation": "My Lord, I am in need of whatever good You send down to me",
+          "source": "Quran 28:24",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -187,17 +351,53 @@
       "arabicTitle": "المولد النبوي",
       "category": "celebration",
       "significance": "medium",
-      "shortStory": "The Prophet Muhammad ﷺ was born in the Year of the Elephant (570 CE) in Makkah, a mercy to the worlds through whom Allah completed His message. Believers honor his birth by increasing love for him and following his sunnah.",
+      "shortStory": "The Prophet Muhammad ﷺ was born in the Year of the Elephant (570 CE) in Makkah, a mercy to the worlds through whom Allah completed His message. His birth marked the dawn of a prophethood that would transform humanity, calling people from darkness into light through the worship of One God. Believers honor his birth by increasing love for him, sending abundant salawat, and renewing their commitment to follow his sunnah in daily life.",
       "quranRefs": [
         {
           "surah": "Al-Anbiya",
           "surahNumber": 21,
-          "ayah": 107
+          "ayah": 107,
+          "text": "And We have not sent you except as a mercy to the worlds."
         },
         {
           "surah": "Aal-E-Imran",
           "surahNumber": 3,
-          "ayah": 164
+          "ayah": 164,
+          "text": "Certainly did Allah confer favor upon the believers when He sent among them a Messenger from themselves, reciting to them His verses and purifying them and teaching them the Book and wisdom, although they had been before in manifest error."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3680",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said: I have been given superiority over the other prophets in six respects: I have been given words which are concise but comprehensive in meaning; I have been helped by terror (in the hearts of enemies); booty has been made lawful to me; the earth has been made for me a place of worship and ritually pure; I have been sent to all mankind; and the line of prophets is closed with me.",
+          "url": "https://sunnah.com/bukhari:3680"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3329",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said: I am the closest of the people to Isa son of Maryam in this world and the Hereafter. The prophets are brothers; their mothers are different but their religion is one.",
+          "url": "https://sunnah.com/bukhari:3329"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-mawlid-an-nabi-1",
+          "arabic": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+          "transliteration": "Allahumma salli wa sallim 'ala nabiyyina Muhammad",
+          "translation": "O Allah, send blessings and peace upon our Prophet Muhammad.",
+          "source": "Sahih al-Bukhari 3370",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-mawlid-an-nabi-2",
+          "arabic": "رَبَّنَا آمَنَّا فَاكْتُبْنَا مَعَ الشَّاهِدِينَ",
+          "transliteration": "Rabbana amanna faktubna ma'ash-shahidin",
+          "translation": "Our Lord, we have believed, so record us among the witnesses.",
+          "source": "Quran 5:83",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -238,12 +438,48 @@
         {
           "surah": "Al-Isra",
           "surahNumber": 17,
-          "ayah": 1
+          "ayah": 1,
+          "text": "Exalted is He who took His Servant by night from al-Masjid al-Haram to al-Masjid al-Aqsa, whose surroundings We have blessed, to show him of Our signs. Indeed, He is the Hearing, the Seeing."
         },
         {
           "surah": "An-Najm",
           "surahNumber": 53,
-          "ayah": 13
+          "ayah": 13,
+          "text": "And he certainly saw him in another descent."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "349",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ said: I was brought al-Buraq, a white long beast, bigger than a donkey and smaller than a mule, which could place its hooves at the farthest boundary of its sight. I mounted it and went to Bayt al-Maqdis.",
+          "url": "https://sunnah.com/bukhari:349"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3598",
+          "narrator": "Malik ibn Sasa'a (RA)",
+          "text": "The five daily prayers were made obligatory on the night of the Isra. Allah made fifty prayers obligatory, then reduced them to five.",
+          "url": "https://sunnah.com/bukhari:3598"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-isra-miraj-1",
+          "arabic": "سُبْحَانَ الَّذِي أَسْرَىٰ بِعَبْدِهِ لَيْلًا",
+          "transliteration": "Subhanal-ladhi asra bi'abdihi layla",
+          "translation": "Glory to Him who took His Servant by night",
+          "source": "Quran 17:1",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-isra-miraj-2",
+          "arabic": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+          "transliteration": "Allahumma a'inni ala dhikrika wa shukrika wa husni 'ibadatik",
+          "translation": "O Allah, help me to remember You, thank You, and worship You in the best manner",
+          "source": "Sunan Abu Dawud 1522",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -286,17 +522,53 @@
       "arabicTitle": "ليلة البراءة",
       "category": "prayer",
       "significance": "medium",
-      "shortStory": "On the 15th night of Sha'ban, Allah's mercy descends; He forgives all except the idolater and the one who harbors hatred. It is a night of seeking forgiveness and turning back to Allah before the arrival of Ramadan.",
+      "shortStory": "On the 15th night of Sha'ban, Allah's mercy descends; He forgives all except the idolater and the one who harbors hatred. It is a night of seeking forgiveness and turning back to Allah before the arrival of Ramadan. The Prophet ﷺ would spend it in prayer and visit the graveyard of Baqi' to supplicate for the deceased. It is a call to purify the heart, mend broken ties, and prepare the soul for the blessed month ahead.",
       "quranRefs": [
         {
           "surah": "Ad-Dukhan",
           "surahNumber": 44,
-          "ayah": 3
+          "ayah": 3,
+          "text": "Indeed, We sent it down during a blessed night. Indeed, We were to warn mankind."
         },
         {
           "surah": "Ad-Dukhan",
           "surahNumber": 44,
-          "ayah": 4
+          "ayah": 4,
+          "text": "Therein is decreed every matter of wisdom."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sunan Ibn Majah",
+          "number": "1390",
+          "narrator": "Abu Musa al-Ash'ari (RA)",
+          "text": "The Prophet ﷺ said: Allah looks down on the middle night of Sha'ban and forgives all His creation, except for the one who associates partners with Him or the one who harbors enmity.",
+          "url": "https://sunnah.com/ibnmajah:1390"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "742",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "text": "The Prophet ﷺ said: Allah descends to the lowest heaven on the middle night of Sha'ban and forgives all those in His creation except the idolater and the one who harbors hatred.",
+          "url": "https://sunnah.com/tirmidhi:742"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-laylat-al-baraat-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun karimun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Pardoner, the Generous, and You love to pardon, so pardon me.",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-laylat-al-baraat-2",
+          "arabic": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً ۚ إِنَّكَ أَنتَ الْوَهَّابُ",
+          "transliteration": "Rabbana la tuzigh qulubana ba'da idh hadaytana wa hab lana min ladunka rahmatan innaka antal-Wahhab",
+          "translation": "Our Lord, let not our hearts deviate after You have guided us, and grant us from Yourself mercy. Indeed, You are the Bestower.",
+          "source": "Quran 3:8",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -344,12 +616,48 @@
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 185
+          "ayah": 185,
+          "text": "The month of Ramadhan is that in which was revealed the Quran, a guidance for the people and clear proofs of guidance and criterion. So whoever sights the month, let him fast it."
         },
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 183
+          "ayah": 183,
+          "text": "O you who have believed, decreed upon you is fasting as it was decreed upon those before you that you may become righteous."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1899",
+          "narrator": "Abu Hurayra (RA)",
+          "text": "The Prophet ﷺ said: When Ramadan comes, the gates of Paradise are opened, the gates of Hell are locked, and the devils are chained.",
+          "url": "https://sunnah.com/bukhari:1899"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "38",
+          "narrator": "Abu Hurayra (RA)",
+          "text": "The Prophet ﷺ said: Whoever fasts Ramadan with faith and seeking reward, his previous sins will be forgiven.",
+          "url": "https://sunnah.com/bukhari:38"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-ramadan-1-1",
+          "arabic": "اللَّهُمَّ صُمْ لِي فِيهِ صِيَامَ الصَّائِمِينَ",
+          "transliteration": "Allahumma sum li fihi siyamas-sa'imina",
+          "translation": "O Allah, let me fast in it with the fast of the fasting ones",
+          "source": "Sahifah Sajjadiya",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-ramadan-1-2",
+          "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ",
+          "transliteration": "Rabbana taqabbal minna innaka antas-sami'ul-'alim",
+          "translation": "Our Lord, accept it from us. Indeed You are the Hearing, the Knowing",
+          "source": "Quran 2:127",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -397,12 +705,48 @@
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 1
+          "ayah": 1,
+          "text": "Indeed, We sent the Quran down during the Night of Decree."
         },
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 3
+          "ayah": 3,
+          "text": "The Night of Decree is better than a thousand months."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2014",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: Seek Laylat al-Qadr in the odd nights of the last ten days of Ramadan.",
+          "url": "https://sunnah.com/bukhari:2014"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3513",
+          "narrator": "Aisha (RA)",
+          "text": "I said: O Messenger of Allah, if I know which night is Laylat al-Qadr, what should I say? He said: Say: Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni.",
+          "url": "https://sunnah.com/tirmidhi:3513"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-laylat-al-qadr-21-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Most Forgiving and You love to forgive, so forgive me",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-laylat-al-qadr-21-2",
+          "arabic": "رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ",
+          "transliteration": "Rabbi qad ataytani minal-mulki wa 'allamtani min ta'wilil-ahadith",
+          "translation": "My Lord, You have given me sovereignty and taught me the interpretation of hadiths",
+          "source": "Quran 12:101",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -443,12 +787,48 @@
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 3
+          "ayah": 3,
+          "text": "The Night of Decree is better than a thousand months."
         },
         {
           "surah": "Ad-Dukhan",
           "surahNumber": 44,
-          "ayah": 4
+          "ayah": 4,
+          "text": "Therein is decreed every matter of decree."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2014",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: Seek Laylat al-Qadr in the odd nights of the last ten days of Ramadan.",
+          "url": "https://sunnah.com/bukhari:2014"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3513",
+          "narrator": "Aisha (RA)",
+          "text": "I said: O Messenger of Allah, if I know which night is Laylat al-Qadr, what should I say? He said: Say: Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni.",
+          "url": "https://sunnah.com/tirmidhi:3513"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-laylat-al-qadr-23-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Most Forgiving and You love to forgive, so forgive me",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-laylat-al-qadr-23-2",
+          "arabic": "رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ",
+          "transliteration": "Rabbi qad ataytani minal-mulki wa 'allamtani min ta'wilil-ahadith",
+          "translation": "My Lord, You have given me sovereignty and taught me the interpretation of hadiths",
+          "source": "Quran 12:101",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -489,12 +869,48 @@
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 4
+          "ayah": 4,
+          "text": "The angels and the Spirit descend therein by permission of their Lord for every matter."
         },
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 5
+          "ayah": 5,
+          "text": "Peace it is until the emergence of dawn."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2014",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: Seek Laylat al-Qadr in the odd nights of the last ten days of Ramadan.",
+          "url": "https://sunnah.com/bukhari:2014"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3513",
+          "narrator": "Aisha (RA)",
+          "text": "I said: O Messenger of Allah, if I know which night is Laylat al-Qadr, what should I say? He said: Say: Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni.",
+          "url": "https://sunnah.com/tirmidhi:3513"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-laylat-al-qadr-25-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Most Forgiving and You love to forgive, so forgive me",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-laylat-al-qadr-25-2",
+          "arabic": "رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ",
+          "transliteration": "Rabbi qad ataytani minal-mulki wa 'allamtani min ta'wilil-ahadith",
+          "translation": "My Lord, You have given me sovereignty and taught me the interpretation of hadiths",
+          "source": "Quran 12:101",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -535,12 +951,48 @@
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 1
+          "ayah": 1,
+          "text": "Indeed, We sent the Quran down during the Night of Decree."
         },
         {
           "surah": "Al-Qadr",
           "surahNumber": 97,
-          "ayah": 3
+          "ayah": 3,
+          "text": "The Night of Decree is better than a thousand months."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2014",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: Seek Laylat al-Qadr in the odd nights of the last ten days of Ramadan.",
+          "url": "https://sunnah.com/bukhari:2014"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3513",
+          "narrator": "Aisha (RA)",
+          "text": "I said: O Messenger of Allah, if I know which night is Laylat al-Qadr, what should I say? He said: Say: Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni.",
+          "url": "https://sunnah.com/tirmidhi:3513"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-laylat-al-qadr-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Most Forgiving and You love to forgive, so forgive me",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-laylat-al-qadr-2",
+          "arabic": "رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ",
+          "transliteration": "Rabbi qad ataytani minal-mulki wa 'allamtani min ta'wilil-ahadith",
+          "translation": "My Lord, You have given me sovereignty and taught me the interpretation of hadiths",
+          "source": "Quran 12:101",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -588,12 +1040,48 @@
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 185
+          "ayah": 185,
+          "text": "...Allah intends for you ease and does not intend for you hardship and [wants] for you to complete the period and to glorify Allah for that to which He has guided you; and perhaps you will be grateful."
         },
         {
           "surah": "Al-Jumu'ah",
           "surahNumber": 62,
-          "ayah": 10
+          "ayah": 10,
+          "text": "And when the prayer has been concluded, disperse within the land and seek from the bounty of Allah, and remember Allah often that you may succeed."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "951",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ never proceeded on the day of Eid al-Fitr without eating some dates, and he used to eat an odd number of them.",
+          "url": "https://sunnah.com/bukhari:951"
+        },
+        {
+          "collection": "Sunan Abu Dawud",
+          "number": "1609",
+          "narrator": "Ibn Abbas (RA)",
+          "text": "The Prophet ﷺ ordered Zakat al-Fitr before the people went out for the Eid prayer.",
+          "url": "https://sunnah.com/abudawud:1609"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-eid-fitr-1",
+          "arabic": "تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمْ",
+          "transliteration": "Taqabbalallahu minna wa minkum",
+          "translation": "May Allah accept it from us and from you",
+          "source": "Sahih al-Bukhari (Mawaqit as-Salat)",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-eid-fitr-2",
+          "arabic": "اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ لَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ",
+          "transliteration": "Allahu Akbar Allahu Akbar, la ilaha illallah, wallahu Akbar Allahu Akbar wa lillahil-hamd",
+          "translation": "Allah is the Greatest, Allah is the Greatest. There is no god but Allah. Allah is the Greatest, Allah is the Greatest, and all praise is for Allah",
+          "source": "Sahih Ibn Hibban 3122",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -636,12 +1124,47 @@
       "arabicTitle": "صيام ست من شوال",
       "category": "fasting",
       "significance": "medium",
-      "shortStory": "Whoever fasts Ramadan and then follows it with six days of Shawwal, it is as if they fasted the entire year — for a good deed is multiplied by ten. The Prophet ﷺ encouraged these voluntary fasts after Eid.",
+      "shortStory": "Whoever fasts Ramadan and then follows it with six days of Shawwal, it is as if they fasted the entire year — for a good deed is multiplied by ten. The Prophet ﷺ encouraged these voluntary fasts after Eid, framing them as a means to extend the reward of Ramadan throughout the year. The fasts may be kept consecutively or spread across the month, and they protect the worshipper from losing the discipline built in Ramadan. They are a sign of acceptance of one's Ramadan and gratitude to Allah.",
       "quranRefs": [
         {
           "surah": "Al-An'am",
           "surahNumber": 6,
-          "ayah": 160
+          "ayah": 160,
+          "text": "Whoever comes with a good deed will have ten times the like thereof, and whoever comes with an evil deed will not be recompensed except the like thereof; and they will not be wronged."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih Muslim",
+          "number": "1164a",
+          "narrator": "Abu Ayyub al-Ansari (RA)",
+          "text": "The Prophet ﷺ said: Whoever fasts Ramadan and then follows it with six of Shawwal, it is as if he fasted the entire year.",
+          "url": "https://sunnah.com/muslim:1164a"
+        },
+        {
+          "collection": "Sunan Ibn Majah",
+          "number": "1715",
+          "narrator": "Thawban (RA)",
+          "text": "The Prophet ﷺ said: The month of Ramadan is like ten months, and six days of Shawwal are like two months, so that is a complete year.",
+          "url": "https://sunnah.com/ibnmajah:1715"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-shawwal-six-fasts-1",
+          "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ",
+          "transliteration": "Rabbana taqabbal minna innaka antas-Sami'ul-'Alim",
+          "translation": "Our Lord, accept it from us. Indeed, You are the All-Hearing, the All-Knowing.",
+          "source": "Quran 2:127",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-shawwal-six-fasts-2",
+          "arabic": "اللَّهُمَّ صُمْ لِي فِيهِ صِيَامَ الْقَائِمِينَ وَنَوْمِي فِيهِ نَوْمَ الصَّائِمِينَ",
+          "transliteration": "Allahumma sum li fih siyamal-qa'imina wa nawmi fih nawmas-sa'imina",
+          "translation": "O Allah, for me make my fast in it the fast of those who stand in worship, and my sleep the sleep of those who fast.",
+          "source": "Sahifah Sajjadiyya",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -665,6 +1188,13 @@
           "title": "Thank Allah for Ramadan",
           "subtitle": "Acknowledge the blessing of completed worship",
           "reward": 6
+        },
+        {
+          "index": 3,
+          "emoji": "📖",
+          "title": "Reflect on the ten-fold reward",
+          "subtitle": "A single good deed is multiplied by ten — ponder Allah's generosity",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://sunnah.com/muslim:1164a"
@@ -682,12 +1212,48 @@
         {
           "surah": "Al-Fajr",
           "surahNumber": 89,
-          "ayah": 1
+          "ayah": 1,
+          "text": "By the dawn."
         },
         {
           "surah": "Al-Fajr",
           "surahNumber": 89,
-          "ayah": 2
+          "ayah": 2,
+          "text": "And the ten nights."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "969",
+          "narrator": "Ibn Abbas (RA)",
+          "text": "The Prophet ﷺ said: No good deeds are more beloved to Allah than those done in these first ten days of Dhul-Hijjah. They said: Not even jihad for the sake of Allah? He said: Not even jihad, except a man who goes out with his life and his wealth and returns with neither.",
+          "url": "https://sunnah.com/bukhari:969"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "757",
+          "narrator": "Ibn Umar (RA)",
+          "text": "The Prophet ﷺ said: There are no days greater or more beloved to Allah for good deeds than these ten days, so increase in them: tahleel, takbeer, and tahmeed.",
+          "url": "https://sunnah.com/tirmidhi:757"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-dhul-hijjah-1",
+          "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ",
+          "transliteration": "La ilaha illallah, wallahu Akbar Allahu Akbar wa lillahil-hamd",
+          "translation": "There is no god but Allah, Allah is the Greatest, Allah is the Greatest, and all praise is for Allah",
+          "source": "Sahih al-Bukhari 969",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-dhul-hijjah-2",
+          "arabic": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ",
+          "transliteration": "Rabbana hab lana min azwajina wa dhurriyatina qurrata a'yun",
+          "translation": "Our Lord, grant us from among our spouses and offspring comfort to our eyes",
+          "source": "Quran 25:74",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -730,17 +1296,53 @@
       "arabicTitle": "يوم التروية",
       "category": "history",
       "significance": "medium",
-      "shortStory": "The 8th of Dhul-Hijjah marks the official beginning of the Hajj rites, when pilgrims move to Mina and prepare for the standing at Arafah. The pilgrims enter the state of Ihram and follow the footsteps of Ibrahim (AS).",
+      "shortStory": "The 8th of Dhul-Hijjah marks the official beginning of the Hajj rites, when pilgrims move to Mina and prepare for the standing at Arafah. The day is named Tarwiyah because pilgrims would gather water for the days ahead. Pilgrims enter the state of Ihram and follow the footsteps of Ibrahim (AS), embodying his family's surrender to Allah's call. For non-pilgrims, it opens the most beloved ten days to Allah — a season of fasting, takbeer, and remembrance.",
       "quranRefs": [
         {
           "surah": "Al-Hajj",
           "surahNumber": 22,
-          "ayah": 27
+          "ayah": 27,
+          "text": "And proclaim to the people the Hajj; they will come to you on foot and on every lean camel; they will come from every distant pass."
         },
         {
           "surah": "Al-Hajj",
           "surahNumber": 22,
-          "ayah": 28
+          "ayah": 28,
+          "text": "That they may witness benefits for themselves and mention the name of Allah on known days over what He has provided for them of sacrificial animals. So eat of them and feed the miserable and poor."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "949",
+          "narrator": "Ibn Abbas (RA)",
+          "text": "The Prophet ﷺ said: No good deeds done on other days are superior to those done on these first ten days of Dhul-Hijjah. They asked: Not even Jihad for Allah's cause? He said: Not even Jihad, except a man who goes out himself with his wealth and does not return with either.",
+          "url": "https://sunnah.com/bukhari:949"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "884",
+          "narrator": "Ibn Umar (RA)",
+          "text": "The Prophet ﷺ said: The most beloved of places to Allah are the mosques, and the most hated of places to Allah are the markets.",
+          "url": "https://sunnah.com/tirmidhi:884"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-day-of-tarwiyah-1",
+          "arabic": "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",
+          "transliteration": "Labbayka Allahumma labbayk, labbayka la sharika laka labbayk, innal-hamda wan-ni'mata laka wal-mulk, la sharika lak",
+          "translation": "Here I am, O Allah, here I am. Here I am, You have no partner, here I am. Indeed all praise, bounty, and dominion are Yours, You have no partner.",
+          "source": "Sahih al-Bukhari 1549",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-day-of-tarwiyah-2",
+          "arabic": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ",
+          "transliteration": "Rabbij'alni muqimas-salati wa min dhurriyyati, Rabbana wa taqabbal du'a",
+          "translation": "My Lord, make me an establisher of prayer and of my descendants. Our Lord, and accept my supplication.",
+          "source": "Quran 14:40",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -764,6 +1366,13 @@
           "title": "Reflect on Ibrahim's submission",
           "subtitle": "His Hajj was the answer to Allah's command",
           "reward": 6
+        },
+        {
+          "index": 3,
+          "emoji": "🔊",
+          "title": "Recite Takbeer abundantly",
+          "subtitle": "Glorify Allah throughout the blessed ten days",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://quran.com/22:27"
@@ -781,12 +1390,48 @@
         {
           "surah": "Al-Ma'idah",
           "surahNumber": 5,
-          "ayah": 3
+          "ayah": 3,
+          "text": "This day I have perfected for you your religion and completed My favor upon you and have approved for you Islam as religion."
         },
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 200
+          "ayah": 200,
+          "text": "And when you have completed your rites, remember Allah like your [previous] remembrance of your fathers or with [much] greater remembrance."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih Muslim",
+          "number": "1348b",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: There is no day on which Allah frees more people from the Fire than the Day of Arafah. He comes close and expresses His pride to the angels, saying: What do these people want?",
+          "url": "https://sunnah.com/muslim:1348b"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3513",
+          "narrator": "Aisha (RA)",
+          "text": "The best of supplication is the supplication on the Day of Arafah.",
+          "url": "https://sunnah.com/tirmidhi:3513"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-arafah-1",
+          "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+          "transliteration": "La ilaha illallah wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa ala kulli shay'in qadir",
+          "translation": "There is no god but Allah alone, with no partner. His is the dominion and His is the praise, and He has power over all things",
+          "source": "Jami at-Tirmidhi 3513 (best dua of Arafah)",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-arafah-2",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun karimun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are Forgiving and Generous, You love to forgive, so forgive me",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -834,12 +1479,48 @@
         {
           "surah": "As-Saffat",
           "surahNumber": 37,
-          "ayah": 102
+          "ayah": 102,
+          "text": "And when he reached with him the age of exertion, he said: O my son, indeed I have seen in a dream that I must sacrifice you, so see what you think. He said: O my father, do as you are commanded. You will find me, if Allah wills, of the steadfast."
         },
         {
           "surah": "As-Saffat",
           "surahNumber": 37,
-          "ayah": 107
+          "ayah": 107,
+          "text": "And We ransomed him with a great sacrifice."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "968",
+          "narrator": "Al-Bara' ibn Azib (RA)",
+          "text": "The Prophet ﷺ delivered the Khutba on the day of Nahr and said: The first thing we do on this day of ours is to pray, then we return and sacrifice. Whoever does this has followed our way.",
+          "url": "https://sunnah.com/bukhari:968"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1716",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: There is no deed that Allah has made more beloved to Him than a drop of blood shed on the day of Nahr.",
+          "url": "https://sunnah.com/bukhari:1716"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-eid-adha-1",
+          "arabic": "إِنَّ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي لِلَّهِ رَبِّ الْعَالَمِينَ",
+          "transliteration": "Inna salati wa nusuki wa mahyaya wa mamati lillahi rabbil-'alamin",
+          "translation": "Indeed, my prayer, my sacrifice, my living, and my dying are for Allah, Lord of the worlds",
+          "source": "Quran 6:162",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-eid-adha-2",
+          "arabic": "اللَّهُمَّ تَقَبَّلْ مِنِّي كَمَا تَقَبَّلْتَ مِنْ خَلِيلِكَ إِبْرَاهِيمَ",
+          "transliteration": "Allahumma taqabbal minni kama taqabbalta min khalilika Ibrahim",
+          "translation": "O Allah, accept from me as You accepted from Your friend Ibrahim",
+          "source": "Sahih Ibn Hibban 917",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -882,12 +1563,47 @@
       "arabicTitle": "أيام التشريق",
       "category": "celebration",
       "significance": "medium",
-      "shortStory": "The 11th, 12th, and 13th of Dhul-Hijjah are the Days of Tashriq — days of eating, drinking, and remembrance of Allah. The Prophet ﷺ said they are days of Eid and worship, not of fasting (for non-pilgrims).",
+      "shortStory": "The 11th, 12th, and 13th of Dhul-Hijjah are the Days of Tashriq — days of eating, drinking, and remembrance of Allah. The Prophet ﷺ said they are days of Eid and worship, not of fasting (for non-pilgrims). Pilgrims stone the Jamarat and continue their Hajj rites, while the Ummah everywhere keeps the Takbeer alive after every prayer. They are a continuation of celebration and a reminder that true joy is found in remembering Allah after His greatest acts of worship.",
       "quranRefs": [
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 203
+          "ayah": 203,
+          "text": "And remember Allah during specific numbered days. Then whoever hastens his departure in two days — there is no sin upon him; and whoever delays — there is no sin upon him — for him who fears Allah. And fear Allah and know that to Him you will be gathered."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1741",
+          "narrator": "Nubayshah (RA)",
+          "text": "The Prophet ﷺ said: The days of Tashriq are days of eating and drinking.",
+          "url": "https://sunnah.com/bukhari:1741"
+        },
+        {
+          "collection": "Sunan Abu Dawud",
+          "number": "2413",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "text": "The Prophet ﷺ said: The days of Mina are days of eating and drinking and remembrance of Allah.",
+          "url": "https://sunnah.com/abudawud:2413"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-days-of-tashriq-1",
+          "arabic": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+          "transliteration": "Allahumma a'inni 'ala dhikrika wa shukrika wa husni 'ibadatik",
+          "translation": "O Allah, help me to remember You, to thank You, and to worship You in the best manner.",
+          "source": "Sunan Abu Dawud 1521",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-days-of-tashriq-2",
+          "arabic": "فَإِذَا قَضَيْتُم مَّنَاسِكَكُمْ فَاذْكُرُوا اللَّهَ كَذِكْرِكُمْ آبَاءَكُمْ أَوْ أَشَدَّ ذِكْرًا",
+          "transliteration": "Fa-idha qadaytum manasikakum fazkurullaha ka-dhikrikum aba'akum aw ashadda dhikra",
+          "translation": "And when you have completed your rites, remember Allah like your remembrance of your fathers or with much greater remembrance.",
+          "source": "Quran 2:200",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -911,6 +1627,13 @@
           "title": "Remember Allah abundantly",
           "subtitle": "Eat, drink, and glorify Allah as the Prophet ﷺ taught",
           "reward": 6
+        },
+        {
+          "index": 3,
+          "emoji": "🍽️",
+          "title": "Eat and give thanks",
+          "subtitle": "Enjoy lawful provision and praise Allah for His bounty",
+          "reward": 5
         }
       ],
       "referenceUrl": "https://quran.com/2:203"
@@ -923,12 +1646,39 @@
       "arabicTitle": "أيام البيض",
       "category": "fasting",
       "significance": "low",
-      "shortStory": "The 13th, 14th, and 15th of every Hijri month are the White Days, when the moon is full and bright. The Prophet ﷺ fasted these days regularly and encouraged his companions to do so. Fasting three days each month is equivalent to fasting a lifetime.",
+      "shortStory": "The 13th, 14th, and 15th of every Hijri month are the White Days, when the moon is full and the nights are illuminated. The Prophet ﷺ fasted these days regularly and encouraged his companions to do so, saying that fasting three days each month is equivalent to fasting a lifetime. These days offer a recurring opportunity to renew one's spiritual commitment through voluntary fasting, drawing closer to Allah through a sunnah that spans the entire year.",
       "quranRefs": [
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 184
+          "ayah": 184,
+          "text": "[Fasting for] a limited number of days. So whoever among you is ill or on a journey [during them] - then an equal number of days [are to be made up]. And upon those who are able [to fast, but with hardship] - a ransom [as substitute] of feeding a poor person [each day]. And whoever volunteers excess - it is better for him. But to fast is best for you, if you only knew."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1979",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "text": "The Prophet ﷺ said to me, 'You fast daily all the year and pray every night all the night?' I replied in the affirmative. The Prophet said, 'If you keep on doing this, your eyes will become weak and your body will get tired. He who fasts the whole year has not fasted. Fast like the fasting of Dawud who used to fast on alternate days, and fasting three days (a month) will be equal to the fasting of the whole year.'",
+          "url": "https://sunnah.com/bukhari:1979"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1162",
+          "narrator": "Abu Qatadah al-Ansari (RA)",
+          "text": "The Messenger of Allah ﷺ was asked about fasting on the day of Arafah, whereupon he said: 'It expiates the sins of the preceding year and the coming year.' And he was asked about fasting on the day of Ashura, whereupon he said: 'It expiates the sins of the preceding year.' He was asked about fasting three days of every month, whereupon he said: 'That is fasting for a lifetime.'",
+          "url": "https://sunnah.com/muslim:1162"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-white-days-1",
+          "arabic": "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
+          "transliteration": "Dhahaba adh-dhama'u, wa-btallati al-ʿuruqu, wa-thabata al-ajru in sha'a Allah",
+          "translation": "The thirst has gone, the veins are moistened, and the reward is confirmed, if Allah wills.",
+          "source": "Sunan Abi Dawud 2357",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -943,8 +1693,15 @@
           "index": 1,
           "emoji": "📿",
           "title": "Recite Surah Al-Mulk",
-          "subtitle": "The Prophet ﷺ recommended it for protection",
+          "subtitle": "The Prophet ﷺ recommended it for protection in the grave",
           "reward": 7
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Make dua at iftar",
+          "subtitle": "The fasting person's supplication is not rejected",
+          "reward": 8
         }
       ],
       "referenceUrl": "https://sunnah.com/nasai:2356"
@@ -957,17 +1714,45 @@
       "arabicTitle": "صفر",
       "category": "reflection",
       "significance": "low",
-      "shortStory": "Safar is the second month of the Hijri calendar. In pre-Islamic times, people feared it as unlucky, but the Prophet ﷺ rejected superstition and taught that no month brings misfortune. This is a day to renew trust in Allah's decree (qadar).",
+      "shortStory": "Safar is the second month of the Hijri calendar. In pre-Islamic times, people feared it as unlucky and believed it brought misfortune, but the Prophet ﷺ emphatically rejected such superstition and taught that no month, day, or bird carries evil in itself. This is a day to renew trust in Allah's decree (qadar) and reject all forms of superstition — affirming that Allah alone controls all good and harm.",
       "quranRefs": [
         {
           "surah": "Al-Hadid",
           "surahNumber": 57,
-          "ayah": 22
+          "ayah": 22,
+          "text": "No disaster strikes upon the earth or among yourselves except that it is in a register before We bring it into being - indeed that, for Allah, is easy."
         },
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 51
+          "ayah": 51,
+          "text": "Say, 'Never will we be struck except by what Allah has decreed for us; He is our protector.' And upon Allah let the believers rely."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "5757",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said, 'There is no 'adwa (no contagious disease is conveyed without Allah's permission), nor is there any bad omen (from birds), nor is there any Hamah, nor is there any bad omen in the month of Safar.'",
+          "url": "https://sunnah.com/bukhari:5757"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "2224",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Messenger of Allah ﷺ said, 'There is no transitive disease, no ill omen, no safar (evil omen in the month of Safar), no hama (owl), and no naw' (evil star). And flee from leprosy as you flee from a lion.'",
+          "url": "https://sunnah.com/muslim:2224"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-safar-reflection-1",
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",
+          "transliteration": "Allahumma inni aʿudhu bika min al-hammi wal-hazan, wa-aʿudhu bika min al-ʿajzi wal-kasal, wa-aʿudhu bika min al-jubni wal-bukhl, wa-aʿudhu bika min ghalabati ad-dayni wa-qahri ar-rijal",
+          "translation": "O Allah, I seek refuge in You from anxiety and sorrow, from inability and laziness, from cowardice and miserliness, and from being overpowered by debt and the oppression of men.",
+          "source": "Sahih al-Bukhari 2891",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -975,7 +1760,7 @@
           "index": 0,
           "emoji": "🤲",
           "title": "Reject superstition",
-          "subtitle": "Affirm that Allah alone controls all good and harm",
+          "subtitle": "Affirm that Allah alone controls all good and harm — no month is unlucky",
           "reward": 6
         },
         {
@@ -984,6 +1769,13 @@
           "title": "Recite Surah Al-Fatihah 7×",
           "subtitle": "Seek Allah's protection from all afflictions",
           "reward": 5
+        },
+        {
+          "index": 2,
+          "emoji": "🧠",
+          "title": "Study the hadith on qadar",
+          "subtitle": "Reflect on the Prophet's ﷺ teaching that no omen carries harm",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://sunnah.com/bukhari:5757"
@@ -996,12 +1788,39 @@
       "arabicTitle": "ربيع الثاني",
       "category": "reflection",
       "significance": "low",
-      "shortStory": "The fourth month of the Hijri calendar, following the month of the Prophet's birth. It is a time to continue practicing the sunnah habits you began in Rabi al-Awwal — consistency is the most beloved deed to Allah.",
+      "shortStory": "The fourth month of the Hijri calendar, following the month of the Prophet's birth. It is a time to continue practicing the sunnah habits you began in Rabi al-Awwal — the Prophet ﷺ taught that the most beloved deeds to Allah are those done consistently, even if small. Use this month to audit your spiritual habits, renew your commitment to regular worship, and seek forgiveness for any shortcomings in your practice.",
       "quranRefs": [
         {
           "surah": "Al-Ankabut",
           "surahNumber": 29,
-          "ayah": 69
+          "ayah": 69,
+          "text": "And those who strive for Us - We will surely guide them to Our ways. And indeed, Allah is with the doers of good."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "43",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said, 'Do (good) deeds which are within your capacity, as Allah does not get tired (of giving rewards) but you will get tired, and the best deed in the sight of Allah is that which is done regularly.'",
+          "url": "https://sunnah.com/bukhari:43"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "6464",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said, 'By Allah, I seek forgiveness from Allah and repent to Him more than seventy times a day.'",
+          "url": "https://sunnah.com/bukhari:6464"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-rabi-thani-start-1",
+          "arabic": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+          "transliteration": "Allahumma aʿinni ʿala dhikrika wa-shukrika wa-husni ʿibadatik",
+          "translation": "O Allah, help me to remember You, to be grateful to You, and to worship You in the best manner.",
+          "source": "Sunan Abi Dawud 1521",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -1018,6 +1837,13 @@
           "title": "Pray Istighfar 100×",
           "subtitle": "The Prophet ﷺ sought Allah's forgiveness 100 times a day",
           "reward": 5
+        },
+        {
+          "index": 2,
+          "emoji": "📅",
+          "title": "Commit to one new daily sunnah",
+          "subtitle": "Consistency is the most beloved deed to Allah — start small",
+          "reward": 8
         }
       ],
       "referenceUrl": "https://sunnah.com/muslim:2702"
@@ -1030,12 +1856,39 @@
       "arabicTitle": "جمادى الأولى",
       "category": "reflection",
       "significance": "low",
-      "shortStory": "The fifth month of the Hijri calendar, historically the month of frost. It is a quiet month in the Islamic year — an opportunity to strengthen daily worship, increase charity, and maintain spiritual momentum.",
+      "shortStory": "The fifth month of the Hijri calendar, historically the month of frost. It is a quiet month in the Islamic year — an opportunity to strengthen daily worship, increase charity, and maintain spiritual momentum after the first third of the year. The Prophet ﷺ taught that even a small act of charity given from honest earnings is magnified by Allah, growing like a foal until it becomes as great as a mountain.",
       "quranRefs": [
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 277
+          "ayah": 277,
+          "text": "Indeed, those who believe and do righteous deeds and establish prayer and give zakah will have their reward with their Lord, and there will be no fear concerning them, nor will they grieve."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1410",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said, 'If one gives in charity what equals one date-fruit from honestly earned money — and Allah accepts only the honestly earned money — Allah takes it in His right hand and then enlarges its reward for that person, as anyone of you brings up his baby horse, so much so that it becomes as big as a mountain.'",
+          "url": "https://sunnah.com/bukhari:1410"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "6020",
+          "narrator": "Adi ibn Hatim (RA)",
+          "text": "The Prophet ﷺ said, 'Guard yourselves from the Fire even with half a date.'",
+          "url": "https://sunnah.com/bukhari:6020"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-jumada-awwal-start-1",
+          "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+          "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa-qina ʿadhaban-nar",
+          "translation": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.",
+          "source": "Quran 2:201",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1052,6 +1905,13 @@
           "title": "Recite Surah Al-Kahf",
           "subtitle": "A weekly sunnah that brings light between Fridays",
           "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "💧",
+          "title": "Sponsor a water well or food donation",
+          "subtitle": "Even half a date guards you from the Fire",
+          "reward": 9
         }
       ],
       "referenceUrl": "https://quran.com/2:277"
@@ -1064,12 +1924,39 @@
       "arabicTitle": "غزوة مؤتة",
       "category": "history",
       "significance": "low",
-      "shortStory": "In Jumada al-Awwal of the 8th year after Hijrah, a small Muslim army of 3,000 faced a Byzantine force of 100,000+ at Mu'tah. Three commanders were martyred, then Khalid ibn al-Walid took command and executed a brilliant tactical withdrawal. The Prophet ﷺ called him 'Sword of Allah'.",
+      "shortStory": "In Jumada al-Awwal of the 8th year after Hijrah, a small Muslim army of 3,000 faced a Byzantine force of 100,000+ at Mu'tah. The Prophet ﷺ appointed three commanders in succession: Zayd ibn Harithah, Ja'far ibn Abi Talib, and Abdullah ibn Rawahah — all three were martyred. Then Khalid ibn al-Walid took command and executed a brilliant tactical withdrawal, reorganizing the ranks and saving the army. The Prophet ﷺ called him 'Sword of Allah' (Sayfullah) for his valor.",
       "quranRefs": [
         {
           "surah": "Muhammad",
           "surahNumber": 47,
-          "ayah": 7
+          "ayah": 7,
+          "text": "O you who have believed, if you support Allah, He will support you and plant firmly your feet."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4261",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "text": "Allah's Messenger ﷺ appointed Zaid bin Haritha as the commander of the army during the Ghazwa of Mu'tah and said, 'If Zaid is martyred, Ja'far should take over his position, and if Ja'far is martyred, Abdullah bin Rawaha should take over his position.' Ibn Umar said, 'I was present amongst them in that battle and we searched for Ja'far bin Abi Talib and found his body amongst the bodies of the martyred ones, and found over ninety wounds over his body.'",
+          "url": "https://sunnah.com/bukhari:4261"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4262",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ announced the martyrdom of Zayd, Ja'far, and Ibn Rawaha before the news reached Medina, and his eyes were shedding tears as he said, 'The flag was taken by Khalid bin Al-Walid, and he was a sword from the swords of Allah.'",
+          "url": "https://sunnah.com/bukhari:4262"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-battle-of-mutah-1",
+          "arabic": "اللَّهُمَّ اغْفِرْ لِأَمَتِكَ فُلَانٍ وَافْسَحْ لَهَا فِي قَبْرِهَا وَنَوِّرْ لَهَا فِيهِ",
+          "transliteration": "Allahumma-ghfir li-amatika fulan, wa-fsah laha fi qabriha, wa-nawwir laha fih",
+          "translation": "O Allah, forgive Your servant [name], and make spacious for him in his grave, and bring light to it for him.",
+          "source": "Sahih Muslim 968",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -1086,6 +1973,13 @@
           "title": "Reflect on courage and faith",
           "subtitle": "Few can prevail against many when Allah grants His aid",
           "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "⚔️",
+          "title": "Learn about Khalid ibn al-Walid",
+          "subtitle": "The 'Sword of Allah' — study his tactical wisdom and devotion",
+          "reward": 8
         }
       ],
       "referenceUrl": "https://sunnah.com/bukhari:4261"
@@ -1098,12 +1992,39 @@
       "arabicTitle": "جمادى الآخرة",
       "category": "reflection",
       "significance": "low",
-      "shortStory": "The sixth month of the Hijri calendar. Historically, Fatimah (RA), the beloved daughter of the Prophet ﷺ, married Ali ibn Abi Talib (RA) in this month. It is a reminder of the simple, faith-centered family life taught by the Prophet ﷺ.",
+      "shortStory": "The sixth month of the Hijri calendar. Historically, Fatimah (RA), the beloved daughter of the Prophet ﷺ, married Ali ibn Abi Talib (RA) in this month. It is a reminder of the simple, faith-centered family life taught by the Prophet ﷺ, who taught that whoever desires to have their provision increased and their lifespan prolonged should maintain family ties (silat al-rahm). This month invites us to strengthen our bonds of kinship.",
       "quranRefs": [
         {
           "surah": "Ar-Rum",
           "surahNumber": 30,
-          "ayah": 21
+          "ayah": 21,
+          "text": "And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy. Indeed in that are signs for a people who give thought."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "5985",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said, 'Whoever is pleased that he be granted more wealth and that his lease of life be prolonged, then he should keep good relations with his kith and kin.'",
+          "url": "https://sunnah.com/bukhari:5985"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "2554",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Messenger of Allah ﷺ said, 'Verily, Allah created the creatures, and when He finished the creation, the womb got up and caught hold of Allah. Allah said, \"What is the matter?\" The womb said, \"I seek refuge with You from Al-Qati'ah (the one who severs the ties of kinship).\" Allah said, \"Will you be pleased if I bestow My favors on him who keeps your ties and withhold My favors from him who severs your ties?\" The womb said, \"Yes, my Lord.\" Allah said, \"Then that is for you.\"'",
+          "url": "https://sunnah.com/muslim:2554"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-jumada-thani-start-1",
+          "arabic": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+          "transliteration": "Rabbi-rhamhuma kama rabbayani saghira",
+          "translation": "My Lord, have mercy upon them as they brought me up [when I was] small.",
+          "source": "Quran 17:24",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1120,6 +2041,13 @@
           "title": "Make dua for your parents",
           "subtitle": "My Lord, have mercy upon them as they brought me up (17:24)",
           "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "💍",
+          "title": "Reflect on the marriage of Fatimah & Ali",
+          "subtitle": "Study the Prophet's ﷺ model of simple, faith-centered family life",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://quran.com/30:21"
@@ -1132,12 +2060,47 @@
       "arabicTitle": "رجب الحرام",
       "category": "reflection",
       "significance": "medium",
-      "shortStory": "Rajab is one of the four sacred months in which fighting is forbidden. The Prophet ﷺ would say: 'O Allah, bless us in Rajab and Sha'ban, and let us reach Ramadan.' It is a month to prepare the heart for the arrival of Ramadan.",
+      "shortStory": "Rajab is one of the four sacred months in which fighting is forbidden. The Prophet ﷺ would say: 'O Allah, bless us in Rajab and Sha'ban, and let us reach Ramadan.' It is a month to prepare the heart for the arrival of Ramadan. As the first of the three consecutive sacred months leading to Ramadan, it opens a season of spiritual renewal, voluntary worship, and introspection. Honoring Rajab means guarding the tongue, increasing repentance, and beginning the inward journey toward the Quran.",
       "quranRefs": [
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 36
+          "ayah": 36,
+          "text": "Indeed, the number of months with Allah is twelve months in the register of Allah from the day He created the heavens and the earth; of these, four are sacred. That is the correct religion, so do not wrong yourselves during them."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3676",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ would say when Rajab began: O Allah, bless us in Rajab and Sha'ban, and let us reach Ramadan.",
+          "url": "https://sunnah.com/tirmidhi:3676"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3197",
+          "narrator": "Abu Bakrah (RA)",
+          "text": "The Prophet ﷺ said: The year is twelve months, of which four are sacred: Dhul-Qa'dah, Dhul-Hijjah, Muharram, and Rajab of Mudar, which is between Jumada and Sha'ban.",
+          "url": "https://sunnah.com/bukhari:3197"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-rajab-sacred-month-1",
+          "arabic": "اللَّهُمَّ بَارِكْ لَنَا فِي رَجَبَ وَشَعْبَانَ وَبَلِّغْنَا رَمَضَانَ",
+          "transliteration": "Allahumma barik lana fi Rajab wa Sha'ban wa ballighna Ramadan",
+          "translation": "O Allah, bless us in Rajab and Sha'ban, and let us reach Ramadan.",
+          "source": "Jami at-Tirmidhi 3676",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-rajab-sacred-month-2",
+          "arabic": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي",
+          "transliteration": "Rabbish-rah li sadri wa yassir li amri wahlul 'uqdatam min lisani yafqahu qawli",
+          "translation": "My Lord, expand for me my breast and ease for me my task and untie the knot from my tongue that they may understand my speech.",
+          "source": "Quran 20:25-28",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1161,6 +2124,13 @@
           "title": "Begin Quran review",
           "subtitle": "Prepare for Ramadan by building a daily recitation habit now",
           "reward": 6
+        },
+        {
+          "index": 3,
+          "emoji": "🤍",
+          "title": "Guard your tongue",
+          "subtitle": "Wrongdoing in sacred months is graver — speak only good",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://sunnah.com/ahmad:2346"
@@ -1173,17 +2143,45 @@
       "arabicTitle": "غزوة تبوك",
       "category": "history",
       "significance": "low",
-      "shortStory": "In Rajab of the 9th year after Hijrah, the Prophet ﷺ marched with 30,000 companions to Tabuk to confront the Byzantine army. Though no battle occurred, it was a test of faith in the scorching heat — and several hypocrites made excuses to avoid going.",
+      "shortStory": "In Rajab of the 9th year after Hijrah, the Prophet ﷺ marched with 30,000 companions to Tabuk to confront the Byzantine army. Though no battle occurred, it was a severe test of faith in the scorching desert heat — and several hypocrites made excuses to avoid going. The Quran rebuked those who were reluctant to strive with their wealth and lives in Allah's cause, while praising those who willingly sacrificed for the faith.",
       "quranRefs": [
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 38
+          "ayah": 38,
+          "text": "O you who have believed, what is [the matter] with you that, when you are told to go forth in the cause of Allah, you adhere heavily to the earth? Are you satisfied with the life of this world rather than the Hereafter? But what is the enjoyment of worldly life compared to the Hereafter except a [very] little."
         },
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 42
+          "ayah": 42,
+          "text": "Had it been an easy gain and a moderate trip, they would have followed you, but distant was the distance for them. And they will swear by Allah, 'If we were able, we would have gone forth with you,' destroying themselves [through falsehood]. And Allah knows that they are liars."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2786",
+          "narrator": "Abu Sa'id al-Khudri (RA)",
+          "text": "The Prophet ﷺ was asked, 'Who is the best among the people?' He replied, 'A believer who strives his utmost in Allah's Cause with his life and property.' They asked, 'Who is next?' He replied, 'A believer who stays in one of the mountain paths worshipping Allah and leaving the people secure from his mischief.'",
+          "url": "https://sunnah.com/bukhari:2786"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4592",
+          "narrator": "Zayd ibn Thabit (RA)",
+          "text": "The Prophet ﷺ dictated: 'Not equal are those of the believers who sit (at home) and those who strive and fight in the Cause of Allah.' Then Ibn Umm Maktum, who was blind, came and said, 'O Allah's Apostle! By Allah, if I had the power to fight, I would.' So Allah revealed: 'Except those who are disabled.'",
+          "url": "https://sunnah.com/bukhari:4592"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-battle-of-tabuk-1",
+          "arabic": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+          "transliteration": "Rabbana afrigh ʿalayna sabran wa-thabbit aqdamana wa-nsurna ʿala al-qawmi al-kafirin",
+          "translation": "Our Lord, pour upon us patience and plant firmly our feet and give us victory over the disbelieving people.",
+          "source": "Quran 2:250",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1191,7 +2189,7 @@
           "index": 0,
           "emoji": "💪",
           "title": "Reflect on sacrifice for faith",
-          "subtitle": "The companions gave wealth and endured hardship willingly",
+          "subtitle": "The companions gave wealth and endured hardship willingly for Allah's cause",
           "reward": 7
         },
         {
@@ -1200,6 +2198,13 @@
           "title": "Read Surah At-Tawbah 38-42",
           "subtitle": "Allah tests who will strive with wealth and lives",
           "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "🛡️",
+          "title": "Support those striving in Allah's cause",
+          "subtitle": "Contribute to causes that serve the Ummah — wealth or effort",
+          "reward": 9
         }
       ],
       "referenceUrl": "https://quran.com/9:38"
@@ -1212,17 +2217,45 @@
       "arabicTitle": "ذو القعدة الحرام",
       "category": "reflection",
       "significance": "low",
-      "shortStory": "Dhu al-Qidah is one of the four sacred months (2:194). Fighting is forbidden in it. The Treaty of Hudaybiyyah was concluded in this month, and the Prophet ﷺ performed Umrah during it — a time of peace and pilgrimage.",
+      "shortStory": "Dhu al-Qidah is one of the four sacred months in which fighting is forbidden. The Prophet ﷺ taught that three sacred months are in succession — Dhu al-Qidah, Dhu al-Hijjah, and Muharram — and the fourth is Rajab. The Treaty of Hudaybiyyah was concluded in this month, and the Prophet ﷺ performed Umrah during it, demonstrating that the sacred months are a time of peace, pilgrimage, and reconciliation rather than conflict.",
       "quranRefs": [
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 194
+          "ayah": 194,
+          "text": "[Fighting in] the sacred month is for [aggression committed in] the sacred month, and for [all] violations is legal retribution. So whoever has assaulted you, then assault him in the same way that he has assaulted you. And fear Allah and know that Allah is with those who fear Him."
         },
         {
           "surah": "At-Tawbah",
           "surahNumber": 9,
-          "ayah": 36
+          "ayah": 36,
+          "text": "Indeed, the number of months with Allah is twelve [lunar] months in the register of Allah [from] the day He created the heavens and the earth; of these, four are sacred. That is the correct religion, so do not wrong yourselves during them. And fight against the disbelievers collectively as they fight against you collectively. And know that Allah is with the righteous."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3197",
+          "narrator": "Abu Bakrah (RA)",
+          "text": "The Prophet ﷺ said, 'The year is of twelve months, out of which four months are sacred: Three are in succession — Dhu al-Qa'da, Dhu al-Hijja and Muharram — and (the fourth is) Rajab of (the tribe of) Mudar which comes between Jumada-ath-Thaniyah and Sha'ban.'",
+          "url": "https://sunnah.com/bukhari:3197"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2731",
+          "narrator": "Al-Miswar bin Makhrama and Marwan (RA)",
+          "text": "The Prophet ﷺ set out at the time of Al-Hudaibiya and said, 'We have not come to fight anyone, but to perform Umrah. No doubt, the war has weakened Quraish and they have suffered great losses, so if they wish, I will conclude a truce with them.' This became the Treaty of Hudaybiyyah, concluded in the sacred month of Dhu al-Qidah.",
+          "url": "https://sunnah.com/bukhari:2731"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-dhu-al-qidah-start-1",
+          "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
+          "transliteration": "Rabbana taqabbal minna, innaka anta as-samiʿu al-ʿalim",
+          "translation": "Our Lord, accept it from us. Indeed, You are the Hearing, the Knowing.",
+          "source": "Quran 2:127",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1230,15 +2263,22 @@
           "index": 0,
           "emoji": "🕊️",
           "title": "Reflect on peace and truce",
-          "subtitle": "The sacred months are for reconciliation and worship",
+          "subtitle": "The sacred months are for reconciliation and worship, not conflict",
           "reward": 6
         },
         {
           "index": 1,
           "emoji": "🤝",
           "title": "Reconcile a broken relationship",
-          "subtitle": "Hudaybiyyah teaches that peace can be a greater victory",
+          "subtitle": "Hudaybiyyah teaches that peace can be a greater victory than war",
           "reward": 8
+        },
+        {
+          "index": 2,
+          "emoji": "🕋",
+          "title": "Prepare for Umrah or Hajj",
+          "subtitle": "Dhu al-Qidah is the month the Prophet ﷺ performed Umrah",
+          "reward": 9
         }
       ],
       "referenceUrl": "https://quran.com/9:36"
@@ -1251,17 +2291,53 @@
       "arabicTitle": "فتح مكة",
       "category": "history",
       "significance": "medium",
-      "shortStory": "On the 20th of Ramadan in the 8th year after Hijrah, the Prophet ﷺ returned to Makkah with 10,000 companions and conquered it almost without bloodshed. He forgave his enemies with the words of Yusuf (AS): 'No blame will there be upon you today.' He cleansed the Ka'bah of 360 idols.",
+      "shortStory": "On the 20th of Ramadan in the 8th year after Hijrah, the Prophet ﷺ returned to Makkah with 10,000 companions and conquered it almost without bloodshed. He forgave his enemies with the words of Yusuf (AS): 'No blame will there be upon you today. May Allah forgive you, and He is the Most Merciful of the merciful.' He cleansed the Ka'bah of 360 idols, restoring the House of Ibrahim (AS) to pure monotheism. The conquest was not of land but of hearts — mercy triumphed over vengeance, and the city that once expelled him now embraced him.",
       "quranRefs": [
         {
           "surah": "An-Nasr",
           "surahNumber": 110,
-          "ayah": 1
+          "ayah": 1,
+          "text": "When the victory of Allah has come and the conquest."
         },
         {
           "surah": "An-Nasr",
           "surahNumber": 110,
-          "ayah": 2
+          "ayah": 2,
+          "text": "And you see the people entering into the religion of Allah in multitudes."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4286",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "text": "On the day of the conquest of Makkah, the Prophet ﷺ said: No reproach this day. O Allah, forgive the people of the Quraysh.",
+          "url": "https://sunnah.com/bukhari:4286"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4287",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ entered Makkah on the day of its conquest wearing a helmet, and when he removed it a man came and said: Ibn Khatal is clinging to the covering of the Ka'bah. He said: Kill him.",
+          "url": "https://sunnah.com/bukhari:4287"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-conquest-of-makkah-1",
+          "arabic": "لَا تَثْرِيبَ عَلَيْكُمُ الْيَوْمَ ۖ يَغْفِرُ اللَّهُ لَكُمْ ۖ وَهُوَ أَرْحَمُ الرَّاحِمِينَ",
+          "transliteration": "La tathriba 'alaykumul-yawm, yaghfirullahu lakum, wa huwa arhamur-rahimin",
+          "translation": "No blame will there be upon you today. Allah will forgive you, and He is the Most Merciful of the merciful.",
+          "source": "Quran 12:92",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-conquest-of-makkah-2",
+          "arabic": "رَبَّنَا اغْفِرْ لَنَا ذُنُوبَنَا وَإِسْرَافَنَا فِي أَمْرِنَا وَثَبِّتْ أَقْدَامَنَا",
+          "transliteration": "Rabbana-ghfir lana dhunubana wa israfana fi amrina wa thabbit aqdamana",
+          "translation": "Our Lord, forgive us our sins and our transgression and make our feet firm.",
+          "source": "Quran 3:147",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1278,6 +2354,20 @@
           "title": "Read Surah An-Nasr",
           "subtitle": "The chapter revealed prophesying this conquest",
           "reward": 7
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Make dua for guidance",
+          "subtitle": "As hearts entered Islam in multitudes, pray for the Ummah today",
+          "reward": 8
+        },
+        {
+          "index": 3,
+          "emoji": "🕊️",
+          "title": "Cleanse the heart of idols",
+          "subtitle": "Remove hidden attachments just as the Ka'bah was cleansed of idols",
+          "reward": 9
         }
       ],
       "referenceUrl": "https://quran.com/110:1"
@@ -1290,17 +2380,53 @@
       "arabicTitle": "يوم بدر",
       "category": "history",
       "significance": "medium",
-      "shortStory": "On the 17th of Ramadan in the 2nd year after Hijrah, 313 Muslims led by the Prophet ﷺ defeated a Makkan army of nearly 1,000 at Badr. Allah sent angels to aid the believers. It was the turning point that established the Muslim community in Arabia.",
+      "shortStory": "On the 17th of Ramadan in the 2nd year after Hijrah, 313 Muslims led by the Prophet ﷺ defeated a Makkan army of nearly 1,000 at Badr. Allah sent angels to aid the believers, and the Quran calls the day of Badr the Day of Criterion (Furqan) — separating truth from falsehood. It was the turning point that established the Muslim community in Arabia, proving that victory lies not in numbers but in Allah's support. The believers fasted and prayed through the night before the battle, and at dawn Allah granted them a decisive triumph.",
       "quranRefs": [
         {
           "surah": "Al-Anfal",
           "surahNumber": 8,
-          "ayah": 9
+          "ayah": 9,
+          "text": "When you sought help from your Lord, and He answered you: Indeed, I will reinforce you with a thousand of the angels, following one another."
         },
         {
           "surah": "Al-Anfal",
           "surahNumber": 8,
-          "ayah": 17
+          "ayah": 17,
+          "text": "And you did not kill them, but it was Allah who killed them. And you threw not when you threw, but it was Allah who threw, that He might test the believers with a good test. And indeed, Allah is Hearing and Knowing."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3961",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "text": "The Prophet ﷺ said on the day of Badr: This is Jibril holding the head of his horse and equipped for war.",
+          "url": "https://sunnah.com/bukhari:3961"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1763",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ said: Five are of the righteous martyrs: the one who dies of plague, the one who dies of a stomach disease, the one who drowns, the one who is crushed, and the one martyred in the path of Allah.",
+          "url": "https://sunnah.com/muslim:1763"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-battle-of-badr-1",
+          "arabic": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+          "transliteration": "Hasbunallahu wa ni'mal-wakil",
+          "translation": "Sufficient for us is Allah, and the best Disposer of affairs.",
+          "source": "Quran 3:173",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-battle-of-badr-2",
+          "arabic": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+          "transliteration": "Rabbana afrigh 'alayna sabran wa thabbit aqdamana wansurna 'alal-qawmil-kafirin",
+          "translation": "Our Lord, pour upon us patience and plant firmly our feet and give us victory over the disbelieving people.",
+          "source": "Quran 2:250",
+          "sourceType": "quran"
         }
       ],
       "sunnahActions": [
@@ -1317,6 +2443,20 @@
           "title": "Read Surah Al-Anfal",
           "subtitle": "Allah's own account of the Battle of Badr",
           "reward": 7
+        },
+        {
+          "index": 2,
+          "emoji": "🕊️",
+          "title": "Fast and remember the night of prayer",
+          "subtitle": "The believers fasted and prayed the night before victory",
+          "reward": 9
+        },
+        {
+          "index": 3,
+          "emoji": "🛡️",
+          "title": "Steadfastness in truth",
+          "subtitle": "Stand firm for justice even when outnumbered, trusting Allah's aid",
+          "reward": 8
         }
       ],
       "referenceUrl": "https://quran.com/8:9"
@@ -1329,12 +2469,39 @@
       "arabicTitle": "صيام الإثنين والخميس",
       "category": "fasting",
       "significance": "low",
-      "shortStory": "The Prophet ﷺ fasted on Mondays and Thursdays, saying: 'The deeds of people are presented to Allah on Monday and Thursday, and I like my deeds to be presented while I am fasting.' These are days of increased dhikr and spiritual reflection.",
+      "shortStory": "The Prophet ﷺ fasted on Mondays and Thursdays, saying: 'The deeds of people are presented to Allah on Monday and Thursday, and I like my deeds to be presented while I am fasting.' These are days of increased dhikr and spiritual reflection, offering a weekly rhythm of voluntary worship. The Prophet ﷺ was also born on a Monday, adding to the spiritual significance of this day.",
       "quranRefs": [
         {
           "surah": "Al-Baqarah",
           "surahNumber": 2,
-          "ayah": 184
+          "ayah": 184,
+          "text": "[Fasting for] a limited number of days. So whoever among you is ill or on a journey [during them] - then an equal number of days [are to be made up]. And upon those who are able [to fast, but with hardship] - a ransom [as substitute] of feeding a poor person [each day]. And whoever volunteers excess - it is better for him. But to fast is best for you, if you only knew."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "747",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Messenger of Allah ﷺ said, 'The deeds of people are presented (to Allah) on Mondays and Thursdays, and I love that my deeds be presented while I am fasting.'",
+          "url": "https://sunnah.com/tirmidhi:747"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1163a",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Messenger of Allah ﷺ said, 'The most excellent fast after Ramadan is God's month, al-Muharram, and the most excellent prayer after what is prescribed is prayer during the night.'",
+          "url": "https://sunnah.com/muslim:1163a"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-monday-thursday-fast-1",
+          "arabic": "اللَّهُمَّ اجْعَلْ صِيَامِي فِيهِ صِيَامَ الصَّائِمِينَ، وَقِيَامِي فِيهِ قِيَامَ الْقَائِمِينَ، وَنَبِّهْنِي فِيهِ عَنْ نَوْمَةِ الْغَافِلِينَ",
+          "transliteration": "Allahumma-jʿal siyami fihi siyam as-sa'imina, wa-qiyami fihi qiyam al-qaimina, wa-nabbihni fihi ʿan nawmati al-ghafilin",
+          "translation": "O Allah, make my fasting in it the fasting of those who fast, and my standing in it the standing of those who stand, and awaken me in it from the sleep of the heedless.",
+          "source": "Prophetic dua for fasting (recommended)",
+          "sourceType": "hadith"
         }
       ],
       "sunnahActions": [
@@ -1342,7 +2509,7 @@
           "index": 0,
           "emoji": "🕊️",
           "title": "Fast today (if Monday or Thursday)",
-          "subtitle": "The Prophet's weekly sunnah fasting",
+          "subtitle": "The Prophet's weekly sunnah fasting — deeds are presented while fasting",
           "reward": 10
         },
         {
@@ -1351,9 +2518,1053 @@
           "title": "Increase your dhikr",
           "subtitle": "Subhanallah, Alhamdulillah, Allahu Akbar — 33× each",
           "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Make dua for accepted worship",
+          "subtitle": "Ask Allah to accept your fasting and righteous deeds",
+          "reward": 7
         }
       ],
       "referenceUrl": "https://sunnah.com/tirmidhi:747"
+    },
+    {
+      "id": "prophet-wafat",
+      "hijriMonth": 3,
+      "hijriDay": 12,
+      "title": "Wafat of the Prophet ﷺ",
+      "arabicTitle": "وفاة النبي ﷺ",
+      "category": "reflection",
+      "significance": "high",
+      "shortStory": "On 12 Rabi al-Awwal 11 AH, the Messenger of Allah ﷺ returned to his Lord, his head resting between the shoulders of Aisha (RA) in her chamber in Madinah. He had just completed the religion, and his Ummah was left with the Book of Allah ﷺ and his Sunnah. It is a day of immense grief for his passing and immense gratitude for the gift of his prophethood.",
+      "quranRefs": [
+        {
+          "surah": "Aal-e-Imran",
+          "surahNumber": 3,
+          "ayah": 144,
+          "text": "Muhammad is not but a messenger. Other messengers have passed on before him. So if he were to die or be killed, would you turn back on your heels? And whoever turns back on his heels will never harm Allah at all; but Allah will reward the grateful."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4416",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said during his final illness: O Allah, the Highest Companion. Then he raised his hand and said: In the Highest Companion — and then he passed away.",
+          "url": "https://sunnah.com/bukhari:4416"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "446",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ used to say in his illness: May Allah curse the Jews and Christians, for they took the graves of their prophets as places of worship. He was warning against what they did.",
+          "url": "https://sunnah.com/bukhari:446"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-prophet-wafat-1",
+          "arabic": "اللَّهُمَّ الرَّفِيقَ الْأَعْلَى",
+          "transliteration": "Allahummar-rafiqal-a'la",
+          "translation": "O Allah, the Highest Companion",
+          "source": "Sahih al-Bukhari 4416",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-prophet-wafat-2",
+          "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ",
+          "transliteration": "Allahumma salli ala Muhammad wa ala aali Muhammad kama sallayta ala Ibrahim wa ala aali Ibrahim",
+          "translation": "O Allah, send blessings upon Muhammad and the family of Muhammad, as You sent blessings upon Ibrahim and the family of Ibrahim",
+          "source": "Sahih al-Bukhari 6360",
+          "sourceType": "hadith"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "📖",
+          "title": "Send abundant salawat",
+          "subtitle": "Send salutations upon the Prophet ﷺ",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "💧",
+          "title": "Increase durood",
+          "subtitle": "Recite durood shareef abundantly",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Reflect on his legacy",
+          "subtitle": "Study his ﷺ final advice",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:4416"
+    },
+    {
+      "id": "laylat-al-qadr-29",
+      "hijriMonth": 9,
+      "hijriDay": 29,
+      "title": "Laylat al-Qadr (29th Night)",
+      "arabicTitle": "ليلة القدر",
+      "category": "prayer",
+      "significance": "high",
+      "shortStory": "The Night of Decree is better than a thousand months, when the angels and the Spirit descend by permission of their Lord. The Prophet ﷺ commended seeking it in the odd last nights of Ramadan (21st, 23rd, 25th, 27th, and 29th). Worship on this single night surpasses the reward of worship in over 83 years.",
+      "quranRefs": [
+        {
+          "surah": "Al-Qadr",
+          "surahNumber": 97,
+          "ayah": 3,
+          "text": "The Night of Decree is better than a thousand months."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2014",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: Seek Laylat al-Qadr in the odd nights of the last ten days of Ramadan.",
+          "url": "https://sunnah.com/bukhari:2014"
+        },
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3513",
+          "narrator": "Aisha (RA)",
+          "text": "I said: O Messenger of Allah, if I know which night is Laylat al-Qadr, what should I say? He said: Say: Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni.",
+          "url": "https://sunnah.com/tirmidhi:3513"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-laylat-al-qadr-29-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Most Forgiving and You love to forgive, so forgive me",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-laylat-al-qadr-29-2",
+          "arabic": "رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ",
+          "transliteration": "Rabbi qad ataytani minal-mulki wa 'allamtani min ta'wilil-ahadith",
+          "translation": "My Lord, You have given me sovereignty and taught me the interpretation of hadiths",
+          "source": "Quran 12:101",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕌",
+          "title": "Stand the night in prayer",
+          "subtitle": "Pray with faith and hope of reward",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Recite the Qadr dua",
+          "subtitle": "Allahumma innaka 'afuwwun...",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Recite Quran",
+          "subtitle": "Spend time with the Quran",
+          "reward": 10
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2014"
+    },
+    {
+      "id": "battle-of-uhud",
+      "hijriMonth": 10,
+      "hijriDay": 7,
+      "title": "Battle of Uhud",
+      "arabicTitle": "غزوة أحد",
+      "category": "history",
+      "significance": "high",
+      "shortStory": "On 7 Shawwal 3 AH, the Muslims met the Quraysh at the foot of Mount Uhud. Despite early victory, a moment of disobedience by the archers turned the day into a trial in which the Prophet ﷺ himself was wounded and 70 Companions were martyred. The battle taught the Ummah that victory lies in obedience to Allah and His Messenger ﷺ.",
+      "quranRefs": [
+        {
+          "surah": "Aal-e-Imran",
+          "surahNumber": 3,
+          "ayah": 152,
+          "text": "And Allah had certainly fulfilled His promise to you when you were killing the enemy by His permission, until when you lost courage and fell to disputing about the order and disobeyed after He had shown you that which you love..."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4043",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ said: The foremost to enter Paradise will be the people of Badr, and the people of Uhud are not like the people of Badr.",
+          "url": "https://sunnah.com/bukhari:4043"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1781",
+          "narrator": "Sahl ibn Hunayf (RA)",
+          "text": "The Prophet ﷺ said: By Him in Whose Hand is my soul, I wish I could fight in the way of Allah and be killed, then brought back to life and killed again.",
+          "url": "https://sunnah.com/muslim:1781"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-uhud-1",
+          "arabic": "رَبَّنَا اغْفِرْ لَنَا ذُنُوبَنَا وَإِسْرَافَنَا فِي أَمْرِنَا",
+          "transliteration": "Rabbanaghfir lana dhunubana wa israfana fi amrina",
+          "translation": "Our Lord, forgive us our sins and our transgressions in our affairs",
+          "source": "Quran 3:147",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-uhud-2",
+          "arabic": "اللَّهُمَّ ثَبِّتْ أَقْدَامَنَا وَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+          "transliteration": "Allahumma thabbit aqdamana wansurna alal-qawmil-kafirin",
+          "translation": "O Allah, make our feet firm and support us against the disbelieving people",
+          "source": "Quran 3:147",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Reflect on lessons",
+          "subtitle": "Contemplate obedience to the Prophet ﷺ",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read Surah Al Imran",
+          "subtitle": "Reflect on verses 121-179",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🕯️",
+          "title": "Remember the martyrs",
+          "subtitle": "Send dua to the shuhada of Uhud",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:4043"
+    },
+    {
+      "id": "battle-of-khandaq",
+      "hijriMonth": 10,
+      "hijriDay": 5,
+      "title": "Battle of the Trench (Khandaq)",
+      "arabicTitle": "غزوة الخندق",
+      "category": "history",
+      "significance": "high",
+      "shortStory": "In Shawwal 5 AH, a great confederacy of tribes laid siege to Madinah. On the counsel of Salman al-Farisi (RA), the Muslims dug a trench around the city. A bitter wind was sent against the enemy and they left in frustration. The Quran calls this a manifest victory that averted the greatest threat the young community had yet faced.",
+      "quranRefs": [
+        {
+          "surah": "Al-Ahzab",
+          "surahNumber": 33,
+          "ayah": 9,
+          "text": "O you who have believed, remember the favor of Allah upon you when armies came to you and We sent upon them a wind and armies you did not see. And ever is Allah, of what you do, Seeing."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4104",
+          "narrator": "Anas ibn Malik (RA)",
+          "text": "The Prophet ﷺ dug the trench along with the Companions, and they would carry the earth on their backs, saying: By Allah, without Allah we would not have been guided.",
+          "url": "https://sunnah.com/bukhari:4104"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1782",
+          "narrator": "Salamah ibn al-Akwa' (RA)",
+          "text": "During the battle of the trench, I was with the Prophet ﷺ on guard duty through the night.",
+          "url": "https://sunnah.com/muslim:1782"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-khandaq-1",
+          "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ صَدَقَ وَعْدَهُ وَنَصَرَ عَبْدَهُ",
+          "transliteration": "La ilaha illallah wahdahu, sadaqa wa'dahu wa nasara 'abdahu",
+          "translation": "There is no god but Allah alone. He fulfilled His promise and supported His servant",
+          "source": "Sahih al-Bukhari 4106",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-khandaq-2",
+          "arabic": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+          "transliteration": "Hasbunallahu wa ni'mal-wakil",
+          "translation": "Allah is sufficient for us, and He is the best disposer of affairs",
+          "source": "Quran 3:173",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Reflect on tawakkul",
+          "subtitle": "Trust Allah in hard times",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read Surah Al-Ahzab",
+          "subtitle": "Reflect on verses 9-27",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🤝",
+          "title": "Remember the shura",
+          "subtitle": "Value consultation and counsel",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:4104"
+    },
+    {
+      "id": "battle-of-hunayn",
+      "hijriMonth": 10,
+      "hijriDay": 11,
+      "title": "Battle of Hunayn",
+      "arabicTitle": "غزوة حنين",
+      "category": "history",
+      "significance": "medium",
+      "shortStory": "On ~11 Shawwal 8 AH, soon after the conquest of Makkah, the Muslims faced the tribes of Hawazin and Thaqif in the valley of Hunayn. Though vastly outnumbered, a surprise ambush initially scattered the army, yet the Prophet ﷺ stood firm on his mule and called his companions back to him. Allah granted victory and revealed that numeric strength avails nothing without reliance on Allah. The Quran recalls how numeric strength avails nothing without Allah's help — a lasting lesson that reliance belongs to Allah alone.",
+      "quranRefs": [
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 25,
+          "text": "Certainly has Allah given you victory on many battlefields, and on the day of Hunayn, when your great number pleased you, but it did not avail you at all, and the earth was narrow for you despite its vastness, then you turned back, fleeing."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "4116",
+          "narrator": "Abu Qatadah (RA)",
+          "text": "The Messenger of Allah ﷺ sent a man from Banu Mahram at the head of an advance guard, and he was met by Haram ibn Milan, and he killed him.",
+          "url": "https://sunnah.com/bukhari:4116"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1776",
+          "narrator": "Salim ibn Abi al-Ja'd (RA)",
+          "text": "The Prophet ﷺ said on the day of Hunayn: I am the Prophet, no lie; I am the son of Abd al-Muttalib, as he called his companions back to him.",
+          "url": "https://sunnah.com/muslim:1776"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-battle-of-hunayn-1",
+          "arabic": "يَا عِبَادَ اللَّهِ أَعِينُونِي",
+          "transliteration": "Ya 'ibadallahi a'inuni",
+          "translation": "O servants of Allah, help me.",
+          "source": "Sahih al-Bukhari 4116",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-battle-of-hunayn-2",
+          "arabic": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي",
+          "transliteration": "Rabbish-rah li sadri wa yassir li amri wahlul 'uqdatam min lisani",
+          "translation": "My Lord, expand for me my breast and ease for me my task and untie the knot from my tongue.",
+          "source": "Quran 20:25-27",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Reflect on reliance (Tawakkul)",
+          "subtitle": "Numbers avail not without Allah — renew your trust in Him",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read At-Tawbah 9:25-26",
+          "subtitle": "Study the lesson of Hunayn and Allah's calming of the believers",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🛡️",
+          "title": "Steadfastness in trial",
+          "subtitle": "Hold firm when others scatter, as the Prophet ﷺ stood firm",
+          "reward": 9
+        },
+        {
+          "index": 3,
+          "emoji": "❤️",
+          "title": "Examine reliance on means",
+          "subtitle": "Repent from over-trusting numbers, wealth, or plans over Allah",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:4116"
+    },
+    {
+      "id": "treaty-of-hudaybiyyah",
+      "hijriMonth": 11,
+      "hijriDay": 1,
+      "title": "Treaty of Hudaybiyyah",
+      "arabicTitle": "صلح الحديبية",
+      "category": "history",
+      "significance": "high",
+      "shortStory": "In Dhu al-Qidah 6 AH, the Prophet ﷺ set out with his Companions to perform Umrah, but was barred from Makkah. At Hudaybiyyah a ten-year truce was struck. Though the terms seemed harsh, Allah called it a 'clear victory' (fath mubin) that opened hearts and led to the rapid spread of Islam across Arabia.",
+      "quranRefs": [
+        {
+          "surah": "Al-Fath",
+          "surahNumber": 48,
+          "ayah": 1,
+          "text": "Indeed, We have given you a clear conquest."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2731",
+          "narrator": "Al-Bara' ibn Azib (RA)",
+          "text": "The Prophet ﷺ made a treaty at Hudaybiyyah with the Quraysh for ten years. When the Companions were grieved, the Prophet ﷺ called them and they pledged allegiance under the tree.",
+          "url": "https://sunnah.com/bukhari:2731"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2732",
+          "narrator": "Al-Bara' (RA)",
+          "text": "The Prophet ﷺ said: No one who pledged allegiance under the tree will enter the Fire.",
+          "url": "https://sunnah.com/bukhari:2732"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-hudaybiyyah-1",
+          "arabic": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا",
+          "transliteration": "Rabbana afrigh 'alayna sabran wa thabbit aqdamana",
+          "translation": "Our Lord, pour upon us patience and plant firmly our feet",
+          "source": "Quran 2:250",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-hudaybiyyah-2",
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ",
+          "transliteration": "Allahumma inni a'udhu bika minal-hammi wal-hazani wal-'ajzi wal-kasali",
+          "translation": "O Allah, I seek refuge in You from worry, grief, incapacity, and laziness",
+          "source": "Sahih al-Bukhari 2893",
+          "sourceType": "hadith"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕊️",
+          "title": "Value peace",
+          "subtitle": "Reflect on patience and strategy",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Read Surah Al-Fath",
+          "subtitle": "Meditate on the 'clear victory'",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🤝",
+          "title": "Honor pacts",
+          "subtitle": "Keep your trusts and agreements",
+          "reward": 5
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2731"
+    },
+    {
+      "id": "first-revelation",
+      "hijriMonth": 9,
+      "hijriDay": 24,
+      "title": "First Revelation in the Cave of Hira",
+      "arabicTitle": "بدء الوحي",
+      "category": "reflection",
+      "significance": "high",
+      "shortStory": "In the month of Ramadan, in the Cave of Hira, the Angel Jibril (AS) appeared to the Prophet Muhammad ﷺ and commanded him to 'Read!' Thus began the descent of the Quran with the opening verses of Surah Al-Alaq. This moment transformed a man of Makkah into the final Messenger of Allah to humanity.",
+      "quranRefs": [
+        {
+          "surah": "Al-Alaq",
+          "surahNumber": 96,
+          "ayah": 1,
+          "text": "Read in the name of your Lord who created."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "3",
+          "narrator": "Aisha (RA)",
+          "text": "The Prophet ﷺ said: The angel came to me and said: Read. I said: I cannot read. He took hold of me and pressed me until I could bear it no more, then released me and said: Read. This happened three times.",
+          "url": "https://sunnah.com/bukhari:3"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "6982",
+          "narrator": "Aisha (RA)",
+          "text": "The first form of revelation was the true dream in sleep. The Prophet ﷺ did not see any dream that was not to come true like the dawn.",
+          "url": "https://sunnah.com/bukhari:6982"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-first-revelation-1",
+          "arabic": "اللَّهُمَّ عَلِّمْنِي وَفَهِّمْنِي",
+          "transliteration": "Allahumma 'allimni wa fahhimni",
+          "translation": "O Allah, teach me and give me understanding",
+          "source": "Sahih Ibn Hibban 957",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-first-revelation-2",
+          "arabic": "رَبِّ زِدْنِي عِلْمًا",
+          "transliteration": "Rabbi zidni 'ilma",
+          "translation": "My Lord, increase me in knowledge",
+          "source": "Quran 20:114",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "📖",
+          "title": "Recite Surah Al-Alaq",
+          "subtitle": "Reflect on the first revelation",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Reflect on prophecy",
+          "subtitle": "Ponder the gift of revelation",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🕌",
+          "title": "Increase in worship",
+          "subtitle": "Honor the month of revelation",
+          "reward": 10
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:3"
+    },
+    {
+      "id": "muharram-sacred-month",
+      "hijriMonth": 1,
+      "hijriDay": 1,
+      "title": "Muharram — Sacred Month Begins",
+      "arabicTitle": "محرم الحرام",
+      "category": "reflection",
+      "significance": "medium",
+      "shortStory": "Muharram is one of the four sacred months sanctified by Allah, in which good deeds are multiplied and wrongdoing is graver. The Prophet ﷺ called it 'the month of Allah' and described the fast of Ashura as an expiation for the past year. It opens the Hijri year with a call to renewal and reflection. As a month in which fighting is forbidden and repentance is encouraged, it sets the spiritual tone for the entire year ahead.",
+      "quranRefs": [
+        {
+          "surah": "At-Tawbah",
+          "surahNumber": 9,
+          "ayah": 36,
+          "text": "Indeed, the number of months with Allah is twelve months in the register of Allah from the day He created the heavens and the earth; of these, four are sacred. That is the correct religion, so do not wrong yourselves during them."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih Muslim",
+          "number": "1163a",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The Prophet ﷺ was asked which prayer is the best after the obligatory prayers, and which fast is the best after Ramadan. He said: The best prayer after the obligatory is the prayer in the depths of the night, and the best fast after Ramadan is the fast of Allah, the month of Muharram.",
+          "url": "https://sunnah.com/muslim:1163a"
+        },
+        {
+          "collection": "Sahih Muslim",
+          "number": "1163b",
+          "narrator": "Abu Hurairah (RA)",
+          "text": "The most beloved of fasting to Allah is the fasting of the Prophet Dawud, and the most beloved of fasting after Ramadan is the month of Allah, Muharram.",
+          "url": "https://sunnah.com/muslim:1163b"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-muharram-sacred-month-1",
+          "arabic": "اللَّهُمَّ اجْعَلْهُ سَنَةً خَيْرًا مِّنْ سَنَةٍ مَّضَتْ",
+          "transliteration": "Allahumma-j'alhu sanatan khayram min sanatin maddat",
+          "translation": "O Allah, make it a year better than the year that has passed.",
+          "source": "Authenticated Prophetic Duas",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-muharram-sacred-month-2",
+          "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+          "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
+          "translation": "Our Lord, give us in this world good and in the Hereafter good, and protect us from the punishment of the Fire.",
+          "source": "Quran 2:201",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "📿",
+          "title": "Fasting in Muharram",
+          "subtitle": "Best fast after Ramadan — fast Ashura and the 9th",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Make intentions for the year",
+          "subtitle": "Begin the new year with dua and spiritual goals",
+          "reward": 6
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Reflect on the sacred",
+          "subtitle": "Honor what Allah honored — learn why these months are sacred",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "🤍",
+          "title": "Increase good deeds",
+          "subtitle": "Good deeds are multiplied in sacred months — give charity and dhikr",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/muslim:1163a"
+    },
+    {
+      "id": "dhul-hijjah-sacred-month",
+      "hijriMonth": 12,
+      "hijriDay": 1,
+      "title": "Dhul-Hijjah — Sacred Month Begins",
+      "arabicTitle": "ذو الحجة",
+      "category": "reflection",
+      "significance": "medium",
+      "shortStory": "Dhul-Hijjah is one of the four sacred months and hosts the Hajj and the ten best days of the year. The Prophet ﷺ said that no days are more beloved to Allah for righteous deeds than the first ten of this month. It is a season of pilgrimage, sacrifice, remembrance, and renewal of submission to Allah. For the pilgrim it is the journey of a lifetime; for the non-pilgrim it is a season of fasting, takbeer, and charity — both drawn back to the legacy of Ibrahim (AS).",
+      "quranRefs": [
+        {
+          "surah": "Al-Hajj",
+          "surahNumber": 22,
+          "ayah": 27,
+          "text": "And proclaim to the people the Hajj; they will come to you on foot and on every lean camel; they will come from every distant pass."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "969",
+          "narrator": "Ibn Abbas (RA)",
+          "text": "The Prophet ﷺ said: No good deeds done on other days are superior to those done on these first ten days of Dhul-Hijjah. They asked: Not even Jihad? He said: Not even Jihad, except a man who goes out with his life and wealth and returns with neither.",
+          "url": "https://sunnah.com/bukhari:969"
+        },
+        {
+          "collection": "Sunan Abu Dawud",
+          "number": "2438",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "text": "The Prophet ﷺ said: There are no days in which righteous deeds are more beloved to Allah than these days — meaning the ten days of Dhul-Hijjah.",
+          "url": "https://sunnah.com/abudawud:2438"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-dhul-hijjah-sacred-month-1",
+          "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ",
+          "transliteration": "Rabbana taqabbal minna innaka antas-Sami'ul-'Alim",
+          "translation": "Our Lord, accept it from us. Indeed, You are the All-Hearing, the All-Knowing.",
+          "source": "Quran 2:127",
+          "sourceType": "quran"
+        },
+        {
+          "id": "dua-dhul-hijjah-sacred-month-2",
+          "arabic": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي",
+          "transliteration": "Rabbij'alni muqimas-salati wa min dhurriyyati",
+          "translation": "My Lord, make me an establisher of prayer and of my descendants.",
+          "source": "Quran 14:40",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🔊",
+          "title": "Say Takbeer abundantly",
+          "subtitle": "Proclaim Allahu Akbar throughout the ten days",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Fast the first 9 days",
+          "subtitle": "Includes the Day of Arafah — the greatest day to fast",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Make abundant dua",
+          "subtitle": "Ask Allah in these most beloved of days",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "🐑",
+          "title": "Prepare your Qurbani",
+          "subtitle": "Honor the legacy of Ibrahim (AS) and feed the needy",
+          "reward": 9
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/abudawud:2438"
+    },
+    {
+      "id": "shaban-reflection",
+      "hijriMonth": 8,
+      "hijriDay": 1,
+      "title": "Shaban — Month of Preparation",
+      "arabicTitle": "شعبان",
+      "category": "reflection",
+      "significance": "medium",
+      "shortStory": "Shaban is the month in which the Prophet ﷺ fasted most after Ramadan, as a bridge of devotion between Rajab and Ramadan. He ﷺ would say it is the month in which deeds are raised to the Lord of the worlds, and so he loved that his deeds be raised while he was fasting. It calls the believer to prepare the heart for the coming of Ramadan — finishing the Quran, repenting from sin, and training the body in fasting before the obligation arrives.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 185,
+          "text": "The month of Ramadan is that in which was revealed the Quran, a guidance for the people and clear proofs of guidance and criterion. So whoever sights the month, let him fast it."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sunan an-Nasa'i",
+          "number": "2357",
+          "narrator": "Aishah (RA)",
+          "text": "The Prophet ﷺ did not fast in any month more than Shaban, and he used to say: Take of the deeds as much as you can, for Allah does not grow weary until you grow weary.",
+          "url": "https://sunnah.com/nasai:2357"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1969",
+          "narrator": "Aishah (RA)",
+          "text": "The Prophet ﷺ used to fast until we said he would never break his fast, and he used to break his fast until we said he would never fast. I never saw the Prophet ﷺ fast a complete month except Ramadan, and I never saw him fast more in any month than Shaban.",
+          "url": "https://sunnah.com/bukhari:1969"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-shaban-reflection-1",
+          "arabic": "اللَّهُمَّ بَارِكْ لَنَا فِي رَجَبَ وَشَعْبَانَ وَبَلِّغْنَا رَمَضَانَ",
+          "transliteration": "Allahumma barik lana fi Rajab wa Sha'ban wa ballighna Ramadan",
+          "translation": "O Allah, bless us in Rajab and Sha'ban, and let us reach Ramadan.",
+          "source": "Jami at-Tirmidhi 3676",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-shaban-reflection-2",
+          "arabic": "رَبِّ زِدْنِي عِلْمًا",
+          "transliteration": "Rabbi zidni 'ilma",
+          "translation": "My Lord, increase me in knowledge.",
+          "source": "Quran 20:114",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤲",
+          "title": "Prepare for Ramadan",
+          "subtitle": "Reflect on the approaching month and set your worship goals",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📿",
+          "title": "Increase voluntary fasting",
+          "subtitle": "Follow the Sunnah of fasting in Shaban",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Reflect on deeds raised",
+          "subtitle": "Keep good deeds flowing, for deeds ascend in this month",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "🤍",
+          "title": "Finish pending fasts",
+          "subtitle": "Complete any missed Ramadan fasts before the next arrives",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/nasai:2357"
+    },
+    {
+      "id": "taraweeh-ramadan",
+      "hijriMonth": 9,
+      "hijriDay": 2,
+      "title": "Taraweeh — Night Prayers of Ramadan",
+      "arabicTitle": "صلاة التراويح",
+      "category": "prayer",
+      "significance": "medium",
+      "shortStory": "Taraweeh is the special night prayer of Ramadan, established by the Prophet ﷺ who led it in congregation before later praying it at home out of fear it would be made obligatory. Umar (RA) reunited the Ummah upon its congregation, and it has remained a beloved Ramadan Sunnah in which the entire Quran is recited over the blessed month. Standing shoulder to shoulder in the night, the believers taste the sweetness of prolonged recitation and the stillness of the heart before its Lord.",
+      "quranRefs": [
+        {
+          "surah": "Al-Isra",
+          "surahNumber": 17,
+          "ayah": 79,
+          "text": "And from a part of the night, pray Tahajjud as an extra offering for yourself; perhaps your Lord will raise you to a praised station."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2010",
+          "narrator": "Aishah (RA)",
+          "text": "The Prophet ﷺ went out in the middle of the night and prayed, and the men prayed behind him. In the morning the people spoke about it, and the second night more people gathered. In the morning they spoke again, and the people increased on the third night. The Prophet ﷺ came out and led the prayer, then he said: I feared it would be made obligatory upon you.",
+          "url": "https://sunnah.com/bukhari:2010"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "1129",
+          "narrator": "Aishah (RA)",
+          "text": "The Prophet ﷺ said: Whoever prays during the night of Ramadan with faith and seeking reward, all his previous sins will be forgiven.",
+          "url": "https://sunnah.com/bukhari:1129"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-taraweeh-ramadan-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun karimun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Pardoner, the Generous, and You love to pardon, so pardon me.",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-taraweeh-ramadan-2",
+          "arabic": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي",
+          "transliteration": "Rabbij'alni muqimas-salati wa min dhurriyyati",
+          "translation": "My Lord, make me an establisher of prayer and of my descendants.",
+          "source": "Quran 14:40",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕌",
+          "title": "Pray Taraweeh in congregation",
+          "subtitle": "Join the nightly congregation at the masjid",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Complete the Quran in Taraweeh",
+          "subtitle": "Follow the recitation attentively throughout the month",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🌙",
+          "title": "Revive the nights of Ramadan",
+          "subtitle": "Stand in night devotion seeking Allah's pleasure",
+          "reward": 10
+        },
+        {
+          "index": 3,
+          "emoji": "🤲",
+          "title": "Reflect between rak'ahs",
+          "subtitle": "Pause on the verses recited and let them soften the heart",
+          "reward": 7
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2010"
+    },
+    {
+      "id": "itikaf-ramadan",
+      "hijriMonth": 9,
+      "hijriDay": 20,
+      "title": "Itikaf in the Last Ten of Ramadan",
+      "arabicTitle": "الاعتكاف",
+      "category": "prayer",
+      "significance": "medium",
+      "shortStory": "Itikaf is the Sunnah of secluding oneself in the mosque for worship, which the Prophet ﷺ practiced in the last ten days and nights of Ramadan seeking Laylat al-Qadr. It is a time of cutting ties with worldly distractions to devote the heart entirely to the Quran, prayer, and remembrance of Allah. The Prophet ﷺ would pitch a small tent and withdraw completely, and his wives continued the practice after him. It is the Ummah's way of pressing pause on the world to seek the Night better than a thousand months.",
+      "quranRefs": [
+        {
+          "surah": "Al-Baqarah",
+          "surahNumber": 2,
+          "ayah": 187,
+          "text": "And do not have relations with them as long as you are staying for worship in the mosques. These are the limits of Allah, so do not approach them. Thus does Allah make clear His verses to the people that they may become righteous."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2026",
+          "narrator": "Aishah (RA)",
+          "text": "The Prophet ﷺ used to practice Itikaf in the last ten days of Ramadan until Allah took his soul, then his wives practiced Itikaf after him.",
+          "url": "https://sunnah.com/bukhari:2026"
+        },
+        {
+          "collection": "Sahih al-Bukhari",
+          "number": "2017",
+          "narrator": "Aishah (RA)",
+          "text": "The Prophet ﷺ used to exert himself in worship during the last ten nights of Ramadan more than at any other time.",
+          "url": "https://sunnah.com/bukhari:2017"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-itikaf-ramadan-1",
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "transliteration": "Allahumma innaka 'afuwwun karimun tuhibbul-'afwa fa'fu 'anni",
+          "translation": "O Allah, You are the Pardoner, the Generous, and You love to pardon, so pardon me.",
+          "source": "Jami at-Tirmidhi 3513",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-itikaf-ramadan-2",
+          "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+          "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
+          "translation": "Our Lord, give us in this world good and in the Hereafter good, and protect us from the punishment of the Fire.",
+          "source": "Quran 2:201",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🕌",
+          "title": "Observe Itikaf",
+          "subtitle": "Retreat in the masjid for the last ten days of Ramadan",
+          "reward": 15
+        },
+        {
+          "index": 1,
+          "emoji": "🤲",
+          "title": "Seek Laylat al-Qadr",
+          "subtitle": "Devote the heart in worship on the odd nights of the last ten",
+          "reward": 12
+        },
+        {
+          "index": 2,
+          "emoji": "📖",
+          "title": "Immerse in the Quran",
+          "subtitle": "Spend extended time reading and reflecting on the Book",
+          "reward": 10
+        },
+        {
+          "index": 3,
+          "emoji": "📵",
+          "title": "Disconnect from distractions",
+          "subtitle": "Set aside worldly affairs to focus entirely on worship",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/bukhari:2026"
+    },
+    {
+      "id": "ghadir-khumm",
+      "hijriMonth": 12,
+      "hijriDay": 18,
+      "title": "Ghadir Khumm",
+      "arabicTitle": "غدير خم",
+      "category": "history",
+      "significance": "medium",
+      "shortStory": "On the return journey from the Farewell Pilgrimage, at Ghadir Khumm on 18 Dhu al-Hijjah 10 AH, the Prophet ﷺ gathered the pilgrims and delivered a sermon affirming the bond of faith. He took the hand of Ali (RA) and declared that whoever he was the master (mawla) of, Ali was also his master, instructing the community on love, loyalty, and brotherhood. It is remembered as a moment that defined the believers' loyalty to one another after the Prophet's departure. O Allah, befriend whoever befriends him, and be an enemy to whoever takes him as an enemy — the Prophet's prayer on that day.",
+      "quranRefs": [
+        {
+          "surah": "Al-Ma'idah",
+          "surahNumber": 5,
+          "ayah": 3,
+          "text": "This day I have perfected for you your religion and completed My favor upon you and have approved for you Islam as religion."
+        }
+      ],
+      "hadithRefs": [
+        {
+          "collection": "Jami at-Tirmidhi",
+          "number": "3749",
+          "narrator": "Zayd ibn Arqam (RA)",
+          "text": "The Prophet ﷺ said on the day of Ghadir Khumm: To whomsoever I am a master (mawla), Ali is also his master. O Allah, befriend whoever befriends him, and be an enemy to whoever takes him as an enemy.",
+          "url": "https://sunnah.com/tirmidhi:3749"
+        },
+        {
+          "collection": "Sunan Ibn Majah",
+          "number": "122",
+          "narrator": "Buraydah ibn al-Hasib (RA)",
+          "text": "The Prophet ﷺ said: To whomsoever I am a master, Ali is his master. O Allah, support whoever supports him, and abandon whoever abandons him.",
+          "url": "https://sunnah.com/ibnmajah:122"
+        }
+      ],
+      "duas": [
+        {
+          "id": "dua-ghadir-khumm-1",
+          "arabic": "اللَّهُمَّ وَالِ مَنْ وَالَاهُ وَعَادِ مَنْ عَادَاهُ",
+          "transliteration": "Allahumma wali man walahu wa 'adi man 'adah",
+          "translation": "O Allah, befriend whoever befriends him, and be an enemy to whoever takes him as an enemy.",
+          "source": "Jami at-Tirmidhi 3749",
+          "sourceType": "hadith"
+        },
+        {
+          "id": "dua-ghadir-khumm-2",
+          "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ",
+          "transliteration": "Rabbana taqabbal minna innaka antas-Sami'ul-'Alim",
+          "translation": "Our Lord, accept it from us. Indeed, You are the All-Hearing, the All-Knowing.",
+          "source": "Quran 2:127",
+          "sourceType": "quran"
+        }
+      ],
+      "sunnahActions": [
+        {
+          "index": 0,
+          "emoji": "🤝",
+          "title": "Strengthen bonds of brotherhood",
+          "subtitle": "Renew loyalty and love among the believers",
+          "reward": 10
+        },
+        {
+          "index": 1,
+          "emoji": "📖",
+          "title": "Study the sermon at Ghadir Khumm",
+          "subtitle": "Read the full narration and its context from the Farewell Pilgrimage",
+          "reward": 10
+        },
+        {
+          "index": 2,
+          "emoji": "🤲",
+          "title": "Pray for the Companions",
+          "subtitle": "Thank Allah for the Prophet's family and companions",
+          "reward": 7
+        },
+        {
+          "index": 3,
+          "emoji": "❤️",
+          "title": "Honor the bonds of faith",
+          "subtitle": "Show gratitude for those who carried the religion to us",
+          "reward": 8
+        }
+      ],
+      "referenceUrl": "https://sunnah.com/tirmidhi:3749"
     }
   ],
   "monthNames": [
@@ -1387,8 +3598,8 @@
     },
     {
       "id": "h-uhud",
-      "hijriMonth": 3,
-      "hijriDay": 15,
+      "hijriMonth": 10,
+      "hijriDay": 7,
       "year": "3 AH",
       "title": "Battle of Uhud",
       "description": "The Muslims initially prevailed at Uhud but were defeated when archers disobeyed the Prophet's order and left their posts. 70 companions were martyred including Hamzah ibn Abd al-Muttalib (RA), uncle of the Prophet ﷺ. It was a lesson in discipline and obedience.",
@@ -1401,8 +3612,8 @@
     },
     {
       "id": "h-fatima-death",
-      "hijriMonth": 3,
-      "hijriDay": 2,
+      "hijriMonth": 6,
+      "hijriDay": 3,
       "year": "11 AH",
       "title": "Passing of Fatimah (RA)",
       "description": "Fatimah (RA), the beloved daughter of the Prophet ﷺ and wife of Ali (RA), passed away six months after her father. The Prophet ﷺ said: 'She is the leader of the women of Paradise.' She was known for her night prayers and deep devotion.",
@@ -1415,7 +3626,7 @@
     },
     {
       "id": "h-abu-bakr-death",
-      "hijriMonth": 3,
+      "hijriMonth": 6,
       "hijriDay": 22,
       "year": "13 AH",
       "title": "Passing of Abu Bakr as-Siddiq (RA)",
@@ -1471,8 +3682,8 @@
     },
     {
       "id": "h-khandaq",
-      "hijriMonth": 8,
-      "hijriDay": 1,
+      "hijriMonth": 10,
+      "hijriDay": 5,
       "year": "5 AH",
       "title": "Battle of the Trench (Khandaq)",
       "description": "A confederate army of 10,000 besieged Madinah. On Salman al-Farisi's advice, the Muslims dug a trench around the city. The siege lasted weeks and ended when Allah sent a storm that scattered the enemy.",
@@ -1584,7 +3795,7 @@
     {
       "id": "h-hunayn",
       "hijriMonth": 10,
-      "hijriDay": 6,
+      "hijriDay": 11,
       "year": "8 AH",
       "title": "Battle of Hunayn",
       "description": "Right after the conquest of Makkah, the tribes of Hawazin and Thaqif attacked. Though the Muslims were 12,000, they nearly lost when they felt overconfident in their numbers. Allah sent tranquility (Sakinah) and the Muslims prevailed.",
@@ -1664,6 +3875,244 @@
         "ayah": 137
       },
       "referenceUrl": "https://quran.com/2:137"
+    },
+    {
+      "id": "h-prophet-birth",
+      "hijriMonth": 3,
+      "hijriDay": 12,
+      "year": "Before Hijrah (c. 570 CE)",
+      "title": "Birth of the Prophet Muhammad ﷺ",
+      "description": "The final Messenger of Allah, Muhammad ﷺ, was born in Makkah in the Year of the Elephant, traditionally commemorated on 12 Rabi al-Awwal. His birth was a mercy to the worlds, and the pre-Islamic world awaited his coming through many prophecies.",
+      "quranRef": {
+        "surah": "Al-Anbiya",
+        "surahNumber": 21,
+        "ayah": 107
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3851"
+    },
+    {
+      "id": "h-prophet-wafat",
+      "hijriMonth": 3,
+      "hijriDay": 12,
+      "year": "11 AH (632 CE)",
+      "title": "Wafat (Passing) of the Prophet Muhammad ﷺ",
+      "description": "On Monday, 12 Rabi al-Awwal 11 AH, the Prophet ﷺ passed away in Madinah at the age of 63, his noble head resting between the shoulders of Aisha (RA). With his passing the era of revelation closed, and the Ummah was entrusted with the Quran and his Sunnah as its lasting guides.",
+      "quranRef": {
+        "surah": "Al Imran",
+        "surahNumber": 3,
+        "ayah": 144
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:4416"
+    },
+    {
+      "id": "h-khadijah-marriage",
+      "hijriMonth": 2,
+      "hijriDay": 10,
+      "year": "Before Hijrah (c. 595 CE)",
+      "title": "Marriage of the Prophet ﷺ to Khadijah (RA)",
+      "description": "Khadijah bint Khuwaylid (RA), a noble and wealthy widow of Quraysh, proposed to the honest and trustworthy Muhammad ﷺ. Their marriage, around 595 CE, became a paragon of love, loyalty, and support, lasting 25 years. She was the first to believe in his prophethood and was called the best of women of her time.",
+      "quranRef": {
+        "surah": "An-Nur",
+        "surahNumber": 24,
+        "ayah": 32
+      },
+      "referenceUrl": "https://sunnah.com/muslim:2428a"
+    },
+    {
+      "id": "h-khadijah-death",
+      "hijriMonth": 9,
+      "hijriDay": 10,
+      "year": "Before Hijrah (c. 619 CE)",
+      "title": "Death of Khadijah (RA) — Year of Sorrow",
+      "description": "Khadijah (RA), the beloved wife of the Prophet ﷺ and Mother of the Believers, passed away in the month of Ramadan during the Year of Sorrow (c. 619 CE), shortly before the Hijrah. Her loss, together with that of Abu Talib in the same year, left the Prophet ﷺ bereft of his two greatest worldly supports.",
+      "quranRef": {
+        "surah": "Al-Ahzab",
+        "surahNumber": 33,
+        "ayah": 35
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3816"
+    },
+    {
+      "id": "h-abu-talib-death",
+      "hijriMonth": 7,
+      "hijriDay": 10,
+      "year": "Before Hijrah (c. 619 CE)",
+      "title": "Death of Abu Talib",
+      "description": "Abu Talib, the uncle and lifelong protector of the Prophet ﷺ, passed away in the Year of Sorrow (c. 619 CE). For 40 years he shielded his nephew from the Quraysh. His loss weakened the Prophet's ﷺ position in Makkah and set the stage for the Hijrah to Madinah.",
+      "quranRef": {
+        "surah": "Al-Qasas",
+        "surahNumber": 28,
+        "ayah": 56
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3881"
+    },
+    {
+      "id": "h-ali-birth",
+      "hijriMonth": 7,
+      "hijriDay": 13,
+      "year": "Before Hijrah (c. 600 CE)",
+      "title": "Birth of Ali ibn Abi Talib (RA)",
+      "description": "Ali ibn Abi Talib (RA), cousin and son-in-law of the Prophet ﷺ, was the first youth to accept Islam. A noble tradition, widely reported, holds that he was born inside the Ka'bah, a singular honor. He became the fourth Rightly-Guided Caliph, renowned for courage and knowledge.",
+      "quranRef": {
+        "surah": "Al-Ma'idah",
+        "surahNumber": 5,
+        "ayah": 55
+      },
+      "referenceUrl": "https://sunnah.com/tirmidhi:3722"
+    },
+    {
+      "id": "h-abu-hanifa-death",
+      "hijriMonth": 7,
+      "hijriDay": 15,
+      "year": "150 AH (767 CE)",
+      "title": "Death of Imam Abu Hanifa",
+      "description": "Imam Abu Hanifa al-Numan ibn Thabit (d. 150 AH), founder of the Hanafi school of jurisprudence, was a leading scholar of Kufa known for his deep use of rational deduction (ra'y). His school became the most widely followed in the Muslim world. He devoted his life to teaching and died in prison rather than accept a judgeship from the Abbasids.",
+      "quranRef": {
+        "surah": "Az-Zumar",
+        "surahNumber": 39,
+        "ayah": 9
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:71"
+    },
+    {
+      "id": "h-shafii-death",
+      "hijriMonth": 7,
+      "hijriDay": 30,
+      "year": "204 AH (820 CE)",
+      "title": "Death of Imam al-Shafi'i",
+      "description": "Imam Muhammad ibn Idris al-Shafi'i (d. 30 Rajab 204 AH) was the founder of the Shafi'i school and a pioneer of Islamic legal theory (usul al-fiqh). His work al-Risala laid the foundations for the science of jurisprudence. He traveled widely to learn from Imam Malik in Madinah and others, combining both the schools of hadith and reason.",
+      "quranRef": {
+        "surah": "Al-Mujadila",
+        "surahNumber": 58,
+        "ayah": 11
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:71"
+    },
+    {
+      "id": "h-ahmad-hanbal-death",
+      "hijriMonth": 3,
+      "hijriDay": 12,
+      "year": "241 AH (855 CE)",
+      "title": "Death of Imam Ahmad ibn Hanbal",
+      "description": "Imam Ahmad ibn Hanbal (d. 12 Rabi al-Awwal 241 AH), founder of the Hanbali school, is celebrated as 'Imam of Ahl al-Sunnah' for his steadfastness during the Mihna (Inquisition). He endured imprisonment and flogging rather than declare the Quran created. His monumental compilation, the Musnad, contains over 27,000 hadith.",
+      "quranRef": {
+        "surah": "Al-Baqarah",
+        "surahNumber": 2,
+        "ayah": 286
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:71"
+    },
+    {
+      "id": "h-muslim-death",
+      "hijriMonth": 7,
+      "hijriDay": 25,
+      "year": "261 AH (875 CE)",
+      "title": "Death of Imam Muslim ibn al-Hajjaj",
+      "description": "Imam Muslim ibn al-Hajjaj al-Naysaburi (d. 25 Rajab 261 AH) was the author of Sahih Muslim, one of the two most authentic hadith collections. His Sahih contains about 7,500 hadith selected from a pool of 300,000. He was a devoted student of Imam al-Bukhari and a master of hadith science.",
+      "quranRef": {
+        "surah": "An-Nisa",
+        "surahNumber": 4,
+        "ayah": 59
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:71"
+    },
+    {
+      "id": "h-tirmidhi-death",
+      "hijriMonth": 7,
+      "hijriDay": 13,
+      "year": "279 AH (892 CE)",
+      "title": "Death of Imam al-Tirmidhi",
+      "description": "Imam Muhammad ibn Isa al-Tirmidhi (d. 13 Rajab 279 AH) authored the Jami al-Tirmidhi, one of the six canonical hadith collections. A student of Imam al-Bukhari, he was famed for his expertise in grading hadith and his book of Shama'il depicting the noble character of the Prophet ﷺ.",
+      "quranRef": {
+        "surah": "Al-Ahzab",
+        "surahNumber": 33,
+        "ayah": 21
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:71"
+    },
+    {
+      "id": "h-quran-compilation-abu-bakr",
+      "hijriMonth": 6,
+      "hijriDay": 1,
+      "year": "c. 12-13 AH (c. 633-634 CE)",
+      "title": "Compilation of the Quran under Abu Bakr (RA)",
+      "description": "After the Battle of Yamama claimed many reciters, Abu Bakr (RA), on the advice of Umar (RA), commissioned Zayd ibn Thabit (RA) to gather the Quran into a single written volume. This compilation, completed around 12-13 AH, preserved the Book of Allah for all generations and became the foundation for the later standardization under Uthman (RA).",
+      "quranRef": {
+        "surah": "Al-Qiyamah",
+        "surahNumber": 75,
+        "ayah": 17
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:4986"
+    },
+    {
+      "id": "h-qadisiyyah",
+      "hijriMonth": 8,
+      "hijriDay": 1,
+      "year": "c. 15-16 AH (c. 636-637 CE)",
+      "title": "Battle of al-Qadisiyyah",
+      "description": "The Battle of al-Qadisiyyah, fought around 15-16 AH under the command of Sa'd ibn Abi Waqqas (RA), was the decisive engagement that opened the heart of Sassanid Persia to Islam. The Muslim victory shattered the Persian field army and led to the fall of the Sassanid capital, Ctesiphon. It stands among the most consequential battles in Islamic history.",
+      "quranRef": {
+        "surah": "Ar-Rum",
+        "surahNumber": 30,
+        "ayah": 1
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3117"
+    },
+    {
+      "id": "h-conquest-egypt",
+      "hijriMonth": 5,
+      "hijriDay": 1,
+      "year": "c. 20 AH (c. 641 CE)",
+      "title": "Conquest of Egypt",
+      "description": "Around 20 AH, the Muslim army led by Amr ibn al-As (RA) completed the conquest of Egypt, bringing the Nile valley into the fold of Islam. The capture of the fortress of Babylon (Cairo) and later Alexandria ended Byzantine rule in the region. Egypt would become a center of Islamic learning and agriculture for centuries.",
+      "quranRef": {
+        "surah": "Al-Fath",
+        "surahNumber": 48,
+        "ayah": 1
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3117"
+    },
+    {
+      "id": "h-yarmuk",
+      "hijriMonth": 6,
+      "hijriDay": 1,
+      "year": "13-15 AH (636 CE)",
+      "title": "Battle of Yarmuk",
+      "description": "The Battle of Yarmuk, fought in 636 CE (c. 13-15 AH) over several days, was the decisive battle in which a modest Muslim force defeated a vast Byzantine army, opening the Levant (Syria, Palestine, Jordan) to Islam. Commanders such as Khalid ibn al-Walid (RA) displayed extraordinary strategic genius. The victory set the stage for the spread of Islam across the eastern Mediterranean.",
+      "quranRef": {
+        "surah": "Ar-Rum",
+        "surahNumber": 30,
+        "ayah": 2
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3117"
+    },
+    {
+      "id": "h-nahavand",
+      "hijriMonth": 2,
+      "hijriDay": 15,
+      "year": "c. 21-22 AH (c. 642 CE)",
+      "title": "Battle of Nahavand — 'Victory of Victories'",
+      "description": "The Battle of Nahavand, fought around 21-22 AH, was the final crushing blow to the Sassanid Persian empire. The Muslims, outnumbered, were granted a decisive victory that the Companions called the 'Victory of Victories' (Fath al-Futuh). It opened Persia and the East to Islam and effectively ended centuries of Persian imperial power.",
+      "quranRef": {
+        "surah": "Ar-Rum",
+        "surahNumber": 30,
+        "ayah": 4
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3117"
+    },
+    {
+      "id": "h-husayn-martyrdom",
+      "hijriMonth": 1,
+      "hijriDay": 10,
+      "year": "61 AH (680 CE)",
+      "title": "Martyrdom of al-Husayn (RA) at Karbala",
+      "description": "On Ashura, 10 Muharram 61 AH, al-Husayn ibn Ali (RA), the beloved grandson of the Prophet ﷺ, was martyred with his family and companions at Karbala. He refused to pledge allegiance to Yazid and stood for truth. The tragedy of Karbala is a lasting reminder of sacrifice for justice and faith.",
+      "quranRef": {
+        "surah": "Al-Ahzab",
+        "surahNumber": 33,
+        "ayah": 33
+      },
+      "referenceUrl": "https://sunnah.com/bukhari:3748"
     }
   ]
 }

@@ -35,6 +35,24 @@ export type QuranRef = {
   surah: string;
   surahNumber: number;
   ayah: number;
+  text?: string; // verse translation for inline display
+};
+
+export type HadithRef = {
+  collection: string; // e.g. 'Sahih al-Bukhari', 'Sahih Muslim', 'Sunan Abu Dawud'
+  number?: string; // hadith number (e.g. '968') or book+hadith (e.g. '2:13')
+  narrator?: string; // e.g. 'Ibn Abbas (RA)'
+  text: string; // translation of the hadith text
+  url?: string; // sunnah.com link
+};
+
+export type Dua = {
+  id: string;
+  arabic: string; // Arabic text
+  transliteration: string; // romanization
+  translation: string; // English meaning
+  source: string; // human-readable source, e.g. 'Quran 2:201' or 'Sahih Muslim 2713'
+  sourceType: 'quran' | 'hadith';
 };
 
 export type SunnahAction = {
@@ -55,6 +73,8 @@ export type IslamicEvent = {
   significance: CalendarSignificance;
   shortStory: string;
   quranRefs: QuranRef[];
+  hadithRefs: HadithRef[];
+  duas: Dua[];
   sunnahActions: SunnahAction[];
   referenceUrl: string;
 };
@@ -81,35 +101,69 @@ export type CalendarDayState = {
   date: string; // ISO date key (YYYY-MM-DD)
   hijriMonth: number;
   hijriDay: number;
-  events: IslamicEvent[];
+  eventIds: string[]; // IDs resolved via CalendarPayload.eventsById
   mask: number; // bitmap of completed sunnahActions across all events for that day
   completedCount: number;
   totalCount: number;
 };
 
+/** Slim reference to an interactive event — enough for grid dots + hover bubbles. */
+export type CalendarEventRef = {
+  id: string;
+  title: string;
+  arabicTitle: string;
+  category: CalendarCategory;
+  significance: CalendarSignificance;
+};
+
+/** Slim reference to a historical event — enough for hover bubbles. */
+export type CalendarHistoryRef = {
+  id: string;
+  title: string;
+  year: string;
+};
+
 /** Full calendar page payload returned by the API. */
 export type CalendarPayload = {
   today: CalendarDayState;
-  todayHistory: IslamicHistoricalEvent[];
-  monthGrid: CalendarDayCell[];
+  todayHistoryIds: string[]; // resolved via historyById
+  monthGrid: (CalendarDayCell | null)[];
+  eventsById: Record<string, IslamicEvent>; // deduplicated full event objects
+  historyById: Record<string, IslamicHistoricalEvent>; // deduplicated full history objects
   nextEvent: {
-    event: IslamicEvent;
+    eventTitle: string;
+    eventArabicTitle: string;
     daysUntil: number;
     hijriDateTarget: string;
   } | null;
   weekCompletions: { date: string; completed: number; total: number }[];
   consistency: number; // 0..1 rolling 14-day completion rate
+  view: CalendarView;
+};
+
+/** Which month is currently displayed in the grid. */
+export type CalendarView = {
+  gregorianYear: number;
+  gregorianMonth: number; // 0-11
+  gregorianMonthName: string;
+  hijriMonthName: string; // the Hijri month of the 1st of the Gregorian month
+  hijriYear: number;
+  canGoPrev: boolean;
+  canGoNext: boolean;
 };
 
 export type CalendarDayCell = {
   gregorianDay: number;
   hijriDay: number;
   hijriMonth: number;
+  hijriMonthName: string;
   dateKey: string;
   isToday: boolean;
+  isSelected: boolean;
   hasEvent: boolean;
   significance: CalendarSignificance | null;
-  eventTitles: string[];
+  eventRefs: CalendarEventRef[];
+  historyRefs: CalendarHistoryRef[];
 };
 
 // ---------------------------------------------------------------------------
@@ -152,6 +206,12 @@ export type HijriDate = {
   formatted: string;
 };
 
+const hijriFormatter = new Intl.DateTimeFormat('en-u-ca-islamic', {
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+});
+
 /**
  * Convert a Gregorian date to numeric Hijri components.
  * Uses the same Intl API as toHijri() in salah-utils, but returns parseable numbers.
@@ -159,12 +219,7 @@ export type HijriDate = {
 export function getHijriDate(date = new Date()): HijriDate {
   const monthNames = getDefaultMonthNames();
   try {
-    const fmt = new Intl.DateTimeFormat('en-u-ca-islamic', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    });
-    const parts = fmt.formatToParts(date);
+    const parts = hijriFormatter.formatToParts(date);
     const day = parseInt(parts.find((p) => p.type === 'day')?.value ?? '1', 10);
     const month = parseInt(parts.find((p) => p.type === 'month')?.value ?? '1', 10);
     const yearStr = parts.find((p) => p.type === 'year')?.value ?? '1447';
@@ -258,7 +313,7 @@ export function getHistoricalEventsForHijriDate(
 export function findNextEvent(
   events: IslamicEvent[],
   now = new Date(),
-): { event: IslamicEvent; daysUntil: number; hijriDateTarget: string } | null {
+): { eventTitle: string; eventArabicTitle: string; daysUntil: number; hijriDateTarget: string } | null {
   const sigOrder: Record<CalendarSignificance, number> = { high: 0, medium: 1, low: 2 };
   // Only look for non-weekly events with at least medium significance
   const candidates = events
@@ -276,7 +331,8 @@ export function findNextEvent(
     );
     if (match) {
       return {
-        event: match,
+        eventTitle: match.title,
+        eventArabicTitle: match.arabicTitle,
         daysUntil: offset,
         hijriDateTarget: `${hijri.day} ${hijri.monthName} ${hijri.year} AH`,
       };
@@ -327,28 +383,37 @@ export function countCompleted(mask: number, events: IslamicEvent[]): number {
 // ---------------------------------------------------------------------------
 
 /**
- * Generate a grid of day cells for the current Hijri month view.
- * Returns cells for the Gregorian month containing today, each annotated with
- * its Hijri date, events, and completion status.
+ * Generate a grid of day cells for a Gregorian month view.
  *
- * @param now Reference date (defaults to today)
- * @param events Static event pool
- * @returns Array of day cells (including leading/trailing blanks as null)
+ * Produces a fixed-length grid of 42 slots (6 weeks) so rows line up under
+ * weekday headers. Leading slots before the 1st are `null` (caller renders
+ * blanks). Each real cell carries its Hijri date, interactive + historical
+ * events, and completion status — enough to render a rich day popover without
+ * a round-trip.
+ *
+ * @param anchor  Any date inside the month to display (defaults to today).
+ * @param events  Static interactive event pool.
+ * @param historicalEvents  Static historical event pool.
+ * @param today   Reference "today" for isToday flags (defaults to now).
+ * @returns Array of `CalendarDayCell | null` (null = empty padding slot).
  */
 export function buildMonthGrid(
-  now: Date,
+  anchor: Date,
   events: IslamicEvent[],
-): CalendarDayCell[] {
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const todayKey = formatDateKeyLocal(now);
+  historicalEvents: IslamicHistoricalEvent[],
+  today: Date = new Date(),
+): (CalendarDayCell | null)[] {
+  const year = anchor.getFullYear();
+  const month = anchor.getMonth();
+  const todayKey = formatDateKeyLocal(today);
 
-  // First day of the Gregorian month
-  const firstDay = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startWeekday = firstDay.getDay(); // 0=Sunday
+  const startWeekday = new Date(year, month, 1).getDay(); // 0=Sunday
 
-  const cells: CalendarDayCell[] = [];
+  const cells: (CalendarDayCell | null)[] = [];
+
+  // Leading padding
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
 
   for (let day = 1; day <= daysInMonth; day++) {
     const cellDate = new Date(year, month, day);
@@ -359,21 +424,72 @@ export function buildMonthGrid(
       hijri.day,
       cellDate.getDay(),
     );
+    const dayHistory = getHistoricalEventsForHijriDate(
+      historicalEvents,
+      hijri.month,
+      hijri.day,
+    );
     const dateKey = formatDateKeyLocal(cellDate);
 
     cells.push({
       gregorianDay: day,
       hijriDay: hijri.day,
       hijriMonth: hijri.month,
+      hijriMonthName: hijri.monthName,
       dateKey,
       isToday: dateKey === todayKey,
-      hasEvent: dayEvents.length > 0,
+      isSelected: false,
+      hasEvent: dayEvents.length > 0 || dayHistory.length > 0,
       significance: dayEvents.length > 0 ? dayEvents[0].significance : null,
-      eventTitles: dayEvents.map((e) => e.title),
+      eventRefs: dayEvents.map((e) => ({
+        id: e.id,
+        title: e.title,
+        arabicTitle: e.arabicTitle,
+        category: e.category,
+        significance: e.significance,
+      })),
+      historyRefs: dayHistory.map((h) => ({
+        id: h.id,
+        title: h.title,
+        year: h.year,
+      })),
     });
   }
 
+  // Trailing padding to fill out the last week row
+  while (cells.length % 7 !== 0) cells.push(null);
+
   return cells;
+}
+
+/** Gregorian month names for the view header. */
+const GREGORIAN_MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/**
+ * Build the view descriptor for a given anchor month, used for the month
+ * navigation header (dual Gregorian + Hijri label) and prev/next gating.
+ */
+export function buildCalendarView(
+  anchor: Date,
+  today: Date = new Date(),
+): CalendarView {
+  const hijri = getHijriDate(new Date(anchor.getFullYear(), anchor.getMonth(), 1));
+  // Limit navigation to ±2 years from today to keep the payload bounded.
+  const min = new Date(today.getFullYear() - 2, 0, 1);
+  const max = new Date(today.getFullYear() + 2, 11, 31);
+  const firstOfMonth = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+  return {
+    gregorianYear: anchor.getFullYear(),
+    gregorianMonth: anchor.getMonth(),
+    gregorianMonthName: GREGORIAN_MONTH_NAMES[anchor.getMonth()],
+    hijriMonthName: hijri.monthName,
+    hijriYear: hijri.year,
+    canGoPrev: firstOfMonth > min,
+    canGoNext: firstOfMonth < max,
+  };
 }
 
 
@@ -404,24 +520,39 @@ export async function getUserCompletions(
  * Build the complete calendar page payload for a user.
  * Single optimized flow: load static data once, fetch user completions once,
  * derive everything else in-memory.
+ *
+ * @param userId
+ * @param now   "Today" reference — drives today's checklist, next-event
+ *              countdown, and the 14-day rolling consistency window.
+ * @param viewDate  Anchor for the month grid. Defaults to `now` (current
+ *                  month). When the user navigates to another month, pass the
+ *                  1st of that month so the grid + view header reflect it.
  */
 export async function buildCalendarPayload(
   userId: string,
   now = new Date(),
+  viewDate?: Date,
 ): Promise<CalendarPayload> {
   const data = await loadEventsData();
   const events = data.events;
+  const historicalEvents = data.historicalEvents;
   const today = startOfDay(now);
   const todayHijri = getHijriDate(now);
   const todayKey = formatDateKeyLocal(now);
 
-  // Fetch user completions for the month + 14-day rolling window in one query
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const anchor = viewDate ?? now;
+
+  // Fetch user completions for the viewed month + 14-day rolling window in a
+  // single query. Union both ranges so we never need a second round-trip.
+  const viewMonthStart = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+  const viewMonthEnd = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0);
+  const todayMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   const windowStart = new Date(now.getTime() - 13 * 86_400_000);
 
-  // Single query: full range covers both month grid and rolling window
-  const completionMap = await getUserCompletions(userId, monthStart, monthEnd);
+  const rangeStart = viewMonthStart < windowStart ? viewMonthStart : windowStart;
+  const rangeEnd = viewMonthEnd > todayMonthEnd ? viewMonthEnd : todayMonthEnd;
+
+  const completionMap = await getUserCompletions(userId, rangeStart, rangeEnd);
 
   // Today's state
   const todayEvents = getEventsForHijriDate(
@@ -436,18 +567,21 @@ export async function buildCalendarPayload(
 
   // Today's historical events ("on this day in Islamic history")
   const todayHistory = getHistoricalEventsForHijriDate(
-    data.historicalEvents,
+    historicalEvents,
     todayHijri.month,
     todayHijri.day,
   );
 
-  // Month grid
-  const monthGrid = buildMonthGrid(now, events);
+  // Month grid (anchored to the navigated month)
+  const monthGrid = buildMonthGrid(anchor, events, historicalEvents, today);
+
+  // View descriptor (dual Gregorian + Hijri header, nav gating)
+  const view = buildCalendarView(anchor, today);
 
   // Next significant event
   const nextEvent = findNextEvent(events, now);
 
-  // Week completions (last 7 days)
+  // Week completions (last 7 days relative to today)
   const weekCompletions: { date: string; completed: number; total: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now.getTime() - i * 86_400_000);
@@ -463,13 +597,6 @@ export async function buildCalendarPayload(
   }
 
   // 14-day consistency (for ruhaniah weakness signal)
-  // Fetch the extra dates if the rolling window extends beyond the month
-  let rollingMap = completionMap;
-  if (windowStart < monthStart) {
-    const extraMap = await getUserCompletions(userId, windowStart, new Date(monthStart.getTime() - 86_400_000));
-    rollingMap = new Map([...Array.from(extraMap.entries()), ...Array.from(completionMap.entries())]);
-  }
-
   let consistencyTotal = 0;
   let consistencyPossible = 0;
   for (let i = 0; i < 14; i++) {
@@ -479,28 +606,53 @@ export async function buildCalendarPayload(
     const dEvents = getEventsForHijriDate(events, dHijri.month, dHijri.day, d.getDay());
     const total = totalActionsForEvents(dEvents);
     if (total > 0) {
-      const dMask = rollingMap.get(dKey) ?? 0;
+      const dMask = completionMap.get(dKey) ?? 0;
       consistencyTotal += countCompleted(dMask, dEvents);
       consistencyPossible += total;
     }
   }
   const consistency = consistencyPossible > 0 ? consistencyTotal / consistencyPossible : 0;
 
+  // Build deduplicated lookup maps: every event referenced in the grid or
+  // today's events appears once in eventsById; likewise for historyById.
+  const eventsById: Record<string, IslamicEvent> = {};
+  const historyById: Record<string, IslamicHistoricalEvent> = {};
+  for (const ev of todayEvents) eventsById[ev.id] = ev;
+  for (const h of todayHistory) historyById[h.id] = h;
+  for (const cell of monthGrid) {
+    if (!cell) continue;
+    for (const ref of cell.eventRefs) {
+      if (!eventsById[ref.id]) {
+        const full = events.find((e) => e.id === ref.id);
+        if (full) eventsById[ref.id] = full;
+      }
+    }
+    for (const ref of cell.historyRefs) {
+      if (!historyById[ref.id]) {
+        const full = historicalEvents.find((h) => h.id === ref.id);
+        if (full) historyById[ref.id] = full;
+      }
+    }
+  }
+
   return {
     today: {
       date: todayKey,
       hijriMonth: todayHijri.month,
       hijriDay: todayHijri.day,
-      events: todayEvents,
+      eventIds: todayEvents.map((e) => e.id),
       mask: todayMask,
       completedCount: todayCompleted,
       totalCount: todayTotal,
     },
-    todayHistory,
+    todayHistoryIds: todayHistory.map((h) => h.id),
     monthGrid,
+    eventsById,
+    historyById,
     nextEvent,
     weekCompletions,
     consistency,
+    view,
   };
 }
 

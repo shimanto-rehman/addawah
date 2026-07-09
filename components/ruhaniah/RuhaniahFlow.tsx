@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { RuhaniahHeader } from './RuhaniahHeader';
+import { RuhaniahShimmer } from '@/components/ui/Shimmer';
 import { TaqwaPulse } from './TaqwaPulse';
 import { FahmTest, pickTodaysQuestions } from './FahmTest';
 import { BarakahMeter } from './BarakahMeter';
@@ -77,10 +78,10 @@ const FAHM_QUESTIONS_URL = '/data/fahm-questions.json';
 export function RuhaniahFlow() {
   const ctx = useRuhaniahData();
   const [submitting, setSubmitting] = useState(false);
+  const [submittedLocally, setSubmittedLocally] = useState(false);
   const [verse, setVerse] = useState<VerseResult | null>(null);
   const [insights, setInsights] = useState<InsightsData | null>(null);
   const [weaknesses, setWeaknesses] = useState<Weakness[]>([]);
-  const [done, setDone] = useState(false);
 
   // Taqwa
   const [taqwaScore, setTaqwaScore] = useState<number | null>(null);
@@ -119,42 +120,19 @@ export function RuhaniahFlow() {
       .catch(console.error);
   }, []);
 
-  // Already completed today → show verse + insights + weaknesses
-  useEffect(() => {
-    if (ctx?.data?.completed && ctx.data.verse) {
-      const v = ctx.data.verse;
-      setVerse({
-        ayahRef: v.ayahRef,
-        arabic: v.arabic,
-        translation: v.translation,
-        tafsir: v.tafsir,
-        reflectionText: v.reflectionText,
-        dawahText: v.dawahText,
-        signals: v.signals,
-      });
-      // Insights come from the GET response
-      if (ctx.data.insights) {
-        setInsights({
-          fahmProfile: ctx.data.fahmProfile ?? null,
-          ...ctx.data.insights,
-        });
-      } else if (ctx.data.fahmProfile) {
-        setInsights({
-          fahmProfile: ctx.data.fahmProfile,
-          taqwaHistory: [],
-          barakahHistory: [],
-          duaStats: { total: 0, answered: 0, waiting: 0, stored: 0 },
-          duaTimeline: [],
-          duaList: [],
-        });
-      }
-      // Weaknesses from GET response
-      if (ctx.data.weaknesses) {
-        setWeaknesses(ctx.data.weaknesses);
-      }
-      setDone(true);
-    }
-  }, [ctx?.data]);
+  // Derive completion state directly from server data — no useEffect sync
+  // gap. `submittedLocally` flips true only after a local POST succeeds;
+  // `ctx.data.completed` covers the hard-reload case.
+  const done = submittedLocally || ctx?.data?.completed === true;
+
+  // Derive display values from local state (post-submit) OR server data
+  // (hard reload). Local state takes priority since it's freshest.
+  const displayVerse: VerseResult | null = verse ?? ctx?.data?.verse ?? null;
+  const displayWeaknesses: Weakness[] =
+    weaknesses.length > 0 ? weaknesses : (ctx?.data?.weaknesses ?? []);
+  const displayInsights: InsightsData | null =
+    insights ?? (ctx?.data?.insights ? { fahmProfile: ctx?.data?.fahmProfile ?? null, ...ctx.data.insights } : null);
+
 
   const allAnswered = fahmResponses.length === todaysQuestions.length && todaysQuestions.length > 0;
   const canSubmit = taqwaScore !== null && allAnswered;
@@ -209,7 +187,7 @@ export function RuhaniahFlow() {
       if (data.weaknesses) {
         setWeaknesses(data.weaknesses);
       }
-      setDone(true);
+      setSubmittedLocally(true);
       ctx?.mutate();
     } catch (err) {
       console.error('Ruhaniah submission failed:', err);
@@ -217,17 +195,23 @@ export function RuhaniahFlow() {
       setSubmitting(false);
     }
   }, [submitting, canSubmit, taqwaScore, fahmResponses, barakahScores, newDuas, ctx]);
+  // Loading gate: while SWR is fetching and we don't yet know if today's
+  // flow is done, show a shimmer instead of flashing the form.
+  // Must come AFTER all hooks to avoid "Rendered more hooks" violations.
+  if (!done && (!ctx?.data || ctx?.isLoading)) {
+    return <RuhaniahShimmer />;
+  }
 
   // ─── Completed state ───
   if (done) {
     return (
       <div className="dawa-ruhaniah">
         <RuhaniahHeader />
-        {verse ? (
+        {displayVerse ? (
           <>
-            <RuhaniahVerse verse={verse} />
+            <RuhaniahVerse verse={displayVerse} />
             {/* Weakness analysis below the verse */}
-            {weaknesses.length > 0 && <SpiritualWeakness weaknesses={weaknesses} />}
+            {displayWeaknesses.length > 0 && <SpiritualWeakness weaknesses={displayWeaknesses} />}
           </>
         ) : (
           <div className="dawa-step-card" style={{ textAlign: 'center', padding: '32px 16px' }}>
@@ -240,7 +224,10 @@ export function RuhaniahFlow() {
         )}
 
         {/* Insights below the verse + weaknesses */}
-        <RuhaniahInsights insights={insights} fahmProfile={insights?.fahmProfile ?? ctx?.data?.fahmProfile ?? null} />
+        <RuhaniahInsights
+          insights={displayInsights}
+          fahmProfile={displayInsights?.fahmProfile ?? ctx?.data?.fahmProfile ?? null}
+        />
       </div>
     );
   }

@@ -15,7 +15,7 @@ type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notification
 const DESKTOP_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/dashboard', label: 'Home', icon: 'home' },
   { href: '/ruhaniah', label: 'Ruhaniah', icon: 'ruhaniah' },
-  { href: '/friends', label: 'Friends', icon: 'friends' },
+  { href: '/friends', label: 'Ummah', icon: 'friends' },
   { href: '/analytics', label: 'Analytics', icon: 'analytics' },
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
   { href: '/settings', label: 'Settings', icon: 'settings' },
@@ -24,7 +24,7 @@ const DESKTOP_NAV: { href: string; label: string; icon: NavIconName }[] = [
 const MOBILE_TAB_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/dashboard', label: 'Home', icon: 'home' },
   { href: '/ruhaniah', label: 'Ruhaniah', icon: 'ruhaniah' },
-  { href: '/friends', label: 'Friends', icon: 'friends' },
+  { href: '/friends', label: 'Ummah', icon: 'friends' },
   { href: '/analytics', label: 'Analytics', icon: 'analytics' },
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
 ];

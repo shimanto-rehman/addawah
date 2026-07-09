@@ -153,3 +153,26 @@ export function ProfileShimmer() {
     </div>
   );
 }
+
+/**
+ * Shimmer for Ruhaniah page — mirrors the completed verse view layout
+ */
+export function RuhaniahShimmer() {
+  return (
+    <div className="dawa-ruhaniah">
+      <div className="dawa-ruhaniah__intro">
+        <Shimmer variant="text-lg" width="120px" />
+        <Shimmer variant="text-sm" width="180px" />
+      </div>
+      <div className="dawa-verse dawa-verse--shimmer">
+        <Shimmer variant="text-sm" width="160px" />
+        <Shimmer variant="text-lg" width="80%" />
+        <Shimmer variant="text" width="90%" />
+        <Shimmer variant="text" width="70%" />
+        <div className="dawa-verse__divider" />
+        <Shimmer variant="card" width="100%" height="80px" />
+        <Shimmer variant="card" width="100%" height="80px" />
+      </div>
+    </div>
+  );
+}

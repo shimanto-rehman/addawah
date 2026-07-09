@@ -283,7 +283,7 @@ export function FriendsHub() {
       {toast && <p className="dawa-social__toast">{toast}</p>}
 
       <PageHeader
-        title="Brotherhood"
+        title="Fellow Believers"
         subtitle="Walk the path of salah together — remind, uplift, earn gold."
         arabicLabel="الأصدقاء"
         toolbar={
