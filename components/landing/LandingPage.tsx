@@ -16,6 +16,9 @@ const FEATURES = [
   { icon: '📿', title: 'Daily Wisdom', desc: 'Begin each day with Qur\'anic verses and prophetic traditions to nourish the soul.' },
   { icon: '🌙', title: 'Hijri Calendar', desc: 'Live in both worlds — Gregorian dates alongside the Islamic lunar calendar.' },
   { icon: '📊', title: 'Worship Analytics', desc: 'See your consistency grow through beautiful lifetime charts and prayer breakdowns.' },
+  { icon: '✨', title: 'Ruhaniah Check-in', desc: 'A nightly spiritual pulse — Taqwa, Fahm, Barakah, and Duas matched to a Quranic verse for your state.' },
+  { icon: '📈', title: 'Iman Meter', desc: 'A living faith index that rises with on-time prayers and heals with every sincere return.' },
+  { icon: '🎯', title: 'Daily Challenge', desc: 'Rotating deeds with gold-coin rewards — small consistent actions that compound into lasting habit.' },
   { icon: '🎨', title: 'Six Sacred Palettes', desc: 'Gold, Emerald, Sapphire, Amethyst, Silver, and Rose — each in dark or light mode.' },
 ];
 

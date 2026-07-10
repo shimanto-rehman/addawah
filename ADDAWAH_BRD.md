@@ -20,7 +20,7 @@ The MVP runs entirely on free-tier infrastructure.
 ## Recommended Free Stack
 
 - **Frontend:** Next.js 14 + React + TypeScript
-- **UI:** Tailwind CSS + custom Islamic gold theme + Framer Motion
+- **UI:** Hand-written BEM `dawa-*` CSS + custom Islamic gold theme + Framer Motion
 - **Backend:** Next.js API Routes + Server Actions
 - **ORM:** Prisma
 - **Database:** Neon PostgreSQL (Free)
@@ -125,16 +125,17 @@ Nightly spiritual check-in system with 4 input steps and 3 output sections.
 | SOCIAL | Treating people well |
 
 #### Verse Selection Engine:
-Gathers spiritual signals from 7 sources → converts to semantic tags → scores 300 verses → selects best match.
+Gathers spiritual signals from 8 sources → converts to semantic tags → scores 300 verses → selects best match.
 
 **Signal Sources:**
 1. Salah completion — `obedient`, `neglectful`, `needs_reminder`
-2. Taqwa score — `heedless`, `distracted`, `conscious`, `present`
-3. Fahm weakest category — `anxious`, `shy_deen`, `impatient`, `dunya_focused`
-4. Barakah scores — `time_restricted`, `restless_heart`, `health_struggling`
-5. Active duas — `waiting_many`, `needs_sabr`, `answered_dua`
-6. Mood — `anxious`, `grateful`, `sad`
-7. Prayer streak — `strong_streak`, `relapse`, `needs_hope`
+2. Jamat/Awal Wakt sincerity — `sincere`, `devoted`, `jamat_strong`, `needs_jamat`
+3. Taqwa score — `heedless`, `distracted`, `conscious`, `present`
+4. Fahm weakest category — `anxious`, `shy_deen`, `impatient`, `dunya_focused`
+5. Barakah scores — `time_restricted`, `restless_heart`, `health_struggling`
+6. Active duas — `waiting_many`, `needs_sabr`, `answered_dua`
+7. Mood — `anxious`, `grateful`, `sad`
+8. Prayer streak — `strong_streak`, `relapse`, `needs_hope`
 
 ### 8. Theming & UX
 - 6 theme colors (Green, Blue, Gold, Purple, Silver, Pink)

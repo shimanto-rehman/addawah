@@ -93,7 +93,7 @@ Free Islamic web platform for salah tracking, accountability, daily inspiration,
 ## Stack
 
 - Next.js 14 + React + TypeScript
-- Tailwind CSS + custom Islamic gold theme
+- Hand-written BEM `dawa-*` CSS + custom Islamic gold theme
 - Framer Motion
 - Prisma + PostgreSQL (Neon recommended)
 - Session auth (JWT cookie)
@@ -170,6 +170,7 @@ app/
     dashboard/        # Dashboard aggregated data
     analytics/        # Analytics summary
     calendar/         # Calendar payload + sunnah action toggle
+    challenge/        # Daily rotating challenge tasks
     friends/          # Friend system, board, hub, search, suggestions, connections
     pokes/            # Poke system
     notifications/    # Notifications + count
@@ -199,14 +200,16 @@ components/
   providers/          # AppProvider, ThemeProvider, ThemeSync
   preloader/          # Addawah preloader animation
   seo/                # JsonLd
+  location/           # LocationPicker, LocationPrompt
   settings/           # DeleteAccountSection
 lib/                  # Auth, prisma, salah utils, ruhaniah logic, islamic calendar, chart theme, wakt snapshot, rewards
+assets/css/           # BEM stylesheets (dawa-*.css) — hand-written, custom-property themed
 prisma/               # Database schema
 public/
   data/               # ayah-pool.json (300 verses), fahm-questions.json (320 questions)
   assets/             # Images, PDFs, videos, icons
   fonts/              # Islamic fonts (Amiri, Cormorant Garamond, DM Sans)
-  uploads/            # User avatar uploads
+  uploads/            # User avatar uploads (gitignored runtime data, auto-created)
 ```
 
 ## Key Data Files
@@ -220,15 +223,16 @@ public/
 
 ## Verse Selection Engine
 
-The Ruhaniah system gathers spiritual signals from 7 sources and converts them to semantic tags:
+The Ruhaniah system gathers spiritual signals from 8 sources and converts them to semantic tags:
 
 1. **Salah completion** — `obedient`, `neglectful`, `needs_reminder`
-2. **Taqwa score** — `heedless`, `distracted`, `conscious`, `present`
-3. **Fahm weakest category** — `anxious`, `shy_deen`, `impatient`, `dunya_focused`
-4. **Barakah scores** — `time_restricted`, `restless_heart`, `health_struggling`
-5. **Active duas** — `waiting_many`, `needs_sabr`, `answered_dua`
-6. **Mood** — `anxious`, `grateful`, `sad`
-7. **Prayer streak** — `strong_streak`, `relapse`, `needs_hope`
+2. **Jamat/Awal Wakt sincerity** — `sincere`, `devoted`, `jamat_strong`, `needs_jamat`
+3. **Taqwa score** — `heedless`, `distracted`, `conscious`, `present`
+4. **Fahm weakest category** — `anxious`, `shy_deen`, `impatient`, `dunya_focused`
+5. **Barakah scores** — `time_restricted`, `restless_heart`, `health_struggling`
+6. **Active duas** — `waiting_many`, `needs_sabr`, `answered_dua`
+7. **Mood** — `anxious`, `grateful`, `sad`
+8. **Prayer streak** — `strong_streak`, `relapse`, `needs_hope`
 
 Verses are scored against tags (primary +3, secondary +1) and the best match is selected.
 
