@@ -28,6 +28,24 @@ export function validateUsername(username: string): { valid: boolean; message?: 
   return { valid: true };
 }
 
+/** Trim + collapse whitespace (final normalize before save/send). */
 export function sanitizeName(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ');
+}
+
+/**
+ * Live name input: letters (incl. Unicode), spaces, hyphens, apostrophes, periods.
+ * Digits and other symbols are stripped as the user types.
+ */
+export function sanitizeNameInput(raw: string): string {
+  return raw.replace(/[^\p{L}\s'.-]/gu, '').replace(/\s{2,}/g, ' ');
+}
+
+/** True when name is 2–80 chars, has a letter, and no digits. */
+export function isValidName(name: string): boolean {
+  const n = sanitizeName(name);
+  if (n.length < 2 || n.length > 80) return false;
+  if (/\d/.test(n)) return false;
+  if (!/\p{L}/u.test(n)) return false;
+  return /^[\p{L}\s'.-]+$/u.test(n);
 }

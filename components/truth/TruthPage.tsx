@@ -8,6 +8,7 @@ import { DEVELOPER, getInitials, SITE_TAGLINE } from '@/lib/constants';
 import { PASSAGES, PRAYER_STORY, TRUTH_FOUNDER_IMAGE, truthPassageImage, type Passage } from '@/components/truth/truthContent';
 import { TruthImage } from '@/components/truth/TruthImage';
 import { GradientWrap } from '@/components/truth/GradientWrap';
+import { TruthTalkForm } from '@/components/truth/TruthTalkForm';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -84,13 +85,14 @@ function PassageFeature({ passage, onOpen }: { passage: Passage; onOpen: () => v
   );
 }
 
-export function TruthPage() {
+export function TruthPage({ variant = 'public' }: { variant?: 'public' | 'app' }) {
   const [active, setActive] = useState<Passage | null>(null);
   const [photoFailed, setPhotoFailed] = useState(false);
+  const isApp = variant === 'app';
 
   return (
-    <div className="dawa-landing dawa-truth">
-      <PublicNav />
+    <div className={`dawa-landing dawa-truth${isApp ? ' dawa-truth--app' : ''}`}>
+      {!isApp && <PublicNav />}
 
       {/* ── Hero: headline row, then hero-gradient-wrap (breaks out, expands on scroll) ── */}
       <section className="dawa-truth-hero" aria-labelledby="truth-heading">
@@ -100,7 +102,7 @@ export function TruthPage() {
             In search of <em>Truth.</em>
           </h1>
           <p className="dawa-truth-hero__desc">
-            Fifteen passages where science, philosophy, and revelation meet — questions about
+            Passages where science, philosophy, and revelation meet — questions about
             time, consciousness, design, and the unseen, each returning to one signpost: the
             Creator behind creation.
           </p>
@@ -140,10 +142,10 @@ export function TruthPage() {
         </GradientWrap>
       </section>
 
-      {/* ── The 15 passages: grid of cards, with a few full-bleed feature rows ── */}
+      {/* ── Passages: grid of cards, with a few full-bleed feature rows ── */}
       <section className="dawa-section dawa-truth-passages" id="passages" aria-labelledby="passages-heading">
         <div className="dawa-section__head">
-          <h2 className="dawa-section__title" id="passages-heading">Fifteen doors to one question</h2>
+          <h2 className="dawa-section__title" id="passages-heading">Doors to one question</h2>
           <p className="dawa-section__sub">
             Each passage stands on its own — read the summary, then open the full reflection when a
             question pulls you in.
@@ -163,7 +165,37 @@ export function TruthPage() {
         )}
       </section>
 
-      {/* ── Founding (team-gradient-wrap style: full-bleed photo + my info) ── */}
+      {/* ── Our Story = Passage 14 (prayer), cloned from the template's Timeline ── */}
+      <section className="dawa-truth-timeline" id="story" aria-labelledby="story-heading">
+        <div className="dawa-truth-timeline__container">
+          <div className="dawa-truth-timeline__grid">
+            <div className="dawa-truth-timeline__aside">
+              <span className="dawa-truth-badge">{PRAYER_STORY.kicker}</span>
+              <h2 className="dawa-truth-timeline__title" id="story-heading">{PRAYER_STORY.title}</h2>
+              <p className="dawa-truth-timeline__desc">{PRAYER_STORY.intro}</p>
+            </div>
+            <div className="dawa-truth-timeline__list">
+              <div className="dawa-truth-timeline__line" aria-hidden />
+              {PRAYER_STORY.items.map((item, i) => {
+                const isFirst = i === 0;
+                const isLast = i === PRAYER_STORY.items.length - 1;
+                return (
+                  <div key={item.label} className={`dawa-truth-timeline__item${isLast ? ' is-last' : ''}`}>
+                    <span
+                      className={`dawa-truth-timeline__dot${isFirst ? ' is-active' : ''}${isLast ? ' is-faint' : ''}`}
+                      aria-hidden
+                    />
+                    <h3 className="dawa-truth-timeline__label">{item.label}</h3>
+                    <p className="dawa-truth-timeline__text">{item.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Founding (after Salah) — team-gradient-wrap style: full-bleed photo + my info ── */}
       <section className="dawa-section dawa-truth-founder" id="founder" aria-labelledby="founder-heading">
         <GradientWrap className="dawa-truth-founder-wrap" boxClassName="dawa-truth-founder-box" baseMaxWidth={1152} baseRadius={24}>
           <TruthImage src={TRUTH_FOUNDER_IMAGE} alt="" className="dawa-truth-media--fill" />
@@ -207,36 +239,6 @@ export function TruthPage() {
         </GradientWrap>
       </section>
 
-      {/* ── Our Story = Passage 14 (prayer), cloned from the template's Timeline ── */}
-      <section className="dawa-truth-timeline" id="story" aria-labelledby="story-heading">
-        <div className="dawa-truth-timeline__container">
-          <div className="dawa-truth-timeline__grid">
-            <div className="dawa-truth-timeline__aside">
-              <span className="dawa-truth-badge">{PRAYER_STORY.kicker}</span>
-              <h2 className="dawa-truth-timeline__title" id="story-heading">{PRAYER_STORY.title}</h2>
-              <p className="dawa-truth-timeline__desc">{PRAYER_STORY.intro}</p>
-            </div>
-            <div className="dawa-truth-timeline__list">
-              <div className="dawa-truth-timeline__line" aria-hidden />
-              {PRAYER_STORY.items.map((item, i) => {
-                const isFirst = i === 0;
-                const isLast = i === PRAYER_STORY.items.length - 1;
-                return (
-                  <div key={item.label} className={`dawa-truth-timeline__item${isLast ? ' is-last' : ''}`}>
-                    <span
-                      className={`dawa-truth-timeline__dot${isFirst ? ' is-active' : ''}${isLast ? ' is-faint' : ''}`}
-                      aria-hidden
-                    />
-                    <h3 className="dawa-truth-timeline__label">{item.label}</h3>
-                    <p className="dawa-truth-timeline__text">{item.text}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Let's Talk (hero-gradient-wrap style, same breakout + scroll expand) ── */}
       <section className="dawa-section dawa-truth-talk-section" id="talk" aria-labelledby="talk-heading">
         <GradientWrap className="dawa-truth-talk-wrap" boxClassName="dawa-truth-talk-box" baseMaxWidth={900} baseRadius={28}>
@@ -247,23 +249,7 @@ export function TruthPage() {
               Have a further question, an interesting concept, or an observation to share? This space is
               open — bring the thought that has been sitting with you.
             </p>
-            <form className="dawa-truth-talk__form" onSubmit={(e) => e.preventDefault()}>
-              <div className="dawa-truth-talk__row">
-                <label className="dawa-truth-field">
-                  <span>Name</span>
-                  <input type="text" name="name" placeholder="Your name" autoComplete="name" />
-                </label>
-                <label className="dawa-truth-field">
-                  <span>Email</span>
-                  <input type="email" name="email" placeholder="you@example.com" autoComplete="email" />
-                </label>
-              </div>
-              <label className="dawa-truth-field">
-                <span>Your question or observation</span>
-                <textarea name="message" rows={4} placeholder="Share a question, a concept, or something you noticed…" />
-              </label>
-              <button type="submit" className="dawa-btn dawa-btn--primary">Share your thought</button>
-            </form>
+            <TruthTalkForm />
           </div>
         </GradientWrap>
       </section>

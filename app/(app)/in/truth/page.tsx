@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     'Passages where science, philosophy, and revelation meet — on time, consciousness, design, and the unseen, each returning to the Creator behind creation.',
 };
 
-export default function Truth() {
-  return <TruthPage variant="public" />;
+/** Internal app-shell Truth. Served at URL /truth via middleware rewrite when signed in. */
+export default function AppTruth() {
+  return <TruthPage variant="app" />;
 }

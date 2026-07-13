@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Preloader from '@/components/preloader/addawah-Preloader';
 import { LANDING_BACKDROP_READY_EVENT } from '@/lib/constants';
 
-const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings', '/u'];
+const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/friends', '/analytics', '/settings', '/u', '/ruhaniah', '/in'];
 
 function isAppRoute(pathname: string) {
   return APP_ROUTE_PREFIXES.some(

@@ -13,7 +13,7 @@ const PANEL_GAP = 10;
 const VIEWPORT_PAD = 12;
 
 type MenuItem =
-  | { type: 'link'; href: string; label: string; icon: 'profile' | 'settings' | 'analytics' | 'notifications' }
+  | { type: 'link'; href: string; label: string; icon: 'profile' | 'settings' | 'analytics' | 'notifications' | 'truth'; mobileOnly?: boolean }
   | { type: 'action'; label: string; icon: 'logout'; onClick: () => void };
 
 function MenuIcon({ name }: { name: MenuItem['icon'] }) {
@@ -60,6 +60,14 @@ function MenuIcon({ name }: { name: MenuItem['icon'] }) {
           <path d="M10 20a2 2 0 0 0 4 0" />
         </svg>
       );
+    case 'truth':
+      return (
+        <svg {...props}>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          <path d="M8 7h8M8 11h6" />
+        </svg>
+      );
     case 'logout':
       return (
         <svg {...props}>
@@ -75,6 +83,7 @@ function buildMenuItems(logout: () => Promise<void>): MenuItem[] {
   return [
     { type: 'link', href: '/profile', label: 'Profile', icon: 'profile' },
     { type: 'link', href: '/settings', label: 'Settings', icon: 'settings' },
+    { type: 'link', href: '/truth', label: 'Truth', icon: 'truth', mobileOnly: true },
     { type: 'link', href: '/analytics', label: 'Analytics', icon: 'analytics' },
     { type: 'link', href: '/notifications', label: 'Notifications', icon: 'notifications' },
     { type: 'action', label: 'Sign out', icon: 'logout', onClick: () => void logout() },
@@ -177,7 +186,10 @@ export function UserMenu({ user }: { user: SessionUser }) {
           </div>
           <ul className="dawa-user-menu__list">
             {items.map((item) => (
-              <li key={item.label}>
+              <li
+                key={item.label}
+                className={item.type === 'link' && item.mobileOnly ? 'dawa-user-menu__item-wrap--mobile' : undefined}
+              >
                 {item.type === 'link' ? (
                   <Link
                     href={item.href}

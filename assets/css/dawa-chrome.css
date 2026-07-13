@@ -131,6 +131,15 @@
   padding: 6px;
   background: var(--popover-bg);
 }
+/* Truth lives in desktop header nav; only show it in the account menu on mobile. */
+.dawa-user-menu__item-wrap--mobile {
+  display: none;
+}
+@media (max-width: 960px) {
+  .dawa-user-menu__item-wrap--mobile {
+    display: list-item;
+  }
+}
 .dawa-user-menu__item {
   display: flex;
   align-items: center;

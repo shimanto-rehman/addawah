@@ -10,7 +10,7 @@ import { NotificationBell } from '@/components/layout/NotificationBell';
 import { useNotificationCount } from '@/components/notifications/useNotifications';
 import { useApp } from '@/components/providers/AppProvider';
 
-type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notifications' | 'ruhaniah' | 'calendar';
+type NavIconName = 'home' | 'friends' | 'analytics' | 'settings' | 'notifications' | 'ruhaniah' | 'calendar' | 'truth';
 
 const DESKTOP_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/dashboard', label: 'Home', icon: 'home' },
@@ -18,7 +18,7 @@ const DESKTOP_NAV: { href: string; label: string; icon: NavIconName }[] = [
   { href: '/friends', label: 'Ummah', icon: 'friends' },
   { href: '/analytics', label: 'Analytics', icon: 'analytics' },
   { href: '/calendar', label: 'Calendar', icon: 'calendar' },
-  { href: '/settings', label: 'Settings', icon: 'settings' },
+  { href: '/truth', label: 'Truth', icon: 'truth' },
 ];
 
 const MOBILE_TAB_NAV: { href: string; label: string; icon: NavIconName }[] = [
@@ -94,6 +94,14 @@ function NavIcon({ name }: { name: NavIconName }) {
           <rect x="3" y="4" width="18" height="18" rx="2" />
           <path d="M3 9h18M8 2v4M16 2v4" />
           <path d="M8 14l2.5 2.5L15 12" />
+        </svg>
+      );
+    case 'truth':
+      return (
+        <svg {...props}>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          <path d="M8 7h8M8 11h6" />
         </svg>
       );
   }

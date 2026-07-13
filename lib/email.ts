@@ -133,6 +133,7 @@ async function deliverEmail(opts: {
   subject: string;
   text: string;
   html: string;
+  replyTo?: string;
 }) {
   if (isResendConfigured()) {
     const resend = getResend();
@@ -147,6 +148,7 @@ async function deliverEmail(opts: {
         subject: opts.subject,
         text: opts.text,
         html: opts.html,
+        ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
       });
 
     let { error } = await send(from);
@@ -177,6 +179,7 @@ async function deliverEmail(opts: {
     subject: opts.subject,
     text: opts.text,
     html: opts.html,
+    ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
   });
 
   return true;
@@ -290,5 +293,54 @@ export async function sendDeletionOtpEmail(opts: {
       code: opts.code,
       footer,
     }),
+  });
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/** Truth page “Let’s talk” — inbound message to the founder inbox. */
+export async function sendTruthContactEmail(opts: {
+  to: string;
+  name: string;
+  email: string;
+  message: string;
+}) {
+  if (!isEmailConfigured()) {
+    logger.warn({ module: 'email' }, 'Email not configured — skipping truth contact email');
+    return false;
+  }
+
+  const safeName = escapeHtml(opts.name);
+  const safeEmail = escapeHtml(opts.email);
+  const safeMessage = escapeHtml(opts.message).replace(/\n/g, '<br />');
+
+  return deliverEmail({
+    to: opts.to,
+    replyTo: opts.email,
+    subject: `Truth thought from ${opts.name}`,
+    text: [
+      `New message from the Truth “Let’s talk” form.`,
+      '',
+      `Name: ${opts.name}`,
+      `Email: ${opts.email}`,
+      '',
+      opts.message,
+      '',
+      `— ${SITE_NAME}`,
+    ].join('\n'),
+    html: `
+      <p>New message from the <strong>Truth — Let’s talk</strong> form.</p>
+      <p><strong>Name:</strong> ${safeName}<br />
+      <strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+      <p style="white-space:pre-wrap;line-height:1.6;">${safeMessage}</p>
+      <p>— ${SITE_NAME}</p>
+    `,
   });
 }

@@ -74,6 +74,7 @@ export const DEVELOPER = {
   bio: 'Designed and built Addawah for salah tracking, brotherhood, and spiritual growth in the ummah.',
   photoSrc: '/assets/images/shimanto.jpg',
   portfolioUrl: 'https://www.shimanto.online',
+  contactEmail: 'shimanto.rehman.bd@gmail.com',
 } as const;
 
 export const DAILY_INSPIRATIONS = [

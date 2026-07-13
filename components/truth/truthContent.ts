@@ -26,9 +26,8 @@ export type Passage = {
 };
 
 /**
- * The 15 "Truth" passages. Passage 14 (on prayer) is intentionally NOT in this
- * list — it powers the "Our Story" section instead. That leaves 14 passages
- * rendered as alternating sections + 1 story section = 15 sections total.
+ * Truth passages. Passage 14 (on prayer) is intentionally NOT in this list —
+ * it powers the Salah story section instead.
  */
 export const PASSAGES: Passage[] = [
   {
