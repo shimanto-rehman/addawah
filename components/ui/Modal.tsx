@@ -9,9 +9,12 @@ type ModalProps = {
   children: React.ReactNode;
   panelClassName?: string;
   labelledBy?: string;
+  /** Skip the shared `.dawa-modal__panel` base styling (width/padding/bg/etc.)
+   *  for consumers that need a fully custom, self-contained panel look. */
+  unstyled?: boolean;
 };
 
-export function Modal({ open, onClose, children, panelClassName = '', labelledBy }: ModalProps) {
+export function Modal({ open, onClose, children, panelClassName = '', labelledBy, unstyled = false }: ModalProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -34,7 +37,7 @@ export function Modal({ open, onClose, children, panelClassName = '', labelledBy
   return createPortal(
     <div className="dawa-modal" role="presentation" onClick={onClose}>
       <div
-        className={`dawa-modal__panel${panelClassName ? ` ${panelClassName}` : ''}`}
+        className={unstyled ? panelClassName : `dawa-modal__panel${panelClassName ? ` ${panelClassName}` : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

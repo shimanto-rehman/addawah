@@ -1,0 +1,713 @@
+/* Truth — reflections page (inherits landing glass tokens via .dawa-landing) */
+
+.dawa-truth { position: relative; z-index: 1; }
+
+.dawa-truth-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.dawa-truth-badge--on-dark {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* These sections nest their own horizontally-padded wraps/grids — drop the
+   base .dawa-section side padding so insets don't double up. */
+.dawa-truth-passages,
+.dawa-truth-founder,
+.dawa-truth-talk-section {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Gradient-wrap primitive (hero-gradient-wrap / team-gradient-wrap /
+   pricing-gradient-wrap equivalent). JS (useGradientExpand) drives
+   max-width on the wrap and border-radius on the box every scroll
+   frame — no CSS transition on those two props, or it fights the rAF.
+   ══════════════════════════════════════════════════════════════ */
+.dawa-truth-gradient-wrap {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  will-change: max-width;
+}
+.dawa-truth-gradient-box {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  box-sizing: border-box;
+  will-change: border-radius;
+}
+
+/* ── Hero ── */
+.dawa-truth-hero { padding-top: 132px; padding-bottom: 8px; }
+.dawa-truth-hero__head {
+  max-width: 1152px;
+  margin: 0 auto 40px;
+  padding: 0 clamp(24px, 5vw, 48px);
+}
+.dawa-truth-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5.6vw, 56px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  max-width: 700px;
+  margin: 0 0 20px;
+}
+.dawa-truth-hero__title em { color: var(--accent-bright); font-style: italic; }
+.dawa-truth-hero__desc {
+  color: var(--text-soft);
+  font-size: clamp(15px, 2vw, 17px);
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 0 28px;
+}
+
+.dawa-truth-hero-gradient { margin-top: 8px; }
+.dawa-truth-hero-gradient-box {
+  background: linear-gradient(to top, var(--accent-soft), transparent 82%);
+  border: 1px solid var(--glass-border-soft, var(--border-soft));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(32px, 8vw, 88px) clamp(20px, 6vw, 64px);
+}
+.dawa-truth-rings { width: 100%; max-width: 640px; margin: 0 auto; }
+.dawa-truth-rings svg { width: 100%; height: auto; overflow: visible; display: block; }
+.dawa-truth-rings__a { transform-origin: 135px 130px; animation: dawaTruthSpinA 26s linear infinite; }
+.dawa-truth-rings__b { transform-origin: 235px 130px; animation: dawaTruthSpinB 26s linear infinite; }
+@keyframes dawaTruthSpinA { to { transform: rotate(360deg); } }
+@keyframes dawaTruthSpinB { to { transform: rotate(-360deg); } }
+
+/* ══════════════════════════════════════════════════════════════
+   Passages: grid of compact cards + occasional full-bleed features
+   ══════════════════════════════════════════════════════════════ */
+.dawa-truth-passages { padding-top: 72px; }
+.dawa-truth-passages > .dawa-section__head { padding: 0 24px; }
+
+.dawa-truth-grid {
+  max-width: 1120px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  box-sizing: border-box;
+}
+
+.dawa-truth-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: calc(var(--radius) + 4px);
+  overflow: hidden;
+  background: var(--glass-bg, var(--surface));
+  border: 1px solid var(--glass-border, var(--border));
+  box-shadow: var(--glass-shadow, 0 12px 40px rgba(0, 0, 0, 0.24));
+  transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+}
+.dawa-truth-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--accent) 10%, rgba(0, 0, 0, 0.3));
+}
+.dawa-truth-card .dawa-truth-media { aspect-ratio: 16 / 11; border-radius: 0; border: none; }
+.dawa-truth-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px 22px 24px;
+}
+.dawa-truth-card__kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.dawa-truth-card__title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+.dawa-truth-card__preview {
+  color: var(--text-soft);
+  font-size: 13.5px;
+  line-height: 1.65;
+  flex: 1;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dawa-truth-card__more {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--accent-bright);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease), gap 0.2s var(--ease);
+}
+.dawa-truth-card__more svg { transition: transform 0.2s var(--ease); }
+.dawa-truth-card__more:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 22px var(--accent-glow);
+  transform: translateY(-1px);
+}
+.dawa-truth-card__more:hover svg { transform: translateX(3px); }
+
+/* ── Passage media (local /assets/images/truth + themed fallback) ── */
+.dawa-truth-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: calc(var(--radius) + 6px);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(120% 120% at 20% 10%, var(--accent-soft), transparent 60%),
+    linear-gradient(150deg, var(--surface-2), var(--bg-soft));
+}
+.dawa-truth-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.dawa-truth-media__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, color-mix(in srgb, var(--bg) 55%, transparent));
+  pointer-events: none;
+}
+[data-theme='light'] .dawa-truth-media__veil {
+  background: linear-gradient(180deg, transparent 45%, rgba(255, 255, 255, 0.35));
+}
+.dawa-truth-media__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--border-soft), inset 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent);
+  pointer-events: none;
+}
+.dawa-truth-media.is-fallback::after {
+  content: '☾';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  color: var(--accent);
+  opacity: 0.5;
+}
+/* Full-bleed background variant used by feature passages / founder / hero art */
+.dawa-truth-media--fill {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+  border: none;
+  z-index: 0;
+}
+.dawa-truth-media--fill .dawa-truth-media__veil,
+.dawa-truth-media--fill .dawa-truth-media__ring { display: none; }
+
+/* ── Feature passages (team-gradient-wrap style, full-bleed photo) ── */
+.dawa-truth-feature-wrap { margin: 12px auto 40px; }
+.dawa-truth-feature-box {
+  min-height: clamp(340px, 42vw, 460px);
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(28px, 6vw, 64px);
+  background: var(--surface-2);
+}
+.dawa-truth-feature-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.22) 58%, transparent);
+  pointer-events: none;
+}
+.dawa-truth-feature-content { position: relative; z-index: 2; max-width: 620px; }
+.dawa-truth-feature-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f2d99a;
+  margin-bottom: 12px;
+}
+.dawa-truth-feature-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 14px;
+}
+.dawa-truth-feature-preview {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(14.5px, 2vw, 16px);
+  line-height: 1.7;
+  margin: 0 0 22px;
+}
+.dawa-truth-feature-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease), gap 0.2s var(--ease);
+}
+.dawa-truth-feature-more:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+.dawa-truth-feature-more svg { transition: transform 0.2s var(--ease); }
+.dawa-truth-feature-more:hover svg { transform: translateX(3px); }
+
+/* ══════════════════════════════════════════════════════════════
+   Founding (team-gradient-wrap: full-bleed photo + my info)
+   ══════════════════════════════════════════════════════════════ */
+.dawa-truth-founder { padding-top: 8px; }
+.dawa-truth-founder-wrap { margin: 0 auto; }
+.dawa-truth-founder-box {
+  padding: clamp(48px, 9vh, 104px) clamp(20px, 5vw, 48px);
+  background: var(--surface-2);
+}
+.dawa-truth-founder-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.35) 60%, transparent);
+  pointer-events: none;
+}
+.dawa-truth-founder__grid {
+  position: relative;
+  z-index: 2;
+  max-width: 1024px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(28px, 5vw, 56px);
+  align-items: center;
+}
+.dawa-truth-founder__intro .dawa-section__title { text-align: left; margin: 6px 0 0; color: #fff; }
+.dawa-truth-founder__intro .dawa-section__sub { margin: 12px 0 0; color: rgba(255, 255, 255, 0.8); text-align: left; }
+.dawa-truth-founder__card {
+  text-align: center;
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: var(--radius);
+  background: rgba(20, 20, 24, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(22px) saturate(1.3);
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+.dawa-truth-founder__photo {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent-bright), var(--accent-dim));
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+.dawa-truth-founder__photo img { width: 100%; height: 100%; object-fit: cover; }
+.dawa-truth-founder__initials {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 700;
+  color: #fff;
+}
+.dawa-truth-founder__name { font-family: var(--font-display); font-size: 21px; font-weight: 700; color: #fff; }
+.dawa-truth-founder__role { font-size: 13px; font-weight: 600; color: #f2d99a; margin-top: 2px; letter-spacing: 0.02em; }
+.dawa-truth-founder__bio { font-size: 14px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); margin: 14px 0 20px; }
+.dawa-truth-founder__card .dawa-btn--outline {
+  border-color: rgba(255, 255, 255, 0.38);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+.dawa-truth-founder__card .dawa-btn--outline:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Our Story = Passage 14 (prayer) — cloned from cocoon-template's
+   Timeline section: sticky left heading, right-side vertical line
+   with pulsing "active" dot on the first entry.
+   ══════════════════════════════════════════════════════════════ */
+.dawa-truth-timeline { padding: calc(48px + 8vh) 24px; }
+.dawa-truth-timeline__container { max-width: 1080px; margin: 0 auto; }
+.dawa-truth-timeline__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+@media (min-width: 768px) {
+  .dawa-truth-timeline__grid { grid-template-columns: 1fr 1fr; gap: 96px; }
+  .dawa-truth-timeline__aside { position: sticky; top: 128px; align-self: start; }
+}
+.dawa-truth-timeline__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+}
+.dawa-truth-timeline__desc {
+  margin: 16px 0 0;
+  color: var(--text-soft);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.dawa-truth-timeline__list { position: relative; padding-left: 32px; }
+.dawa-truth-timeline__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--text), var(--border));
+}
+.dawa-truth-timeline__item { position: relative; padding-bottom: 64px; }
+.dawa-truth-timeline__item.is-last { padding-bottom: 0; }
+.dawa-truth-timeline__dot {
+  position: absolute;
+  left: -32px;
+  top: 5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+.dawa-truth-timeline__dot.is-active {
+  background: var(--accent-bright);
+  box-shadow: 0 0 8px var(--accent-glow), 0 0 20px color-mix(in srgb, var(--accent) 35%, transparent);
+  animation: dawaTruthTimelinePulse 2s ease-in-out infinite;
+}
+.dawa-truth-timeline__dot.is-faint { background: var(--border); }
+.dawa-truth-timeline__label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.dawa-truth-timeline__text {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-soft);
+}
+@keyframes dawaTruthTimelinePulse {
+  0%, 100% { box-shadow: 0 0 8px var(--accent-glow), 0 0 20px color-mix(in srgb, var(--accent) 30%, transparent); }
+  50% { box-shadow: 0 0 14px var(--accent-glow), 0 0 30px color-mix(in srgb, var(--accent) 42%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dawa-truth-timeline__dot.is-active { animation: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Let's Talk (hero-gradient-wrap style — same breakout + scroll expand)
+   ══════════════════════════════════════════════════════════════ */
+.dawa-truth-talk-wrap { margin: 0 auto; }
+.dawa-truth-talk-box {
+  background: linear-gradient(to top, var(--accent-soft), transparent 80%), var(--glass-bg, var(--surface));
+  border: 1px solid var(--glass-border, var(--border));
+  padding: clamp(36px, 7vw, 72px) clamp(24px, 6vw, 64px);
+}
+.dawa-truth-talk__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -20%, var(--accent-glow), transparent 60%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.dawa-truth-talk__inner { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; text-align: center; }
+.dawa-truth-talk__inner .dawa-section__title { text-align: center; }
+.dawa-truth-talk__form {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+.dawa-truth-talk__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.dawa-truth-field { display: flex; flex-direction: column; gap: 8px; }
+.dawa-truth-field > span { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+.dawa-truth-field input,
+.dawa-truth-field textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border-soft, var(--border));
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+[data-theme='light'] .dawa-truth-field input,
+[data-theme='light'] .dawa-truth-field textarea {
+  background: rgba(255, 255, 255, 0.45);
+}
+.dawa-truth-field input::placeholder,
+.dawa-truth-field textarea::placeholder { color: var(--text-dim); }
+.dawa-truth-field input:focus,
+.dawa-truth-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.dawa-truth-talk__form .dawa-btn { align-self: center; margin-top: 4px; }
+
+/* ══════════════════════════════════════════════════════════════
+   Learn-more popup — wide "article" layout (banner image column +
+   readable content column), transparent + blurry glass panel,
+   structured like the template's native <dialog> (header row +
+   scrollable body), just roomier for our much longer passages.
+   ══════════════════════════════════════════════════════════════ */
+/* `Modal` renders via createPortal(document.body), so the wrapping
+   `.dawa-truth-modal-scope` div in TruthPage never becomes a real DOM
+   ancestor of the panel — a descendant selector rooted there can never
+   match. Scope the overlay via :has() on the panel's own class instead,
+   and style the panel itself with the plain, unique `.dawa-truth-modal`
+   class (no ancestor requirement needed). */
+.dawa-modal:has(> .dawa-truth-modal) {
+  background: rgba(6, 8, 14, 0.55);
+  padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+}
+[data-theme='light'] .dawa-modal:has(> .dawa-truth-modal) {
+  background: rgba(30, 32, 40, 0.3);
+  backdrop-filter: blur(20px) saturate(1.15);
+  -webkit-backdrop-filter: blur(20px) saturate(1.15);
+}
+.dawa-truth-modal {
+  width: 90vw;
+  max-width: 900px;
+  height: min(86vh, 840px);
+  max-height: min(86vh, 840px);
+  padding: 0;
+  margin: auto;
+  border-radius: var(--radius);
+  background: rgba(22, 22, 26, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40px 110px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(34px) saturate(1.55);
+  -webkit-backdrop-filter: blur(34px) saturate(1.55);
+  overflow: hidden;
+  isolation: isolate;
+  animation: dawaTruthModalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme='light'] .dawa-truth-modal {
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 40px 110px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+/* Flexbox, not grid: guarantees both columns stretch to the panel's full,
+   explicit height with no ambiguity — this is what was getting "cut". */
+.dawa-truth-modal__layout {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+}
+.dawa-truth-modal__banner {
+  position: relative;
+  flex: 0 0 clamp(240px, 30vw, 380px);
+  min-height: 0;
+}
+.dawa-truth-modal__banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    color-mix(in srgb, rgb(22, 22, 26) 40%, transparent) 82%,
+    rgb(22, 22, 26) 100%
+  );
+  pointer-events: none;
+}
+[data-theme='light'] .dawa-truth-modal__banner::after {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    color-mix(in srgb, #fff 45%, transparent) 82%,
+    #fff 100%
+  );
+}
+.dawa-truth-modal__content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.dawa-truth-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(24px, 4vw, 34px) clamp(28px, 5vw, 44px) 18px;
+  flex-shrink: 0;
+}
+.dawa-truth-modal__kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.dawa-truth-modal__title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+}
+.dawa-truth-modal__close {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.dawa-truth-modal__close:hover { border-color: var(--accent); color: var(--accent-bright); background: var(--accent-soft); }
+.dawa-truth-modal__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px clamp(28px, 5vw, 44px) clamp(32px, 5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.dawa-truth-modal__body p {
+  color: var(--text-soft);
+  font-size: 15.5px;
+  line-height: 1.85;
+}
+.dawa-truth-modal__body p:first-child {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 500;
+}
+.dawa-truth-modal__body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+@keyframes dawaTruthModalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (max-width: 760px) {
+  .dawa-truth-modal {
+    width: 94vw;
+    height: min(90vh, 800px);
+    max-height: min(90vh, 800px);
+  }
+  .dawa-truth-modal__layout { flex-direction: column; }
+  .dawa-truth-modal__banner { flex: 0 0 140px; }
+  .dawa-truth-modal__banner::after {
+    background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, rgb(22, 22, 26) 55%, transparent) 82%, rgb(22, 22, 26) 100%);
+  }
+  [data-theme='light'] .dawa-truth-modal__banner::after {
+    background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, #fff 60%, transparent) 82%, #fff 100%);
+  }
+  .dawa-truth-modal__head { padding-top: 16px; }
+  .dawa-truth-modal__body { max-width: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Responsive — cocoon-template breakpoints (sm 640 / md 768 / lg 1024)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .dawa-truth-grid { grid-template-columns: repeat(2, 1fr); }
+  .dawa-truth-founder__grid { grid-template-columns: 1fr; text-align: center; }
+  .dawa-truth-founder__intro .dawa-section__title,
+  .dawa-truth-founder__intro .dawa-section__sub { text-align: center; }
+  .dawa-truth-founder__card { max-width: 420px; margin: 0 auto; }
+}
+@media (max-width: 860px) {
+  .dawa-truth-hero { padding-top: 116px; }
+}
+@media (max-width: 720px) {
+  .dawa-truth-grid { grid-template-columns: 1fr; padding: 0 20px; }
+  .dawa-truth-feature-box { min-height: 320px; align-items: flex-end; }
+  .dawa-truth-feature-content { max-width: 100%; }
+}
+@media (max-width: 560px) {
+  .dawa-truth-talk__row { grid-template-columns: 1fr; }
+  .dawa-truth-gradient-wrap { padding: 0 16px; }
+  .dawa-truth-modal { width: calc(100% - 1.5rem); }
+  .dawa-truth-modal__banner { flex-basis: 110px; }
+  .dawa-truth-modal__head,
+  .dawa-truth-modal__body { padding-left: 20px; padding-right: 20px; }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .dawa-truth-rings__a,
+  .dawa-truth-rings__b { animation: none; }
+  .dawa-truth-modal { animation: none; }
+}
