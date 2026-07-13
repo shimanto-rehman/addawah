@@ -107,6 +107,10 @@
   position: relative;
   overflow: hidden;
 }
+.dawa-section--cta .dawa-hero__actions {
+  justify-content: center;
+  margin-top: 8px;
+}
 .dawa-section--cta::before {
   content: '';
   position: absolute;

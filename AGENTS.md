@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-Addawah (a.k.a. "Dawa") is a free Islamic web platform — **salah tracking, accountability, daily inspiration, spiritual check-ins (Ruhaniah), and community**. Built per `ADDAWAH_BRD.md` (v4.23). Tagline: *"Pray Together. Grow Together. Inspire Each Other."*
+Addawah (a.k.a. "Dawa") is a free Islamic web platform — **salah tracking, accountability, daily inspiration, spiritual check-ins (Ruhaniah), Truth reflections, and community**. Built per `ADDAWAH_BRD.md` (v4.27). Tagline: *"Pray Together. Grow Together. Inspire Each Other."*
 
 **Stack:** Next.js 14 (App Router) · React 18 · TypeScript (strict) · Prisma + PostgreSQL (Neon) · SWR · Zod · Framer Motion · Chart.js · bcryptjs · jose (JWT) · Pino · Resend · Vercel Blob · TanStack Virtual · Vitest.
 

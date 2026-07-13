@@ -2,16 +2,44 @@
 
 **Pray Together. Grow Together. Inspire Each Other.**
 
-Free Islamic web platform for salah tracking, accountability, daily inspiration, spiritual growth, and community support — built per the ADDAWAH BRD v4.23.
+Free Islamic web platform for salah tracking, accountability, daily inspiration, spiritual growth, and community support — built per the ADDAWAH BRD v4.27.
+
+## Screenshots
+
+Screenshots live in [`public/assets/images/readme/`](public/assets/images/readme/).
+
+### Landing & auth
+
+| Landing | Sign in | Register |
+|:---:|:---:|:---:|
+| ![Landing page](public/assets/images/readme/Landing%20Page.png) | ![Sign in](public/assets/images/readme/Signin.png) | ![Register](public/assets/images/readme/Register.png) |
+
+### App
+
+| Dashboard | Believers (Ummah) | Analytics |
+|:---:|:---:|:---:|
+| ![Dashboard](public/assets/images/readme/Dashboard.png) | ![Believers](public/assets/images/readme/Believers.png) | ![Analytics](public/assets/images/readme/Analytics.png) |
+
+| Ruhaniah | Calendar | Settings |
+|:---:|:---:|:---:|
+| ![Ruhaniah](public/assets/images/readme/Ruhaniah.png) | ![Calendar](public/assets/images/readme/Calender.png) | ![Settings](public/assets/images/readme/Settings.png) |
+
+### Handbook
+
+![Handbook](public/assets/images/readme/Handbook.png)
 
 ## Features
 
 ### Core
-- Public landing page with mission, tutorial video & people feedback
+- Public landing page with mission, feature grid, people feedback & developer credit
+- **Truth page** (`/truth`) — reflections where science, philosophy, and revelation meet; guests see landing chrome + video; signed-in users stay in the app shell (same URL, middleware rewrite)
+- **Let's talk** on Truth — validated name/email + message form emails the founder (Resend/SMTP, rate-limited)
 - **Handbook page** — PDF reader with thumbnail preview, fullscreen viewer, and download
-- Authentication (email + password sessions)
+- Authentication (email/username/mobile + password sessions)
 - Password reset via OTP (email-based)
 - Account deletion with OTP verification
+- Desktop nav: Home, Ruhaniah, Ummah, Analytics, Calendar, **Truth** (Settings lives in the account menu)
+- Mobile tab bar: Home, Ruhaniah, Ummah, Analytics, Calendar (Truth + Settings in account menu)
 - Weekly Salah tracker with ornate arch frame background
 - Hero statistics card (today, week, streak, lifetime, sunnah prayed, perfect days)
 - Hijri calendar display
@@ -26,7 +54,9 @@ Free Islamic web platform for salah tracking, accountability, daily inspiration,
 
 ### Salah Tracking
 - 5 prayers × 7 days with Fard, Sunnah before, Sunnah after
-- On-time vs kaza vs missed classification
+- On-time vs kaza vs missed classification (prayer-timezone aware)
+- **Sticky on-time** — `completedOnTime` locks once a fard is marked inside its wakt; uncheck/remark later never downgrades it to kaza
+- First mark **outside** wakt still counts as kaza
 - Iman meter calculation (on-time boost, kaza/missed lower)
 - Prayer time awareness (prevents marking before wakt starts)
 - Missed fard bead visualization (33 beads)
@@ -83,8 +113,8 @@ Free Islamic web platform for salah tracking, accountability, daily inspiration,
 - Deduplication via `dedupeKey`
 
 ### UX Polish
-- **Shimmer/Skeleton Loading** — smooth loading placeholders across all data-fetching components
-- Consistent gradient animation system with `prefers-reduced-motion` support
+- **Shimmer/Skeleton Loading** — smooth loading placeholders across data-fetching components (Truth skips the generic dashboard auth shimmer)
+- Consistent gradient / scroll-expand animation system with `prefers-reduced-motion` support
 - Loading states for: stats, charts, notifications, connections, profiles, search results
 - App preloader animation on first visit
 - Wakt countdown clock in header
@@ -101,7 +131,7 @@ Free Islamic web platform for salah tracking, accountability, daily inspiration,
 - SWR for data fetching
 - Zod for validation
 - Pino for logging
-- Resend for transactional email
+- Resend for transactional email (OTP, welcome, Truth contact)
 - Vercel Blob for avatar storage
 - TanStack Virtual for virtualized lists
 
@@ -121,6 +151,8 @@ Copy `.env.example` to `.env` and set:
 DATABASE_URL="postgresql://..."
 AUTH_SECRET="your-long-random-secret"
 ```
+
+Optional: `RESEND_API_KEY` (or SMTP_*) for password-reset OTP, welcome mail, and Truth “Let's talk” messages.
 
 For local dev, [Neon](https://neon.tech) free tier works well.
 
@@ -157,15 +189,18 @@ app/
     calendar/         # Islamic Hijri calendar + sunnah checklist
     notifications/    # Notification panel
     settings/         # Themes + account deletion
+    in/truth/         # Signed-in Truth shell (URL remains /truth via rewrite)
     u/[username]/     # Public user profile
   (public)/           # Unauthenticated pages
     page.tsx          # Landing page
     login/            # Auth page
+    truth/            # Public Truth (landing video + PublicNav)
     handbook/         # Handbook PDF reader page
     reset-password/   # Password reset flow
   api/                # REST endpoints
     auth/             # Login, register, logout, me, reset-password, check-availability
     salah/            # Salah record CRUD
+    truth/contact/    # Truth “Let's talk” inbound email
     stats/            # Dashboard stats
     dashboard/        # Dashboard aggregated data
     analytics/        # Analytics summary
@@ -190,8 +225,8 @@ components/
   analytics/          # AnalyticsHub, AnalyticsChartsGrid
   friends/            # FriendsHub, WaktBoardVirtual, UsernameSearch, ManageConnections, PublicUserProfile
   landing/            # LandingPage, PeopleFeedback, DeveloperCredit, PublicShell, LandingBackdrop
-  ruhaniah/           # RuhaniahFlow, TaqwaPulse, FahmTest, BarakahMeter, DuaLog, Insights,
-                      # RuhaniahVerse, SpiritualWeakness, FahmRadar, TaqwaTrend, BarakahTrend, DuaTimeline
+  truth/              # TruthPage, TruthTalkForm, GradientWrap, TruthImage, truthContent
+  ruhaniah/           # RuhaniahFlow, TaqwaPulse, FahmTest, BarakahMeter, DuaLog, Insights, …
   notifications/      # NotificationPanel, useNotifications
   profile/            # UserAvatar, ProfilePrayerCharts, ProfilePrivacyMatrix
   layout/             # AppHeader, PageHeader, WaktCountdownClock, NotificationBell, LiveClock, UserMenu
@@ -202,12 +237,12 @@ components/
   seo/                # JsonLd
   location/           # LocationPicker, LocationPrompt
   settings/           # DeleteAccountSection
-lib/                  # Auth, prisma, salah utils, ruhaniah logic, islamic calendar, chart theme, wakt snapshot, rewards
+lib/                  # Auth, prisma, salah utils, ruhaniah logic, islamic calendar, email, rewards, …
 assets/css/           # BEM stylesheets (dawa-*.css) — hand-written, custom-property themed
 prisma/               # Database schema
 public/
-  data/               # ayah-pool.json (300 verses), fahm-questions.json (320 questions)
-  assets/             # Images, PDFs, videos, icons
+  data/               # ayah-pool.json, fahm-questions.json, islamic-events.json
+  assets/             # Images (incl. truth passages), PDFs, videos, icons
   fonts/              # Islamic fonts (Amiri, Cormorant Garamond, DM Sans)
   uploads/            # User avatar uploads (gitignored runtime data, auto-created)
 ```
@@ -219,6 +254,8 @@ public/
 | `public/data/ayah-pool.json` | 300 Quran verses | Verse selection engine for Ruhaniah |
 | `public/data/fahm-questions.json` | 320 questions | Fahm psychometric test (40 per category × 8) |
 | `public/data/islamic-events.json` | 19 Islamic events | Hijri calendar events with sunnah actions & Quran refs |
+| `public/assets/images/truth/` | Passage art + founder image | Truth page media |
+| `public/assets/images/readme/` | Product screenshots | README / BRD gallery |
 | `docs/FAHM_QUESTION_BANK.md` | Human-readable question bank | Reference for Fahm test categories & scoring |
 
 ## Verse Selection Engine
@@ -242,7 +279,7 @@ Verses are scored against tags (primary +3, secondary +1) and the best match is 
 |-------|---------|
 | `User` | User account with profile, theme, coins, privacy |
 | `Session` | JWT session tokens |
-| `SalahRecord` | Individual prayer records (Fard/Sunnah, on-time/kaza) |
+| `SalahRecord` | Prayer records; sticky `completedOnTime` + optional `inJamat` |
 | `UserSalahDayStat` | Precomputed daily stats for fast analytics |
 | `UserWaktSnapshot` | Precomputed live wakt status for friends board |
 | `Friendship` | Friend connections (pending/accepted) |

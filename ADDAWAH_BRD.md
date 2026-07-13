@@ -1,6 +1,6 @@
 # DAWA — Business Requirements Document (BRD)
 
-## Version 4.23
+## Version 4.27
 
 **Tagline:** Pray Together. Grow Together. Inspire Each Other.
 
@@ -14,8 +14,33 @@ Dawa is a free Islamic web platform focused on:
 - Habit Building
 - Worship Analytics
 - Spiritual Growth (Ruhaniah)
+- Public reflections (**Truth**) & Handbook
 
 The MVP runs entirely on free-tier infrastructure.
+
+## Product Screenshots
+
+Reference UI captures stored in `public/assets/images/readme/`.
+
+### Landing & authentication
+
+| Landing | Sign in | Register |
+|:---:|:---:|:---:|
+| ![Landing page](public/assets/images/readme/Landing%20Page.png) | ![Sign in](public/assets/images/readme/Signin.png) | ![Register](public/assets/images/readme/Register.png) |
+
+### Authenticated product surfaces
+
+| Dashboard | Believers (Ummah) | Analytics |
+|:---:|:---:|:---:|
+| ![Dashboard](public/assets/images/readme/Dashboard.png) | ![Believers](public/assets/images/readme/Believers.png) | ![Analytics](public/assets/images/readme/Analytics.png) |
+
+| Ruhaniah | Calendar | Settings |
+|:---:|:---:|:---:|
+| ![Ruhaniah](public/assets/images/readme/Ruhaniah.png) | ![Calendar](public/assets/images/readme/Calender.png) | ![Settings](public/assets/images/readme/Settings.png) |
+
+### Handbook
+
+![Handbook PDF reader](public/assets/images/readme/Handbook.png)
 
 ## Recommended Free Stack
 
@@ -26,7 +51,7 @@ The MVP runs entirely on free-tier infrastructure.
 - **Database:** Neon PostgreSQL (Free)
 - **Authentication:** Session auth (JWT cookie)
 - **Storage:** Vercel Blob (Free) — avatar uploads
-- **Email:** Resend Free — OTP & transactional
+- **Email:** Resend Free — OTP, transactional, and Truth contact form
 - **Hosting:** Vercel
 - **Charts:** Chart.js (react-chartjs-2)
 - **Data Fetching:** SWR
@@ -37,7 +62,7 @@ The MVP runs entirely on free-tier infrastructure.
 ## Core Features
 
 ### 1. Authentication & Profile
-- Email + password registration and login
+- Email + password registration and login (also username / mobile sign-in)
 - Session-based auth with JWT cookies
 - User profile with avatar, bio, location (city/country)
 - Profile privacy controls (what others can see)
@@ -50,17 +75,22 @@ The MVP runs entirely on free-tier infrastructure.
 ### 2. Salah Tracking
 - Weekly salah tracker with 5 prayers × 7 days
 - Fard, Sunnah before, Sunnah after tracking
-- On-time vs kaza vs missed classification
+- On-time vs kaza vs missed classification (evaluated in the user's **prayer timezone**)
+- **Sticky on-time (`completedOnTime`):**
+  - Set when a fard prayer is first marked **inside** its wakt window
+  - Survives uncheck and later re-mark (even outside the wakt) — never demoted to kaza
+  - A prayer that was **never** marked inside the wakt remains kaza when marked late
 - Iman meter calculation (on-time prayers boost, kaza/missed lower)
 - Prayer time awareness (prevents marking before wakt starts)
 - Celebration confetti on completion
 - Missed fard bead visualization (33 beads)
 - Precomputed per-day stats (`UserSalahDayStat`) for fast reads
 - Optimistic UI updates with cache invalidation
+- Salah POST may return `timing: 'on-time' | 'kaza'` for fard marks
 
 ### 3. Dashboard & Statistics
 - Hero statistics card (today, week, streak, lifetime, sunnah prayed, perfect days)
-- Missed fard count with bead visualization
+- Missed fard count with bead visualization (capped breakdown preview)
 - Progress bar with lifetime completion rate
 - Hijri calendar display
 - Daily Islamic inspiration quotes
@@ -77,6 +107,7 @@ The MVP runs entirely on free-tier infrastructure.
 - On-time bar chart (weekly)
 - Mood history tracking
 - Personal coaching tips
+- Daily Challenge integration (rotating deeds + week chart)
 
 ### 5. Friends & Brotherhood
 - Friend system with connection requests
@@ -88,7 +119,6 @@ The MVP runs entirely on free-tier infrastructure.
 - Gentle reminder (poke) system with cooldown
 - Gold coin economy for wakt salah and dawah
 - Badge tiers (Seedling → Scholar) based on coin balance
-- Friend suggestions
 - Username search with availability checking
 - Public user profiles with prayer charts & insights
 
@@ -137,28 +167,47 @@ Gathers spiritual signals from 8 sources → converts to semantic tags → score
 7. Mood — `anxious`, `grateful`, `sad`
 8. Prayer streak — `strong_streak`, `relapse`, `needs_hope`
 
-### 8. Theming & UX
+### 8. Truth (Public Reflections)
+Passages and stories connecting science, philosophy, and revelation.
+
+#### Content
+- Expandable passage cards + full-bleed feature rows (scroll-expand gradient wraps)
+- Salah story timeline (five postures)
+- Founder / “the one behind it” section
+- **Let's talk** contact form — validated name (letters only, no digits) + email (format tick) + message; sends inbound email to the founder inbox via Resend/SMTP; Reply-To = submitter; rate-limited
+
+#### Dual shell (same URL `/truth`)
+- **Guest:** public layout — landing video backdrop + PublicNav
+- **Signed-in:** middleware rewrite to app shell — AppHeader / Islamic backdrop (no landing video); session preserved
+- Desktop app nav includes Truth; Settings remain in the account menu; mobile shows Truth in the account menu (not the tab bar)
+
+### 9. Handbook
+- Public PDF handbook reader with thumbnail preview, fullscreen viewer, and download
+
+### 10. Theming & UX
 - 6 theme colors (Green, Blue, Gold, Purple, Silver, Pink)
 - Dark & Light modes
 - Framer Motion animations throughout
-- Shimmer/skeleton loading states for all data-fetching components
+- Shimmer/skeleton loading states for data-fetching components
+- Truth route skips the generic dashboard auth shimmer
 - App preloader animation on first visit
 - Responsive design (mobile-first)
 - Accessibility: `prefers-reduced-motion` support, ARIA labels, screen reader text
 
-### 9. SEO & Metadata
+### 11. SEO & Metadata
 - JSON-LD structured data
 - Dynamic sitemap
 - Robots.txt
 - Open Graph metadata
 - PWA manifest
 
-### 10. Settings
+### 12. Settings
 - Theme selection
 - Account deletion (with OTP verification)
 - Profile privacy matrix
+- Reachable from the account menu (desktop + mobile)
 
-### 11. Islamic Calendar (Hijri)
+### 13. Islamic Calendar (Hijri)
 - Month grid view: Gregorian calendar with Hijri date annotations and event significance indicators
 - Today's events: automatic detection of special Islamic days (Jumu'ah weekly, Hijri New Year, Ashura, Mawlid, Isra/Mi'raj, Ramadan, Eid al-Fitr, Eid al-Adha, Day of Arafah, Days of Tashriq, Laylat al-Qadr, etc.)
 - Sunnah checklist: per-event action items (fasting, prayer, charity, reflection) with gold coin rewards (5–15 coins per action)
@@ -170,6 +219,13 @@ Gathers spiritual signals from 8 sources → converts to semantic tags → score
 - Bitmap mask storage (`CalendarTaskCompletion`) — one row per user per day, consistent with DailyChallenge pattern
 - Mobile navigation: calendar replaces notifications in bottom tab bar; notifications moved to avatar menu
 
+### 14. Navigation (App Shell)
+| Surface | Items |
+|---------|--------|
+| Desktop header | Home, Ruhaniah, Ummah, Analytics, Calendar, Truth |
+| Mobile tab bar | Home, Ruhaniah, Ummah, Analytics, Calendar |
+| Account menu | Profile, Settings, Truth (mobile), Analytics, Notifications, Sign out |
+
 ## Data Files
 
 | File | Content | Purpose |
@@ -177,6 +233,8 @@ Gathers spiritual signals from 8 sources → converts to semantic tags → score
 | `public/data/ayah-pool.json` | 300 Quran verses | Verse selection for Ruhaniah |
 | `public/data/fahm-questions.json` | 320 questions | Fahm psychometric test |
 | `public/data/islamic-events.json` | 19 Islamic events | Hijri calendar events with sunnah actions, rewards & Quran refs |
+| `public/assets/images/truth/` | Passage & founder imagery | Truth page media |
+| `public/assets/images/readme/` | Product screenshots | README / BRD gallery |
 | `docs/FAHM_QUESTION_BANK.md` | Human-readable question bank | Reference for categories & scoring |
 
 ## Verse Pool Coverage (30 Tags)
@@ -208,7 +266,7 @@ Each verse has:
 |-------|---------|
 | `User` | Account with profile, theme, coins, privacy |
 | `Session` | JWT session tokens |
-| `SalahRecord` | Individual prayer records (Fard/Sunnah, on-time/kaza) |
+| `SalahRecord` | Prayer records (Fard/Sunnah); sticky `completedOnTime`; optional `inJamat` |
 | `UserSalahDayStat` | Precomputed daily stats for fast analytics |
 | `UserWaktSnapshot` | Precomputed live wakt status for friends board |
 
@@ -255,7 +313,7 @@ All data-fetching components use skeleton placeholders while loading:
 | FriendsHub | Hero section, friends list |
 | PublicUserProfile | Profile card, stat grid |
 | UsernameSearch | Search result rows |
-| AppLayoutClient | Full page skeleton |
+| AppLayoutClient | Full page skeleton (skipped on `/truth`) |
 
 ## Performance Optimizations
 
@@ -266,6 +324,7 @@ All data-fetching components use skeleton placeholders while loading:
 - SWR cache invalidation on mutations
 - Virtualized lists for large friend lists (TanStack Virtual)
 - Batched friend queries with pagination (cursor-based)
+- Truth scroll-expand: shared rAF registry for GradientWrap instances
 
 ## Long-term Vision
 
@@ -276,3 +335,4 @@ All data-fetching components use skeleton placeholders while loading:
 - Zakat calculator
 - Study groups
 - AI-powered Islamic assistant with references
+- More Truth passages over time (copy never hardcodes a fixed passage count)

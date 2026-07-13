@@ -7,14 +7,16 @@ import { DeveloperCredit } from '@/components/landing/DeveloperCredit';
 import { SITE_TAGLINE } from '@/lib/constants';
 
 const FEATURES = [
-  { icon: '🕌', title: 'Salah Tracker', desc: 'A weekly mihrab-style tracker framed by an ornate golden arch — mark all five prayers with one tap.' },
+  { icon: '🕌', title: 'Salah Tracker', desc: 'A weekly mihrab-style tracker framed by an ornate golden arch — mark all five prayers with one tap. On-time locks in for the day once you pray in wakt.' },
   { icon: '🤝', title: 'Brotherhood', desc: 'Connect with friends and send gentle reminders rooted in mercy, not judgment.' },
+  { icon: '📖', title: 'Truth', desc: 'Reflections where science, philosophy, and revelation meet — open passages, a salah story, and a space to share your thoughts.' },
   { icon: '📿', title: 'Daily Wisdom', desc: 'Begin each day with Qur\'anic verses and prophetic traditions to nourish the soul.' },
-  { icon: '🌙', title: 'Hijri Calendar', desc: 'Live in both worlds — Gregorian dates alongside the Islamic lunar calendar.' },
+  { icon: '🌙', title: 'Hijri Calendar', desc: 'Live in both worlds — Gregorian dates alongside the Islamic lunar calendar, with sunnah checklists for sacred days.' },
   { icon: '📊', title: 'Worship Analytics', desc: 'See your consistency grow through beautiful lifetime charts and prayer breakdowns.' },
   { icon: '✨', title: 'Ruhaniah Check-in', desc: 'A nightly spiritual pulse — Taqwa, Fahm, Barakah, and Duas matched to a Quranic verse for your state.' },
   { icon: '📈', title: 'Iman Meter', desc: 'A living faith index that rises with on-time prayers and heals with every sincere return.' },
   { icon: '🎯', title: 'Daily Challenge', desc: 'Rotating deeds with gold-coin rewards — small consistent actions that compound into lasting habit.' },
+  { icon: '📘', title: 'Handbook', desc: 'Read the Addawah handbook in-browser — preview, fullscreen, and download when you are ready.' },
   { icon: '🎨', title: 'Six Sacred Palettes', desc: 'Gold, Emerald, Sapphire, Amethyst, Silver, and Rose — each in dark or light mode.' },
 ];
 
@@ -32,10 +34,10 @@ export function LandingPage() {
                 Pray <em>Together.</em><br />
                 Grow <em>Together.</em>
               </h1>
-              <p className="dawa-hero__desc">{SITE_TAGLINE} A sanctuary for salah, accountability, and spiritual growth — crafted for the ummah.</p>
+              <p className="dawa-hero__desc">{SITE_TAGLINE} A sanctuary for salah, accountability, Truth, and spiritual growth — crafted for the ummah.</p>
               <div className="dawa-hero__actions">
                 <Link href="/login" className="dawa-btn dawa-btn--primary">Start Your Journey</Link>
-                <a href="#features" className="dawa-btn dawa-btn--outline">Explore Features</a>
+                <Link href="/truth" className="dawa-btn dawa-btn--outline">Read Truth</Link>
               </div>
             </div>
             <div className="dawa-hero__visual">
@@ -62,8 +64,13 @@ export function LandingPage() {
 
         <section className="dawa-section dawa-section--cta" id="journey" aria-labelledby="journey-heading">
           <h2 className="dawa-section__title" id="journey-heading">Your journey begins with one prayer</h2>
-          <p className="dawa-section__sub dawa-section__sub--center">Free forever. No ads. No limits. For the sake of Allah.</p>
-          <Link href="/login" className="dawa-btn dawa-btn--primary">Create Free Account</Link>
+          <p className="dawa-section__sub dawa-section__sub--center">
+            Free forever. No ads. No limits. For the sake of Allah — track salah, grow with Ruhaniah, and explore Truth.
+          </p>
+          <div className="dawa-hero__actions">
+            <Link href="/login" className="dawa-btn dawa-btn--primary">Create Free Account</Link>
+            <a href="#features" className="dawa-btn dawa-btn--outline">Explore Features</a>
+          </div>
         </section>
 
         <PeopleFeedback />
