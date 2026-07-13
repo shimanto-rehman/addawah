@@ -33,12 +33,25 @@ export function sanitizeName(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ');
 }
 
+/** Letter heuristic that works without Unicode property regex (ES5/TS-safe). */
+function isLetterChar(ch: string): boolean {
+  return ch.toLowerCase() !== ch.toUpperCase();
+}
+
+function isAllowedNameChar(ch: string): boolean {
+  return isLetterChar(ch) || ch === ' ' || ch === "'" || ch === '.' || ch === '-';
+}
+
 /**
- * Live name input: letters (incl. Unicode), spaces, hyphens, apostrophes, periods.
+ * Live name input: letters (incl. common Unicode scripts), spaces, hyphens, apostrophes, periods.
  * Digits and other symbols are stripped as the user types.
  */
 export function sanitizeNameInput(raw: string): string {
-  return raw.replace(/[^\p{L}\s'.-]/gu, '').replace(/\s{2,}/g, ' ');
+  let out = '';
+  for (const ch of raw) {
+    if (isAllowedNameChar(ch)) out += ch;
+  }
+  return out.replace(/\s{2,}/g, ' ');
 }
 
 /** True when name is 2–80 chars, has a letter, and no digits. */
@@ -46,6 +59,15 @@ export function isValidName(name: string): boolean {
   const n = sanitizeName(name);
   if (n.length < 2 || n.length > 80) return false;
   if (/\d/.test(n)) return false;
-  if (!/\p{L}/u.test(n)) return false;
-  return /^[\p{L}\s'.-]+$/u.test(n);
+
+  let hasLetter = false;
+  for (const ch of n) {
+    if (isLetterChar(ch)) {
+      hasLetter = true;
+      continue;
+    }
+    if (ch === ' ' || ch === "'" || ch === '.' || ch === '-') continue;
+    return false;
+  }
+  return hasLetter;
 }
