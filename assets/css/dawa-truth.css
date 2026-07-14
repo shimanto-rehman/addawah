@@ -710,6 +710,21 @@
   font-size: 17px;
   font-weight: 500;
 }
+.dawa-truth-modal__figure {
+  margin: 12px 0 0;
+  padding-top: 8px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+.dawa-truth-modal__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
 .dawa-truth-modal__body::-webkit-scrollbar { display: none; width: 0; height: 0; }
 @keyframes dawaTruthModalIn {
   from { opacity: 0; transform: scale(0.96) translateY(8px); }

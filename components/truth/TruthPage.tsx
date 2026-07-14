@@ -291,9 +291,19 @@ export function TruthPage({ variant = 'public' }: { variant?: 'public' | 'app' }
                 </button>
               </div>
               <div className="dawa-truth-modal__body">
-                {active.body.map((para) => (
-                  <p key={para}>{para}</p>
+                {active.body.map((para, i) => (
+                  <p key={`${active.id}-${i}`}>{para}</p>
                 ))}
+                {active.modalFigure && (
+                  <figure className="dawa-truth-modal__figure">
+                    <img
+                      src={active.modalFigure.src}
+                      alt={active.modalFigure.alt ?? ''}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </figure>
+                )}
               </div>
             </div>
           </div>

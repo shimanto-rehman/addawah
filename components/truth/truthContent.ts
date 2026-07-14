@@ -23,6 +23,8 @@ export type Passage = {
    * animation as the hero. Everything else renders as a compact grid card.
    */
   feature?: boolean;
+  /** Optional illustration at the bottom of the passage body inside the Learn-more modal. */
+  modalFigure?: { src: string; alt?: string };
 };
 
 /**
@@ -79,6 +81,10 @@ export const PASSAGES: Passage[] = [
     preview:
       'Everything is made of subatomic particles — yet they do not exist in solid form. They exist as waves of possibility that cannot become anything until an observer looks. Reality may be far larger than what we can see or measure.',
     feature: true,
+    modalFigure: {
+      src: `${TRUTH_IMAGE_BASE}fig04.webp`,
+      alt: 'Illustration for The Observer and the Unseen',
+    },
     body: [
       'What is quantum physics? The science behind how the universe works at the smallest scales — the behavior of atoms, subatomic particles, and their interactions with matter and energy.',
       'Everything in this universe is made of subatomic particles, but they do not exist in solid form; they exist as waves of possibility. These waves cannot manifest into any outcome by themselves until an observer — like you and me — begins to observe. When we place attention, energy, or focus on them, they collapse into a solid particle or a desired reality. Think of your social feed: many ads exist, but the moment you click one, it becomes your experience. The quantum field holds endless possibilities; the moment you focus on change, your awareness aligns with certain possibilities, and the field guides you toward matching experiences.',
@@ -214,6 +220,38 @@ export const PASSAGES: Passage[] = [
       'Reasoning works on three axes: deductive, inductive, and abductive. Deductive reasoning does not exist in the physical world; abductive reasoning is nearly fiction. Inductive reasoning is what most confuse with logic. Five apples sit in a row — what comes next? If you say \u201can apple,\u201d that is induction. Because the earth has orbited the sun for a million years, we assume it always will. But repetition in your data does not guarantee repetition — that is the problem of induction, the great hole in logic.',
       "What is the point of this police? It only holds back possibilities and makes things sound reasonable. But does logic ever give you ideas? Has it produced inventions, or theories about the universe? Name one theory born of logic and not intuition — you can't. Logic corrects theories and makes them airtight, but it can never generate possibility.",
       'Intuition is how you connect to the entirety of reality — where the downloads come from, where ideas are born. Intuition is the possibility field. To capture reality, get ideas, and do something extraordinary, you must capture that intuition and add one thing: conviction. It will happen. The theory will be proven true. Possibility comes into you; add conviction. That is how it is done — not by logic.',
+    ],
+  },
+  {
+    id: 16,
+    kicker: 'Passage 16 · Science',
+    title: 'If the Qur\u2019an Was Written by a Man',
+    preview:
+      'For that to be true, you need one unlettered man in a desert 1,400 years ago to get everything right — across physics, astronomy, biology, geology, and history — without a single error. Habibi, you\u2019re tripping if you think this is coincidence.',
+    body: [
+      'What if the Quran was written by a man? For that to be true, you need one man in a desert 1,400 years ago to get everything right. At a time when people thought the Earth was at the center of the universe, he says the universe had a beginning. Centuries later, in 1965, Arno Penzias and Robert Wilson detect cosmic background radiation — proof the universe began from a single point. Boom, the Big Bang.',
+      'He says the universe is expanding. Einstein himself rejected that idea until 1929, when Edwin Hubble saw galaxies moving apart. And when he describes the sun, he calls it a lamp, a source of light and heat; the moon, he calls reflected light. He talks about stars collapsing and creating black holes. He mentions the relativity of time — how the angels travel in a day what would take us 50,000 years. That is exactly what happens when you approach the speed of light.',
+      'And that is just physics. Let\u2019s go biology. He says some plants are male and female — confirmed by Rudolf Camerarius in 1694. He says wind pollinates plants — proven by Thomas Andrew Knight in the late 1700s. He describes how the embryo forms in stages, from a clot to bones to flesh, before ultrasound was even a thing. And he says every living thing is made from water — confirmed by modern biology in the 19th and 20th centuries, when scientists established that all known life depends on water at a cellular level.',
+      'Okay, geology, habibi. He says mountains move; we thought they were still, until plate tectonics in the 20th century proved otherwise. He predicts a Roman war and says the Romans will lose and then win again — and names the exact location, the lowest point on earth, which turned out to be the Dead Sea, confirmed by modern satellite. After assassination attempts, wars, and exile, he does not die — not until this verse is revealed: \u201cToday, I have perfected your religion for you.\u201d',
+      'He could not read or write, yet somehow he picked only the right answers? Across physics, astronomy, biology, geology, and history — all in one book, all in the 7th century, all without a single error? Habibi, you\u2019re tripping if you think this is a coincidence. It is impossible that it was written by a man. This information is revealed by a divine power not bound by time or space. It is revealed by its Creator, Allah.',
+    ],
+  },
+  {
+    id: 17,
+    kicker: 'Passage 17 · Time',
+    title: 'The Greatest Lie Shayṭān Ever Told You',
+    preview:
+      'It is not that Allah does not exist — Shayṭān knows better; he spoke to Allah and saw the angels. His most dangerous whisper is a single word: \u201cLater.\u201d Repent later, pray later, change later — until a lifetime has quietly passed.',
+    feature: true,
+    body: [
+      'You know what the biggest lie Shayṭān tells us is? It is not that we should stop believing in Allah, or that Allah does not exist. It is the belief that you have more time — he tells you that you have more time, when in reality you don\u2019t.',
+      'He does not tell you that Allah isn\u2019t real, that Paradise isn\u2019t real, or that Hell isn\u2019t real. He does not waste his effort convincing you of that, because he knows the truth himself: he spoke to Allah, he saw the angels, he knows the reality of the Hereafter. So instead of making you deny Allah, he whispers something far more dangerous — \u201cLater.\u201d',
+      'You can repent later. Ask forgiveness later. Pray consistently later. Wear the hijab later. Leave that sin later. Memorize the Qur\u2019an later. Become serious about Islam later. One more day. One more week. One more Ramadan. One more year. That is his trap.',
+      'Allah swears by time itself — a sign of its immense importance: \u201cBy Time. Indeed, mankind is surely in loss.\u201d (Sūrah Al-\u02bbAṣr 103:1\u20132) — and immediately tells us that every human being is in loss unless they live by the guidance that follows. Every second that passes is one we can never recover. Our wealth may return, our health may return, our opportunities may return — but time never returns.',
+      'The Prophet ﷺ said: \u201cTake advantage of five before five: your youth before your old age, your health before your sickness, your wealth before your poverty, your free time before your busyness, and your life before your death.\u201d (Mustadrak al-Ḥākim). Just as a spider quietly builds its web strand by strand, Shayṭān does not destroy a believer all at once — he traps people little by little. One delay becomes another. One missed prayer becomes two. One postponed repentance becomes years. Until suddenly, a lifetime has passed.',
+      'Allah warns: \u201cAnd spend from what We have provided you before death comes to one of you, and he says, \u2018My Lord, if only You would delay me for a brief term so I would give charity and be among the righteous.\u2019 But Allah will never delay a soul when its appointed time has come.\u201d (Sūrah Al-Munāfiqūn 63:10\u201311). And: \u201cEvery soul shall taste death.\u201d (Sūrah Āl \u02bbImrān 3:185). Death has never missed its appointment — young or old, healthy or sick, rich or poor. No one knows when their final prayer, final breath, or final chance will be.',
+      'Allah also reminds us: \u201cNo soul knows what it will earn tomorrow, and no soul knows in what land it will die.\u201d (Sūrah Luqmān 31:34). You have plans for tomorrow, but you are not even promised today. Tomorrow is a promise you made to yourself — it is not a promise Allah made to you.',
+      'So do not wait to return to Allah. Repent today. Pray today. Read Qur\u2019an today. Give charity today. Seek forgiveness today. Because one day there will be a \u201clater\u201d — but it will not be for repentance. It will be for accountability.',
     ],
   },
 ];
