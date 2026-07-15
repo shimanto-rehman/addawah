@@ -1,8 +1,10 @@
 # Addawah — Flutter Mobile App BRD & Technical Conversion Guide
 
-> Version 1.3 · Target: pixel-faithful native mobile port of the **authenticated mobile web shell** (Next.js) using **Flutter**, backed by the **existing Next.js REST API** as a headless backend.
+> Version 1.4 · Target: pixel-faithful native mobile port of the **authenticated mobile web shell** (Next.js) using **Flutter**, backed by the **existing Next.js REST API** as a headless backend.
 >
 > **v1.3 corrects the porting contract:** §37 records the remaining source, asset, visual-QA, behavior, and backend requirements that must be completed before this becomes a self-contained carbon-copy package. The 23 verbatim stylesheets live in `docs/flutter-qa/reference-css/`.
+>
+> **v1.4 inlines the previously external textual pieces** so the behavior no longer needs to be reverse-engineered from `.tsx`: §38 gives the exact font-family/weight map (from `fonts.css`), §39 ports every §37.2 interaction as language-neutral algorithms (from the real components), and §40 is the file-attachment manifest for assembling a one-shot carbon-copy prompt. Binary assets, the 23 CSS files, and golden screenshots still ship as attachments (§40) — they cannot live inside this Markdown.
 >
 > Tagline: *Pray Together. Grow Together. Inspire Each Other.*
 
@@ -1349,9 +1351,11 @@ This section is intentionally explicit: **the BRD plus the copied CSS are a high
 | Missing | Provide the same font binaries in Flutter-compatible form and verify text metrics against the web. | `fonts.css` references 11 unavailable `/fonts/*.woff2` files: Amiri 400/700 Arabic+Latin, Cormorant Garamond 500/600/700, DM Sans 400/500/600/700. Use matching TTF/OTF assets or verified Google Fonts equivalents. |
 | Missing | Add or deliberately replace missing brand/auth images. | `Logo.webp`, `Gate.webp`, and `shimanto.jpg` are referenced but absent. `Gate.webp` is only for the auth aside; the Salah arch is `tracker-card.svg`. |
 | Missing | Implement a production native-auth path. | Add Bearer-token auth, token issuance, and CORS/OPTIONS as specified in §2 and §32. Cookie-jar auth is only a development/MVP bridge. |
-| Required | Port interaction behavior, not only CSS. | Use the source map in §37.2; CSS has no modal state, optimistic update, scroll behavior, countdown, chart rendering, or portal logic. |
+| Required | Port interaction behavior, not only CSS. | Use the source map in §37.2 and the **inlined algorithms in §39**; CSS has no modal state, optimistic update, scroll behavior, countdown, chart rendering, or portal logic. |
 
 ### 37.2 Behavior source map (port these TypeScript behaviors)
+
+> Each row's algorithm is now written out language-neutrally in **§39** — port from there and treat the listed source file as the tie-breaker if anything is ambiguous.
 
 | Flutter feature | Canonical web behavior source | Flutter parity requirement |
 |-----------------|-------------------------------|----------------------------|
@@ -1420,4 +1424,235 @@ Only mark the port complete when all are true:
 
 ---
 
-*End of Addawah Flutter Mobile App BRD v1.3 — exact layout specs, copied CSS, and explicit carbon-copy readiness requirements*
+## 38. Exact Font Mapping (from `assets/css/fonts.css`)
+
+The web ships **11 self-hosted `.woff2` files** under `/fonts/`, all `font-style: normal`, `font-display: swap`. Reproduce the exact family/weight set below. These binaries are **not** in the repo — either add the same weights as TTF/OTF Flutter assets, or use the pinned Google Fonts equivalents (same families, identical metrics).
+
+| Family | Weights shipped | Script coverage | Flutter usage |
+|--------|-----------------|-----------------|---------------|
+| **Amiri** (serif) | 400, 700 | Arabic **and** Latin subset per weight (two files each) | Arabic prayer names + ayah text (`dawa_text.dart` → `arabic`) |
+| **Cormorant Garamond** (serif) | 500, 600, 700 | Latin | Display headings + hero numbers (`display`) |
+| **DM Sans** (sans) | 400, 500, 600, 700 | Latin | Body + everything else (`body`, base 15px / line-height 1.65) |
+
+**Exact `@font-face` inventory (11 files):**
+```
+amiri-arabic-400-normal.woff2            Amiri / 400 / Arabic unicode-range
+amiri-latin-400-normal.woff2             Amiri / 400 / Latin unicode-range
+amiri-arabic-700-normal.woff2            Amiri / 700 / Arabic unicode-range
+amiri-latin-700-normal.woff2             Amiri / 700 / Latin unicode-range
+cormorant-garamond-latin-500-normal.woff2  Cormorant Garamond / 500
+cormorant-garamond-latin-600-normal.woff2  Cormorant Garamond / 600
+cormorant-garamond-latin-700-normal.woff2  Cormorant Garamond / 700
+dm-sans-latin-400-normal.woff2           DM Sans / 400
+dm-sans-latin-500-normal.woff2           DM Sans / 500
+dm-sans-latin-600-normal.woff2           DM Sans / 600
+dm-sans-latin-700-normal.woff2           DM Sans / 700
+```
+
+**`pubspec.yaml` (self-hosted route):**
+```yaml
+fonts:
+  - family: Amiri
+    fonts:
+      - { asset: assets/fonts/Amiri-Regular.ttf, weight: 400 }
+      - { asset: assets/fonts/Amiri-Bold.ttf,    weight: 700 }
+  - family: Cormorant Garamond
+    fonts:
+      - { asset: assets/fonts/CormorantGaramond-Medium.ttf,   weight: 500 }
+      - { asset: assets/fonts/CormorantGaramond-SemiBold.ttf, weight: 600 }
+      - { asset: assets/fonts/CormorantGaramond-Bold.ttf,     weight: 700 }
+  - family: DM Sans
+    fonts:
+      - { asset: assets/fonts/DMSans-Regular.ttf,  weight: 400 }
+      - { asset: assets/fonts/DMSans-Medium.ttf,   weight: 500 }
+      - { asset: assets/fonts/DMSans-SemiBold.ttf, weight: 600 }
+      - { asset: assets/fonts/DMSans-Bold.ttf,     weight: 700 }
+```
+
+**`google_fonts` route (no binaries):** `GoogleFonts.amiri`, `GoogleFonts.cormorantGaramond`, `GoogleFonts.dmSans`. Only load the weights above. `DM Sans` numbers use `fontFeatures: [FontFeature.tabularFigures()]` wherever the web uses `.dawa-num` / tabular-nums (clocks, hero stats, countdowns).
+
+---
+
+## 39. Ported Interaction Behavior (language-neutral algorithms)
+
+CSS defines none of the logic below. These are transcribed from the real web components (source file in each heading) so a Flutter/Dart implementation needs no reverse-engineering. Server owns all salah/iman math — these are **client feel only**.
+
+### 39.1 Wakt lock — can this cell be marked? (`lib/salah-mark-rules.ts`)
+
+```
+canMark(prayerDateKey, todayKey, prayer, prayerTimes, now):
+  if prayerDateKey > todayKey: return BLOCKED ("future")
+  if prayerDateKey < todayKey: return ALLOWED           # past days always editable
+  if prayerTimes missing/invalid: return BLOCKED         # today needs times to know wakt
+  mins = minutes-since-midnight of `now` in prayerTimes.timeZone   # NOT device tz
+  start = waktWindow(prayer, prayerTimes).start
+  return mins >= start ? ALLOWED : BLOCKED ("wakt-not-started")
+```
+- `todayKey` and `mins` are computed in the user's **prayer timezone**, never the device timezone (§10).
+- A locked fard button renders at opacity 0.35 and is non-interactive; tooltip = `"Wakt has not started yet"` on today, `"Future day"` on a future date.
+
+### 39.2 Salah tracker — desktop vs mobile branch + optimistic toggle (`components/dashboard/SalahTracker.tsx`)
+
+**Fard tap dispatch (the key mobile rule):**
+```
+onFardTap(dateKey, prayer):
+  if viewport width <= 960px:  open SalahMarkModal(dateKey, prayer, cell)   # mobile
+  else:                        toggle(FARD) immediately                      # desktop inline
+```
+Sunnah dots and the inline Jamat toggle always fire their mutation directly (no modal), on every breakpoint.
+
+**Single optimistic toggle (sunnah dots, desktop fard, jamat):**
+```
+toggle({dateKey, prayer, kind, unit=0, inJamat=false}):
+  if a toggle is already in flight: return          # single-flight guard (toggleBusyRef)
+  markingComplete = NOT current state of that unit
+  nextCell = clone(cell)
+  if kind == FARD:  nextCell.fard = markingComplete; nextCell.inJamat = markingComplete ? inJamat : false
+  elif SUNNAH_BEFORE: nextCell.sunnahBefore[unit] = markingComplete
+  else:               nextCell.sunnahAfter[unit]  = markingComplete
+
+  mutate(gridWith(nextCell), revalidate:false)      # 1. optimistic paint
+  try:
+    POST /api/salah { date, prayer, kind, unit, completed:markingComplete,
+                      inJamat: kind==FARD ? (markingComplete?inJamat:false) : false }
+    if !res.ok || !body.ok: throw body.error
+    if markingComplete && kind==FARD: fireCelebrationConfetti()   # confetti only on fard-complete
+    refetch GET /api/salah?week=... ; mutate(fresh, revalidate:false)   # 2. reconcile
+    patch dashboard cache in place (also copy body.stats when kind==FARD)
+  catch:
+    mutate(undefined, revalidate:true)              # 3. rollback → server truth
+    restore previous dashboard snapshot
+  finally: clear busy guard
+```
+
+**Modal batch confirm (mobile, `handleBatchConfirm`):** diff modal state vs original cell → array of `{kind, unit, completed, inJamat?}`; build one optimistic cell applying all; `POST /api/salah` for each update **in parallel** (`Promise.all`); refetch week once; on any failure rollback grid + dashboard and rethrow. Confetti fires inside the modal (§39.3) when any update completes.
+
+**Jamat toggle:** only allowed once `cell.fard` is true; posts `FARD, completed:true, inJamat:!current`. Inline jamat control is hidden ≤960px (mobile sets Jamat via the modal checkbox).
+
+**Week nav:** `‹`/`›` step ±7 days on the week-start key; the `›` (next) button is disabled once `weekStartKey >= currentWeekStartKey` (can't browse future weeks). Default `weekStartKey = rollingWeekStartKey(timeZone)`. Prayer-times SWR refreshes every 60s.
+
+### 39.3 Salah mark modal (`components/dashboard/SalahMarkModal.tsx`)
+
+- On open: seed local `sunnahBefore[] / sunnahAfter[] / fard / inJamat` from the passed `cell`; render nothing until seeded.
+- Layout zones: **Before** (sunnah beads) · **Fard** (single big bead) · **After** (sunnah beads), only rendering a zone when its slot count > 0. Bead counts from `SUNNAH_SLOTS[prayer]`; rakats from `FARD_RAKATS[prayer]` and `SUNNAH_UNIT_RAKATS` (2).
+- Meter dots at top = `totalUnits = before + 1 + after`; lit count = number currently checked (`doneCount`).
+- **Jamat checkbox appears only when `fard` is checked.** Label = `"Prayed in Jamat"` for `MALE`, `"Prayed in Awal Wakt"` for `FEMALE`.
+- Confirm button: disabled while busy; text `"Mark"` → `"Marking…"`. On confirm → call `onConfirm(diffUpdates)`; if any update `completed === true`, call `fireCelebrationConfetti()`; then close. Swallow errors (parent handles rollback).
+
+### 39.4 Celebration confetti (`lib/confetti.ts`)
+
+Dual symmetric burst from the two bottom corners (no-op if no confetti engine present):
+```
+burst A: particleCount 300, angle 60,  spread 100, startVelocity 90, origin (x:-0.1, y:1.1)
+burst B: particleCount 300, angle 120, spread 100, startVelocity 90, origin (x: 1.1, y:1.1)
+```
+Fires on: fard marked complete (tracker + modal), and other milestone events. Gate behind reduce-motion.
+
+### 39.5 User menu overlay (`components/layout/UserMenu.tsx`)
+
+- Panel is a **portal** (`position: fixed`), width `min(220, viewportW − 24)`, gap `10px` below the trigger, min `12px` viewport padding on every side.
+- Position from trigger bounds each open/scroll/resize:
+```
+left = clamp(triggerRight - width, PAD, viewportW - width - PAD)
+top  = triggerBottom + 10
+if top + panelHeight > viewportH - PAD:  top = triggerTop - panelHeight - 10   # flip above
+top  = clamp(top, PAD, viewportH - panelHeight - PAD)
+```
+- Recompute on: open, one `requestAnimationFrame` after open, panel resize (ResizeObserver), window `resize`, and window `scroll` (capture phase).
+- Dismiss on: outside `mousedown` (ignore clicks inside trigger or panel) and `Escape`.
+- Entrance/exit motion: `opacity 0→1`, `y -6→0`, `scale 0.98→1`, `0.18s`, ease `Cubic(0.22,1,0.36,1)`.
+- Items in order: Profile, Settings, **Truth (mobile-only)**, Analytics, Notifications, Sign out (danger styling). Selecting any item closes the menu first.
+
+### 39.6 Truth scroll-expand effect (`components/truth/useGradientExpand.ts`)
+
+A wrap grows from `baseMaxWidth` (1152) toward full viewport width while its inner box's border-radius shrinks from `baseRadius` (28) to 0, driven by scroll position:
+```
+elTop       = element top in document coords
+startScroll = max(0, elTop - viewportH)     # element just entering from below
+endScroll   = elTop                          # element reaches viewport top
+progress    = clamp((scrollY - startScroll) / (endScroll - startScroll), 0, 1)
+maxWidth    = baseMaxWidth + (viewportW - baseMaxWidth) * progress
+radius      = (1 - progress) * baseRadius
+```
+- Batch all reads before all writes each frame (one `requestAnimationFrame`) to avoid layout thrash.
+- **Disable entirely under reduce-motion** (leave element at its base width/radius).
+- In Flutter: drive `maxWidth`/`radius` from a scroll controller offset with the same formula.
+
+### 39.7 Ummah wakt board (`components/friends/WaktBoardVirtual.tsx`)
+
+- **Virtualized** list, fixed `ROW_HEIGHT = 76`, overscan 6. Header row: `Brother / Sister · Prayer · Status · Action`.
+- Loading (no rows yet) → 3 skeleton rows. Empty → `"Connect with friends to see live salah status here."`
+- **Per-row live countdown**, own 1s interval:
+  - phase `upcoming`: counts down to `waktStartedAt` (time until wakt starts).
+  - phase `active`: counts down to `waktEndsAt`.
+  - otherwise: static `remainingSeconds`.
+  - `remaining <= 5min` adds the danger style.
+- **Status cell precedence:** private → `"Private"`; prayed/on-time → `"✓ Prayed"`; passed/missed → `"Wakt passed"`; upcoming → countdown + `"until <label>"`; forbidden → countdown + `"Forbidden time"`; else active → countdown + `"left · ends <label>"`.
+- **Poke cell precedence:** `canPoke` → **Poke 🤲** button (disabled while that row's poke is in flight, shows `…`); else cooldown seconds remaining → `HH:MM:SS`; else forbidden+active+pending → `"Wait"`; else prayed → `"Prayed ✓"`; else `—`. Cooldown has its own 1s interval and fires `onCooldownEnd` when it hits 0.
+- **Board summary poll** (`useBoardSummaryPoll`): `GET /api/friends/board/summary` immediately + every 60s; if the returned `revision` changes from the last seen value, trigger a board refresh.
+- Countdown formatting = `formatCountdownHms` (`H:MM:SS` / `MM:SS`), tabular-nums.
+
+### 39.8 Analytics chart theme derivation (`lib/chart-theme.ts`)
+
+Charts read **live theme values** (Flutter: read from the active `DawaTokens`, not hardcoded):
+```
+accent      = --accent-bright   (fallback #e8c547)
+accentSoft  = --accent-soft     (fallback rgba(232,197,71,0.12))
+accentGlow  = --accent-glow     (fallback rgba(232,197,71,0.35))
+surface     = --surface-2       (fallback #121824)
+text        = --text-dim        (fallback #8a8070)   # axis labels
+grid        = rgba(128,128,128,0.14)                  # constant
+success     = --success         (#3ecf8e)
+warn        = #e8b923                                  # kaza (constant)
+danger      = --danger          (#e05252)
+categorical = [accent, #3ecf8e, #3b9eff, #9b7bf7, #f06bab]   # slot 0 tracks accent
+```
+`accentRgba(alpha)` builds `rgba(<accent rgb>, alpha)` for fills/gradients. Re-derive on theme/palette change so charts recolor instantly.
+
+### 39.9 Form validation (`lib/validation.ts`)
+
+- **Name** — live input strips anything that is not a letter (any script), space, `'`, `.`, `-`, and collapses runs of spaces. Valid when: 2–80 chars, contains ≥1 letter, no digits, only the allowed chars.
+- **Username** — sanitize to `[a-z0-9._]` (lowercased). Valid when: 3–30 chars, no consecutive `..`, matches `^[a-z0-9](?:[a-z0-9._]*[a-z0-9])?$` (can't start/end with `.`/`_`). Messages: too short/long, no consecutive periods, else "Letters, numbers, periods, and underscores only".
+- **Email** — trim + lowercase; validate with a standard email check.
+- Availability ticks (`check-availability`) are debounced 300–450ms (§27).
+
+---
+
+## 40. Carbon-Copy Prompt Bundle Manifest
+
+This Markdown is the **spec**; a true one-shot carbon-copy prompt must attach the files below (they are binary/large and cannot be embedded here). Attach the whole list alongside this `.md` and the model has everything.
+
+### 40.1 Attach for a complete build (present in this repo today)
+
+| Bundle | Path(s) | Why |
+|--------|---------|-----|
+| This BRD | `docs/FLUTTER_APP_BRD.md` | Spec + inlined behavior (§39) + tokens (§4) |
+| Pixel-truth CSS (23 files) | `docs/flutter-qa/reference-css/**` | Exact spacing/media-queries/shadows (§34–35) |
+| Static data JSON | `public/data/fahm-questions.json`, `ayah-pool.json`, `islamic-events.json`, `cities.json` | Bundle to `assets/data/` (§25) |
+| Salah tracker frame | `public/assets/images/tracker-card.svg` | Mihrab arch mask (§34.5) |
+| Coin / handbook art | `public/assets/images/gold.webp`, `thumbnail.webp` | GoldCoin + handbook |
+| Truth art | `public/assets/images/truth/01–17.webp`, `fig04.webp`, `founder.webp` | Passage grid + modal (§21.9) |
+| Truth copy | `components/truth/truthContent.ts` | Convert to `assets/data/truth-passages.json` (§25) |
+| Dart-constant sources | `lib/constants.ts` (`DAILY_INSPIRATIONS`, `PRAYERS`, `SUNNAH_SLOTS`), `lib/challenge-data.ts`, `lib/moods.ts`, `lib/rewards.ts` | Port to Dart constants (§25, §30, §36) |
+
+### 40.2 Must be produced/added before "carbon copy" is truthful (missing today)
+
+| Gap | Action | Ref |
+|-----|--------|-----|
+| **Golden screenshots** | Capture the 10 §33 states at 390×844 (loaded/empty/error/modal) → `docs/flutter-qa/screenshots/` | §33, §37.1 |
+| **Font binaries** | Add the 11 weights (§38) as TTF/OTF, or commit to the Google Fonts route | §38 |
+| **Brand/auth images** | Add `Logo.webp`, `Gate.webp` (auth aside), `shimanto.jpg` — or explicitly substitute | §26, §37.1 |
+| **Native auth backend** | Bearer token issuance + `Authorization` support + CORS/OPTIONS | §2, §32 |
+| **FCM endpoint** | `POST /api/notifications/device` | §11, §32 |
+
+### 40.3 Optional supporting sources (raise fidelity; not strictly required)
+
+`components/dashboard/SalahTracker.tsx`, `SalahMarkModal.tsx`, `components/friends/WaktBoardVirtual.tsx`, `components/layout/UserMenu.tsx`, `PageHeader.tsx`, `SunPathArc.tsx`, `WaktCountdownClock.tsx`, `components/analytics/AnalyticsChartsGrid.tsx`, `components/truth/TruthPage.tsx`, `useGradientExpand.ts`, `components/ui/Shimmer.tsx`, and `lib/{salah-mark-rules,chart-theme,confetti,salah-utils,validation}.ts`. §39 already distills these; attach them only if you want the exact source as a tie-breaker.
+
+### 40.4 Suggested prompt preamble
+
+> "Build a Flutter (iOS+Android) app that is a pixel-faithful port of the authenticated mobile web shell described in `FLUTTER_APP_BRD.md`. Treat §4 (tokens), §34 (layout specs) + the attached `reference-css/` as the pixel source of truth, §39 as the behavior source of truth, and §7/§23/§36 as the API contract. Bundle the attached data JSON and images. Server owns all salah/iman/verse math — never reimplement it. Deliver feature-first per §5, four async states everywhere (§9), all 6 palettes × dark/light, RTL-ready, reduced-motion fallbacks. Match the attached 390×844 golden screenshots."
+
+---
+
+*End of Addawah Flutter Mobile App BRD v1.4 — exact layout specs, copied CSS, inlined font map + behavior algorithms, and the carbon-copy prompt bundle manifest*
