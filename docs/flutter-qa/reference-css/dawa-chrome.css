@@ -1,0 +1,253 @@
+/* Header */
+.dawa-shell { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.dawa-header { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border-soft); }
+.dawa-header__inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; height: var(--header-h); display: flex; align-items: center; gap: 20px; }
+.dawa-header__ornament { height: 3px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.7; }
+.dawa-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; flex-shrink: 0; }
+.dawa-brand__logo { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.dawa-brand__logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.dawa-brand__name { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 700; line-height: 1.1; }
+.dawa-header__nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.dawa-nav-link {
+  position: relative;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text-soft);
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.dawa-nav-link:hover { color: var(--text); }
+.dawa-nav-link.is-active { color: var(--accent-bright); }
+.dawa-nav-link.is-active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  z-index: 0;
+}
+.dawa-nav-link__pill {
+  display: none;
+}
+.dawa-nav-link__icon,
+.dawa-nav-link__label {
+  position: relative;
+  z-index: 1;
+}
+.dawa-nav-link__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+.dawa-nav-link.is-active .dawa-nav-link__icon {
+  opacity: 1;
+}
+.dawa-nav-link__label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+.dawa-header__actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+
+/* User menu — avatar trigger + dropdown */
+.dawa-user-menu {
+  position: relative;
+  z-index: 50;
+}
+.dawa-user-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.dawa-user-menu__trigger:hover,
+.dawa-user-menu__trigger.is-open {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.dawa-user-menu__trigger:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+}
+.dawa-user-menu__panel {
+  background: var(--popover-bg);
+  border: 1px solid var(--popover-border);
+  border-radius: calc(var(--radius) + 2px);
+  box-shadow: var(--popover-shadow);
+  overflow: hidden;
+}
+.dawa-user-menu__panel--portal {
+  position: fixed;
+  z-index: 1000;
+}
+.dawa-user-menu__head {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--popover-head-bg);
+}
+.dawa-user-menu__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dawa-user-menu__email {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--text-soft);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dawa-user-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  background: var(--popover-bg);
+}
+/* Truth lives in desktop header nav; only show it in the account menu on mobile. */
+.dawa-user-menu__item-wrap--mobile {
+  display: none;
+}
+@media (max-width: 960px) {
+  .dawa-user-menu__item-wrap--mobile {
+    display: list-item;
+  }
+}
+.dawa-user-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.dawa-user-menu__item:hover {
+  background: var(--popover-item-hover);
+  color: var(--text);
+}
+.dawa-user-menu__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-soft) 65%, transparent);
+  color: var(--accent);
+}
+.dawa-user-menu__item--danger {
+  color: var(--danger, #e85d5d);
+}
+.dawa-user-menu__item--danger .dawa-user-menu__item-icon {
+  background: color-mix(in srgb, var(--danger, #e85d5d) 12%, transparent);
+  color: var(--danger, #e85d5d);
+}
+.dawa-user-menu__item--danger:hover {
+  background: color-mix(in srgb, var(--danger, #e85d5d) 12%, var(--popover-bg));
+  color: var(--danger, #e85d5d);
+}
+
+.dawa-avatar { border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; object-fit: cover; font-weight: 700; color: var(--accent-text); }
+.dawa-avatar--photo { border: 1px solid var(--border); }
+.dawa-avatar--initials { border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); }
+.dawa-avatar--silhouette {
+  background: color-mix(in srgb, var(--text-dim) 22%, var(--surface-2));
+  color: color-mix(in srgb, var(--text-soft) 85%, var(--text-dim));
+  border: 1px solid var(--border-soft);
+}
+.dawa-main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 28px 20px calc(var(--tabbar-h) + 28px); }
+.dawa-page-loading {
+  margin: 0;
+  padding: 48px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+.dawa-tabbar { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding-bottom: env(safe-area-inset-bottom, 0); background: var(--surface); border-top: 1px solid var(--border); }
+.dawa-tabbar__inner { display: flex; height: var(--tabbar-h); align-items: stretch; }
+.dawa-tabbar__link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-decoration: none;
+  color: var(--text-dim);
+  position: relative;
+  padding: 8px 4px;
+  transition: color 0.2s;
+}
+.dawa-tabbar__link.is-active { color: var(--accent-bright); }
+.dawa-tabbar__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  opacity: 0.85;
+}
+.dawa-tabbar__link.is-active .dawa-tabbar__icon {
+  opacity: 1;
+}
+.dawa-tabbar__icon svg {
+  width: 20px;
+  height: 20px;
+}
+.dawa-tabbar__label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+/* Confetti — always above app chrome (header, tabbar, modals) */
+.dawa-confetti-canvas,
+canvas[data-confetti] {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 2147483647 !important;
+}
+

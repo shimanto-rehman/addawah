@@ -1,6 +1,8 @@
 # Addawah — Flutter Mobile App BRD & Technical Conversion Guide
 
-> Version 1.0 · Target: pixel-faithful native mobile port of the Addawah web app (Next.js) using **Flutter**, backed by the **existing Next.js REST API** as a headless backend.
+> Version 1.3 · Target: pixel-faithful native mobile port of the **authenticated mobile web shell** (Next.js) using **Flutter**, backed by the **existing Next.js REST API** as a headless backend.
+>
+> **v1.3 corrects the porting contract:** §37 records the remaining source, asset, visual-QA, behavior, and backend requirements that must be completed before this becomes a self-contained carbon-copy package. The 23 verbatim stylesheets live in `docs/flutter-qa/reference-css/`.
 >
 > Tagline: *Pray Together. Grow Together. Inspire Each Other.*
 
@@ -8,7 +10,13 @@
 
 ## 1. Goal & Approach
 
-Build a native iOS + Android app in Flutter that reproduces the web experience **exactly** — same accent colors, typography, radii, motion feel, dark/light modes, and 6 theme palettes — while consuming the current `/api/*` endpoints so we do **not** rebuild business logic on the client.
+Build a native iOS + Android app in Flutter that reproduces the **signed-in mobile web experience** — same accent colors, typography, radii, motion feel, dark/light modes, 6 theme palettes, tab bar, and user-menu routes — while consuming the current `/api/*` endpoints so we do **not** rebuild business logic on the client.
+
+**Mobile-view scope (what to match)**
+- Match the **authenticated app shell** at mobile breakpoints: `AppHeader` + `MobileTabBar` + `dawa-main` content.
+- **Do not** port the public landing video hero, marketing scroll sections, or desktop-only header nav as primary flows (optional: Handbook PDF viewer, public Truth without video).
+- **Truth** on mobile lives in the **user menu**, not the tab bar (same as web `UserMenu` `mobileOnly: true`).
+- **Settings** on mobile lives in the **user menu**, not the tab bar (removed from desktop header nav on web too).
 
 **Division of work**
 - **You:** Flutter frontend (UI, state, navigation, theming, offline UX).
@@ -289,7 +297,8 @@ Base: `${BASE_URL}/api`. All non-auth routes require a valid session. Envelope p
 | GET | `/friends/connections` | accepted + pending |
 | GET | `/friends/suggestions` | suggested users |
 | GET | `/friends/search?q=` | username search |
-| POST | `/friends` | `{ …connect/accept/remove }` |
+| POST | `/friends` | send a request: `{ username? \| email? \| userId? }` (at least one required) |
+| PATCH | `/friends` | manage existing request: `{ friendshipId, action: 'accept' \| 'decline' \| 'cancel' \| 'disconnect' }` |
 | POST | `/pokes` | `{ toUserId, prayer? }` gentle reminder |
 
 ### Ruhaniah
@@ -317,6 +326,7 @@ Base: `${BASE_URL}/api`. All non-auth routes require a valid session. Envelope p
 | GET | `/users/[username]/insights` | public prayer charts |
 | GET | `/notifications` | list |
 | GET | `/notifications/count` | `{ unreadCount }` (poll ~60s) |
+| PATCH | `/notifications` | `{ action: 'read_all' }` or `{ action: 'read', notificationId }`; returns refreshed list |
 | GET | `/rewards` | gold coins + badge tier |
 | POST | `/truth/contact` | `{ name, email, message }` → founder email. 5/hour/IP. Validate name (letters only) + email. |
 
@@ -380,6 +390,8 @@ Generate the remaining DTOs from live responses of `/dashboard`, `/stats`, `/ana
 | **Auth** | Login (identifier+password), register with location picker (device GPS via `geolocator` → reverse geocode), OTP reset. |
 
 **Loading/empty/error:** wrap every async in `AsyncValue.when(loading: Skeletonizer, error: ErrorState, data: …)`; empty lists get an `EmptyState`. This is the single biggest UX-consistency lever.
+
+> **Full mobile screen inventory, payload shapes, assets, and SWR keys:** see **§20–§31** (added in v1.1 from live web codebase).
 
 ---
 
@@ -465,11 +477,11 @@ The backend classifies salah in the **user's prayer timezone** (default Dhaka/Ba
 
 | Phase | Scope |
 |-------|-------|
-| **0. Foundation** | Theme system (6×2 palettes), networking layer, auth (cookie jar → token), go_router with auth redirect, shared widgets (button/card/shimmer/states). |
-| **1. Core loop** | Login/register, dashboard, salah tracker (mark/unmark), hero stats, prayer times. |
-| **2. Growth** | Analytics (fl_chart), Ummah/wakt board, pokes, notifications (poll → FCM). |
-| **3. Depth** | Ruhaniah full flow, Hijri calendar, daily challenge, rewards. |
-| **4. Content & polish** | Truth (passages + Let's talk), settings, profile/avatar, Arabic RTL, offline cache, golden tests. |
+| **0. Foundation** | Theme system (6×2 palettes), networking layer, auth (cookie jar → token), go_router with auth redirect (§20), shared widgets (button/card/shimmer/states per §24). |
+| **1. Core loop** | Login/register (§27), dashboard shell (§21.1), salah tracker + mark modal, hero stats, prayer times, location prompt. |
+| **2. Growth** | Analytics charts (§21.4, §29), Ummah hub + wakt board + pokes (§21.3), notifications (poll → FCM §11). |
+| **3. Depth** | Ruhaniah full flow (§21.2, §28), Hijri calendar page, daily challenge on dashboard, rewards/badges (§30). |
+| **4. Content & polish** | Truth (passages bundle §25), settings/profile/privacy (§21.6–7), public profile `/u/[username]`, Arabic RTL, offline cache, golden tests. |
 
 ---
 
@@ -480,7 +492,932 @@ The backend classifies salah in the **user's prayer timezone** (default Dhaka/Ba
 - [ ] Add fonts (Cormorant Garamond, DM Sans, Amiri) to `pubspec.yaml`.
 - [ ] Port `dawa_tokens.dart` from §4 (verbatim hexes).
 - [ ] Build `dio` client + `ApiResult` + auth/retry interceptors.
-- [ ] `go_router` with unauth → `/login` redirect (mirror `middleware.ts`).
-- [ ] Capture live JSON from `/auth/me`, `/dashboard`, `/stats` → generate freezed DTOs.
+- [ ] Implement mobile shell: header (76px) + bottom tab bar (68px) per §20.
+- [ ] `go_router` with unauth → `/login` redirect (mirror `middleware.ts` §20.2).
+- [ ] Bundle static JSON/assets per §25–§26.
+- [ ] Capture live JSON fixtures per §23 → generate `freezed` DTOs.
 - [ ] Ship Phase 1, validate salah mark → stats loop end-to-end.
+
+---
+
+## 20. Mobile Navigation & Route Map (from web)
+
+### 20.1 Bottom tab bar (`MobileTabBar` — always visible when signed in)
+
+| Tab | Route | Icon | Notes |
+|-----|-------|------|-------|
+| Home | `/dashboard` | home | Default after login |
+| Ruhaniah | `/ruhaniah` | ruhaniah | Nightly check-in |
+| Ummah | `/friends` | friends | Wakt board + connections |
+| Analytics | `/analytics` | analytics | Charts + KPIs |
+| Calendar | `/calendar` | calendar | Hijri month + sunnah actions |
+
+**Not in tab bar (mobile):** Truth, Settings, Profile, Notifications — accessed via **user menu** (avatar dropdown).
+
+### 20.2 User menu (`UserMenu` panel)
+
+| Item | Route | Mobile-only? |
+|------|-------|--------------|
+| Profile | `/profile` | no |
+| Settings | `/settings` | no |
+| Truth | `/truth` | **yes** (`mobileOnly` — hidden on desktop menu duplicate; desktop has Truth in header nav) |
+| Analytics | `/analytics` | no (duplicate shortcut) |
+| Notifications | `/notifications` | no |
+| Sign out | `POST /api/auth/logout` | action |
+
+### 20.3 Header chrome (`AppHeader` — mobile)
+
+- Brand mark (links to `/dashboard`)
+- `ThemeModeToggle` (compact)
+- `ThemeSwitcher` (compact palette)
+- `NotificationBell` (unread badge; links to `/notifications`)
+- `UserMenu` (avatar trigger)
+- Optional: `WaktCountdownClock` uses `GET /api/prayer-times` (poll/refetch)
+
+### 20.4 Full route table
+
+| Route | Auth | In Flutter app? | Web source |
+|-------|------|-----------------|------------|
+| `/login` | public | **yes** | `LoginPageClient` (sign-in + register tabs) |
+| `/reset-password` | public | **yes** | OTP request |
+| `/reset-password/set` | public | **yes** | New password after OTP |
+| `/dashboard` | protected | **yes** | Home tab |
+| `/ruhaniah` | protected | **yes** | Ruhaniah tab |
+| `/friends` | protected | **yes** | Ummah tab |
+| `/friends/connections` | protected | **yes** | Manage connections (linked from Ummah) |
+| `/analytics` | protected | **yes** | Analytics tab |
+| `/calendar` | protected | **yes** | Calendar tab |
+| `/notifications` | protected | **yes** | User menu |
+| `/profile` | protected | **yes** | User menu |
+| `/settings` | protected | **yes** | User menu |
+| `/truth` | public or app | **yes** | User menu; signed-in = app shell (no landing video) |
+| `/u/[username]` | protected | **yes** | Public friend profile |
+| `/` (landing) | public | **skip/simplify** | Marketing — optional splash only |
+| `/handbook` | public | **optional** | PDF viewer (`Dua.pdf`) — not in app shell |
+
+### 20.5 Auth redirect (mirror `middleware.ts`)
+
+Protected prefixes: `/dashboard`, `/friends`, `/analytics`, `/settings`, `/profile`, `/notifications`, `/u`, `/ruhaniah`, `/in` (internal Truth rewrite).
+
+Flutter `go_router` redirect: if no valid session → `/login`. On `401` from any API → clear session → `/login`.
+
+### 20.6 App shell layout constants
+
 ```
+┌─────────────────────────────────┐
+│ AppHeader          height 76px  │
+├─────────────────────────────────┤
+│ dawa-main (scrollable content)  │
+│   max-width 1200px; width 100%  │
+│   padding 28px 20px 96px        │
+├─────────────────────────────────┤
+│ MobileTabBar       height 68px  │
+└─────────────────────────────────┘
+```
+
+Background: `IslamicBackdrop` (subtle pattern — port as static asset or `CustomPainter`).
+Confetti: optional `confetti.js` equivalent on milestone events (coin earn, perfect day).
+
+---
+
+## 21. Screen-by-Screen Inventory (mobile web parity)
+
+### 21.1 Dashboard (`/dashboard`)
+
+**Page header:** `PageHeader` variant `home` — Arabic greeting `السَّلَامُ عَلَيْكُمْ`, full `user.name`, avatar link to profile, live wakt countdown, and `SunPathArc`.
+
+**Sections (top → bottom):**
+
+| # | Component | Data source | Interaction |
+|---|-----------|-------------|-------------|
+| 1 | `LocationPrompt` | `SessionUser` city/country | Prompt if location unset; opens `LocationPicker` |
+| 2 | `HeroStats` | `DashboardPayload.stats` or `GET /api/stats` | Week %, streak, lifetime rate, 33-bead missed preview, sunnah counts |
+| 3 | `SalahTracker` | `DashboardPayload.grid` + `GET /api/prayer-times` + `GET/POST /api/salah` | Mihrab arch frame; week grid; optimistic toggle; wakt lock |
+| 4 | `DailyChallenge` | `DashboardPayload.challenge` + `POST /api/challenge` | 5 daily deeds (bitmap tasks); coin toast |
+| 5 | `HijriCalendar` (compact) | `GET /api/calendar` | Mini month + today highlight |
+| 6 | `InspirationCard` | `DAILY_INSPIRATIONS` (client constant, day-of-year rotation) | Quote + ref — no API |
+
+**Provider:** `DashboardDataProvider` → `GET /api/dashboard`, refresh 60s.
+
+**Shimmer:** `AppLayoutClient` dashboard-style shimmer (stat-value + 4 metric columns + card) while `useApp` loading. Truth page skips this shimmer.
+
+**Salah mark modal (`SalahMarkModal`):** optional `inJamat` toggle on fard mark (males); females use Awal Wakt copy; posts to `/api/salah`.
+
+### 21.2 Ruhaniah (`/ruhaniah`)
+
+**Provider:** `RuhaniahDataProvider` → `GET /api/ruhaniah`, deduping 300s.
+
+**Incomplete flow (single scrollable page):**
+
+1. `RuhaniahHeader`
+2. `TaqwaPulse` — slider 1–10
+3. `FahmTest` — 3 questions/day from bundled `fahm-questions.json` (`pickTodaysQuestions`)
+4. `BarakahMeter` — 4 sliders (time, rizq, health, heart), default 3 each
+5. `DuaLog` — existing duas from `GET /api/ruhaniah/duas` + add new locally
+6. Submit button → `POST /api/ruhaniah` with `{ taqwaScore, fahmResponses[], barakahScores, duaEntries[] }`
+
+**Completed state (`data.completed === true`):**
+
+1. `RuhaniahVerse` (ayah card)
+2. `SpiritualWeakness` (if weaknesses returned)
+3. `RuhaniahInsights` (Fahm radar, taqwa/barakah history, dua stats)
+
+**Shimmer:** `RuhaniahShimmer` while loading and completion unknown.
+
+### 21.3 Ummah / Friends (`/friends`)
+
+**Primary SWR:** `GET /api/friends/hub?cursor=0&limit=20`
+
+**Hub response shape (`HubResponse`):**
+- `me: { goldCoins, badge }`
+- `requests: Friend[]` (pending incoming)
+- `friends: Friend[]`
+- `board: BoardRow[]` (live wakt rows)
+- `page: { cursor, nextCursor, hasMore, limit, totalFriends }`
+- `summary: { activeInWakt, pokeable, totalFriends, revision }`
+
+**Sections:**
+- Page header (Ummah)
+- Username search → `GET /api/friends/search?q=`
+- Send request → `POST /api/friends` with username/email/userId; accept/decline/cancel/disconnect → `PATCH /api/friends` with `friendshipId` + action
+- Suggestions carousel → `GET /api/friends/suggestions?cursor=&limit=8`
+- `WaktBoardVirtual` — virtualized list (`ROW_HEIGHT = 76`), live countdown per row, poke → `POST /api/pokes`
+- Friends list with week rate, gold coins, badge
+- Load more → `GET /api/friends/hub?cursor={nextCursor}&limit=20`
+- Board summary poll → `GET /api/friends/board/summary` (refresh board)
+
+**Sub-route:** `/friends/connections` — `ManageConnections` → `GET /api/friends/connections`
+
+**BoardRow wakt phases:** `upcoming | active | completed | private` — render countdown, salah status, poke cooldown.
+
+### 21.4 Analytics (`/analytics`)
+
+**Two-step load (match web):**
+1. `GET /api/analytics/summary` — KPIs + coaching tips (fast)
+2. `GET /api/analytics` — full charts (after summary arrives)
+
+**KPI hero:** the web's primary hero shows four values: iman, streak, week rate, and lifetime rate. Perfect days, Fajr missed, sunnah, and jamat are supporting analytics data, not additional hero tiles.
+
+**Coaching:** render the `coaching: CoachingTip[]` section returned by the API as “Personal guidance”.
+
+**`PrayerInsights`:** 14-day iman line + missed breakdown (also available via `GET /api/insights`).
+
+**Charts grid (`AnalyticsChartsGrid`) — map 1:1 to `fl_chart`:**
+
+| Card title | Chart type | Data fields |
+|------------|------------|-------------|
+| Prayer strength radar | Radar | `byPrayer[].rate` |
+| Horizontal rates | Horizontal bar | `byPrayer[]` |
+| Wakt breakdown · 7 days | Stacked bar | `stackedWeek[]` onTime/kaza/missed |
+| Polar balance | Polar area | `insights.totals` |
+| Week completion | Multi-line | `weekDays`, `weekDeeds`, `weekCalendarDeeds` |
+| Distribution ring | Doughnut | `byPrayer[].completed` |
+| Iman vs mood | Combo line+bar | `imanMoodSeries[]` |
+
+**Shimmer:** `KpiSkeleton` + `ChartShimmer` while loading.
+
+### 21.5 Calendar (`/calendar`)
+
+**SWR:** `GET /api/calendar` (`CALENDAR_KEY`)
+
+**Payload (`CalendarPayload`):** `today`, `monthGrid`, `eventsById`, `historyById`, `nextEvent` countdown, `weekCompletions`, `consistency`, `view` (month nav).
+
+**Static server data:** `public/data/islamic-events.json` — bundle in app for offline labels; API still authoritative for toggles.
+
+**Actions:** `POST /api/calendar/toggle` — sunnah checklist per day; gold coin reward on completion.
+
+### 21.6 Profile (`/profile`)
+
+**SWR:** `GET /api/profile` → `{ profile }`
+
+**Fields:** name, email, mobile (`PhoneInput`), username, gender (`GenderPicker`), location (`LocationPicker` → lat/lng/timeZone/city/country), avatar color (`AVATAR_COLORS`), avatar upload (`POST /api/profile/avatar` multipart), `profilePrivacy` matrix (public vs connections tiers).
+
+**Availability checks:** `GET /api/auth/check-availability?field=&value=` debounced 300–450ms.
+
+**Charts:** `ProfilePrayerCharts` — user's own analytics preview.
+
+**Link:** public profile `userProfilePath(username)` → `/u/[username]`
+
+### 21.7 Settings (`/settings`)
+
+- Link to Profile editor
+- Theme mode toggle + 6 palette swatches (`THEME_COLOR_LABELS`)
+- Save → `PATCH /api/profile` `{ themeColor, themeMode }` (web also has `ThemeSync` on change)
+- `DeleteAccountSection` → OTP `POST /api/account/delete/send-otp` then `POST /api/account/delete`
+
+### 21.8 Notifications (`/notifications`)
+
+**SWR:** `GET /api/notifications`, `GET /api/notifications/count` (poll 60s; badge on bell)
+
+**Actions:** mark one read → `PATCH /api/notifications` `{ action: 'read', notificationId }`; mark all read → `{ action: 'read_all' }`.
+
+### 21.9 Truth (`/truth` — app shell variant)
+
+**No `PublicNav`, no landing video** when signed in (`dawa-truth--app`).
+
+**Sections:** hero + scroll-expand rings, passage grid + feature banners, Salah story timeline (`PRAYER_STORY`), founder block, Let's talk form.
+
+**Passages:** 16 numbered entries in `PASSAGES` (ids 1–13, 15–17; id 14 = prayer story only). Feature passages (ids 4, 8, 12, 17): full-bleed banner. Others: grid cards.
+
+**Modal:** Learn more → full body paragraphs; optional `modalFigure` at bottom (passage 4 uses `fig04.webp`).
+
+**Contact:** `POST /api/truth/contact` — name (letters only), email, message; green/red field ticks.
+
+**Bundle:** port `components/truth/truthContent.ts` + all `/public/assets/images/truth/*.webp` into Flutter assets.
+
+### 21.10 Public profile (`/u/[username]`)
+
+**API:** `GET /api/users/[username]`, `GET /api/users/[username]/insights`
+
+Respects `profilePrivacy` tiers from owner's settings.
+
+---
+
+## 22. SWR Cache Keys & Refresh Intervals
+
+Centralize in `lib/core/cache/cache_keys.dart` (mirror `lib/swr-revalidate.ts`):
+
+| Key | Endpoint | Refresh / TTL |
+|-----|----------|---------------|
+| `AUTH_ME` | `/api/auth/me` | on app start + after login |
+| `DASHBOARD` | `/api/dashboard` | 60s |
+| `STATS` | `/api/stats` | 60s (KV server cache 5s) |
+| `SALAH_GRID` | `/api/salah?week=` | on mutate after toggle |
+| `PRAYER_TIMES` | `/api/prayer-times` | ~30min today |
+| `ANALYTICS_SUMMARY` | `/api/analytics/summary` | 300s |
+| `ANALYTICS` | `/api/analytics` | 300s; server cache 60s |
+| `INSIGHTS` | `/api/insights` | with dashboard revalidate |
+| `MOOD` | `/api/mood` | on check-in |
+| `CHALLENGE` | `/api/challenge` | with dashboard |
+| `RUHANIAH` | `/api/ruhaniah` | 300s dedupe |
+| `RUHANIAH_HISTORY` | `/api/ruhaniah/history` | on ruhaniah submit |
+| `RUHANIAH_DUAS` | `/api/ruhaniah/duas` | on dua change |
+| `CALENDAR` | `/api/calendar` | on toggle |
+| `FRIENDS_HUB` | `/api/friends/hub?cursor&limit` | on focus + board poll |
+| `FRIENDS_SUGGESTIONS` | `/api/friends/suggestions` | manual |
+| `FRIENDS_CONNECTIONS` | `/api/friends/connections` | manual |
+| `NOTIFICATIONS` | `/api/notifications` | manual |
+| `NOTIFICATIONS_COUNT` | `/api/notifications/count` | 60s poll |
+| `PROFILE` | `/api/profile` | on save |
+
+**Revalidate helpers (call after mutations):**
+- Salah toggle → dashboard, stats, analytics, analytics/summary, insights
+- Mood check-in → mood, dashboard, analytics
+- Ruhaniah submit → ruhaniah, history, duas
+
+---
+
+## 23. API Payload Shapes (generate DTOs from these)
+
+Capture live JSON in dev, then `freezed` codegen. Types below are from `lib/*.ts` — authoritative field names.
+
+### `SessionUser` (`lib/auth.ts`)
+`id, name, username?, email, mobile?, gender?, avatarColor, avatarUrl?, themeColor, themeMode, city?, country?, latitude?, longitude?, timeZone?`
+
+### `DashboardPayload` (`lib/dashboard-data.ts`)
+```ts
+{
+  stats: StatsPayload,
+  mood: { today: { moodId, label?, date } | null },
+  grid: SalahGrid,       // Record<dateKey, Partial<Record<Prayer, SalahCell>>>
+  weekKey: string,
+  challenge: DailyChallengeState
+}
+```
+
+### `SalahCell` (`lib/salah-utils.ts`)
+`{ fard: bool, inJamat: bool, sunnahBefore: bool[], sunnahAfter: bool[] }`
+
+### `StatsPayload` (`lib/stats-data.ts`)
+`weekCompleted, weekTotal, weekDays[], streak, lifetimeRate, todayCompleted, lifetimePrayed, lifetimeMissed, lifetimeExpected, lifetimeJamat, activeDays, perfectDays, daysOnApp, sunnahPrayed, sunnahTotal, bestPrayer?, loggedCompleted, trackingSince?, missedBreakdown[]`
+
+### `AnalyticsPayload` (`lib/analytics-data.ts`)
+`kpis, insights (PrayerInsightsPayload), byPrayer[], stackedWeek[], weekDays[], weekDeeds[], weekCalendarDeeds[], weekLabels[], moodHistory[], imanMoodSeries[], imanMoodCorrelation?, coaching[], totals, trend, revision`
+
+### `PrayerInsightsPayload` (`lib/prayer-insights.ts`)
+`days[] (iman, onTime, kaza, missed, pending, jamat), currentIman, trend, totals`
+
+### `RuhaniahPayload` (`components/ruhaniah/RuhaniahDataProvider.tsx`)
+`completed, taqwaScore?, barakahScores?, verse?, fahmProfile?, insights?, weaknesses[]`
+
+### `CalendarPayload` (`lib/islamic-calendar.ts`)
+`today, todayHistoryIds[], monthGrid[], eventsById{}, historyById{}, nextEvent?, weekCompletions[], consistency, view`
+
+### `HubResponse` (`components/friends/FriendsHub.tsx`)
+See §21.3.
+
+### `BoardRow` (`components/friends/WaktBoardVirtual.tsx`)
+See §21.3 wakt sub-object.
+
+### `POST /api/salah` response
+`{ ok, coinsEarned?, timing?: 'on-time'|'kaza', stats? }`
+
+### `Profile` (`app/(app)/profile/page.tsx`)
+`id, name, username?, email, mobile?, avatarColor, gender?, avatarUrl?, city?, country, latitude?, longitude?, timeZone?, profilePrivacy`
+
+---
+
+## 24. Shimmer / Loading Variants
+
+Mirror `components/ui/Shimmer.tsx` variants in `skeletonizer` theme:
+
+| Variant | Size (web) | Use on |
+|---------|------------|--------|
+| `text` | 100% × 16px | body lines |
+| `text-sm` | 80px × 12px | labels |
+| `text-lg` | 200px × 20px | titles |
+| `circle` | 48×48 | icons |
+| `card` | 100% × 160px | panels |
+| `avatar` | 44×44 | user rows |
+| `button` | 100×36 | CTAs |
+| `chart` | 100% × 200px | analytics |
+| `stat-value` | 64×32 | hero numbers |
+| `stat-label` | 80×12 | metric labels |
+
+**Composite loaders:** `StatShimmer`, `ConnectionShimmer`, `ChartShimmer`, `RuhaniahShimmer` — port as dedicated Flutter widgets per screen.
+
+---
+
+## 25. Static Content to Bundle in the App
+
+| Asset path | Purpose | Bundle strategy |
+|------------|---------|-----------------|
+| `public/data/fahm-questions.json` | 320 Fahm questions — **canonical client source** | `assets/data/fahm-questions.json` |
+| `public/data/ayah-pool.json` | 300 tagged ayahs (server verse engine; optional client read) | ship for offline display only |
+| `public/data/islamic-events.json` | Calendar events/history | `assets/data/islamic-events.json` |
+| `public/data/cities.json` | Location picker search | `assets/data/cities.json` |
+| `components/truth/truthContent.ts` | Truth passages + `PRAYER_STORY` | convert to `assets/data/truth-passages.json` at build time |
+| `lib/constants.ts` → `DAILY_INSPIRATIONS` | Dashboard inspiration card | Dart constant (7 entries) |
+| `lib/challenge-data.ts` → `CHALLENGE_TASKS` | 5 daily challenge tasks | Dart constant |
+| `lib/moods.ts` → `MOOD_OPTIONS` | 6 mood ids/colors | Dart constant |
+| `lib/rewards.ts` → `BADGE_TIERS` | 6 badge tiers | Dart constant |
+
+**Fahm contract (do not break):** `FahmResponse.questionId` stores static ids (`Q1`…) — no DB FK. Client reads JSON only.
+
+---
+
+## 26. Visual Assets Manifest
+
+Copy into `assets/images/` (preserve paths for mental mapping):
+
+| Path | Used by |
+|------|---------|
+| `assets/images/Logo.webp` | Brand mark |
+| `assets/images/gold.webp` | `GoldCoin` icon |
+| `assets/images/Gate.webp` | Auth aside arch (`AuthAside`), if the auth screens are ported |
+| `assets/images/tracker-card.svg` | Salah tracker mihrab mask/frame (the actual tracker arch asset) |
+| `assets/images/truth/01.webp` … `17.webp` | Passage art |
+| `assets/images/truth/fig04.webp` | Passage 4 modal figure |
+| `assets/images/truth/founder.webp` | Truth founder section |
+| `assets/images/shimanto.jpg` | Legacy developer photo reference; current Truth founder art is `truth/founder.webp` |
+| `assets/pdfs/Dua.pdf` | Handbook (optional feature) |
+| `assets/images/thumbnail.webp` | Handbook thumb |
+| `assets/scripts/confetti.js` | → Flutter confetti package equivalent |
+
+**Repository availability at v1.3:** `tracker-card.svg`, `gold.webp`, `thumbnail.webp`, Truth assets, and the static JSON/PDF files exist. `Logo.webp`, `Gate.webp`, `shimanto.jpg`, and the 11 web font binaries referenced by `fonts.css` are currently absent from the repository; add them before claiming a binary-complete port, or use the documented Google Fonts equivalents where visual comparison confirms parity.
+
+**Not needed in core app:** `landing.webp`, `landing.mp4/webm`, readme screenshots.
+
+**Avatars:** `GET /api/avatars/[userId]` — network cached; fallback to initials + `avatarColor`.
+
+---
+
+## 27. Auth & Registration (mobile forms)
+
+### Sign in
+- Methods: `identifier` (email or username) + password, OR `mobile` + password
+- `POST /api/auth/login` rate limit 5/min/IP
+- Green tick: `useSigninAvailability` → account exists check
+
+### Register
+- Fields: name (2–80, letters), username (3–30, unique), email, mobile (`PhoneInput` + `normalizeMobile`), password (6–100), gender (`MALE`|`FEMALE`), location (`LocationPicker` → `{ latitude, longitude, timeZone, city, country, countryCode? }`)
+- Availability: username/email/mobile debounced checks
+- `POST /api/auth/register` rate limit 3/min/IP
+- Welcome email server-side (Resend)
+
+### Password reset
+1. `POST /api/auth/reset-password/send-otp` `{ email }`
+2. `POST /api/auth/reset-password/verify-otp` `{ email, code }`
+3. `POST /api/auth/reset-password/confirm` `{ …, password }`
+
+### Validation rules (`lib/validation.ts`)
+- Name: letters/spaces/`'`.`-` only, no digits, 2–80 chars
+- Email: standard format
+- Username: `sanitizeUsername` + `validateUsername`
+
+---
+
+## 28. Ruhaniah & Fahm Details
+
+**Fahm daily pick:** `pickTodaysQuestions(pool)` — 3 questions from 320 based on date seed.
+
+**POST body schema** (`lib/ruhaniah-validation.ts`):
+- `taqwaScore`: 1–10
+- `fahmResponses[]`: `{ questionId, answerIndex, weight }`
+- `barakahScores`: `{ timeScore, rizqScore, healthScore, heartScore }` each 1–5
+- `duaEntries[]`: optional new duas
+
+**Verse engine:** server-only (`lib/ruhaniah-verse.ts`) — client displays result; never reimplement scoring.
+
+**Weakness cards:** `severity: critical | high | moderate` + icon + advice text.
+
+---
+
+## 29. Analytics Chart Theme Tokens
+
+Charts use CSS-variable-aware theme from `chartTheme()` — port to Flutter:
+
+- `accent`, `accentSoft`, `accentGlow` for primary series
+- `success` (#3ecf8e), `warn` (kaza), `danger` (#e85d5d)
+- `grid`, `text` for axes
+- `categorical[5]` for per-prayer colors in doughnut/bar
+
+**Iman mood correlation copy:** `describeImanMoodCorrelation(r)` — port strings for r values.
+
+---
+
+## 30. Rewards, Badges & Gold Coins
+
+**Badge tiers** (`BADGE_TIERS`):
+| id | name | minCoins |
+|----|------|----------|
+| seedling | Seedling | 0 |
+| guardian | Wakt Guardian | 1,000 |
+| lighthouse | Lighthouse | 5,000 |
+| mentor | Dawah Mentor | 10,000 |
+| crescent | Crescent Scholar | 20,000 |
+| golden | Golden Mu'min | 50,000 |
+
+**Prayer coins:** wakt-decay reward `PRAYER_REWARD` MAX 25 → MIN 5; `JAMAT_BONUS_COINS` +5.
+
+**UI:** `GoldCoin` / `GoldCoinAmount` widgets wherever coins appear (dashboard toggle response, friends hub, profile).
+
+---
+
+## 31. CSS Module Reference (visual parity)
+
+When implementing a screen, open the matching stylesheet for spacing/class names:
+
+| CSS file | Screens |
+|----------|---------|
+| `dawa-tokens.css` / `dawa-theme.css` | Global tokens §4 |
+| `dawa-chrome.css` | Header, tab bar, user menu |
+| `dawa-dashboard.css` | Dashboard, hero stats, salah grid |
+| `dawa-salah-modal.css` | Mark prayer modal |
+| `dawa-page-header.css` | Page headers |
+| `dawa-mood-analytics.css` | Analytics bento grid |
+| `dawa-friends.css` | Ummah hub, wakt board |
+| `dawa-ruhaniah.css` | Ruhaniah flow |
+| `dawa-calendar.css` | Calendar page |
+| `dawa-notifications.css` | Notifications list |
+| `dawa-profile.css` | Profile + public profile |
+| `dawa-auth.css` | Login/register |
+| `dawa-truth.css` | Truth page + modal |
+| `dawa-shimmer.css` | All skeleton states |
+| `dawa-location.css` / `dawa-gender.css` | Pickers |
+| `dawa-challenge.css` | Daily challenge |
+| `dawa-modals.css` | Shared modals |
+
+Import order is fixed in `assets/css/dawa.css` — tokens before feature CSS.
+
+---
+
+## 32. Backend Gaps (not yet in web — needed for production app)
+
+| Endpoint | Purpose |
+|----------|---------|
+| `POST /api/auth/token` or login `?mode=token` | Return JWT in body for Bearer auth |
+| `Authorization: Bearer` in `getSessionUser()` | Mobile auth without cookies |
+| CORS + `OPTIONS` handling | Required if the mobile app calls a separate API origin |
+| `POST /api/notifications/device` | Register FCM token per user |
+| `GET /api/config` (optional) | Feature flags, min app version |
+
+---
+
+## 33. Visual QA Companion (required before pixel-parity sign-off)
+
+Capture **mobile-width screenshots** (390×844 or your target) for:
+
+1. Dashboard (loaded + salah grid)
+2. Salah mark modal
+3. Ruhaniah (form + completed verse)
+4. Ummah wakt board row states
+5. Analytics KPI + one chart card
+6. Calendar month grid
+7. Profile + privacy matrix
+8. Settings theme picker
+9. Truth passage card + feature banner + modal
+10. Login register flow
+
+**Current status:** these fixtures have not been captured; `docs/flutter-qa/` currently contains only `reference-css/`. Capture the listed states at one locked target viewport (start at **390×844**) and store them in `docs/flutter-qa/screenshots/` before Flutter golden-test sign-off. README images are marketing screenshots, not golden fixtures.
+
+---
+
+## 34. Exact Layout Specs (pixel source of truth)
+
+> **Canonical CSS source:** the complete, unmodified stylesheets are bundled at **`docs/flutter-qa/reference-css/`** (**23 files**, ~11.7k lines, copied verbatim from `assets/css/`). CSS is authoritative for static styling only; the behavior-source map in §37 is authoritative for interactions. Values use the tokens from §4 (`--accent`, `--radius`, etc.). **Mobile shell breakpoint = `≤960px`** (bottom tab bar shows, desktop header nav hides); `≤640px` is one of several smaller-layout breakpoints.
+
+All numbers below are the real values from those files. Reproduce them 1:1 in Flutter.
+
+### 34.1 App shell (`dawa-chrome.css`)
+
+**Header** (`.dawa-header` / `.dawa-header__inner`)
+- Height `76px` (`--header-h`); sticky top; `background: var(--surface)`; bottom border `1px var(--border-soft)`
+- Inner: horizontal padding `20px`, `align-items: center`, `gap: 20px`
+- Ornament strip under header: `height 3px`, gradient `transparent → var(--accent) → transparent`, opacity `0.7`
+- Brand: logo `40×40`, gap `12px`; name `font-display 22px/700`, line-height 1.1
+- Actions cluster: `gap 12px`, pushed right (`margin-left:auto`)
+
+**Main content** (`.dawa-main`)
+- `max-width 1200px` (but mobile fills width); padding `28px 20px calc(68px + 28px)` (bottom clears tab bar)
+
+**Bottom tab bar** (`.dawa-tabbar`) — shown `≤960px`
+- Height `68px` (`--tabbar-h`); fixed bottom; `background var(--surface)`; top border `1px var(--border)`; respects `env(safe-area-inset-bottom)`
+- Each link: flex column, `gap 5px`, padding `8px 4px`, color `var(--text-dim)`, active `var(--accent-bright)`
+- Icon box `22×22` (svg `20×20`), active opacity 1 / idle 0.85
+- Label: `10px/600`, letter-spacing `0.01em`
+- Notifications are represented by `NotificationBell` in the header, with its unread badge; there is no notifications item in the five-item mobile tab bar.
+
+**User menu dropdown** (`.dawa-user-menu__panel`)
+- Portal, `position: fixed`, width `220px`, `z-index 1000`
+- Radius `calc(var(--radius) + 2px)` = `20px`; border `1px var(--popover-border)`; `var(--popover-shadow)`
+- Head: padding `14px 16px 12px`, bottom border, `var(--popover-head-bg)`; name `14px/700`, email `11px` `--text-soft`
+- Item: padding `10px 12px`, `gap 10px`, radius `--radius-sm` (10), font `13px/600`, hover `var(--popover-item-hover)`
+- Item icon chip: `28×28`, radius `8px`, `background accent-soft@65%`, color `var(--accent)`
+- Danger item (Sign out): color/icon use `var(--danger)`
+- Trigger (avatar): circular, `2px` padding, `1px var(--border)`, hover ring `0 0 0 3px var(--accent-soft)`
+
+**Avatar** (`.dawa-avatar`): circle, `font-weight 700`, `color var(--accent-text)`; photo variant border `1px var(--border)`; initials variant softer border; silhouette variant muted bg.
+
+### 34.2 Page header (`dawa-page-header.css`)
+
+**Home variant** (`.dawa-sky` — dashboard): no card bg; `margin-bottom clamp(20px,3vw,28px)`
+- Top row: salam (`font-arabic 15px` `--accent`) + name (`font-display clamp(22px,4vw,28px)/700`) on left; clock on right
+- Clock digits `17px/600` tabular-nums; seconds in `--accent-bright`; date `11px` `--text-dim`
+- Sun-path arc SVG: `max-width 580px` (mobile) / `700px` (≥721px), `aspect-ratio 704/298`
+
+**Page variant** (`.dawa-intro--page` / `.dawa-intro__sheet`)
+- Sheet: grid, padding `clamp(18px,3vw,24px)`, border `1px var(--border-soft)`, radius `--radius` (18), gradient bg `accent-soft → transparent 42%`
+- Title (`.dawa-intro__name`): `font-display clamp(32px,6vw,44px)/700`, letter-spacing `-0.025em`, page variant color `--accent-bright`
+- Arabic ghost label: `clamp(28px,5vw,36px)`, opacity 0.35
+- Supporting line: `13px`, `--text-soft`, `max-width 36ch`
+
+### 34.3 Dashboard hero metrics (`dawa-dashboard.css` `.dawa-metrics`)
+
+- Section `margin-bottom clamp(28px,5vw,40px)`
+- Hero number (`.dawa-metrics__hero`): `font-display clamp(48px,11vw,76px)/700`, line-height 0.95, letter-spacing `-0.03em`, color `--accent-bright`
+- Headline `clamp(15px,2.8vw,18px)/500`; sub `clamp(12px,2.2vw,13px)` `--text-soft`
+- Stat stream (inline list): items separated by `·`; value `font-display clamp(20px,4vw,26px)/700`
+- 33-bead strand: bead `7×7` circle, `gap 7px 9px`; lit = `--accent-bright` + glow; missed = `--danger` + glow
+- Progress bar: `height 5px`, radius 999px, fill gradient `accent-dim → accent-bright`, transition `width 0.75s var(--ease)`
+- Missed panel: padding `12px 14px`, radius `--radius-sm`, `<summary>` `12px/600` `--accent-bright`
+
+### 34.4 Prayer insights cards (`.dawa-insights`)
+
+- Grid: 2 columns (`repeat(2, minmax(0,1fr))`), `gap clamp(14px,2.5vw,20px)` — on narrow mobile stack to 1
+- Card: padding `clamp(18px,3vw,24px)`, radius `--radius`, border `1px var(--border-soft)`, gradient bg
+- Title `font-display clamp(18px,3vw,22px)/700`; eyebrow `10px/700` uppercase `--accent` letter-spacing `0.12em`
+- Iman gauge: value `font-display 32px/700` `--accent-bright`, unit `14px/600` `--text-dim`
+- Missed total: value `font-display 28px/700` `--danger`
+- Chart area: `height clamp(180px,28vw,200px)` (line) / `clamp(200px,32vw,240px)` (area)
+
+### 34.5 Salah tracker (`.dawa-salah`)
+
+- Card: radius `--radius`, `background var(--surface)`, border `1px var(--border)`
+- **Arch banner**: `aspect-ratio 1440/449`, gradient `accent-soft → transparent`; mihrab mask = `tracker-card.svg` filled `var(--accent)` at opacity `0.42`, mask-size `100% auto`, top-center. **In Flutter:** use the SVG as a mask/overlay over an accent fill.
+- Title `font-display 26px/700` `--accent-bright`; subtitle `font-arabic 18px` `--text-soft`
+- Nav buttons: `36×36` circle, `1px var(--border)`, hover accent
+- Week label `13px/600`, min-width 150px
+- Table: `table-layout: fixed`; first col `72px`; th `9px/700` uppercase `--text-dim`
+- **Cell** (`.dawa-salah-cell`): inline-grid `38px 34px 38px`, column-gap `5px`, min-height 38px
+- **Fard button** (`.dawa-salah-prayer`): `34×34` circle, border `1.5px var(--border)`, `font 13px`; done = gradient `accent-bright → accent-dim` + border accent + shadow `0 4px 16px var(--accent-glow)`; locked = opacity 0.35
+- **Sunnah dot** (`.dawa-salah-sunnah`): `15×15` circle, `font 8px`; done = `accent@55%` fill
+- Day pill (`.dawa-salah-day`): `28×28` circle; today = accent bg + glow
+- Row label EN `11px/700` `--text-soft`; AR `font-arabic 14px` `--accent`
+- Jamat inline toggle: hidden `≤960px` (mobile uses modal checkbox)
+
+### 34.6 Salah mark modal (`dawa-salah-modal.css`) — **mobile only** (`≤960px`; hidden `≥961px`)
+
+- Panel: `width min(340px, 100%-28px)`, `max-height min(100vh-80px, 400px)`, radius `18px`, glass `rgba(12,16,24,0.85)` + `blur(20px) saturate(1.5)` (light: `rgba(255,255,255,0.72)` + `blur(28px)`)
+- Entrance: `scale(0.92) translateY(12px) → 1`, `0.35s var(--ease)`
+- Header: padding `24px 24px 16px`, centered; close btn `32×32` circle top-right `16px`
+- Prayer icon `36×36`; name `font-display 24px/700`; arabic `font-arabic 20px` `--accent`; date `12px/600` `--text-dim`
+- Meter dots: `7×7`, gap 6px; on = gradient + `scale(1.15)` + glow
+- **Bead strand**: CSS vars — sunnah bead `36px`, fard bead `48px`, track height `52px`, gap `12px`; rail `2px` gradient line behind beads
+- Bead core: circle, border `1.5px` (fard `2px`); on = gradient `accent-bright → accent-dim` + ring `0 0 0 3px accent@16%` + `0 4px 16px glow`; sunnah-off = dashed border
+- Caption: kind `8px/700` uppercase; rakats `9px/600`
+- Confirm button: `max-width 220px`, `height 38px`, radius 999px, `font-display 13px/700` uppercase; hover = gradient fill
+- Jamat checkbox: `15×15`, radius 5px, custom check; label `12px/600`
+
+### 34.7 Ummah / Friends (`dawa-friends.css`)
+
+- Glass card (`.dawa-glass`): `background var(--surface)`, border `1px var(--border-soft)`, radius `--radius`, shadow `0 8px 32px arch-shadow@45%`
+- Social stack gap `clamp(14px,2.5vw,18px)`
+- Hero (`.dawa-social__hero`): space-between, padding `clamp(12px,2.5vw,16px) clamp(14px,3vw,18px)`; value `font-display clamp(17px,4.2vw,25px)/700`; gold value `#d4a017`; label `clamp(9px,2.2vw,10px)/600` uppercase; center divider `1px` gradient bridge with diamond
+- Gold coin: `drop-shadow` gold glow (light mode softer)
+- Toast: fixed `bottom calc(68px + 16px)`, centered pill, `padding 10px 18px`, radius 999px, `13px/600`
+- **Wakt board row** (`.dawa-social-board__row`):
+  - Desktop grid: `minmax(160px,1.65fr) minmax(56px,0.5fr) minmax(112px,1fr) 92px`, gap 12px, min-width 540px
+  - Padding `12px 12px 14px`, radius `--radius-sm`, bg `surface-2@48%`, border `1px var(--border-soft)`
+  - **Mobile (`≤640px`):** switches to `display:flex`, gap 8px, padding `10px 10px 10px 8px`; column headers hidden
+  - Row height ≈ `76px` (matches virtualizer `ROW_HEIGHT`)
+  - Skeleton row min-height `58px`, shimmer gradient
+  - Poke button (mobile): padding `5px 10px`, `font 11px`
+- Username search: input borderless `padding 12px 0`; spinner `16×16` accent; results row `padding 10px 12px`, `gap 10px`, bottom border; name `14px/700`, username `12px` `--text-soft`
+
+### 34.8 Ruhaniah (`dawa-ruhaniah.css`)
+
+- Container: `max-width 680px`, centered, padding `0 4px`
+- Intro: centered; moon emoji `40px` with glow; title `font-display clamp(28px,6vw,38px)/700` `--accent-bright`; arabic `clamp(22px,5vw,30px)` `--accent` rtl; tagline `14px` italic `--text-soft`
+- Sections stack: flex column, `gap 16px`
+- Step card (`.dawa-step-card`): `background var(--surface)`, border `1px var(--border)`, radius `--radius`, padding `clamp(20px,3vw,28px)`, top accent stripe via `::before`
+
+### 34.9 Daily challenge (`dawa-challenge.css`)
+
+- Section: `margin-bottom clamp(22px,3.5vw,32px)`, bottom border `1px var(--border-soft)`
+- Head: flex, `gap 12px`; title `13px/600` uppercase `--text-dim`
+- Rainbow meter: `height 7px`, seg `gap 2px`, radius 1px; **14-step red→green ramp** lit colors: `#ef4444, #f05236, #f26928, #f5821a, #f59e0b, #eab308, #d4c20a, #b8c80c, #9ccc0e …` (see file for full 14); lit seg gets glow
+
+### 34.10 Analytics (`dawa-mood-analytics.css`)
+
+- Bento grid: `≤960px` → 2 columns; `≤640px` → 1 column; `.span-2` cards collapse to span 1 on small
+- Card: `.dawa-analytics__card dawa-glass` (glass spec §34.7)
+- Chart heights ~`300px`/`400px` (radar/combo) — see `ChartShimmer` heights in §21.4
+
+### 34.11 Auth (`dawa-auth.css`)
+
+- Wrapper: full-height centered, padding `88px 24px 32px`, glass vars per theme (`--glass-bg`, `--glass-blur 16px`, `saturate 1.45`)
+- Layout: 2-col grid (`1fr 1fr`), `max-width 920px`, gap 20px — **stacks to 1 col on mobile** (see media queries in file)
+- Aside: glass card, arch image `min(220px,70%)` `aspect-ratio 3/4`, drop-shadow
+- Theme bar: fixed top-right `20px`, gap 8px
+
+### 34.12 Calendar (`dawa-calendar.css`)
+
+- Container: flex column, `gap clamp(16px,2.5vw,24px)`, full width
+- Grid: 1 column on mobile; **`≥1024px`** → `minmax(360px,440px) 1fr` two-column
+- Month cells: dual date (Gregorian large + Hijri small); significance tiers (Sacred/Notable/Voluntary) — colors per file
+
+### 34.13 Shimmer (`dawa-shimmer.css`) & modals (`dawa-modals.css`)
+
+- Shimmer keyframe: `background-size 200% 100%`, slide `1.2s ease-in-out infinite`
+- Base gradient: `surface 80% → surface 55%(+text-dim) → surface 80%`
+- Privacy matrix: grid → 1 column on `≤640px`
+- Profile charts shimmer: 1 column `≤640px`
+
+### 34.14 Global animation & motion
+
+- Signature easing everywhere: `cubic-bezier(0.22, 1, 0.36, 1)` = Flutter `Cubic(0.22, 1, 0.36, 1)`
+- Common durations: micro `0.15–0.25s`, entrance `0.35–0.55s`, progress fill `0.75s`
+- Pulse (active wakt segment): `2.4s ease-in-out infinite` glow
+- Sun spin: `24s linear infinite`
+- **Every animation needs a reduce-motion fallback** (mirror web `prefers-reduced-motion`; gate `flutter_animate` on `MediaQuery.disableAnimations`)
+
+---
+
+## 35. Using the Bundled CSS for Carbon-Copy Fidelity
+
+The `docs/flutter-qa/reference-css/` folder is the **single source of pixel truth**. Recommended workflow per screen:
+
+1. Open the matching CSS file (map in §31) alongside the Flutter widget.
+2. Translate tokens: `var(--accent)` → `DawaTokens.accent`, `--radius` → `18`, `--radius-sm` → `10`, `clamp(a, vw, b)` → `MediaQuery`-based interpolation or a fixed mid value at your target width.
+3. `color-mix(in srgb, X n%, Y)` → `Color.lerp(X, Y, 1 - n/100)` (or `X.withOpacity` when mixing with transparent).
+4. `box-shadow` → `BoxShadow`; `backdrop-filter: blur()` → `BackdropFilter(ImageFilter.blur())`.
+5. `aspect-ratio` → `AspectRatio`; CSS grid → `GridView`/`Row`/`Column` with `Flexible` flex ratios matching the `fr` units.
+6. Verify against a mobile screenshot (§33) at your device width.
+
+**Token quick-map (from §4 + measured):**
+
+| CSS | Flutter |
+|-----|---------|
+| `--radius-arch` | `28.0` |
+| `--radius` | `18.0` |
+| `--radius-sm` | `10.0` |
+| `--header-h` | `76.0` |
+| `--tabbar-h` | `68.0` |
+| `--ease` | `Cubic(0.22, 1, 0.36, 1)` |
+| body font size | `15` / line-height `1.65` |
+| `--accent-text` (gold, default) | `#1a1204` |
+| `--accent-text` (green/blue/purple/silver/pink) | `#042f2e` / `#082f49` / `#2e1065` / `#0f172a` / `#500724` |
+
+---
+
+## 36. Full Nested Payload Field Reference
+
+Exact nested shapes (from `lib/*.ts`) so DTOs need no guessing. Optional = `?`.
+
+### `StatsPayload`
+```
+weekCompleted:int, weekTotal:int, weekDays:int[7], streak:int, lifetimeRate:num,
+todayCompleted:int, lifetimePrayed:int, lifetimeMissed:int, lifetimeExpected:int,
+lifetimeJamat:int, activeDays:int, perfectDays:int, daysOnApp:int,
+sunnahPrayed:int, sunnahTotal:int,
+bestPrayer: { prayer:Prayer, label:str, rate:num } | null,
+loggedCompleted:int, trackingSince:str|null,
+missedBreakdown: { date:str, prayer:Prayer, label:str }[]
+```
+
+### `SalahGrid` / `SalahCell`
+```
+SalahGrid = Map<dateKey "YYYY-MM-DD", Map<Prayer, SalahCell>>
+SalahCell = { fard:bool, inJamat:bool, sunnahBefore:bool[], sunnahAfter:bool[] }
+```
+Sunnah slot counts: Fajr before1/after0, Dhuhr before2/after1, Asr 0/0, Maghrib 0/after1, Isha 0/after1.
+
+### `DailyChallengeState` (`lib/challenge-data.ts`)
+```
+{ date:str, mask:int (bit i = task i done), completedCount:int, tasks: ChallengeTask[5] }
+ChallengeTask = { index:0..4, emoji:str, title:str, subtitle:str, hadith:str, fahm:Dim[] }
+```
+
+### `AnalyticsKpis`
+```
+iman:num, streak:int, weekRate:num, lifetimeRate:num, perfectDays:int,
+fajrMissed:int, sunnahPrayed:int, sunnahTotal:int, totalCompleted:int, lifetimeJamat:int
+```
+
+### `AnalyticsPayload` (adds to kpis)
+```
+insights:PrayerInsightsPayload,
+byPrayer: { prayer:Prayer, label:str, completed:int, total:int, rate:num }[],
+stackedWeek: { label:str, onTime:int, kaza:int, missed:int, jamat:int }[],
+weekDays:int[], weekDeeds:(int|null)[], weekCalendarDeeds:(int|null)[], weekLabels:str[],
+moodHistory: { date:str, moodId:str, label:str, iman:num|null }[],
+imanMoodSeries: ImanMoodDay[], imanMoodCorrelation:num|null,
+coaching: CoachingTip[], totals, trend:'up'|'down'|'steady', revision:str
+```
+
+### `CoachingTip`
+```
+{ id:str, priority:'high'|'medium'|'low', icon:str, title:str, body:str, action:str }
+```
+
+### Iman / mood correlation labels
+```
+null       → "Log more moods and prayers to reveal a pattern."
+|r| >= .7 → "Strong positive link" | "Strong inverse link"
+|r| >= .4 → "Moderate positive link" | "Moderate inverse link"
+|r| >= .2 → "Mild pattern emerging"
+otherwise → "No clear link yet — keep checking in"
+```
+
+### `PrayerInsightsPayload`
+```
+days: { date:str, label:str, iman:num, onTime:int, kaza:int, missed:int, pending:int,
+        jamat:int, missedPrayers:Prayer[] }[],
+currentIman:num, trend:'up'|'down'|'steady',
+totals: { onTime:int, kaza:int, missed:int, jamat:int }
+```
+
+### `RuhaniahPayload`
+```
+completed:bool, taqwaScore:num|null,
+barakahScores: { timeScore, rizqScore, healthScore, heartScore } | null,
+verse: { ayahRef, arabic, translation, tafsir, reflectionText, dawahText, signals } | null,
+fahmProfile: { totalQuestions:int, categoryScores:Map<str,num>, overallQAS:num,
+               strongest:str|null, weakest:str|null, trend:str } | null,
+insights: { taqwaHistory:[{date,score}], barakahHistory:[{date,timeScore,rizqScore,healthScore,heartScore}],
+            duaStats:{total,answered,waiting,stored}, duaTimeline:[...], duaList:[...] } | null,
+weaknesses: { id, title, arabicTitle, description, advice,
+              severity:'critical'|'high'|'moderate', icon }[]
+```
+
+### `CalendarPayload`
+```
+today:CalendarDayState, todayHistoryIds:str[],
+monthGrid: (CalendarDayCell|null)[],
+eventsById: Map<str,IslamicEvent>, historyById: Map<str,IslamicHistoricalEvent>,
+nextEvent: { eventTitle, eventArabicTitle, daysUntil:int, hijriDateTarget } | null,
+weekCompletions: { date:str, completed:int, total:int }[],
+consistency:num (0..1),
+view: { gregorianYear, gregorianMonth(0-11), gregorianMonthName, hijriMonthName,
+        hijriYear, canGoPrev:bool, canGoNext:bool }
+CalendarDayCell = { gregorianDay, hijriDay, hijriMonth, hijriMonthName, dateKey,
+                    isToday, isSelected, hasEvent, significance, eventRefs[], historyRefs[] }
+```
+
+### `HubResponse`
+```
+me: { goldCoins:int, badge:Badge },
+requests: Friend[], friends: Friend[], board: BoardRow[],
+page: { cursor:int, nextCursor:str|null, hasMore:bool, limit:int, totalFriends:int },
+summary: { activeInWakt:int, pokeable:int, totalFriends:int, revision:str }
+Friend = { id, name, username?, email, avatarColor, avatarUrl?, weekRate:num|null,
+           weekRateHidden?, friendshipId, goldCoins:int, goldCoinsHidden?, badge:Badge|null }
+Badge = { id, name, minCoins:int, icon, blurb }
+```
+
+### `BoardRow`
+```
+{ id, name, username?, avatarColor, avatarUrl?, goldCoins:int, goldCoinsHidden?, badge:Badge|null,
+  wakt: { prayer:Prayer|null, prayerLabel, phase:'upcoming'|'active'|'completed'|'private',
+          salahStatus:str, waktStartedAt:str|null, waktEndsAt:str|null, waktEndLabel:str|null,
+          canPoke:bool, pokeCooldownUntil?:str|null, pokeCooldownSeconds?:int,
+          forbiddenNow:bool, elapsedMinutes:int, remainingMinutes:int,
+          elapsedSeconds:int, remainingSeconds:int, isPrivate?:bool } }
+```
+
+### `Profile` + `ProfilePrivacy`
+```
+Profile = { id, name, username?, email, mobile?, avatarColor, gender?, avatarUrl?,
+            city?, country, latitude?, longitude?, timeZone?, profilePrivacy }
+ProfilePrivacy = { public: ProfilePrivacyTier, connections: ProfilePrivacyTier }
+ProfilePrivacyTier = { showLocation, showSalahStats, showGoldCoins, showBadge,
+                       showWaktStatus, showMemberSince, showAvatarPhoto } // all bool
+```
+
+### `MOOD_OPTIONS` (6, ordered high→low)
+```
+ecstatic #2d8a4e · happy #5cb85c · good #9ccc65 · neutral #e8c547 · sad #f0a030 · angry(Upset) #c0392b
+```
+
+### `AVATAR_COLORS`
+```
+#d4af37 #2eb88a #3b9eff #9b7bf7 #b8c5d6 #f06bab #e85d5d #3ecf8e
+```
+
+---
+
+## 37. Carbon-Copy Readiness: Required Missing Work and Known Constraints
+
+This section is intentionally explicit: **the BRD plus the copied CSS are a high-fidelity build guide, not yet a self-contained pixel/behavior-port package.** Complete every P0 item before calling the Flutter app an exact carbon copy.
+
+### 37.1 P0 — prerequisites before pixel-parity sign-off
+
+| Status | Required work | Evidence / owner |
+|--------|---------------|------------------|
+| Missing | Capture the §33 golden screenshots at 390×844 for every listed loaded, empty, error, modal, and interaction state. | Store under `docs/flutter-qa/screenshots/`; current folder has no screenshots. |
+| Missing | Provide the same font binaries in Flutter-compatible form and verify text metrics against the web. | `fonts.css` references 11 unavailable `/fonts/*.woff2` files: Amiri 400/700 Arabic+Latin, Cormorant Garamond 500/600/700, DM Sans 400/500/600/700. Use matching TTF/OTF assets or verified Google Fonts equivalents. |
+| Missing | Add or deliberately replace missing brand/auth images. | `Logo.webp`, `Gate.webp`, and `shimanto.jpg` are referenced but absent. `Gate.webp` is only for the auth aside; the Salah arch is `tracker-card.svg`. |
+| Missing | Implement a production native-auth path. | Add Bearer-token auth, token issuance, and CORS/OPTIONS as specified in §2 and §32. Cookie-jar auth is only a development/MVP bridge. |
+| Required | Port interaction behavior, not only CSS. | Use the source map in §37.2; CSS has no modal state, optimistic update, scroll behavior, countdown, chart rendering, or portal logic. |
+
+### 37.2 Behavior source map (port these TypeScript behaviors)
+
+| Flutter feature | Canonical web behavior source | Flutter parity requirement |
+|-----------------|-------------------------------|----------------------------|
+| Mobile Salah interaction | `components/dashboard/SalahTracker.tsx`, `SalahMarkModal.tsx`, `lib/salah-mark-rules.ts` | At `≤960px`, open the modal for fard marking; retain sunnah/fard/jamat state, optimistic mutation, rollback, timing lock, and gender-specific Jamat/Awal Wakt copy. |
+| Salah rewards and completion feedback | `lib/rewards.ts`, `lib/confetti.ts`, `public/assets/scripts/confetti.js` | Match coin updates, completion feedback, and confetti trigger timing; CSS only defines the canvas z-index. |
+| Home header and prayer arc | `components/layout/PageHeader.tsx`, `SunPathArc.tsx`, `WaktCountdownClock.tsx` | Render full name/avatar, live countdown, prayer-time arc, active/forbidden states, and its periodic updates. |
+| Ummah live board | `components/friends/WaktBoardVirtual.tsx` | Preserve virtualized list behavior, fixed `ROW_HEIGHT = 76`, live countdown tick, poke cooldown, cursor pagination, and board-summary refresh. |
+| Header account menu | `components/layout/UserMenu.tsx` | Reproduce overlay position from trigger bounds, dismiss rules, resize behavior, focus handling, and entrance motion; CSS only styles the panel. |
+| Analytics charts | `components/analytics/AnalyticsChartsGrid.tsx`, `lib/chart-theme.ts` | Port datasets, labels, tooltips, chart options, and live theme-derived colors—not just the chart card shell. |
+| Truth effects and modal | `components/truth/TruthPage.tsx`, `useGradientExpand.ts` | Port the scroll-driven expand/radius effect, passage modal, body copy, figure placement, and reduced-motion behavior. |
+| Ruhaniah flow | `components/ruhaniah/**`, `lib/ruhaniah-validation.ts` | Preserve ordered incomplete/completed states, validation, local dua staging, and successful-submit transition. |
+| Loading UI | `components/ui/Shimmer.tsx`, `app/(app)/AppLayoutClient.tsx` | Port the variant sizing and app-shell loading layout; not all sizes are in CSS. |
+
+### 37.3 Responsive rules to centralize in Flutter
+
+Do not treat `960px` as the only breakpoint. Create `DawaBreakpoints` and test the mobile target widths against the original CSS:
+
+| Width rule | Current web use |
+|------------|-----------------|
+| `≤400px` | Ruhaniah narrow-device adjustments |
+| `≤480px` | Ruhaniah, location, handbook adjustments |
+| `≤520px` | Ummah/social adjustments |
+| `≤640px` | Ummah board, analytics, shimmer, shared modal adjustments |
+| `≤720px` | Friends, shared modals, Truth adjustments |
+| `≥721px` | Prayer sun-arc scale changes |
+| `≤768px` | Auth and handbook stacks |
+| `≤820px` | Profile layout |
+| `≤840px` / `≤960px` | Analytics grid / mobile app shell |
+| `≥1024px` | Calendar two-column layout (tablet/desktop only) |
+
+The shell visibility rule (`.dawa-header__nav { display:none }`, `.dawa-tabbar { display:block }` at `≤960px`) currently resides in **`dawa-friends.css`**, not `dawa-chrome.css`; preserve it centrally in Flutter rather than depending on that accidental CSS location.
+
+### 37.4 Non-CSS dependency manifest
+
+The `docs/flutter-qa/reference-css/` folder contains CSS only. A Flutter implementation must additionally inspect/bundle:
+
+- `public/assets/**` and `public/data/**` for raster/SVG/PDF/JSON assets; see §25–26.
+- `assets/css/fonts.css` for exact web font-family/weight mapping.
+- `components/**` for runtime layout via inline styles and interaction state.
+- `lib/chart-theme.ts`, `lib/confetti.ts`, `lib/salah-mark-rules.ts`, `lib/salah-utils.ts`, and `lib/validation.ts` for client-visible behavior.
+- `components/landing/**` only if public landing/marketing pages are added later; they are out of the authenticated-app carbon-copy scope.
+
+### 37.5 Accuracy corrections applied in v1.3
+
+- The reference bundle contains **23**, not 22, CSS files.
+- Analytics styles are in `dawa-mood-analytics.css`; `dawa-analytics.css` does not exist.
+- Mobile notifications are shown by header `NotificationBell`; the five-item tab bar has no notifications destination.
+- The web content container is `max-width: 1200px`, not ~600px.
+- The dashboard home heading uses full `user.name`, with avatar/countdown/SunPathArc.
+- The Analytics hero has four primary metrics; `coaching` is a separate Personal guidance section.
+- Friend request creation is `POST /api/friends`; accept/decline/cancel/disconnect is `PATCH /api/friends`.
+- Notification read mutations have the exact request bodies in §7 and §21.8.
+- The Salah arch uses `tracker-card.svg`; `Gate.webp` is an auth-only asset.
+
+### 37.6 Carbon-copy acceptance checklist
+
+Only mark the port complete when all are true:
+
+- [ ] Each §33 fixture has a Flutter golden test at the same viewport and theme/palette.
+- [ ] Golden diffs are reviewed manually; any intentional difference has a documented reason.
+- [ ] All P0 assets/fonts are bundled and rendering matches reference screenshots.
+- [ ] All §37.2 interactions work with API success, optimistic state, failure rollback, loading, and offline/error states.
+- [ ] Dark/light and all six accent palettes pass visual QA.
+- [ ] Text scaling, RTL Arabic, safe areas, keyboard behavior, and reduced-motion mode are tested.
+- [ ] Native authentication uses the production Bearer-token design (not a browser-cookie assumption).
+
+---
+
+*End of Addawah Flutter Mobile App BRD v1.3 — exact layout specs, copied CSS, and explicit carbon-copy readiness requirements*

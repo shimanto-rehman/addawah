@@ -1,0 +1,115 @@
+/* Profile page */
+.dawa-profile {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.dawa-profile__loading {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.dawa-profile__photo-panel {
+  padding: 24px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+}
+
+.dawa-profile__photo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dawa-profile__avatar {
+  margin-bottom: 14px;
+  box-shadow: 0 8px 28px var(--accent-glow);
+}
+
+.dawa-profile__photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.dawa-profile__photo-hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.dawa-profile__colors {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 16px;
+}
+
+.dawa-profile__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.dawa-profile__swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.dawa-profile__swatch:hover {
+  transform: scale(1.08);
+}
+
+.dawa-profile__swatch.is-active {
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.dawa-profile__details {
+  margin-bottom: 0;
+}
+
+.dawa-profile__error {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+@media (max-width: 820px) {
+  .dawa-profile {
+    grid-template-columns: 1fr;
+  }
+}
+.dawa-friend__name { font-weight: 700; font-size: 14px; }
+.dawa-friend__meta { font-size: 12px; color: var(--text-soft); }
+.dawa-poke {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.dawa-poke:hover { background: var(--accent); color: var(--accent-text); }
+.dawa-poke:disabled { opacity: 0.55; cursor: not-allowed; }
+

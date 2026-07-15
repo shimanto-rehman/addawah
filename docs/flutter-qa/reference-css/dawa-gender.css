@@ -1,0 +1,56 @@
+/* GenderPicker — two-option segmented control with icons.
+   Mirrors the dawa-auth__method-btn visual language so it reads as native. */
+
+.dawa-gender {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.dawa-gender__option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border-soft);
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dawa-gender__option:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--text);
+}
+
+.dawa-gender__option.is-active {
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent-soft), 0 4px 16px var(--accent-glow);
+}
+
+.dawa-gender__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.dawa-gender__option.is-active .dawa-gender__icon {
+  color: var(--accent-bright);
+}
+
+/* In auth context (transparent glass inputs), match the .dawa-input treatment */
+.dawa-auth .dawa-gender {
+  margin-bottom: 14px;
+}

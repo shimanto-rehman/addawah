@@ -1,0 +1,242 @@
+/* ==========================================================================
+   Shimmer / Skeleton Loading System
+   ==========================================================================
+   Reusable shimmer animation for loading states across the application.
+   Uses the same gradient animation as dawa-metrics and dawa-analytics.
+   ========================================================================== */
+
+/* Base shimmer animation */
+@keyframes dawa-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .dawa-shimmer,
+  .dawa-shimmer-stat,
+  .dawa-shimmer-chart__bar,
+  .dawa-shimmer-notif,
+  .dawa-shimmer-connection,
+  .dawa-shimmer-profile {
+    animation: none !important;
+    background: color-mix(in srgb, var(--surface) 70%, var(--text-dim)) !important;
+  }
+}
+
+/* ==========================================================================
+   Base Shimmer Element
+   ========================================================================== */
+
+.dawa-shimmer {
+  display: inline-block;
+  vertical-align: middle;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 0%,
+    color-mix(in srgb, var(--surface) 55%, var(--text-dim)) 50%,
+    color-mix(in srgb, var(--surface) 80%, var(--text-dim)) 100%
+  );
+  background-size: 200% 100%;
+  animation: dawa-shimmer 1.2s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+.dawa-shimmer--block {
+  display: block;
+}
+
+/* ==========================================================================
+   Stat Shimmer
+   ========================================================================== */
+
+.dawa-shimmer-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+}
+
+/* ==========================================================================
+   Chart Shimmer
+   ========================================================================== */
+
+.dawa-shimmer-chart {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 90%, var(--text-dim));
+}
+
+.dawa-shimmer-chart__bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 100%;
+  padding: 16px 8px 0;
+  gap: 8%;
+}
+
+.dawa-shimmer-chart__bar {
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Notification Shimmer
+   ========================================================================== */
+
+.dawa-shimmer-notif {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dawa-shimmer-notif__content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Connection/Friend Shimmer
+   ========================================================================== */
+
+.dawa-shimmer-connection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dawa-shimmer-connection__content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Profile Shimmer
+   ========================================================================== */
+
+.dawa-shimmer-profile {
+  padding: clamp(20px, 4vw, 32px);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 90%, var(--text-dim));
+}
+
+.dawa-shimmer-profile__hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.dawa-shimmer-profile__info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ==========================================================================
+   Loading Container States
+   ========================================================================== */
+
+.dawa-loading-container {
+  position: relative;
+  min-height: 120px;
+}
+
+.dawa-loading-container--chart {
+  min-height: 200px;
+}
+
+/* ==========================================================================
+   Shimmer for specific components
+   ========================================================================== */
+
+/* Prayer times shimmer */
+.dawa-sky__arc--loading-shimmer {
+  padding: 24px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 90%, var(--text-dim));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Salah tracker shimmer */
+.dawa-salah__shimmer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.dawa-salah__shimmer-cell {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+/* Insights shimmer */
+.dawa-insights__shimmer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.dawa-insights__shimmer-gauge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+/* Profile charts shimmer */
+.dawa-profile-charts__shimmer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+@media (max-width: 640px) {
+  .dawa-profile-charts__shimmer {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dawa-profile-charts__shimmer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 95%, var(--text-dim));
+}
+
+/* Search shimmer */
+.dawa-user-search__shimmer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.dawa-user-search__shimmer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
